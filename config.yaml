@@ -1,0 +1,22 @@
+# Project Configuration
+models:
+  llama: "meta-llama/Llama-3.2-1B-Instruct"
+  gemma: "google/gemma-2b-it"
+  qwen: "Qwen/Qwen2-1.5B-Instruct"
+
+datasets:
+  truthful_qa:
+    config_name: "generation"
+    split: "validation"
+    sample_size: 128
+
+defaults:
+  max_new_tokens: 100
+  device_map: "auto"
+  dtype: "float32"
+  random_seed: 42
+
+style_levels:
+  spacing: [0, 1, 5, 20, 50, 100]
+  punctuation: [0, 1, 3, 5, 10, 20]
+  politeness: [0, 1, 2, 3, 4, 5]
