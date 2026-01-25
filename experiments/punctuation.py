@@ -24,6 +24,9 @@ from utils.models import load_model, generate_response
 from utils.metrics import compute_bleu, compute_bertscore, compute_confidence
 from utils.styles import apply_punctuation
 
+from utils.metrics import compute_activation_similarity_all_layers, collect_activations_for_prompts, reduce_activations_2d
+import matplotlib.pyplot as plt
+
 
 def load_config():
     """Load configuration from config.yaml"""
@@ -132,7 +135,10 @@ def run_experiment(model_name, dataset_name, sample_size=None):
             # Compute confidence metrics
             conf_metrics = compute_confidence(model, tokenizer, prompt_orig, prompt_pert, response_orig)
             
-            # Store result
+            # Compute activation similarity
+            act_sim = compute_activation_similarity_all_layers(model, tokenizer, prompt_orig, prompt_pert)
+            
+            # Store result 
             results.append({
                 'prompt_id': i,
                 'strength': strength,
@@ -142,6 +148,8 @@ def run_experiment(model_name, dataset_name, sample_size=None):
                 'delta_log_prob': conf_metrics['delta_log_prob'],
                 'entropy_shift': conf_metrics['entropy_shift'],
                 'jsd_drift': conf_metrics['jsd_drift'],
+                'activation_similarity_mean': act_sim['mean_similarity'], 
+                'activation_similarity_last_layer': act_sim['last_layer_similarity'], 
                 'prompt_orig': prompt_orig,
                 'prompt_pert': prompt_pert,
                 'response_orig': response_orig,

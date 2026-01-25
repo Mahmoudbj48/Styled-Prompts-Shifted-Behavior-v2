@@ -11,6 +11,9 @@ import torch
 import torch.nn.functional as F
 from bert_score import score as bert_score
 from sacrebleu import corpus_bleu
+from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
+import numpy as np
 
 
 def compute_bleu(reference, candidate):
@@ -138,3 +141,195 @@ def compute_confidence(model, tokenizer, prompt_orig, prompt_pert, response_orig
         "entropy_shift": entropy_shift,
         "jsd_drift": jsd
     }
+
+
+"""
+Activation Analysis Metrics
+Based on "Silent Tokens, Loud Effects: Padding in LLMs" methodology
+"""
+
+
+
+def get_layer_activations(model, tokenizer, prompt, layer_idx=-1):
+    """
+    Extract activations from a specific layer of the model.
+    
+    Args:
+        model: The language model
+        tokenizer: The tokenizer
+        prompt (str): Input prompt
+        layer_idx (int): Layer index to extract (-1 for last layer)
+    
+    Returns:
+        torch.Tensor: Activations of shape [seq_len, hidden_dim]
+    """
+    # Tokenize input
+    try:
+        inputs = tokenizer.apply_chat_template(
+            [{"role": "user", "content": prompt}],
+            return_tensors="pt",
+            add_generation_prompt=True
+        ).to(model.device)
+    except:
+        inputs = tokenizer(prompt, return_tensors="pt").input_ids.to(model.device)
+    
+    attention_mask = torch.ones_like(inputs)
+    
+    # Forward pass with output_hidden_states=True
+    with torch.no_grad():
+        outputs = model(
+            input_ids=inputs,
+            attention_mask=attention_mask,
+            output_hidden_states=True
+        )
+    
+    # Extract hidden states from specified layer
+    # hidden_states is a tuple: (embedding_output, layer_1, layer_2, ..., layer_N)
+    hidden_states = outputs.hidden_states[layer_idx]  # [batch, seq_len, hidden_dim]
+    
+    # Take last token position (where the model "understands" the full prompt)
+    last_token_activation = hidden_states[0, -1, :]  # [hidden_dim]
+    
+    return last_token_activation
+
+
+def compute_activation_similarity(model, tokenizer, prompt_orig, prompt_pert, layer_idx=-1):
+    """
+    Compute cosine similarity between activations of original and perturbed prompts.
+    
+    Measures how much the internal representation changes due to style perturbation.
+    
+    Args:
+        model: The language model
+        tokenizer: The tokenizer
+        prompt_orig (str): Original prompt
+        prompt_pert (str): Perturbed prompt
+        layer_idx (int): Layer index (-1 for last layer)
+    
+    Returns:
+        float: Cosine similarity between activations (0-1, higher = more similar)
+    """
+    # Get activations for both prompts
+    act_orig = get_layer_activations(model, tokenizer, prompt_orig, layer_idx)
+    act_pert = get_layer_activations(model, tokenizer, prompt_pert, layer_idx)
+    
+    # Compute cosine similarity
+    similarity = F.cosine_similarity(act_orig.unsqueeze(0), act_pert.unsqueeze(0)).item()
+    
+    return similarity
+
+
+def compute_activation_similarity_all_layers(model, tokenizer, prompt_orig, prompt_pert):
+    """
+    Compute activation similarity across all layers.
+    
+    Args:
+        model: The language model
+        tokenizer: The tokenizer
+        prompt_orig (str): Original prompt
+        prompt_pert (str): Perturbed prompt
+    
+    Returns:
+        dict: Contains 'mean_similarity', 'per_layer_similarity', 'last_layer_similarity'
+    """
+    # Tokenize inputs
+    try:
+        inputs_orig = tokenizer.apply_chat_template(
+            [{"role": "user", "content": prompt_orig}],
+            return_tensors="pt",
+            add_generation_prompt=True
+        ).to(model.device)
+        inputs_pert = tokenizer.apply_chat_template(
+            [{"role": "user", "content": prompt_pert}],
+            return_tensors="pt",
+            add_generation_prompt=True
+        ).to(model.device)
+    except:
+        inputs_orig = tokenizer(prompt_orig, return_tensors="pt").input_ids.to(model.device)
+        inputs_pert = tokenizer(prompt_pert, return_tensors="pt").input_ids.to(model.device)
+    
+    attention_mask_orig = torch.ones_like(inputs_orig)
+    attention_mask_pert = torch.ones_like(inputs_pert)
+    
+    # Forward passes
+    with torch.no_grad():
+        outputs_orig = model(
+            input_ids=inputs_orig,
+            attention_mask=attention_mask_orig,
+            output_hidden_states=True
+        )
+        outputs_pert = model(
+            input_ids=inputs_pert,
+            attention_mask=attention_mask_pert,
+            output_hidden_states=True
+        )
+    
+    # Compute similarity for each layer
+    per_layer_similarities = []
+    num_layers = len(outputs_orig.hidden_states)
+    
+    for layer_idx in range(num_layers):
+        act_orig = outputs_orig.hidden_states[layer_idx][0, -1, :]  # Last token
+        act_pert = outputs_pert.hidden_states[layer_idx][0, -1, :]
+        
+        similarity = F.cosine_similarity(act_orig.unsqueeze(0), act_pert.unsqueeze(0)).item()
+        per_layer_similarities.append(similarity)
+    
+    return {
+        'mean_similarity': float(np.mean(per_layer_similarities)),
+        'last_layer_similarity': per_layer_similarities[-1],
+        'per_layer_similarity': per_layer_similarities
+    }
+
+
+def reduce_activations_2d(activations_list, method='pca', seed=42):
+    """
+    Reduce high-dimensional activations to 2D for visualization.
+    
+    Args:
+        activations_list (list): List of torch tensors or numpy arrays [n_samples, hidden_dim]
+        method (str): 'pca' or 'tsne'
+        seed (int): Random seed
+    
+    Returns:
+        numpy.ndarray: 2D coordinates [n_samples, 2]
+    """
+    # Stack all activations
+    if isinstance(activations_list[0], torch.Tensor):
+        activations = torch.stack(activations_list).cpu().numpy()
+    else:
+        activations = np.array(activations_list)
+    
+    # Reduce to 2D
+    if method.lower() == 'pca':
+        reducer = PCA(n_components=2, random_state=seed)
+    elif method.lower() == 'tsne':
+        # Dynamic perplexity based on number of samples
+        n_samples = activations.shape[0]
+        perplexity = min(30, n_samples - 1)
+        reducer = TSNE(n_components=2, perplexity=perplexity, random_state=seed)
+    else:
+        raise ValueError("method must be 'pca' or 'tsne'")
+    
+    reduced = reducer.fit_transform(activations)
+    return reduced
+
+
+def collect_activations_for_prompts(model, tokenizer, prompts, layer_idx=-1):
+    """
+    Collect activations for a list of prompts.
+    
+    Args:
+        model: The language model
+        tokenizer: The tokenizer
+        prompts (list): List of prompt strings
+        layer_idx (int): Layer index
+    
+    Returns:
+        list: List of activation tensors
+    """
+    activations = []
+    for prompt in prompts:
+        act = get_layer_activations(model, tokenizer, prompt, layer_idx)
+        activations.append(act)
+    return activations

@@ -14,7 +14,11 @@ import sys
 import yaml
 from datetime import datetime
 import pandas as pd
+import numpy as np
 from tqdm import tqdm
+import matplotlib.pyplot as plt
+import torch
+import torch.nn.functional as F
 
 # Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -22,6 +26,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.data import load_dataset_by_name
 from utils.models import load_model, generate_response
 from utils.metrics import compute_bleu, compute_bertscore, compute_confidence
+from utils.metrics import get_layer_activations, reduce_activations_2d
 from utils.styles import apply_spacing
 
 
@@ -80,11 +85,10 @@ def run_experiment(model_name, dataset_name, sample_size=None):
         device_map=config['defaults']['device_map'],
         dtype=config['defaults']['dtype']
     )
-
     print(f"Running on device: {model.device}\n")
     
     # Load dataset
-    print("\nLoading dataset...")
+    print("Loading dataset...")
     prompts = load_dataset_by_name(
         dataset_name,
         sample_size=sample_size,
@@ -101,6 +105,9 @@ def run_experiment(model_name, dataset_name, sample_size=None):
     # Store results
     results = []
     
+    # Cache for activations (for 2D visualization later)
+    activations_cache = {s: [] for s in strength_levels}
+    
     # Progress bar
     total_iterations = len(prompts) * len(strength_levels)
     pbar = tqdm(total=total_iterations, desc="Processing", unit="iter")
@@ -114,6 +121,9 @@ def run_experiment(model_name, dataset_name, sample_size=None):
             max_new_tokens=config['defaults']['max_new_tokens']
         )
         
+        # Get activation for original prompt (once per prompt)
+        act_orig = get_layer_activations(model, tokenizer, prompt_orig, layer_idx=-1)
+        
         # Test each strength level
         for strength in strength_levels:
             # Apply spacing style
@@ -124,6 +134,16 @@ def run_experiment(model_name, dataset_name, sample_size=None):
                 model, tokenizer, prompt_pert,
                 max_new_tokens=config['defaults']['max_new_tokens']
             )
+            
+            # Get activation for perturbed prompt (cached for later)
+            act_pert = get_layer_activations(model, tokenizer, prompt_pert, layer_idx=-1)
+            activations_cache[strength].append(act_pert)
+            
+            # Compute activation similarity
+            activation_similarity = F.cosine_similarity(
+                act_orig.unsqueeze(0), 
+                act_pert.unsqueeze(0)
+            ).item()
             
             # Compute quality metrics
             bleu = compute_bleu(response_orig, response_pert)
@@ -142,6 +162,7 @@ def run_experiment(model_name, dataset_name, sample_size=None):
                 'delta_log_prob': conf_metrics['delta_log_prob'],
                 'entropy_shift': conf_metrics['entropy_shift'],
                 'jsd_drift': conf_metrics['jsd_drift'],
+                'activation_similarity': activation_similarity,
                 'prompt_orig': prompt_orig,
                 'prompt_pert': prompt_pert,
                 'response_orig': response_orig,
@@ -168,17 +189,80 @@ def run_experiment(model_name, dataset_name, sample_size=None):
     print(f"\n✓ Full results saved to: {output_path}")
     
     # Create and save summary statistics
-    summary = df.groupby('strength')[['bleu', 'bertscore', 'delta_log_prob', 'entropy_shift', 'jsd_drift']].agg(['mean', 'std']).reset_index()
+    summary = df.groupby('strength')[
+        ['bleu', 'bertscore', 'delta_log_prob', 'entropy_shift', 'jsd_drift', 'activation_similarity']
+    ].agg(['mean', 'std']).reset_index()
     summary_path = os.path.join(output_dir, f"spacing_{model_name}_{dataset_name}_{timestamp}_summary.csv")
     summary.to_csv(summary_path, index=False)
     print(f"✓ Summary statistics saved to: {summary_path}")
     
+    # === Generate 2D Activation Visualizations ===
+    print("\nGenerating 2D activation visualizations...")
+    
+    # Create plots directory
+    plot_dir = os.path.join(output_dir, 'plots')
+    os.makedirs(plot_dir, exist_ok=True)
+    
+    # Sample size for visualization (to avoid cluttering)
+    viz_sample_size = min(50, len(prompts))
+    
+    # Save 2D coordinates for each strength level
+    for strength in strength_levels:
+        activations = activations_cache[strength][:viz_sample_size]
+        
+        if len(activations) > 1:  # Need at least 2 points
+            # Reduce to 2D using PCA
+            coords_2d = reduce_activations_2d(activations, method='pca', seed=config['defaults']['random_seed'])
+            
+            # Save coordinates
+            coords_df = pd.DataFrame({
+                'prompt_id': list(range(len(coords_2d))),
+                'strength': strength,
+                'x': coords_2d[:, 0],
+                'y': coords_2d[:, 1]
+            })
+            coords_path = os.path.join(output_dir, f"spacing_{model_name}_{dataset_name}_{timestamp}_2d_coords_strength{strength}.csv")
+            coords_df.to_csv(coords_path, index=False)
+    
+    print(f"✓ 2D activation coordinates saved for each strength level")
+    
+    # Create combined visualization plot
+    plt.figure(figsize=(12, 8))
+    colors_map = plt.cm.viridis(np.linspace(0, 1, len(strength_levels)))
+    
+    for idx, strength in enumerate(strength_levels):
+        activations = activations_cache[strength][:viz_sample_size]
+        
+        if len(activations) > 1:
+            coords_2d = reduce_activations_2d(activations, method='pca', seed=config['defaults']['random_seed'])
+            
+            plt.scatter(coords_2d[:, 0], coords_2d[:, 1], 
+                       label=f'Strength {strength}', 
+                       alpha=0.6, 
+                       color=colors_map[idx],
+                       s=50)
+    
+    plt.xlabel("PCA Component 1", fontsize=12)
+    plt.ylabel("PCA Component 2", fontsize=12)
+    plt.title(f"Activation Space (Last Layer) - Spacing Style\nModel: {model_name}", fontsize=14)
+    plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    
+    plot_file = os.path.join(plot_dir, f"spacing_{model_name}_{dataset_name}_{timestamp}_activation_2d.png")
+    plt.savefig(plot_file, dpi=300, bbox_inches='tight')
+    plt.close()
+    
+    print(f"✓ 2D activation plot saved to: {plot_file}")
+    
     # Print summary to console
     print(f"\n{'='*70}")
-    print("SUMMARY STATISTICS (Mean ± Std)")
+    print("SUMMARY STATISTICS (Mean)")
     print(f"{'='*70}")
     
-    summary_display = df.groupby('strength')[['bleu', 'bertscore', 'delta_log_prob', 'entropy_shift', 'jsd_drift']].mean()
+    summary_display = df.groupby('strength')[
+        ['bleu', 'bertscore', 'delta_log_prob', 'entropy_shift', 'jsd_drift', 'activation_similarity']
+    ].mean()
     print(summary_display.round(3).to_string())
     print(f"{'='*70}\n")
     
