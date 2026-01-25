@@ -13,7 +13,7 @@ datasets:
 defaults:
   max_new_tokens: 100
   device_map: "auto"
-  dtype: "float32"
+  dtype: "float16"
   random_seed: 42
 
 style_levels:

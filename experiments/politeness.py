@@ -80,6 +80,8 @@ def run_experiment(model_name, dataset_name, sample_size=None):
         device_map=config['defaults']['device_map'],
         dtype=config['defaults']['dtype']
     )
+
+    print(f"Running on device: {model.device}\n")
     
     # Load dataset
     print("\nLoading dataset...")
