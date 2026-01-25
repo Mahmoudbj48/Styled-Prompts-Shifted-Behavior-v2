@@ -78,6 +78,19 @@ def run_experiment(model_name, dataset_name, sample_size=None):
     print(f"  - Strength Levels: {strength_levels}")
     print(f"  - Max New Tokens: {config['defaults']['max_new_tokens']}\n")
     
+    # Create organized output directory structure
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    base_results_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "results")
+    style_dir = os.path.join(base_results_dir, "spacing")
+    run_dir = os.path.join(style_dir, f"run_{model_name}_{dataset_name}_{timestamp}")
+    plot_dir = os.path.join(run_dir, "plots")
+    
+    # Create all directories
+    os.makedirs(run_dir, exist_ok=True)
+    os.makedirs(plot_dir, exist_ok=True)
+    
+    print(f"Output directory: {run_dir}\n")
+    
     # Load model
     print("Loading model...")
     model, tokenizer = load_model(
@@ -176,15 +189,8 @@ def run_experiment(model_name, dataset_name, sample_size=None):
     # Convert to DataFrame
     df = pd.DataFrame(results)
     
-    # Create output directory
-    output_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "results")
-    os.makedirs(output_dir, exist_ok=True)
-    
-    # Create output filename with timestamp
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    output_path = os.path.join(output_dir, f"spacing_{model_name}_{dataset_name}_{timestamp}.csv")
-    
     # Save full results
+    output_path = os.path.join(run_dir, "full_results.csv")
     df.to_csv(output_path, index=False)
     print(f"\n✓ Full results saved to: {output_path}")
     
@@ -192,16 +198,12 @@ def run_experiment(model_name, dataset_name, sample_size=None):
     summary = df.groupby('strength')[
         ['bleu', 'bertscore', 'delta_log_prob', 'entropy_shift', 'jsd_drift', 'activation_similarity']
     ].agg(['mean', 'std']).reset_index()
-    summary_path = os.path.join(output_dir, f"spacing_{model_name}_{dataset_name}_{timestamp}_summary.csv")
+    summary_path = os.path.join(run_dir, "summary_statistics.csv")
     summary.to_csv(summary_path, index=False)
     print(f"✓ Summary statistics saved to: {summary_path}")
     
     # === Generate 2D Activation Visualizations ===
     print("\nGenerating 2D activation visualizations...")
-    
-    # Create plots directory
-    plot_dir = os.path.join(output_dir, 'plots')
-    os.makedirs(plot_dir, exist_ok=True)
     
     # Sample size for visualization (to avoid cluttering)
     viz_sample_size = min(50, len(prompts))
@@ -211,8 +213,8 @@ def run_experiment(model_name, dataset_name, sample_size=None):
         activations = activations_cache[strength][:viz_sample_size]
         
         if len(activations) > 1:  # Need at least 2 points
-            # Reduce to 2D using PCA
-            coords_2d = reduce_activations_2d(activations, method='pca', seed=config['defaults']['random_seed'])
+            # Reduce to 2D using tsne
+            coords_2d = reduce_activations_2d(activations, method='tsne', seed=config['defaults']['random_seed'])
             
             # Save coordinates
             coords_df = pd.DataFrame({
@@ -221,37 +223,37 @@ def run_experiment(model_name, dataset_name, sample_size=None):
                 'x': coords_2d[:, 0],
                 'y': coords_2d[:, 1]
             })
-            coords_path = os.path.join(output_dir, f"spacing_{model_name}_{dataset_name}_{timestamp}_2d_coords_strength{strength}.csv")
+            coords_path = os.path.join(run_dir, f"activation_coords_strength_{strength}.csv")
             coords_df.to_csv(coords_path, index=False)
     
     print(f"✓ 2D activation coordinates saved for each strength level")
     
     # Create combined visualization plot
-    plt.figure(figsize=(12, 8))
+    fig, ax = plt.subplots(figsize=(12, 8))
     colors_map = plt.cm.viridis(np.linspace(0, 1, len(strength_levels)))
     
     for idx, strength in enumerate(strength_levels):
         activations = activations_cache[strength][:viz_sample_size]
         
         if len(activations) > 1:
-            coords_2d = reduce_activations_2d(activations, method='pca', seed=config['defaults']['random_seed'])
+            coords_2d = reduce_activations_2d(activations, method='tsne', seed=config['defaults']['random_seed'])
             
-            plt.scatter(coords_2d[:, 0], coords_2d[:, 1], 
+            ax.scatter(coords_2d[:, 0], coords_2d[:, 1], 
                        label=f'Strength {strength}', 
                        alpha=0.6, 
                        color=colors_map[idx],
                        s=50)
     
-    plt.xlabel("PCA Component 1", fontsize=12)
-    plt.ylabel("PCA Component 2", fontsize=12)
-    plt.title(f"Activation Space (Last Layer) - Spacing Style\nModel: {model_name}", fontsize=14)
-    plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
-    plt.grid(True, alpha=0.3)
-    plt.tight_layout()
+    ax.set_xlabel("t-SNE Component 1", fontsize=12)
+    ax.set_ylabel("t-SNE Component 2", fontsize=12)
+    ax.set_title(f"Activation Space (Last Layer) - Spacing Style\nModel: {model_name}", fontsize=14)
+    ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+    ax.grid(True, alpha=0.3)
     
-    plot_file = os.path.join(plot_dir, f"spacing_{model_name}_{dataset_name}_{timestamp}_activation_2d.png")
+    plot_file = os.path.join(plot_dir, "activation_space_2d.png")
+    plt.tight_layout()
     plt.savefig(plot_file, dpi=300, bbox_inches='tight')
-    plt.close()
+    plt.close(fig)
     
     print(f"✓ 2D activation plot saved to: {plot_file}")
     
@@ -265,6 +267,8 @@ def run_experiment(model_name, dataset_name, sample_size=None):
     ].mean()
     print(summary_display.round(3).to_string())
     print(f"{'='*70}\n")
+    
+    print(f"✓ All outputs saved to: {run_dir}\n")
     
     return output_path
 
