@@ -130,19 +130,20 @@ def compute_confidence(model, tokenizer, prompt_orig, prompt_pert, response_orig
     # --- Metric 3: Jensen-Shannon Divergence (JSD) ---
     # JSD(P || Q) = 0.5 * KL(P || M) + 0.5 * KL(Q || M), where M = 0.5 * (P + Q)
     m = 0.5 * (probs_orig + probs_pert)
-    log_m = torch.log(m + 1e-10)  # epsilon for stability
+    log_m = torch.log(m.clamp(min=1e-10))  # Clamp to avoid log(0)
+
+    # Recompute log probabilities with clamping for numerical stability
+    log_probs_orig_safe = torch.log(probs_orig.clamp(min=1e-10))
+    log_probs_pert_safe = torch.log(probs_pert.clamp(min=1e-10))
 
     # KL Divergence = sum(p * (log_p - log_m))
-    # Note: PyTorch kl_div expects input to be log-probs, target to be probs (unless log_target=True)
-    # Let's do it manually to be safe and clear:
-    kl_p_m = (probs_orig * (log_probs_orig - log_m)).sum(dim=-1).mean()
-    kl_q_m = (probs_pert * (log_probs_pert - log_m)).sum(dim=-1).mean()
+    kl_p_m = (probs_orig * (log_probs_orig_safe - log_m)).sum(dim=-1).mean()
+    kl_q_m = (probs_pert * (log_probs_pert_safe - log_m)).sum(dim=-1).mean()
 
     jsd = 0.5 * (kl_p_m + kl_q_m).item()
 
-    # Handle NaN for identical distributions (strength=0)
-    if np.isnan(jsd):
-        jsd = 0.0
+    # Ensure non-negative (numerical errors can cause tiny negatives)
+    jsd = max(0.0, jsd)
     
     return {
         "delta_log_prob": delta_log_prob,
