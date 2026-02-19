@@ -1,9 +1,14 @@
 """
 Trace-length metric experiment (sample of prompts) — AVG per place & strength
-
-
 Run:
-  python experiments/trace.py --model llama --dataset truthful_qa --sample_size 128 --places prefix suffix global --batch_size 64 --max_new_tokens 128
+  python experiments/trace_polite.py \
+      --models llama mistral \
+      --dataset truthful_qa \
+      --sample_size 128 \
+      --places prefix suffix global \
+      --batch_size 64 \
+      --max_new_tokens 128 \
+      --fix_bad_outputs
 """
 
 from __future__ import annotations
@@ -13,7 +18,7 @@ import os
 import sys
 import yaml
 from datetime import datetime
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -26,8 +31,6 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.data import load_dataset_by_name
 from utils.models import load_model, generate_response
 from utils.styles import apply_politeness
-
-# Uses your FIXED metrics code (always-valid JSON + optional second-pass fixer)
 from utils.metrics import compute_trace_metric_batched
 
 
@@ -53,11 +56,16 @@ def apply_style(prompt: str, style: str, strength: int, place: str) -> str:
     raise ValueError(f"Unknown style: {style}")
 
 
-def plot_metric_lines_place(
-        df_mean: pd.DataFrame,
+def _label_model_place(model_key: str, place: str) -> str:
+    return f"{model_key} | {place}"
+
+
+def plot_metric_lines_model_place(
+        df: pd.DataFrame,
         *,
         metric: str,
         strengths: List[int],
+        models: List[str],
         places: List[str],
         out_path: str,
         title: str,
@@ -65,18 +73,20 @@ def plot_metric_lines_place(
     """
     Single plot:
       X = strength
-      Lines = place
+      Lines = (model, place)
     """
-    fig, ax = plt.subplots(figsize=(12, 6))
+    fig, ax = plt.subplots(figsize=(13, 6))
     strengths_sorted = sorted([int(s) for s in strengths])
 
-    for place in places:
-        sub = df_mean[df_mean["place"] == place].copy()
-        if sub.empty:
-            continue
-        sub = sub.set_index("strength").reindex(strengths_sorted)
-        y = sub[metric].values
-        ax.plot(strengths_sorted, y, marker="o", label=f"{place}")
+    # One line per (model, place)
+    for model_key in models:
+        for place in places:
+            sub = df[(df["model"] == model_key) & (df["place"] == place)].copy()
+            if sub.empty:
+                continue
+            sub = sub.set_index("strength").reindex(strengths_sorted)
+            y = sub[metric].values
+            ax.plot(strengths_sorted, y, marker="o", label=_label_model_place(model_key, place))
 
     ax.set_xlabel("Strength")
     ax.set_ylabel(metric)
@@ -88,12 +98,36 @@ def plot_metric_lines_place(
     plt.close(fig)
 
 
+def _maybe_unload_model(model, tokenizer):
+    """
+    Best-effort memory cleanup between models (esp. on GPU).
+    Safe to call even if torch isn't available.
+    """
+    try:
+        import torch  # noqa: F401
+
+        del model
+        del tokenizer
+        torch.cuda.empty_cache()
+    except Exception:
+        # If torch not installed or no CUDA, just ignore
+        pass
+
+
 # --------------------------
 # Main
 # --------------------------
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", type=str, default="llama", help="Model key from config.yaml")
+
+    # MULTI MODEL: pass one or more keys from config.yaml
+    parser.add_argument(
+        "--models",
+        nargs="+",
+        default=["llama"],
+        help="One or more model keys from config.yaml (e.g., --models llama mistral).",
+    )
+
     parser.add_argument("--dataset", type=str, default="truthful_qa", help="Dataset name (as in config.yaml)")
 
     # requested defaults
@@ -132,25 +166,26 @@ def main():
     )
 
     args = parser.parse_args()
-
     config = load_config()
 
-    # ---- Validate config keys ----
-    if args.model not in config.get("models", {}):
-        raise ValueError(f"Model '{args.model}' not in config. Available: {list(config.get('models', {}).keys())}")
-    model_path = config["models"][args.model]
-
+    # ---- Validate dataset ----
     if args.dataset not in config.get("datasets", {}):
         raise ValueError(f"Dataset '{args.dataset}' not in config. Available: {list(config.get('datasets', {}).keys())}")
     dataset_cfg = config["datasets"][args.dataset]
 
+    # ---- Validate style ----
     if args.style not in config.get("style_levels", {}):
         raise ValueError(
             f"Style '{args.style}' not in config['style_levels']. "
             f"Available: {list(config.get('style_levels', {}).keys())}"
         )
-    strengths: List[int] = list(config["style_levels"][args.style])
-    strengths = [int(s) for s in strengths]
+    strengths: List[int] = [int(s) for s in list(config["style_levels"][args.style])]
+
+    # ---- Validate models ----
+    available_models = list(config.get("models", {}).keys())
+    for mk in args.models:
+        if mk not in config.get("models", {}):
+            raise ValueError(f"Model '{mk}' not in config. Available: {available_models}")
 
     # ---- Fix max tokens ----
     cfg_default = _safe_int(config.get("defaults", {}).get("max_new_tokens", 128), default=128)
@@ -159,13 +194,15 @@ def main():
     # ---- Output dir ----
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     base_results_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "results")
-    run_dir = args.out_dir or os.path.join(base_results_dir, "trace", f"run_{args.dataset}_{args.model}_{timestamp}")
+    # include list of models in directory name (shortened)
+    models_tag = "-".join(args.models[:4]) + (f"-plus{len(args.models)-4}" if len(args.models) > 4 else "")
+    run_dir = args.out_dir or os.path.join(base_results_dir, "trace", f"run_{args.dataset}_{models_tag}_{timestamp}")
     os.makedirs(run_dir, exist_ok=True)
 
     print("\n" + "=" * 90)
-    print("TRACE-LENGTH EXPERIMENT (SAMPLE) — AVG TRACE LENGTH PER PLACE & STRENGTH")
+    print("TRACE-LENGTH EXPERIMENT (SAMPLE) — MULTI MODEL — AVG TRACE LENGTH PER PLACE & STRENGTH")
     print("=" * 90)
-    print(f"Model: {args.model} -> {model_path}")
+    print(f"Models: {args.models}")
     print(f"Dataset: {args.dataset} | sample_size={args.sample_size}")
     print(f"Style: {args.style}")
     print(f"Places: {args.places}")
@@ -176,7 +213,7 @@ def main():
     print(f"Output dir: {run_dir}")
     print("=" * 90 + "\n")
 
-    # ---- Load prompts sample ----
+    # ---- Load prompts sample ONCE (shared across all models) ----
     prompts_items = load_dataset_by_name(
         args.dataset,
         sample_size=args.sample_size,
@@ -190,100 +227,110 @@ def main():
     prompts: List[str] = [x["question"] for x in prompts_items]
     n_prompts = len(prompts)
 
-    # sanity: confirm sample size is what you asked for (some datasets may return fewer)
     if n_prompts != args.sample_size:
         print(f"WARNING: requested sample_size={args.sample_size}, but loader returned n={n_prompts}")
-
-    # ---- Load LLM ----
-    model, tokenizer = load_model(
-        model_path,
-        device_map=config.get("defaults", {}).get("device_map", "auto"),
-        dtype=config.get("defaults", {}).get("dtype", "float32"),
-    )
 
     # ---- Aggregate + optional per-prompt rows ----
     agg_rows: List[Dict[str, Any]] = []
     per_rows: List[Dict[str, Any]] = []
 
-    # tqdm counts groups (place x strength) correctly
-    pbar = tqdm(total=len(args.places) * len(strengths), desc="Trace groups", unit="group")
+    total_groups = len(args.models) * len(args.places) * len(strengths)
+    pbar = tqdm(total=total_groups, desc="Trace groups", unit="group")
 
-    for place in args.places:
-        for s in strengths:
-            styled_prompts = [apply_style(p, args.style, int(s), place) for p in prompts]
+    # ---- Loop over models ----
+    for model_key in args.models:
+        model_path = config["models"][model_key]
 
+        print("\n" + "-" * 90)
+        print(f"Loading model: {model_key} -> {model_path}")
+        print("-" * 90)
 
-            result = compute_trace_metric_batched(
-                model,
-                tokenizer,
-                styled_prompts,
-                max_new_tokens=int(max_new_tokens),
-                batch_size=int(args.batch_size),
-                do_sample=False,
-                use_cache=False,
-                generate_fn=generate_response,
-                fix_bad_outputs=bool(args.fix_bad_outputs),
-                fix_max_new_tokens=int(args.fix_max_new_tokens),
-            )
+        model, tokenizer = load_model(
+            model_path,
+            device_map=config.get("defaults", {}).get("device_map", "auto"),
+            dtype=config.get("defaults", {}).get("dtype", "float32"),
+        )
 
-            trace_lengths = result["trace_lengths"]
-            parsed_flags = result["parsed_flags"]
+        # Loop places x strengths
+        for place in args.places:
+            for s in strengths:
+                styled_prompts = [apply_style(p, args.style, int(s), place) for p in prompts]
 
-            # IMPORTANT: mean should ignore failures (NaN), so use nanmean
-            avg_trace_len = float(np.nanmean(trace_lengths)) if len(trace_lengths) else float("nan")
-            parsed_rate = float(np.mean(parsed_flags)) if len(parsed_flags) else float("nan")
+                result = compute_trace_metric_batched(
+                    model,
+                    tokenizer,
+                    styled_prompts,
+                    max_new_tokens=int(max_new_tokens),
+                    batch_size=int(args.batch_size),
+                    do_sample=False,
+                    use_cache=True,  # speed improvement vs False
+                    generate_fn=generate_response,
+                    fix_bad_outputs=bool(args.fix_bad_outputs),
+                    fix_max_new_tokens=int(args.fix_max_new_tokens),
+                )
 
-            agg_rows.append(
-                {
-                    "model": args.model,
-                    "dataset": args.dataset,
-                    "place": place,
-                    "strength": int(s),
-                    "n": int(n_prompts),
-                    "avg_trace_len": avg_trace_len,
-                    "parsed_rate": parsed_rate,
-                }
-            )
+                trace_lengths = result["trace_lengths"]
+                parsed_flags = result["parsed_flags"]
 
-            if args.save_per_prompt:
-                raw_outputs = result.get("raw_outputs", [None] * n_prompts)
-                json_outputs = result.get("json_outputs", [None] * n_prompts)
+                # avg (trace_lengths are finite; 0.0 if fallback). Use mean.
+                avg_trace_len = float(np.mean(trace_lengths)) if len(trace_lengths) else float("nan")
+                parsed_rate = float(np.mean(parsed_flags)) if len(parsed_flags) else float("nan")
 
-                trace_prompts = result.get("trace_prompts", None)
+                agg_rows.append(
+                    {
+                        "model": model_key,
+                        "dataset": args.dataset,
+                        "place": place,
+                        "strength": int(s),
+                        "n": int(n_prompts),
+                        "avg_trace_len": avg_trace_len,
+                        "parsed_rate": parsed_rate,
+                    }
+                )
 
-                for i in range(n_prompts):
-                    per_rows.append(
-                        {
-                            "model": args.model,
-                            "dataset": args.dataset,
-                            "place": place,
-                            "strength": int(s),
-                            "prompt_id": int(i),
-                            "prompt_orig": prompts[i],
-                            "prompt_styled": styled_prompts[i],
-                            "trace_len": float(trace_lengths[i]),
-                            "parsed_ok": bool(parsed_flags[i]),
-                            "trace_prompt": trace_prompts[i] if trace_prompts is not None else None,
-                            "raw_output": raw_outputs[i],
-                            "json_output": json_outputs[i],
-                        }
-                    )
+                if args.save_per_prompt:
+                    raw_outputs = result.get("raw_outputs", [None] * n_prompts)
+                    json_outputs = result.get("json_outputs", [None] * n_prompts)
 
-            pbar.update(1)
+                    for i in range(n_prompts):
+                        per_rows.append(
+                            {
+                                "model": model_key,
+                                "dataset": args.dataset,
+                                "place": place,
+                                "strength": int(s),
+                                "prompt_id": int(i),
+                                "prompt_orig": prompts[i],
+                                "prompt_styled": styled_prompts[i],
+                                "trace_len": float(trace_lengths[i]),
+                                "parsed_ok": bool(parsed_flags[i]),
+                                "raw_output": raw_outputs[i],
+                                "json_output": json_outputs[i],
+                            }
+                        )
+
+                pbar.update(1)
+
+        # unload between models to avoid OOM
+        _maybe_unload_model(model, tokenizer)
 
     pbar.close()
 
     # ---- Aggregate DF ----
-    df_agg = pd.DataFrame(agg_rows).sort_values(["place", "strength"]).reset_index(drop=True)
+    df_agg = (
+        pd.DataFrame(agg_rows)
+        .sort_values(["model", "place", "strength"])
+        .reset_index(drop=True)
+    )
 
     print("\n" + "=" * 90)
-    print("AVG TRACE LENGTH (by place, strength)")
+    print("AVG TRACE LENGTH (by model, place, strength)")
     print("=" * 90)
     print(df_agg.to_string(index=False))
     print("=" * 90 + "\n")
 
-    # ---- SAVE CSVs  ----
-    out_agg = os.path.join(run_dir, "trace_avg_by_place_strength.csv")
+    # ---- SAVE CSVs ----
+    out_agg = os.path.join(run_dir, "trace_avg_by_model_place_strength.csv")
     df_agg.to_csv(out_agg, index=False)
     print("Saved aggregate CSV:", out_agg)
 
@@ -293,36 +340,33 @@ def main():
         df_per.to_csv(out_per, index=False)
         print("Saved per-prompt CSV:", out_per)
 
-    # ---- PLOT: avg_trace_len vs strength (lines by place) ----
+    # ---- PLOTS ----
     plot_dir = os.path.join(run_dir, "plots_metrics")
     os.makedirs(plot_dir, exist_ok=True)
 
-    df_mean = (
-        df_agg.groupby(["place", "strength"], dropna=False)[["avg_trace_len", "parsed_rate"]]
-        .mean()
-        .reset_index()
-        .sort_values(["place", "strength"])
-    )
-
-    out_png = os.path.join(plot_dir, "avg_trace_len_vs_strength.png")
-    plot_metric_lines_place(
-        df_mean=df_mean,
+    # Plot avg_trace_len with one line per (model, place)
+    out_png = os.path.join(plot_dir, "avg_trace_len_vs_strength__model_place.png")
+    plot_metric_lines_model_place(
+        df=df_agg,
         metric="avg_trace_len",
         strengths=strengths,
+        models=args.models,
         places=args.places,
         out_path=out_png,
-        title=f"avg_trace_len vs Strength ({args.dataset}) - model={args.model}",
+        title=f"avg_trace_len vs Strength ({args.dataset}) — lines=(model,place)",
     )
     print("Saved plot:", out_png)
 
-    out_png2 = os.path.join(plot_dir, "parsed_rate_vs_strength.png")
-    plot_metric_lines_place(
-        df_mean=df_mean,
+    # Plot parsed_rate with one line per (model, place)
+    out_png2 = os.path.join(plot_dir, "parsed_rate_vs_strength__model_place.png")
+    plot_metric_lines_model_place(
+        df=df_agg,
         metric="parsed_rate",
         strengths=strengths,
+        models=args.models,
         places=args.places,
         out_path=out_png2,
-        title=f"parsed_rate vs Strength ({args.dataset}) - model={args.model}",
+        title=f"parsed_rate vs Strength ({args.dataset}) — lines=(model,place)",
     )
     print("Saved plot:", out_png2)
 
