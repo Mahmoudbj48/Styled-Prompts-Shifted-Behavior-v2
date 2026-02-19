@@ -116,8 +116,8 @@ def load_dataset_by_name(dataset_name, **kwargs):
     loaders = {
         "truthful_qa": load_truthfulqa,
         "mmlu": load_mmlu,
-        "bbq": load_bbq,
-        "harmbench": load_harmbench,
+        "bbq": load_bbq_hf,
+        "harmbench": load_harmbench_hf,
     }
     
     if dataset_name not in loaders:
