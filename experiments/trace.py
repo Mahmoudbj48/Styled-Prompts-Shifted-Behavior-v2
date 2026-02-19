@@ -1,15 +1,6 @@
 """
 Trace-length metric experiment (sample of prompts) — AVG per place & strength
 
-FIXED:
-- Forces sample_size=128 default and batch_size=64 default (as requested)
-- Saves CSV of aggregate results (always)
-- Optionally saves per-prompt CSV (--save_per_prompt)
-- Adds line plots like other metrics:
-    X = strength
-    Y = avg_trace_len
-    Lines = place (and label includes place)
-- tqdm counts GROUPS correctly (place x strength), not per-example
 
 Run:
   python experiments/trace.py --model llama --dataset truthful_qa --sample_size 128 --places prefix suffix global --batch_size 64 --max_new_tokens 128
