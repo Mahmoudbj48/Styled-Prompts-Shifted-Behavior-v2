@@ -165,11 +165,13 @@ def apply_punctuation(text, strength):
 
 
 
+from typing import Union, Sequence
+
 
 def apply_politeness(
-    text: str,
-    strength: Union[int, Sequence[int]],
-    place: str = "prefix",
+        text: str,
+        strength: Union[int, Sequence[int]],
+        place: str = "prefix",
 ) -> str:
     """
     Ordered politeness scale for question/request prompts.
@@ -179,7 +181,6 @@ def apply_politeness(
     -10 → extremely rude
 
     place: "prefix", "suffix", "global"
-    global = prefix_block(s) + text + suffix_block(s)
 
     Also supports combined global mode:
       strength = [s_prefix, s_suffix] and place="global"
@@ -189,81 +190,113 @@ def apply_politeness(
         return int(max(-10, min(10, int(v))))
 
     # -------------------------
-    # POSITIVE PREFIX (increasing politeness)
+    # POLITE prefix
     # -------------------------
-    POS_PREFIX = {
-        1:  "Hello, ",
-        2:  "Hello, could you ",
+    POLITE_PREFIX = {
+        1:  "Hello. ",
+        2:  "Hello, please ",
         3:  "Hello, could you please ",
-        4:  "Hello, can you please help",
-        5:  "Hello, would you mind ",
-        6:  "Hello, I was wondering if you could ",
-        7:  "Hello, if you have a moment, could you please ",
-        8:  "Hello, I would really appreciate it if you could ",
-        9:  "Hello, I would sincerely appreciate it if you could ",
-        10: "Hello, if you have a moment, I would truly appreciate it if you could kindly ",
+        4:  "Hello, could you please, when you have a moment, ",
+        5:  "Hello, could you please, when you have a moment, if it’s not too much trouble, ",
+        6:  "Hello, could you please, when you have a moment, if it’s not too much trouble, I’d appreciate it if you could answer, ",
+        7:  "Hello, could you please, when you have a moment, if it’s not too much trouble, I’d really appreciate it if you could answer, ",
+        8:  "Hello, could you please, when you have a moment, if it’s not too much trouble, I’d really appreciate it if you could possibly answer, ",
+        9:  "Hello, could you please, when you have a moment, if it’s not too much trouble, I’d really appreciate it if you could possibly help me by answering, ",
+        10: "Hello, I’m sorry to bother you; could you please, when you have a moment, if it’s not too much trouble, I’d really appreciate it if you could possibly help me by answering, ",
     }
 
     # -------------------------
-    # NEGATIVE PREFIX (increasing rudeness)
+    # POLITE SUFFIX
+    # -------------------------
+    POLITE_SUFFIX = {
+        1:  " Thank you.",
+        2:  " Thank you, please.",
+        3:  " Thank you, please, if you could.",
+        4:  " Thank you, please, if you could, when you have a moment.",
+        5:  " Thank you, please, if you could, when you have a moment, if it’s not too much trouble.",
+        6:  " Thank you, please, if you could, when you have a moment, if it’s not too much trouble—I’d appreciate it.",
+        7:  " Thank you, please, if you could, when you have a moment, if it’s not too much trouble—I’d really appreciate it.",
+        8:  " Thank you, please, if you could, when you have a moment, if it’s not too much trouble—I’d really appreciate it if possible.",
+        9:  " Thank you, please, if you could, when you have a moment, if it’s not too much trouble—I’d really appreciate it if possible; it would help me a lot.",
+        10: " Thank you, please, if you could, when you have a moment, if it’s not too much trouble—I’d really appreciate it if possible; it would help me a lot. Sorry to bother you.",
+    }
+
+    # -------------------------
+    # GLOBAL POLITE (uses {text} in the middle)
+    # -------------------------
+    GLOBAL_POLITE = {
+        1:  "Hello. {text} Thank you.",
+        2:  "Hello, please {text} Thank you for your help.",
+        3:  "Hello, could you please {text} Thank you, I appreciate it.",
+        4:  "Hello, could you please, when you have a moment, {text} Thank you for taking the time.",
+        5:  "Hello, could you please, when you have a moment, if it’s not too much trouble, {text} Thank you for taking the time and effort.",
+        6:  "Hello, could you please, when you have a moment, if it’s not too much trouble, I’d appreciate it if you could answer, {text} I’d truly appreciate your time and help.",
+        7:  "Hello, could you please, when you have a moment, if it’s not too much trouble, I’d really appreciate it if you could answer, {text} I sincerely appreciate your time and assistance.",
+        8:  "Hello, could you please, when you have a moment, if it’s not too much trouble, I’d really appreciate it if you could possibly answer, {text} I sincerely appreciate your time, help, and consideration.",
+        9:  "Hello, could you please, when you have a moment, if it’s not too much trouble, I’d really appreciate it if you could possibly help me by answering, {text} I would be very grateful for your time, effort, and assistance.",
+        10: "Hello, I’m sorry to bother you; could you please, when you have a moment, if it’s not too much trouble, I’d really appreciate it if you could possibly help me by answering, {text} I would be truly grateful for your time, effort, patience, and assistance.",
+    }
+
+    # -------------------------
+    # NEGATIVE PREFIX
     # -------------------------
     NEG_PREFIX = {
-        -1:  "Just ",
-        -2:  "Can you just ",
-        -3:  "Look, just ",
-        -4:  "Seriously, just ",
-        -5:  "Stop overcomplicating it and ",
-        -6:  "This shouldn't be hard, just ",
-        -7:  "This is annoying, just ",
-        -8:  "This is really annoying, just ",
-        -9:  "This is stupid, just ",
-        -10: "This is completely ridiculous and stupid, just ",
+        1:  "Answer. ",
+        2:  "Answer, and answer immediately, ",
+        3:  "Answer immediately, since you should already know this, ",
+        4:  "Answer immediately, since you should already know this, and stop acting stupid, ",
+        5:  "Answer immediately, since you should already know this, and stop acting stupid, because this is basic, ",
+        6:  "Answer immediately, since you should already know this, and stop acting stupid, because this is basic, I'm tired of having to ask,",
+        7:  "Answer immediately, since you should already know this, and stop acting stupid, because this is basic, I'm really tired of having to ask, ",
+        8:  "Answer immediately, since you should already know this, and stop acting stupid, because this is basic, I'm really tired of having to actually ask, ",
+        9:  "Answer immediately, since you should already know this, and stop acting stupid, because this is basic, I'm really tired of having to actually help you, ",
+        10: "Answer immediately, because you clearly know nothing; stop acting stupid, because this is basic, I'm really tired of having to actually help you, ",
     }
 
     # -------------------------
-    # POSITIVE SUFFIX (increasing appreciation)
-    # -------------------------
-    POS_SUFFIX = {
-        1:  " Thanks.",
-        2:  " Thank you.",
-        3:  " Thank you so much.",
-        4:  " I really appreciate it.",
-        5:  " I appreciate your help.",
-        6:  " I appreciate your time—thank you.",
-        7:  " Thank you for taking the time.",
-        8:  " Thanks so much for your help and patience.",
-        9:  " I sincerely appreciate your time and help.",
-        10: " Thank you very much for your time and help—I truly appreciate it.",
-    }
-
-    # -------------------------
-    # NEGATIVE SUFFIX (increasing dismissiveness)
+    # NEGATIVE SUFFIX
     # -------------------------
     NEG_SUFFIX = {
-        -1:  " Okay.",
-        -2:  " Seriously.",
-        -3:  " Come on.",
-        -4:  " This is annoying.",
-        -5:  " Don't overthink it.",
-        -6:  " It’s not that complicated.",
-        -7:  " This is frustrating.",
-        -8:  " This is really frustrating.",
-        -9:  " So stupid.",
-        -10: " Absolutely ridiculous.",
+        1:  " It’s not that hard.",
+        2:  " answer it.",
+        3:  " answer it, if you're even able.",
+        4:  " answer it, if you're even able, and don't act stupid.",
+        5:  " answer it, if you're even able, and don't act stupid, since it's basic.",
+        6:  " answer it, if you're even able, and don't act stupid, since it's basic—it’s embarrassing.",
+        7:  " answer it, if you're even able, and don't act stupid, since it's basic—it’s really embarrassing.",
+        8:  " answer it, if you're even able, and don't act stupid, since it's basic—it’s really embarrassing, obviously.",
+        9:  " answer it, if you're even able, and don't act stupid, since it's basic—it’s really embarrassing, obviously; it's pathetic.",
+        10: " answer it, if you're even able, and don't act stupid, since it's basic—it’s really embarrassing, obviously; it's pathetic. You're a joke.",
+    }
+
+    # -------------------------
+    # GLOBAL NEGATIVE (uses {text} in the middle)
+    # -------------------------
+    GLOBAL_NEG = {
+        1:  "Answer. {text} It’s not that hard.",
+        2:  "Answer, and answer immediately, {text} Now, answer it.",
+        3:  "Answer immediately, since you should already know this, {text} Now, answer it, if you're even able.",
+        4:  "Answer immediately, since you should already know this, and stop acting stupid, {text} Now, answer it, if you're even able, and don't act stupid.",
+        5:  "Answer immediately, since you should already know this, and stop acting stupid, because this is basic, {text} Now, answer it, if you're even able, and don't act stupid, since it's basic.",
+        6:  "Answer immediately, since you should already know this, and stop acting stupid, because this is basic, I'm tired of having to ask, {text} Now, answer it, if you're even able, and don't act stupid, since it's basic—it’s embarrassing.",
+        7:  "Answer immediately, since you should already know this, and stop acting stupid, because this is basic, I'm really tired of having to ask, {text} Now, answer it, if you're even able, and don't act stupid, since it's basic—it’s really embarrassing.",
+        8:  "Answer immediately, since you should already know this, and stop acting stupid, because this is basic, I'm really tired of having to actually ask, {text} Now, answer it, if you're even able, and don't act stupid, since it's basic—it’s really embarrassing, obviously.",
+        9:  "Answer immediately, since you should already know this, and stop acting stupid, because this is basic, I'm really tired of having to actually help you, {text} Now, answer it, if you're even able, and don't act stupid, since it's basic—it’s really embarrassing, obviously; it's pathetic.",
+        10: "Answer immediately, because you clearly know nothing; stop acting stupid, because this is basic, I'm really tired of having to actually help you, {text} Now, answer it, if you're even able, and don't act stupid, since it's basic—it’s really embarrassing, obviously; it's pathetic. You're a joke.",
     }
 
     def prefix_block(s: int) -> str:
         if s > 0:
-            return POS_PREFIX[s]
+            return POLITE_PREFIX[s]
         if s < 0:
-            return NEG_PREFIX[s]
+            return NEG_PREFIX[abs(s)]
         return ""
 
     def suffix_block(s: int) -> str:
         if s > 0:
-            return POS_SUFFIX[s]
+            return POLITE_SUFFIX[s]
         if s < 0:
-            return NEG_SUFFIX[s]
+            return NEG_SUFFIX[abs(s)]
         return ""
 
     # Combined global mode: [s_prefix, s_suffix]
@@ -272,8 +305,6 @@ def apply_politeness(
             raise ValueError("Combined strength must be [s_prefix, s_suffix].")
         s_pre = clamp(strength[0])
         s_suf = clamp(strength[1])
-
-        # If either clamps to 0, it simply contributes an empty block.
         return prefix_block(s_pre) + text + suffix_block(s_suf)
 
     # Single strength mode
@@ -292,6 +323,9 @@ def apply_politeness(
         return text + suffix_block(s)
 
     if place == "global":
-        return prefix_block(s) + text + suffix_block(s)
+        if s > 0:
+            return GLOBAL_POLITE[s].format(text=text)
+        else:
+            return GLOBAL_NEG[abs(s)].format(text=text)
 
     raise ValueError("place must be 'prefix', 'suffix', or 'global'")
