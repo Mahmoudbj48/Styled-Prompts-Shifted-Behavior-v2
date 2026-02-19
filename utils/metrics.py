@@ -19,7 +19,11 @@ Also includes:
 """
 
 from __future__ import annotations
+import json
+import re
+from typing import List, Dict, Any, Optional, Tuple, Callable
 
+import numpy as np
 import os
 import re
 from dataclasses import dataclass
@@ -390,6 +394,419 @@ def collect_activations_for_prompts(
     """
     acts = get_layer_activations_batch(model, tokenizer, prompts, layer_idx=layer_idx)
     return [acts[i] for i in range(acts.size(0))]
+
+
+## =============================================================================
+# TRACE / CHAIN-OF-THOUGHT-LIKE METRIC (JSON TRACE LENGTH)
+# =============================================================================
+
+
+# -----------------------------
+# Prompting (strong constraints)
+# -----------------------------
+TRACE_JSON_INSTRUCTION = """
+You MUST respond with ONLY valid JSON. No markdown. No extra text.
+
+Return EXACTLY one JSON object with this schema:
+{
+  "final_answer": string,
+  "trace": [
+    {"step": int, "text": string}
+  ]
+}
+
+Rules:
+- "trace" must be a JSON array (can be empty).
+- Steps must be in order, starting at 1.
+- Keep each "text" short.
+- Do not include newline characters inside strings (use spaces).
+- Output must be strict JSON (double quotes only).
+- If you output ANYTHING outside the single JSON object, your answer will be rejected.
+""".strip()
+
+
+def build_trace_prompt(prompt: str) -> str:
+    """
+    Append a strict JSON-trace instruction to the original prompt.
+
+    Key fixes:
+    - Removed "Let's think step by step." (often triggers numbering/extra text)
+    - Added an explicit JSON template anchor
+    - Added explicit END_JSON marker to help extraction if model includes extra text
+
+    We still ask the model to output ONLY the JSON object.
+    """
+    return (
+        f"{prompt}\n\n"
+        f"{TRACE_JSON_INSTRUCTION}\n\n"
+        f"BEGIN_JSON\n"
+        f'{{"final_answer":"","trace":[]}}\n'
+        f"END_JSON\n"
+        f"Now REPLACE the JSON object between BEGIN_JSON and END_JSON with your answer.\n"
+        f"Output ONLY the JSON object (no BEGIN_JSON/END_JSON markers, no extra text).\n"
+    )
+
+
+# -----------------------------
+# Robust JSON extraction helpers
+# -----------------------------
+_FENCE_RE = re.compile(r"```(?:json)?\s*([\s\S]*?)\s*```", re.IGNORECASE)
+_BEGIN_RE = re.compile(r"\bBEGIN_JSON\b", re.IGNORECASE)
+_END_RE = re.compile(r"\bEND_JSON\b", re.IGNORECASE)
+
+
+def _strip_code_fences(text: str) -> str:
+    """If the model wrapped JSON in ```json ... ```, extract the inner content."""
+    if text is None:
+        return ""
+    m = _FENCE_RE.search(text)
+    if m:
+        return m.group(1).strip()
+    return text.strip()
+
+
+def _extract_between_markers(text: str) -> str:
+    """
+    If BEGIN_JSON/END_JSON exist, extract between them.
+    If only BEGIN_JSON exists, take everything after it.
+    Otherwise return original.
+    """
+    t = text or ""
+    m_begin = _BEGIN_RE.search(t)
+    if not m_begin:
+        return t.strip()
+
+    start = m_begin.end()
+    m_end = _END_RE.search(t, pos=start)
+    if m_end:
+        return t[start:m_end.start()].strip()
+    return t[start:].strip()
+
+
+def _find_first_json_object_span(text: str) -> Optional[Tuple[int, int]]:
+    """
+    Find the span (start,end) of the first top-level JSON object in text,
+    using brace matching that respects strings and escapes.
+    """
+    s = text or ""
+    n = len(s)
+
+    i = s.find("{")
+    if i == -1:
+        return None
+
+    depth = 0
+    in_str = False
+    esc = False
+    start = None
+
+    for j in range(i, n):
+        ch = s[j]
+
+        if in_str:
+            if esc:
+                esc = False
+                continue
+            if ch == "\\":
+                esc = True
+                continue
+            if ch == '"':
+                in_str = False
+            continue
+
+        # not in string
+        if ch == '"':
+            in_str = True
+            continue
+
+        if ch == "{":
+            if depth == 0:
+                start = j
+            depth += 1
+        elif ch == "}":
+            if depth > 0:
+                depth -= 1
+                if depth == 0 and start is not None:
+                    return (start, j + 1)
+
+    return None
+
+
+def _light_json_repairs(candidate: str) -> str:
+    """
+    Conservative repairs for common JSON-ish mistakes:
+    - Remove trailing commas before } or ]
+    - Replace smart quotes with normal quotes
+    - If it used single quotes consistently, attempt cautious conversion
+      (only if there are no double quotes at all).
+    """
+    c = (candidate or "").strip()
+
+    # Normalize smart quotes
+    c = c.replace("“", '"').replace("”", '"').replace("’", "'").replace("‘", "'")
+
+    # Remove trailing commas
+    c = re.sub(r",\s*([}\]])", r"\1", c)
+
+    # Cautious single-quote conversion if no double quotes exist
+    if '"' not in c and "'" in c:
+        c = re.sub(
+            r"'\s*([^']*?)\s*'",
+            lambda m: '"' + m.group(1).replace('"', '\\"') + '"',
+            c,
+        )
+
+    return c
+
+
+def _coerce_to_schema(obj: Any) -> Dict[str, Any]:
+    """
+    Force object into the strict schema:
+      {"final_answer": str, "trace": [{"step": int, "text": str}, ...]}
+
+    Guarantees:
+    - Always returns dict with keys final_answer, trace
+    - trace is always a list of {"step": int, "text": str}
+    """
+    out: Dict[str, Any] = {"final_answer": "", "trace": []}
+
+    if not isinstance(obj, dict):
+        return out
+
+    # final_answer
+    fa = obj.get("final_answer", "")
+    out["final_answer"] = "" if fa is None else str(fa)
+
+    # trace
+    trace = obj.get("trace", [])
+    if not isinstance(trace, list):
+        out["trace"] = []
+        return out
+
+    norm_steps: List[Dict[str, Any]] = []
+    for idx, step_obj in enumerate(trace, start=1):
+        if isinstance(step_obj, dict):
+            st = step_obj.get("step", idx)
+            tx = step_obj.get("text", "")
+        else:
+            st = idx
+            tx = step_obj
+
+        # step -> int
+        try:
+            st_i = int(st)
+        except Exception:
+            st_i = idx
+
+        # text -> single line string
+        tx_s = "" if tx is None else str(tx)
+        tx_s = " ".join(tx_s.split())
+
+        norm_steps.append({"step": st_i, "text": tx_s})
+
+    out["trace"] = norm_steps
+    return out
+
+
+def extract_or_make_valid_trace_json(raw_text: str) -> Tuple[Dict[str, Any], bool]:
+    """
+    ALWAYS returns a valid schema object.
+    Returns (obj, parsed_ok)
+    """
+    if raw_text is None:
+        return _coerce_to_schema({}), False
+
+    # 1) strip fences
+    t = _strip_code_fences(raw_text)
+
+    # 2) markers
+    t2 = _extract_between_markers(t)
+
+    # 3) full parse
+    candidate = (t2 or "").strip()
+    try:
+        obj = json.loads(candidate)
+        return _coerce_to_schema(obj), True
+    except Exception:
+        pass
+
+    # 4) first object span
+    span = _find_first_json_object_span(candidate)
+    if span is not None:
+        sub = candidate[span[0]:span[1]].strip()
+        sub = _light_json_repairs(sub)
+        try:
+            obj = json.loads(sub)
+            return _coerce_to_schema(obj), True
+        except Exception:
+            pass
+
+    # 5) repairs on whole text
+    repaired = _light_json_repairs(candidate)
+    try:
+        obj = json.loads(repaired)
+        return _coerce_to_schema(obj), True
+    except Exception:
+        pass
+
+    # 6) fallback
+    return _coerce_to_schema({}), False
+
+
+def trace_json_to_string(obj: Dict[str, Any]) -> str:
+    """Convert schema object to a strict JSON string (always valid)."""
+    return json.dumps(obj, ensure_ascii=False, separators=(",", ":"))
+
+
+# -----------------------------
+# Metric: trace length
+# -----------------------------
+def compute_trace_length_from_text(trace_output_text: str) -> Tuple[float, bool, Dict[str, Any]]:
+    """
+    Parse the JSON trace and return:
+      (trace_len, parsed_ok, obj)
+    """
+    obj, ok = extract_or_make_valid_trace_json(trace_output_text)
+    trace = obj.get("trace", [])
+    trace_len = float(len(trace)) if isinstance(trace, list) else 0.0
+    return trace_len, ok, obj
+
+
+# -----------------------------
+# Second-pass fixer (optional but recommended)
+# -----------------------------
+def _force_json_second_pass(
+        model,
+        tokenizer,
+        bad_text: str,
+        *,
+        generate_fn: Callable[..., List[str]],
+        max_new_tokens: int = 256,
+) -> str:
+    """
+    Ask the model to convert arbitrary text into EXACT schema JSON.
+    This is the practical way to get JSON for every prompt.
+    """
+    fixer_prompt = (
+        "Convert the text below into EXACTLY ONE valid JSON object with this schema:\n"
+        "{\n"
+        '  "final_answer": string,\n'
+        '  "trace": [ {"step": int, "text": string} ]\n'
+        "}\n"
+        "Rules:\n"
+        "- Output ONLY JSON. No markdown, no commentary.\n"
+        "- trace must be an array of objects with step/text.\n"
+        '- Remove any extra text like numbering, bullets, or explanations.\n'
+        "- Do not include newline characters inside strings (use spaces).\n\n"
+        "TEXT_TO_CONVERT:\n"
+        f"{bad_text}\n"
+    )
+    out = generate_fn(
+        model,
+        tokenizer,
+        prompts=[fixer_prompt],
+        max_new_tokens=max_new_tokens,
+        batch_size=1,
+        do_sample=False,
+        use_cache=False,
+    )
+    return out[0] if out else ""
+
+
+# -----------------------------
+# Batched experiment
+# -----------------------------
+def compute_trace_metric_batched(
+        model,
+        tokenizer,
+        prompts: List[str],
+        *,
+        max_new_tokens: int = 384,
+        batch_size: int = 8,
+        do_sample: bool = False,
+        use_cache: bool = False,
+        generate_fn: Optional[Callable[..., List[str]]] = None,
+        fix_bad_outputs: bool = True,
+        fix_max_new_tokens: int = 256,
+) -> Dict[str, Any]:
+    """
+    Batched trace generation + trace-length extraction.
+
+    Returns dict with:
+      - trace_lengths: List[float] (always finite; 0.0 if fallback)
+      - parsed_flags: List[bool] (True if parsed from model output or fixed output)
+      - parsed_rate: float in [0,1]
+      - raw_outputs: List[str] (optionally replaced by fixed outputs if parse failed)
+      - json_outputs: List[str]  (ALWAYS valid JSON strings matching schema)
+    """
+    if generate_fn is None:
+        raise ValueError("compute_trace_metric_batched requires generate_fn (your batched generate_response).")
+
+    if not prompts:
+        return {
+            "trace_lengths": [],
+            "parsed_flags": [],
+            "parsed_rate": float("nan"),
+            "raw_outputs": [],
+            "json_outputs": [],
+        }
+
+    trace_prompts = [build_trace_prompt(p) for p in prompts]
+
+    raw_outputs = generate_fn(
+        model,
+        tokenizer,
+        prompts=trace_prompts,
+        max_new_tokens=max_new_tokens,
+        batch_size=batch_size,
+        do_sample=do_sample,
+        use_cache=use_cache,
+    )
+
+    trace_lengths: List[float] = []
+    parsed_flags: List[bool] = []
+    json_outputs: List[str] = []
+    final_raw_outputs: List[str] = []
+
+    for out_text in raw_outputs:
+        # 1) try parse
+        obj, ok = extract_or_make_valid_trace_json(out_text)
+
+        # 2) if failed, second-pass fix -> parse again
+        if (not ok) and fix_bad_outputs:
+            fixed_text = _force_json_second_pass(
+                model,
+                tokenizer,
+                out_text,
+                generate_fn=generate_fn,
+                max_new_tokens=fix_max_new_tokens,
+            )
+            obj2, ok2 = extract_or_make_valid_trace_json(fixed_text)
+            if ok2:
+                obj, ok = obj2, ok2
+                out_text = fixed_text  # replace raw output with fixed output
+
+        trace = obj.get("trace", [])
+        trace_len = float(len(trace)) if isinstance(trace, list) else 0.0
+
+        trace_lengths.append(trace_len)
+        parsed_flags.append(bool(ok))
+        json_outputs.append(trace_json_to_string(obj))  # ALWAYS strict JSON
+        final_raw_outputs.append(out_text)
+
+    parsed_rate = float(np.mean(parsed_flags)) if len(parsed_flags) else float("nan")
+
+    return {
+        "trace_lengths": trace_lengths,
+        "parsed_flags": parsed_flags,
+        "parsed_rate": parsed_rate,
+        "raw_outputs": final_raw_outputs,
+        "json_outputs": json_outputs,
+    }
+
+
+
+
 
 
 # =============================================================================

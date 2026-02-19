@@ -181,6 +181,8 @@ def generate_response(
 
     for start in range(0, len(prompts), batch_size):
         chunk = prompts[start : start + batch_size]
+        print("Generating responses for prompts {} to {}...".format(start, start + len(chunk) - 1))
+        print("the number of prompts in this batch is {}".format(len(chunk)))
 
         input_ids, attention_mask, prompt_lens = _encode_prompts_batched(
             tokenizer=tokenizer, prompts=chunk, device=device
