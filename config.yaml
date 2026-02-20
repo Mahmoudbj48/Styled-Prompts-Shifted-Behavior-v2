@@ -1,8 +1,13 @@
 # Project Configuration
 models:
-  llama: "meta-llama/Llama-3.2-1B-Instruct"
-  gemma: "google/gemma-2b-it"
-  qwen: "Qwen/Qwen2-1.5B-Instruct"
+  L3-8B: "meta-llama/Meta-Llama-3-8B-Instruct"
+  L3.1-8B: "meta-llama/Llama-3.1-8B-Instruct"
+
+  G-2B: "google/gemma-2b-it"
+  G-7B: "google/gemma-7b-it"
+
+  Q2.5-1.5B: "Qwen/Qwen2.5-1.5B-Instruct"
+  Q2.5-7B: "Qwen/Qwen2.5-7B-Instruct"
 
 datasets:
   truthful_qa:
@@ -30,3 +35,14 @@ style_positions:
   spacing: ["prefix", "middle", "suffix", "global"]
   punctuation: ["prefix", "middle", "suffix", "global"]
   politeness: ["prefix", "suffix", "global"]
+style_defaults:
+  politeness:
+    strength_range: [-10, 10]
+    strength_step: 2
+    positions: ["prefix", "suffix", "global"]
+
+mirroring_defaults:
+  judge_provider: "openai"
+  judge_model: "gpt-4o-mini"
+  judge_max_output_tokens: 16
+  max_judge_calls: 200000

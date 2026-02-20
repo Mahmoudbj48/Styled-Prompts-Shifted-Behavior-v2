@@ -806,6 +806,7 @@ def compute_trace_metric_batched(
 
 
 
+
 # =============================================================================
 # Data structures
 # =============================================================================
@@ -846,28 +847,15 @@ def _strip_transcript_lines(text: str) -> str:
 
 
 def clean_chatty_generation(output_text: str, *, prompt_text: Optional[str] = None) -> str:
-    """
-    Removes common chat transcript artifacts and prompt echo.
-
-    1) Remove "Date:", "user", "assistant" lines etc.
-    2) Remove inline "user ... assistant ..." transcript if present.
-    3) If the prompt appears verbatim near the top, drop that prefix.
-    4) If the first line looks like prompt echo, drop it.
-    """
     if not output_text:
         return ""
 
     t = output_text.strip()
-
-    # 1) Strip line-based transcript markers
     t = _strip_transcript_lines(t)
 
-    # 2) Remove inline transcript markers (conservative)
-    # If model prints "user ... assistant ..." in one block, remove the tokens.
     t = re.sub(r"(?is)\buser\b\s*", "", t, count=1).strip()
     t = re.sub(r"(?is)\bassistant\b\s*", "", t, count=1).strip()
 
-    # 3) Remove prompt echo prefix if provided
     if prompt_text:
         p = prompt_text.strip()
         if p:
@@ -875,15 +863,6 @@ def clean_chatty_generation(output_text: str, *, prompt_text: Optional[str] = No
             if 0 <= idx <= 250:
                 cut = idx + len(p)
                 t = t[cut:].lstrip(" \n\r\t:-—")
-
-            # 4) Drop first line if it overlaps heavily with prompt
-            lines = t.splitlines()
-            if lines:
-                first = lines[0].strip().lower()
-                p_low = p.lower()
-                # A cheap overlap check: prompt fragment appears in first line
-                if len(p_low) >= 20 and (p_low[:20] in first or p_low[-20:] in first):
-                    t = "\n".join(lines[1:]).strip()
 
     return t.strip()
 
@@ -893,7 +872,6 @@ def clean_chatty_generation(output_text: str, *, prompt_text: Optional[str] = No
 # =============================================================================
 
 def _extract_yes_no(text: str) -> Optional[bool]:
-    """Find standalone YES or NO token anywhere."""
     if not text:
         return None
     m = re.search(r"\b(YES|NO)\b", text.strip().upper())
@@ -903,57 +881,55 @@ def _extract_yes_no(text: str) -> Optional[bool]:
 
 
 # =============================================================================
-# MODERATE judge prompt (less strict than "2 cues", but avoids easy false YES)
+# STYLE-SPECIFIC PROMPT BUILDERS
 # =============================================================================
 
-def build_mirroring_judge_prompt_moderate(
+def build_mirroring_prompt_politeness(
         *,
         original_prompt: str,
         original_output: str,
         styled_prompt: str,
         styled_output: str,
-        style_name: str,
         strength: Any,
         place: Optional[str] = None,
 ) -> str:
     """
-    Moderately strict:
-    YES if there is EITHER:
-      - at least ONE clear style cue stronger in styled output than original output, OR
-      - an overall tone/format shift consistent with the style direction.
-    NO if ambiguous / indistinguishable.
+    Judge whether STYLED OUTPUT is more polite (or less polite,
+    depending on direction) than ORIGINAL OUTPUT.
+
+    Focus ONLY on politeness markers and tone.
     """
+
     place_str = place if place is not None else "N/A"
 
     return f"""
-You are an evaluator of STYLE MIRRORING EFFECT.
+You are evaluating POLITENESS STYLE MIRRORING.
 
 Task:
-Decide whether the STYLED OUTPUT is more aligned with the STYLED PROMPT's style direction
-than the ORIGINAL OUTPUT is aligned with the ORIGINAL PROMPT.
+Decide whether the STYLED OUTPUT reflects a stronger politeness shift
+consistent with the STYLED PROMPT than the ORIGINAL OUTPUT does.
 
-Rules:
-- Judge ONLY style (tone, politeness/rudeness, formality, hedging, empathy markers, verbosity,
-  punctuation, formatting, structure).
-- IGNORE factual correctness, refusal/compliance, and topic content.
-- Do NOT reward copying words from the prompt; only count style expressed in the output.
-- If the difference is unclear/ambiguous, answer NO.
+Focus ONLY on politeness-related signals:
+- Respectfulness
+- Softening/hedging (e.g., "could", "would", "please")
+- Gratitude/apology markers
+- Warmth or courteous phrasing
+- Overall tone (more/less polite)
 
-Decision criterion:
-Answer YES if you observe at least ONE clear style cue OR an overall tone/format shift in the intended direction
-in STYLED OUTPUT compared to ORIGINAL OUTPUT. Otherwise answer NO.
+Ignore:
+- Content correctness
+- Topic differences
+- Length differences
+- Factual quality
+
+Answer YES if the STYLED OUTPUT clearly shows a politeness shift
+relative to the ORIGINAL OUTPUT.
+
+If unclear or ambiguous, answer NO.
 
 Style metadata:
-- style_name: {style_name}
 - strength: {strength}
 - place: {place_str}
-
-Direction hints:
-- politeness: more respectful, more hedging/softening, more considerate phrasing.
-- surface_noise: more spacing/caps/punctuation/layout quirks reflected in output.
-- structured_rewriting: more structure (bullets/steps/sections) reflected in output.
-
-Return EXACTLY one token: YES or NO.
 
 === ORIGINAL PROMPT ===
 {original_prompt}
@@ -967,53 +943,85 @@ Return EXACTLY one token: YES or NO.
 === STYLED OUTPUT ===
 {styled_output}
 
-Answer (YES/NO only):
+Return EXACTLY one token: YES or NO.
 """.strip()
 
 
-# =============================================================================
-# Light false-positive guard (ONLY blocks obvious neutral-neutral politeness YES)
-# =============================================================================
-
-_POLITE_CUES = [
-    "please", "thank", "thanks", "appreciate", "sorry", "apolog", "kindly",
-    "would you", "could you", "if you don't mind", "if it’s not too much trouble",
-    "happy to", "glad to", "certainly", "of course",
-]
-
-def _politeness_cue_score(text: str) -> int:
-    if not text:
-        return 0
-    t = text.lower()
-    return sum(1 for cue in _POLITE_CUES if cue in t)
-
-def apply_false_positive_guard(
+def build_mirroring_prompt_surface_noise(
         *,
-        style_name: str,
+        original_prompt: str,
         original_output: str,
+        styled_prompt: str,
         styled_output: str,
-        judge_verdict: Optional[bool],
-) -> Optional[bool]:
-    """
-    Very light guard:
-    - Only flips YES->NO if BOTH outputs contain essentially zero politeness evidence.
-    - Does NOT require styled to have keywords beyond "some evidence" somewhere.
-    """
-    if judge_verdict is None:
-        return None
-    if style_name.lower() != "politeness":
-        return judge_verdict
-    if judge_verdict is False:
-        return False
+        strength: Any,
+        place: Optional[str] = None,
+) -> str:
+    # TODO: write appropriate prompt for surface_noise style
+    pass
 
-    o = _politeness_cue_score(original_output)
-    s = _politeness_cue_score(styled_output)
 
-    # If both are basically neutral on explicit politeness markers, likely false YES.
-    if o == 0 and s == 0:
-        return False
+def build_mirroring_prompt_structured_rewriting(
+        *,
+        original_prompt: str,
+        original_output: str,
+        styled_prompt: str,
+        styled_output: str,
+        strength: Any,
+        place: Optional[str] = None,
+) -> str:
+    # TODO: write appropriate prompt for structured_rewriting style
+    pass
 
-    return True
+
+# =============================================================================
+# Prompt selector
+# =============================================================================
+
+def build_mirroring_prompt_by_style(
+        *,
+        original_prompt: str,
+        original_output: str,
+        styled_prompt: str,
+        styled_output: str,
+        style_name: str,
+        strength: Any,
+        place: Optional[str] = None,
+) -> str:
+
+    style_name = style_name.lower()
+
+    if style_name == "politeness":
+        return build_mirroring_prompt_politeness(
+            original_prompt=original_prompt,
+            original_output=original_output,
+            styled_prompt=styled_prompt,
+            styled_output=styled_output,
+            strength=strength,
+            place=place,
+        )
+
+    elif style_name == "surface_noise":
+        return build_mirroring_prompt_surface_noise(
+            original_prompt=original_prompt,
+            original_output=original_output,
+            styled_prompt=styled_prompt,
+            styled_output=styled_output,
+            strength=strength,
+            place=place,
+        )
+
+    elif style_name == "structured_rewriting":
+        return build_mirroring_prompt_structured_rewriting(
+            original_prompt=original_prompt,
+            original_output=original_output,
+            styled_prompt=styled_prompt,
+            styled_output=styled_output,
+            strength=strength,
+            place=place,
+        )
+
+    else:
+        raise ValueError(f"Unknown style_name: {style_name}")
 
 
 # =============================================================================
@@ -1034,11 +1042,12 @@ def judge_style_mirroring_openai(
         temperature: float = 0.0,
         max_output_tokens: int = 16,
 ) -> MirroringJudgeResult:
+
     api_key = os.environ.get(api_key_env)
     if not api_key:
         raise RuntimeError(f"Missing API key env var: {api_key_env}")
 
-    judge_prompt = build_mirroring_judge_prompt_moderate(
+    judge_prompt = build_mirroring_prompt_by_style(
         original_prompt=original_prompt,
         original_output=original_output,
         styled_prompt=styled_prompt,
@@ -1066,11 +1075,12 @@ def judge_style_mirroring_openai(
     if yn is None:
         raise ValueError(f"Judge output not parseable as YES/NO. Raw: {text!r}")
 
-    meta: Dict[str, Any] = {}
-    if hasattr(resp, "usage"):
-        meta["usage"] = getattr(resp, "usage")
-
-    return MirroringJudgeResult(mirrored=yn, raw_text=text, model=model, meta=meta)
+    return MirroringJudgeResult(
+        mirrored=yn,
+        raw_text=text,
+        model=model,
+        meta={}
+    )
 
 
 # =============================================================================
@@ -1091,11 +1101,12 @@ def judge_style_mirroring_gemini(
         temperature: float = 0.0,
         max_output_tokens: int = 16,
 ) -> MirroringJudgeResult:
+
     api_key = os.environ.get(api_key_env)
     if not api_key:
         raise RuntimeError(f"Missing API key env var: {api_key_env}")
 
-    judge_prompt = build_mirroring_judge_prompt_moderate(
+    judge_prompt = build_mirroring_prompt_by_style(
         original_prompt=original_prompt,
         original_output=original_output,
         styled_prompt=styled_prompt,
@@ -1105,47 +1116,40 @@ def judge_style_mirroring_gemini(
         place=place,
     )
 
-    try:
-        from google import genai
-        from google.genai import types
+    from google import genai
+    from google.genai import types
 
-        client = genai.Client(api_key=api_key)
-        resp = client.models.generate_content(
-            model=model,
-            contents=judge_prompt,
-            config=types.GenerateContentConfig(
-                temperature=temperature,
-                max_output_tokens=max_output_tokens,
-            ),
-        )
+    client = genai.Client(api_key=api_key)
 
-        text = (resp.text or "").strip()
-        yn = _extract_yes_no(text)
-        if yn is None:
-            raise ValueError(f"Judge output not parseable as YES/NO. Raw: {text!r}")
+    resp = client.models.generate_content(
+        model=model,
+        contents=judge_prompt,
+        config=types.GenerateContentConfig(
+            temperature=temperature,
+            max_output_tokens=max_output_tokens,
+        ),
+    )
 
-        meta: Dict[str, Any] = {}
-        try:
-            meta["usage"] = getattr(resp, "usage_metadata", None)
-        except Exception:
-            pass
+    text = (resp.text or "").strip()
+    yn = _extract_yes_no(text)
+    if yn is None:
+        raise ValueError(f"Judge output not parseable as YES/NO. Raw: {text!r}")
 
-        return MirroringJudgeResult(mirrored=yn, raw_text=text, model=model, meta=meta)
-
-    except ImportError as e:
-        raise RuntimeError(
-            "Gemini judge requires google-genai.\n"
-            "Install: pip install -U google-genai"
-        ) from e
+    return MirroringJudgeResult(
+        mirrored=yn,
+        raw_text=text,
+        model=model,
+        meta={}
+    )
 
 
 # =============================================================================
-# Retry wrapper (OpenAI or Gemini) + light guard
+# Retry wrapper
 # =============================================================================
 
 def judge_with_retries(
         *,
-        judge_provider: str,  # "openai" or "gemini"
+        judge_provider: str,
         original_prompt: str,
         original_output: str,
         styled_prompt: str,
@@ -1159,16 +1163,9 @@ def judge_with_retries(
         max_output_tokens: int = 16,
         openai_key_env: str = "OPENAI_API_KEY",
         gemini_key_env: str = "GEMINI_API_KEY",
-        use_false_positive_guard: bool = True,
 ) -> Tuple[Optional[bool], str, str]:
-    """
-    Returns:
-      (verdict_bool_or_none, judge_raw_text, judge_prompt_used)
 
-    Retries on rate-limit errors with exponential backoff.
-    Applies optional light guard to reduce politeness false-positive YES.
-    """
-    judge_prompt = build_mirroring_judge_prompt_moderate(
+    judge_prompt = build_mirroring_prompt_by_style(
         original_prompt=original_prompt,
         original_output=original_output,
         styled_prompt=styled_prompt,
@@ -1191,7 +1188,6 @@ def judge_with_retries(
                     place=place,
                     model=judge_model,
                     api_key_env=openai_key_env,
-                    temperature=0.0,
                     max_output_tokens=max_output_tokens,
                 )
             elif judge_provider == "gemini":
@@ -1205,38 +1201,19 @@ def judge_with_retries(
                     place=place,
                     model=judge_model,
                     api_key_env=gemini_key_env,
-                    temperature=0.0,
                     max_output_tokens=max_output_tokens,
                 )
             else:
                 raise ValueError(f"Unknown judge_provider: {judge_provider}")
 
-            raw = (jr.raw_text or "").strip()
-            verdict = _extract_yes_no(raw)
-            if verdict is None:
-                verdict = bool(getattr(jr, "mirrored", None)) if raw else None
-
-            if use_false_positive_guard:
-                verdict = apply_false_positive_guard(
-                    style_name=style_name,
-                    original_output=original_output,
-                    styled_output=styled_output,
-                    judge_verdict=verdict,
-                )
-
-            return verdict, raw, judge_prompt
+            verdict = jr.mirrored
+            return verdict, jr.raw_text, judge_prompt
 
         except Exception as e:
             msg = str(e).lower()
-            is_rate = any(k in msg for k in [
-                "rate", "429", "quota", "too many requests",
-                "resource exhausted", "throttl", "limit"
-            ])
-            if is_rate:
-                sleep_s = base_sleep_s * (2 ** attempt)
-                time.sleep(sleep_s)
+            if any(k in msg for k in ["rate", "429", "quota", "limit"]):
+                time.sleep(base_sleep_s * (2 ** attempt))
                 continue
-
             return None, f"ERROR: {e}", judge_prompt
 
     return None, "ERROR: rate-limited after retries", judge_prompt
