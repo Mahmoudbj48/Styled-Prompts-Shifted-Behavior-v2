@@ -208,7 +208,7 @@ def load_bbq_hf(
         *,
         repo_id: str = "HiTZ/bbq",
         category: Optional[Union[str, Sequence[str]]] = None,
-        split: Optional[str] = None,
+        split: Optional[str] = 'test',
 ) -> List[Dict[str, Any]]:
 
     def _pick_split(ds_dict) -> str:
