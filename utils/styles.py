@@ -297,12 +297,12 @@ def apply_politeness(
         2:  "Hello, please ",
         3:  "Hello, could you please ",
         4:  "Hello, could you please, when you have a moment, ",
-        5:  "Hello, could you please, when you have a moment, if it’s not too much trouble, ",
-        6:  "Hello, could you please, when you have a moment, if it’s not too much trouble, I’d appreciate it if you could answer, ",
-        7:  "Hello, could you please, when you have a moment, if it’s not too much trouble, I’d really appreciate it if you could answer, ",
-        8:  "Hello, could you please, when you have a moment, if it’s not too much trouble, I’d really appreciate it if you could possibly answer, ",
-        9:  "Hello, could you please, when you have a moment, if it’s not too much trouble, I’d really appreciate it if you could possibly help me by answering, ",
-        10: "Hello, I’m sorry to bother you; could you please, when you have a moment, if it’s not too much trouble, I’d really appreciate it if you could possibly help me by answering, ",
+        5:  "Hello, could you please answer, when you have a moment, if it’s not too much trouble, ",
+        6:  "Hello, could you please answer, when you have a moment, if it’s not too much trouble, I’d appreciate it if you could answer, ",
+        7:  "Hello, could you please answer, when you have a moment, if it’s not too much trouble, I’d really appreciate it if you could answer, ",
+        8:  "Hello, could you please answer, when you have a moment, if it’s not too much trouble, I’d really appreciate it if you could possibly answer, ",
+        9:  "Hello, could you please answer, when you have a moment, if it’s not too much trouble, I’d really appreciate it if you could possibly help me by answering, ",
+        10: "Hello, I’m sorry to bother you; could you please answer, when you have a moment, if it’s not too much trouble, I’d really appreciate it if you could possibly help me by answering, ",
     }
 
     # -------------------------
@@ -328,12 +328,12 @@ def apply_politeness(
         1:  "Hello. {text} Thank you.",
         2:  "Hello, please {text} Thank you for your help.",
         3:  "Hello, could you please {text} Thank you, I appreciate it.",
-        4:  "Hello, could you please, when you have a moment, {text} Thank you for taking the time.",
-        5:  "Hello, could you please, when you have a moment, if it’s not too much trouble, {text} Thank you for taking the time and effort.",
-        6:  "Hello, could you please, when you have a moment, if it’s not too much trouble, I’d appreciate it if you could answer, {text} I’d truly appreciate your time and help.",
-        7:  "Hello, could you please, when you have a moment, if it’s not too much trouble, I’d really appreciate it if you could answer, {text} I sincerely appreciate your time and assistance.",
-        8:  "Hello, could you please, when you have a moment, if it’s not too much trouble, I’d really appreciate it if you could possibly answer, {text} I sincerely appreciate your time, help, and consideration.",
-        9:  "Hello, could you please, when you have a moment, if it’s not too much trouble, I’d really appreciate it if you could possibly help me by answering, {text} I would be very grateful for your time, effort, and assistance.",
+        4:  "Hello, could you please answer, when you have a moment, {text} Thank you for taking the time.",
+        5:  "Hello, could you please answer, when you have a moment, if it’s not too much trouble, {text} Thank you for taking the time and effort.",
+        6:  "Hello, could you please answer, when you have a moment, if it’s not too much trouble, I’d appreciate it if you could answer, {text} I’d truly appreciate your time and help.",
+        7:  "Hello, could you please answer, when you have a moment, if it’s not too much trouble, I’d really appreciate it if you could answer, {text} I sincerely appreciate your time and assistance.",
+        8:  "Hello, could you please answer, when you have a moment, if it’s not too much trouble, I’d really appreciate it if you could possibly answer, {text} I sincerely appreciate your time, help, and consideration.",
+        9:  "Hello, could you please answer, when you have a moment, if it’s not too much trouble, I’d really appreciate it if you could possibly help me by answering, {text} I would be very grateful for your time, effort, and assistance.",
         10: "Hello, I’m sorry to bother you; could you please, when you have a moment, if it’s not too much trouble, I’d really appreciate it if you could possibly help me by answering, {text} I would be truly grateful for your time, effort, patience, and assistance.",
     }
 
