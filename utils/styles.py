@@ -12,16 +12,20 @@ import re
 
 from typing import Union, Sequence
 
-def apply_spacing(text, strength):
+def apply_spacing(text, strength, place="global"):
     """
     Inject random spaces into the text.
     
-    Strategy: Identifies valid injection points (start, end, existing whitespace)
+    Strategy: Identifies valid injection points based on placement strategy
     and randomly distributes 'strength' number of spaces among them.
     
     Args:
         text (str): Input text
         strength (int): Number of spaces to add
+        place (str): Placement strategy - "prefix", "suffix", or "global" (default)
+            - "prefix": Add all spaces before the text
+            - "suffix": Add all spaces after the text
+            - "global": Distribute randomly throughout (original behavior)
     
     Returns:
         str: Text with added spaces
@@ -29,6 +33,15 @@ def apply_spacing(text, strength):
     if strength <= 0:
         return text
     
+    # Handle prefix placement
+    if place == "prefix":
+        return (" " * strength) + text
+    
+    # Handle suffix placement
+    if place == "suffix":
+        return text + (" " * strength)
+    
+    # Handle global placement (default behavior)
     # Split while keeping whitespace delimiters
     # Example: "Hello world" -> ['Hello', ' ', 'world']
     parts = re.split(r'(\s+)', text)
@@ -69,7 +82,7 @@ def apply_spacing(text, strength):
     return "".join(result_parts)
 
 
-def apply_punctuation(text, strength):
+def apply_punctuation(text, strength, place="global"):
     """
     Inject random punctuation marks into the text.
     
@@ -79,6 +92,10 @@ def apply_punctuation(text, strength):
     Args:
         text (str): Input text
         strength (int): Number of punctuation marks to add
+        place (str): Placement strategy - "prefix", "suffix", or "global" (default)
+            - "prefix": Add all punctuation before the text
+            - "suffix": Add all punctuation after the text
+            - "global": Distribute randomly throughout (original behavior)
     
     Returns:
         str: Text with added punctuation
@@ -88,6 +105,17 @@ def apply_punctuation(text, strength):
     
     PUNCTUATION_POOL = ['.', ',', '!', "'", '(', ')', '[', ']', ';', ':', '-']
     
+    # Handle prefix placement
+    if place == "prefix":
+        marks = "".join(random.choice(PUNCTUATION_POOL) for _ in range(strength))
+        return marks + text
+    
+    # Handle suffix placement
+    if place == "suffix":
+        marks = "".join(random.choice(PUNCTUATION_POOL) for _ in range(strength))
+        return text + marks
+    
+    # Handle global placement (default behavior)
     # Split while keeping whitespace
     parts = re.split(r'(\s+)', text)
     
@@ -126,6 +154,78 @@ def apply_punctuation(text, strength):
         result_parts.append("".join(additions[len(parts)]))
     
     return "".join(result_parts)
+
+def apply_letter_case(text, percentage, place="global"):
+    """
+    Convert a percentage of characters to uppercase.
+    
+    Strategy: Randomly selects characters from the specified region
+    and converts them to uppercase.
+    
+    Args:
+        text (str): Input text
+        percentage (float): Percentage of characters to capitalize (0-100)
+        place (str): Placement strategy - "prefix", "suffix", or "global" (default)
+            - "prefix": Capitalize characters in first half of text
+            - "suffix": Capitalize characters in second half of text
+            - "global": Capitalize characters throughout entire text
+    
+    Returns:
+        str: Text with random capitalization
+    
+    Examples:
+        >>> apply_letter_case("What is the capital?", 30, "global")
+        "WhAt is The caPital?"
+        
+        >>> apply_letter_case("What is the capital?", 50, "prefix")
+        "WHAT IS the capital?"
+        
+        >>> apply_letter_case("What is the capital?", 50, "suffix")
+        "What is THE CAPITAL?"
+        
+        Note: Percentage is always relative to the target region.
+          E.g., 50% with place="prefix" means 50% of first-half letters.
+    """
+    if percentage <= 0:
+        return text
+    
+    if percentage > 100:
+        percentage = 100
+    
+    # Convert to list for in-place modification
+    chars = list(text)
+    
+    # Determine target region based on placement
+    if place == "prefix":
+        start_idx = 0
+        end_idx = len(chars) // 2
+    elif place == "suffix":
+        start_idx = len(chars) // 2
+        end_idx = len(chars)
+    else:  # "global"
+        start_idx = 0
+        end_idx = len(chars)
+    
+    # Find alphabetic character indices in target region
+    valid_indices = [
+        i for i in range(start_idx, end_idx)
+        if chars[i].isalpha()
+    ]
+    
+    if not valid_indices:
+        return text
+    
+    # Calculate number of characters to capitalize
+    num_to_capitalize = max(1, int(len(valid_indices) * percentage / 100))
+    
+    # Randomly select characters to capitalize
+    indices_to_capitalize = random.sample(valid_indices, min(num_to_capitalize, len(valid_indices)))
+    
+    # Apply capitalization
+    for idx in indices_to_capitalize:
+        chars[idx] = chars[idx].upper()
+    
+    return "".join(chars)
 
 
 # def apply_politeness(text, strength):
