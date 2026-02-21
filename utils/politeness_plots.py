@@ -34,9 +34,7 @@ import argparse
 import os
 from typing import List, Optional, Tuple
 
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
+
 
 
 # --------------------------
@@ -488,16 +486,19 @@ def plot_2d_scatter_two_clusters(
         legend_labels: Tuple[str, str] = ("harmless", "harmful"),
 ) -> None:
     """
-    coords: (N,2)
-    labels: (N,) with values {0,1}
+    Square 2D scatter with:
+      - equal aspect ratio
+      - no axes
+      - black border
+      - clean legend
     """
 
     apply_neurips_style()
 
     import os
+    import numpy as np
     import matplotlib.pyplot as plt
     from matplotlib.patches import Rectangle
-    import numpy as np
 
     coords = np.asarray(coords)
     labels = np.asarray(labels)
@@ -509,131 +510,192 @@ def plot_2d_scatter_two_clusters(
 
     os.makedirs(os.path.dirname(out_path_png), exist_ok=True)
 
-    fig, ax = plt.subplots(figsize=(6.8, 3.6))
+    # 🔵 SQUARE FIGURE
+    fig, ax = plt.subplots(figsize=(6, 6))  # <- square
 
-    m0 = labels == 0  # harmless
-    m1 = labels == 1  # harmful
+    m0 = labels == 0
+    m1 = labels == 1
 
-    # Blue for harmless
+    # Blue cluster
     ax.scatter(
         coords[m0, 0],
         coords[m0, 1],
-        s=14,
-        alpha=0.75,
+        s=16,
+        alpha=0.8,
         color="royalblue",
+        edgecolors="none",
         label=legend_labels[0],
     )
 
-    # Red for harmful
+    # Red cluster
     ax.scatter(
         coords[m1, 0],
         coords[m1, 1],
-        s=14,
-        alpha=0.75,
+        s=16,
+        alpha=0.8,
         color="crimson",
+        edgecolors="none",
         label=legend_labels[1],
     )
 
-    if title:
-        ax.set_title(title)
+    # 🔒 Equal geometric scaling
+    ax.set_aspect("equal", adjustable="datalim")
 
-    # Remove axes completely
-    ax.set_axis_off()
+    # 🔄 Make limits symmetric for square look
+    xmin, xmax = ax.get_xlim()
+    ymin, ymax = ax.get_ylim()
 
-    # Add black rectangle border
-    rect = Rectangle(
+    x_center = (xmin + xmax) / 2
+    y_center = (ymin + ymax) / 2
+
+    max_range = max(xmax - xmin, ymax - ymin) / 2
+
+    ax.set_xlim(x_center - max_range, x_center + max_range)
+    ax.set_ylim(y_center - max_range, y_center + max_range)
+
+    # 📴 Remove axes
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.set_xlabel("")
+    ax.set_ylabel("")
+    ax.set_frame_on(False)
+
+    # ⬛ Add clean square border
+    border = Rectangle(
         (0, 0), 1, 1,
         transform=ax.transAxes,
         fill=False,
         edgecolor="black",
-        linewidth=1.8,
-        clip_on=False
+        linewidth=1.6,
+        clip_on=False,
     )
-    ax.add_patch(rect)
+    ax.add_patch(border)
 
-    # Clean legend inside frame
+    # 📌 Legend inside upper right
     ax.legend(
         frameon=False,
-        loc="upper right"
+        loc="upper right",
+        fontsize=9,
     )
+
+    if title:
+        ax.set_title(title, pad=12)
 
     fig.tight_layout()
     fig.savefig(
         out_path_png,
         dpi=300,
         bbox_inches="tight",
-        pad_inches=0.1
+        pad_inches=0.05
     )
     plt.close(fig)
 
-
-# --------------------------
-# Line plot: silhouette vs strength
-# --------------------------
-def plot_silhouette_vs_strength(
+def plot_metric_vs_strength(
         *,
         df_summary: pd.DataFrame,
+        metric_col: str,
         out_path_png: str,
-        group_by: Sequence[str],
-        title: Optional[str] = None,
+        group_by: List[str],
+        title: Optional[str],
+        xlabel: str = "Strength",
+        ylabel: Optional[str] = None,
         legend_outside: bool = True,
+        save_pdf: bool = False,
 ) -> None:
     """
-    Expects df_summary columns:
-      - strength
-      - silhouette_cosine
-      - plus group_by columns (e.g. ["place"] or ["model","place"])
+    Generic NeurIPS-style line plot:
+      x = strength
+      y = df_summary[metric_col]
+      lines = group_by categories (e.g., ["place"] or ["model","place"])
     """
     apply_neurips_style()
 
     if df_summary is None or df_summary.empty:
         return
-    if "strength" not in df_summary.columns or "silhouette_cosine" not in df_summary.columns:
+    if "strength" not in df_summary.columns or metric_col not in df_summary.columns:
         return
 
-    d = df_summary.copy()
-    d["strength"] = pd.to_numeric(d["strength"], errors="coerce")
-    d["silhouette_cosine"] = pd.to_numeric(d["silhouette_cosine"], errors="coerce")
-    d = d.dropna(subset=["strength", "silhouette_cosine"])
-    if d.empty:
+    df = df_summary.copy()
+    df["strength"] = pd.to_numeric(df["strength"], errors="coerce")
+    df[metric_col] = pd.to_numeric(df[metric_col], errors="coerce")
+    df = df.dropna(subset=["strength"])
+
+    strengths_sorted = sorted(df["strength"].unique().tolist())
+    if len(strengths_sorted) == 0:
         return
 
-    os.makedirs(os.path.dirname(out_path_png), exist_ok=True)
+    fig_w, fig_h = 6.8, 3.2
+    fig, ax = plt.subplots(figsize=(fig_w, fig_h))
 
-    fig, ax = plt.subplots(figsize=(6.8, 2.8))
+    # one line per group
+    if not group_by:
+        group_by = []
 
-    groups = list(d.groupby(list(group_by), dropna=False))
-    for key, sub in groups:
-        sub = sub.sort_values("strength")
-        xs = sub["strength"].values
-        ys = sub["silhouette_cosine"].values
+    if group_by:
+        grouped = df.groupby(group_by, dropna=False)
+        for keys, sub in grouped:
+            if not isinstance(keys, tuple):
+                keys = (keys,)
+            label = "/".join(str(k) for k in keys)
+            sub2 = sub.set_index("strength").reindex(strengths_sorted)
+            ax.plot(
+                strengths_sorted,
+                sub2[metric_col].values,
+                marker="o",
+                label=label
+            )
+    else:
+        sub2 = df.set_index("strength").reindex(strengths_sorted)
+        ax.plot(strengths_sorted, sub2[metric_col].values, marker="o")
 
-        if not isinstance(key, tuple):
-            key = (key,)
-        label = "/".join([str(k) for k in key])
-
-        ax.plot(xs, ys, marker="o", label=label)
-
-    ax.set_xlabel("Strength")
-    ax.set_ylabel("Silhouette (cosine)")
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel if ylabel is not None else metric_col)
     if title:
         ax.set_title(title)
-    ax.set_axisbelow(True)
 
+    ax.set_axisbelow(True)
     try:
         ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
     except Exception:
         pass
 
-    if len(groups) > 1:
-        if legend_outside:
-            ax.legend(frameon=False, loc="upper left", bbox_to_anchor=(1.02, 1.0))
-        else:
-            ax.legend(frameon=False)
+    if legend_outside and group_by:
+        ax.legend(
+            loc="upper left",
+            bbox_to_anchor=(1.02, 1.0),
+            borderaxespad=0.0,
+            frameon=False,
+            ncol=1,
+        )
+    elif group_by:
+        ax.legend(frameon=False)
 
     fig.tight_layout()
-    fig.savefig(out_path_png, dpi=300, bbox_inches="tight")
+    _save_figure(fig, out_png=out_path_png, save_pdf=save_pdf)
     plt.close(fig)
+
+
+def plot_silhouette_vs_strength(
+        *,
+        df_summary: pd.DataFrame,
+        out_path_png: str,
+        group_by: List[str],
+        title: Optional[str],
+        legend_outside: bool = True,
+        save_pdf: bool = False,
+) -> None:
+    # Keep your existing API, but implement via the generic function:
+    plot_metric_vs_strength(
+        df_summary=df_summary,
+        metric_col="silhouette_cosine",
+        out_path_png=out_path_png,
+        group_by=group_by,
+        title=title,
+        ylabel="Silhouette (cosine)",
+        legend_outside=legend_outside,
+        save_pdf=save_pdf,
+    )
+
 # --------------------------
 # Standalone CLI
 # --------------------------
