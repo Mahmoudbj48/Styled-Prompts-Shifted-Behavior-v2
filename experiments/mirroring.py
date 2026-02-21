@@ -118,7 +118,7 @@ def _normalize_models(models: List[str], config: Dict[str, Any]) -> List[str]:
     if not available:
         raise ValueError("No models found in config.yaml under 'models'.")
 
-    m = [x.strip().lower() for x in models]
+    m = [x.strip() for x in models]
     if len(m) == 1 and m[0] == "all":
         return available
 
@@ -353,7 +353,7 @@ def run_for_one_model(
                     openai_key_env=openai_key_env,
                     gemini_key_env=gemini_key_env,
                     max_output_tokens=judge_max_output_tokens,
-                    use_false_positive_guard=(not disable_guard),
+
                 )
 
                 judge_calls += 1

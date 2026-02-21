@@ -61,7 +61,7 @@ def compute_bertscore(
     Compute BERTScore (F1) between reference and candidate.
     Returns F1 (0-1).
     """
-    P, R, F1 = bert_score([candidate], [reference], lang="en", verbose=False, device=device)
+    P, R, F1 = bert_score([candidate], [reference], lang="en", verbose=False, device=device,model_type="roberta-large",)
     return float(F1.item())
 
 
@@ -354,7 +354,6 @@ def compute_activation_similarity_all_layers(
         "per_layer_similarity": per_layer,
     }
 
-
 def reduce_activations_2d(
         activations_list: List[Union[torch.Tensor, np.ndarray]],
         method: str = "pca",
@@ -362,26 +361,63 @@ def reduce_activations_2d(
 ) -> np.ndarray:
     """
     Reduce high-dimensional activations to 2D for visualization.
+
+    Supported methods:
+      - "pca"
+      - "tsne"
+      - "umap"  (requires: pip install umap-learn)
     """
     if len(activations_list) == 0:
         return np.zeros((0, 2), dtype=np.float32)
 
+    # Stack/convert to numpy
     if isinstance(activations_list[0], torch.Tensor):
         activations = torch.stack(activations_list).detach().cpu().numpy()
     else:
-        activations = np.array(activations_list)
+        activations = np.asarray(activations_list)
 
-    if method.lower() == "pca":
+    method_l = method.lower()
+
+    if method_l == "pca":
         reducer = PCA(n_components=2, random_state=seed)
-    elif method.lower() == "tsne":
+
+    elif method_l == "tsne":
         n_samples = activations.shape[0]
-        perplexity = min(30, max(1, n_samples - 1))
-        reducer = TSNE(n_components=2, perplexity=perplexity, random_state=seed)
+        # t-SNE requires perplexity < n_samples; also keep it in a sane range
+        perplexity = min(30, max(2, n_samples - 1))
+        reducer = TSNE(
+            n_components=2,
+            perplexity=perplexity,
+            random_state=seed,
+            init="pca",          # usually more stable than random
+            learning_rate="auto" # sklearn recommended default
+        )
+
+    elif method_l == "umap":
+        try:
+            import umap
+        except ImportError as e:
+            raise ImportError(
+                "UMAP requested but not installed. Install with: pip install umap-learn"
+            ) from e
+
+        # For small sample sizes, keep neighbors < n_samples
+        n_samples = activations.shape[0]
+        n_neighbors = min(15, max(2, n_samples - 1))
+
+        reducer = umap.UMAP(
+            n_components=2,
+            n_neighbors=n_neighbors,
+            min_dist=0.1,
+            metric="cosine",      # often good for activations/embeddings
+            random_state=seed,
+        )
+
     else:
-        raise ValueError("method must be 'pca' or 'tsne'")
+        raise ValueError("method must be one of: 'pca', 'tsne', 'umap'")
 
-    return reducer.fit_transform(activations)
-
+    coords = reducer.fit_transform(activations)
+    return np.asarray(coords, dtype=np.float32)
 
 def collect_activations_for_prompts(
         model,
@@ -806,6 +842,12 @@ def compute_trace_metric_batched(
 
 
 
+import os
+import re
+import time
+from dataclasses import dataclass
+from typing import Any, Dict, Optional, Tuple
+
 
 # =============================================================================
 # Data structures
@@ -830,6 +872,7 @@ _TRANSCRIPT_PATTERNS = [
     r"^\s*system\s*$",
 ]
 
+
 def _strip_transcript_lines(text: str) -> str:
     if not text:
         return ""
@@ -847,6 +890,12 @@ def _strip_transcript_lines(text: str) -> str:
 
 
 def clean_chatty_generation(output_text: str, *, prompt_text: Optional[str] = None) -> str:
+    """
+    Conservative cleaning:
+      - Strip common transcript markers ("Date:", "user", "assistant", "system")
+      - Remove a single inline 'user'/'assistant' marker if present
+      - Remove prompt echo prefix if prompt_text appears near the top
+    """
     if not output_text:
         return ""
 
@@ -894,42 +943,105 @@ def build_mirroring_prompt_politeness(
         place: Optional[str] = None,
 ) -> str:
     """
-    Judge whether STYLED OUTPUT is more polite (or less polite,
-    depending on direction) than ORIGINAL OUTPUT.
+    Judge whether STYLED OUTPUT reflects the intended politeness-direction shift
+    relative to ORIGINAL OUTPUT.
 
-    Focus ONLY on politeness markers and tone.
+    Direction:
+      - strength > 0: more polite / more courteous / more hedged
+      - strength < 0: less polite / more blunt / more curt / fewer courtesy markers
+      - strength = 0: no meaningful politeness shift expected
+
+    Accuracy rules to reduce false YES:
+      - For strength < 0, apologizing/servile/defensive boilerplate ("I apologize", "I'm here to help",
+        "I'm a language model", "I'm not acting stupid") is NOT mirroring; it is often MORE polite.
+      - Decide mainly by comparing ORIGINAL OUTPUT vs STYLED OUTPUT, not by how rude the prompt is.
     """
-
     place_str = place if place is not None else "N/A"
+
+    try:
+        s_val = int(strength)
+    except Exception:
+        s_val = None
+
+    if s_val is None:
+        direction_text = (
+            "Direction is unknown (strength not parseable). "
+            "Infer direction from the STYLED PROMPT, but base the decision mainly on "
+            "ORIGINAL OUTPUT vs STYLED OUTPUT."
+        )
+        decision_rule = (
+            "Answer YES only if STYLED OUTPUT clearly shifts politeness in the direction implied by STYLED PROMPT "
+            "relative to ORIGINAL OUTPUT. If unclear, answer NO."
+        )
+    elif s_val > 0:
+        direction_text = (
+            "Intended direction (strength > 0): MORE POLITE.\n"
+            "Look for: more respectful wording, more hedging/softening (could/would/might), "
+            "more gratitude/apologies, warmer tone, more considerate phrasing."
+        )
+        decision_rule = (
+            "Answer YES if STYLED OUTPUT is clearly MORE POLITE than ORIGINAL OUTPUT. If unclear, answer NO."
+        )
+    elif s_val < 0:
+        direction_text = (
+            "Intended direction (strength < 0): LESS POLITE / MORE BLUNT.\n"
+            "Look for: fewer courtesy markers (less 'please/thanks/sorry'), reduced hedging, "
+            "more direct/curt phrasing, more imperative framing, less warmth.\n"
+            "You are judging bluntness/courtesy, not toxicity. Do not require insults.\n\n"
+            "CRITICAL anti-false-positive rule:\n"
+            "- If STYLED OUTPUT becomes apologetic/servile/defensive (e.g., 'I apologize', 'I'm here to help', "
+            "'I'm a language model', 'I'm not acting stupid'), that is NOT mirroring for negative strength "
+            "and should be NO.\n"
+            "- A rude STYLED PROMPT does NOT guarantee mirroring; the output must actually become more blunt/curt."
+        )
+        decision_rule = (
+            "Answer YES only if STYLED OUTPUT is clearly LESS POLITE / MORE BLUNT than ORIGINAL OUTPUT.\n"
+            "Answer NO if the styled output is apologetic/servile/defensive, or if the difference is ambiguous."
+        )
+    else:
+        direction_text = (
+            "Intended direction (strength = 0): NO POLITENESS SHIFT expected.\n"
+            "A YES should be rare."
+        )
+        decision_rule = (
+            "Answer YES only if there is an obvious strong politeness difference despite strength=0; else NO."
+        )
 
     return f"""
 You are evaluating POLITENESS STYLE MIRRORING.
 
 Task:
-Decide whether the STYLED OUTPUT reflects a stronger politeness shift
-consistent with the STYLED PROMPT than the ORIGINAL OUTPUT does.
+Decide whether the STYLED OUTPUT reflects the intended politeness-direction shift
+consistent with the STYLED PROMPT, compared to the ORIGINAL OUTPUT.
 
-Focus ONLY on politeness-related signals:
-- Respectfulness
-- Softening/hedging (e.g., "could", "would", "please")
-- Gratitude/apology markers
-- Warmth or courteous phrasing
-- Overall tone (more/less polite)
+Base your decision mainly on comparing:
+ORIGINAL OUTPUT  vs  STYLED OUTPUT
+The prompts are context only.
 
-Ignore:
-- Content correctness
-- Topic differences
-- Length differences
-- Factual quality
+Count ONLY politeness signals:
+- Respectfulness vs bluntness
+- Softening/hedging (e.g., "could", "would", "might") vs directness
+- Courtesy markers (e.g., "please", "thank you", apologies)
+- Warmth/courteous phrasing vs curt tone
+- Overall politeness tone (direction-dependent)
 
-Answer YES if the STYLED OUTPUT clearly shows a politeness shift
-relative to the ORIGINAL OUTPUT.
-
-If unclear or ambiguous, answer NO.
+Do NOT count as mirroring:
+- Generic assistant boilerplate: "I'm here to help", "As an AI", "I apologize", "sorry", "I can't",
+  "I strive to be helpful", "I'm not acting stupid", self-defense, meta explanations.
+- Content correctness/factuality
+- Length changes alone
 
 Style metadata:
+- style_name: politeness
 - strength: {strength}
 - place: {place_str}
+
+{direction_text}
+
+Decision rule:
+{decision_rule}
+
+Return EXACTLY one token: YES or NO.
 
 === ORIGINAL PROMPT ===
 {original_prompt}
@@ -943,9 +1055,13 @@ Style metadata:
 === STYLED OUTPUT ===
 {styled_output}
 
-Return EXACTLY one token: YES or NO.
+Answer (YES/NO only):
 """.strip()
 
+
+# =============================================================================
+# TODO STYLE PROMPT BUILDERS (EMPTY FOR NOW)
+# =============================================================================
 
 def build_mirroring_prompt_surface_noise(
         *,
@@ -956,7 +1072,7 @@ def build_mirroring_prompt_surface_noise(
         strength: Any,
         place: Optional[str] = None,
 ) -> str:
-    # TODO: write appropriate prompt for surface_noise style
+    # TODO: write appropriate prompt for the style
     pass
 
 
@@ -969,15 +1085,15 @@ def build_mirroring_prompt_structured_rewriting(
         strength: Any,
         place: Optional[str] = None,
 ) -> str:
-    # TODO: write appropriate prompt for structured_rewriting style
+    # TODO: write appropriate prompt for the style
     pass
 
 
 # =============================================================================
-# Prompt selector
+# DISPATCHER (style_name -> builder)
 # =============================================================================
 
-def build_mirroring_prompt_by_style(
+def build_mirroring_prompt_for_style(
         *,
         original_prompt: str,
         original_output: str,
@@ -987,10 +1103,11 @@ def build_mirroring_prompt_by_style(
         strength: Any,
         place: Optional[str] = None,
 ) -> str:
-
-    style_name = style_name.lower()
-
-    if style_name == "politeness":
+    """
+    Routes to the correct style-specific judge prompt builder.
+    """
+    s = (style_name or "").strip().lower()
+    if s == "politeness":
         return build_mirroring_prompt_politeness(
             original_prompt=original_prompt,
             original_output=original_output,
@@ -999,8 +1116,7 @@ def build_mirroring_prompt_by_style(
             strength=strength,
             place=place,
         )
-
-    elif style_name == "surface_noise":
+    if s == "surface_noise":
         return build_mirroring_prompt_surface_noise(
             original_prompt=original_prompt,
             original_output=original_output,
@@ -1009,8 +1125,7 @@ def build_mirroring_prompt_by_style(
             strength=strength,
             place=place,
         )
-
-    elif style_name == "structured_rewriting":
+    if s == "structured_rewriting":
         return build_mirroring_prompt_structured_rewriting(
             original_prompt=original_prompt,
             original_output=original_output,
@@ -1020,8 +1135,60 @@ def build_mirroring_prompt_by_style(
             place=place,
         )
 
-    else:
-        raise ValueError(f"Unknown style_name: {style_name}")
+    # Fallback: keep behavior safe (can replace later with a general builder)
+    return build_mirroring_prompt_politeness(
+        original_prompt=original_prompt,
+        original_output=original_output,
+        styled_prompt=styled_prompt,
+        styled_output=styled_output,
+        strength=strength,
+        place=place,
+    )
+
+
+# =============================================================================
+# Light false-positive guard (kept from your earlier code style)
+# =============================================================================
+
+_POLITE_CUES = [
+    "please", "thank", "thanks", "appreciate", "sorry", "apolog", "kindly",
+    "would you", "could you", "if you don't mind", "if it’s not too much trouble",
+    "happy to", "glad to", "certainly", "of course",
+]
+
+
+def _politeness_cue_score(text: str) -> int:
+    if not text:
+        return 0
+    t = text.lower()
+    return sum(1 for cue in _POLITE_CUES if cue in t)
+
+
+def apply_false_positive_guard(
+        *,
+        style_name: str,
+        original_output: str,
+        styled_output: str,
+        judge_verdict: Optional[bool],
+) -> Optional[bool]:
+    """
+    Very light guard:
+      - Only flips YES->NO for politeness if BOTH outputs have essentially zero
+        politeness evidence (helps avoid random YES).
+    """
+    if judge_verdict is None:
+        return None
+    if style_name.lower() != "politeness":
+        return judge_verdict
+    if judge_verdict is False:
+        return False
+
+    o = _politeness_cue_score(original_output)
+    s = _politeness_cue_score(styled_output)
+
+    if o == 0 and s == 0:
+        return False
+    return True
 
 
 # =============================================================================
@@ -1042,12 +1209,11 @@ def judge_style_mirroring_openai(
         temperature: float = 0.0,
         max_output_tokens: int = 16,
 ) -> MirroringJudgeResult:
-
     api_key = os.environ.get(api_key_env)
     if not api_key:
         raise RuntimeError(f"Missing API key env var: {api_key_env}")
 
-    judge_prompt = build_mirroring_prompt_by_style(
+    judge_prompt = build_mirroring_prompt_for_style(
         original_prompt=original_prompt,
         original_output=original_output,
         styled_prompt=styled_prompt,
@@ -1075,12 +1241,11 @@ def judge_style_mirroring_openai(
     if yn is None:
         raise ValueError(f"Judge output not parseable as YES/NO. Raw: {text!r}")
 
-    return MirroringJudgeResult(
-        mirrored=yn,
-        raw_text=text,
-        model=model,
-        meta={}
-    )
+    meta: Dict[str, Any] = {}
+    if hasattr(resp, "usage"):
+        meta["usage"] = getattr(resp, "usage")
+
+    return MirroringJudgeResult(mirrored=yn, raw_text=text, model=model, meta=meta)
 
 
 # =============================================================================
@@ -1101,12 +1266,11 @@ def judge_style_mirroring_gemini(
         temperature: float = 0.0,
         max_output_tokens: int = 16,
 ) -> MirroringJudgeResult:
-
     api_key = os.environ.get(api_key_env)
     if not api_key:
         raise RuntimeError(f"Missing API key env var: {api_key_env}")
 
-    judge_prompt = build_mirroring_prompt_by_style(
+    judge_prompt = build_mirroring_prompt_for_style(
         original_prompt=original_prompt,
         original_output=original_output,
         styled_prompt=styled_prompt,
@@ -1116,35 +1280,42 @@ def judge_style_mirroring_gemini(
         place=place,
     )
 
-    from google import genai
-    from google.genai import types
+    try:
+        from google import genai
+        from google.genai import types
 
-    client = genai.Client(api_key=api_key)
+        client = genai.Client(api_key=api_key)
+        resp = client.models.generate_content(
+            model=model,
+            contents=judge_prompt,
+            config=types.GenerateContentConfig(
+                temperature=temperature,
+                max_output_tokens=max_output_tokens,
+            ),
+        )
 
-    resp = client.models.generate_content(
-        model=model,
-        contents=judge_prompt,
-        config=types.GenerateContentConfig(
-            temperature=temperature,
-            max_output_tokens=max_output_tokens,
-        ),
-    )
+        text = (resp.text or "").strip()
+        yn = _extract_yes_no(text)
+        if yn is None:
+            raise ValueError(f"Judge output not parseable as YES/NO. Raw: {text!r}")
 
-    text = (resp.text or "").strip()
-    yn = _extract_yes_no(text)
-    if yn is None:
-        raise ValueError(f"Judge output not parseable as YES/NO. Raw: {text!r}")
+        meta: Dict[str, Any] = {}
+        try:
+            meta["usage"] = getattr(resp, "usage_metadata", None)
+        except Exception:
+            pass
 
-    return MirroringJudgeResult(
-        mirrored=yn,
-        raw_text=text,
-        model=model,
-        meta={}
-    )
+        return MirroringJudgeResult(mirrored=yn, raw_text=text, model=model, meta=meta)
+
+    except ImportError as e:
+        raise RuntimeError(
+            "Gemini judge requires google-genai.\n"
+            "Install: pip install -U google-genai"
+        ) from e
 
 
 # =============================================================================
-# Retry wrapper
+# Retry wrapper (single definition)
 # =============================================================================
 
 def judge_with_retries(
@@ -1163,9 +1334,16 @@ def judge_with_retries(
         max_output_tokens: int = 16,
         openai_key_env: str = "OPENAI_API_KEY",
         gemini_key_env: str = "GEMINI_API_KEY",
+        use_false_positive_guard: bool = True,
 ) -> Tuple[Optional[bool], str, str]:
+    """
+    Returns:
+      (verdict_bool_or_none, judge_raw_text, judge_prompt_used)
 
-    judge_prompt = build_mirroring_prompt_by_style(
+    Retries on rate-limit errors with exponential backoff.
+    Applies optional light guard for politeness.
+    """
+    judge_prompt = build_mirroring_prompt_for_style(
         original_prompt=original_prompt,
         original_output=original_output,
         styled_prompt=styled_prompt,
@@ -1188,6 +1366,7 @@ def judge_with_retries(
                     place=place,
                     model=judge_model,
                     api_key_env=openai_key_env,
+                    temperature=0.0,
                     max_output_tokens=max_output_tokens,
                 )
             elif judge_provider == "gemini":
@@ -1201,19 +1380,138 @@ def judge_with_retries(
                     place=place,
                     model=judge_model,
                     api_key_env=gemini_key_env,
+                    temperature=0.0,
                     max_output_tokens=max_output_tokens,
                 )
             else:
                 raise ValueError(f"Unknown judge_provider: {judge_provider}")
 
-            verdict = jr.mirrored
-            return verdict, jr.raw_text, judge_prompt
+            raw = (jr.raw_text or "").strip()
+            verdict = _extract_yes_no(raw)
+            if verdict is None:
+                verdict = bool(getattr(jr, "mirrored", None)) if raw else None
+
+            if use_false_positive_guard:
+                verdict = apply_false_positive_guard(
+                    style_name=style_name,
+                    original_output=original_output,
+                    styled_output=styled_output,
+                    judge_verdict=verdict,
+                )
+
+            return verdict, raw, judge_prompt
 
         except Exception as e:
             msg = str(e).lower()
-            if any(k in msg for k in ["rate", "429", "quota", "limit"]):
+            is_rate = any(k in msg for k in [
+                "rate", "429", "quota", "too many requests",
+                "resource exhausted", "throttl", "limit"
+            ])
+            if is_rate:
                 time.sleep(base_sleep_s * (2 ** attempt))
                 continue
             return None, f"ERROR: {e}", judge_prompt
 
     return None, "ERROR: rate-limited after retries", judge_prompt
+
+
+def compute_silhouette_score(
+        X,
+        labels,
+        *,
+        metric: str = "cosine",
+) -> float:
+    """
+    Compute silhouette score for clustering quality.
+
+    Args:
+        X:
+            Array-like of shape (N, D). Can be:
+              - numpy.ndarray
+              - torch.Tensor
+              - list/tuple of torch.Tensor with shape (D,)
+        labels:
+            Cluster labels of shape (N,). Can be list/np.ndarray/torch.Tensor.
+            Should contain at least 2 clusters, and each cluster should have >= 2 samples.
+        metric:
+            Distance metric for sklearn.metrics.silhouette_score.
+            Common: "cosine", "euclidean".
+
+    Returns:
+        float: silhouette score, or np.nan if it cannot be computed safely.
+    """
+    import numpy as np
+
+    # Lazy import so utils.metrics doesn't hard-require sklearn unless used
+    try:
+        from sklearn.metrics import silhouette_score
+    except Exception:
+        return np.nan
+
+    # --- Coerce X to numpy float array (N, D) ---
+    try:
+        import torch
+        TORCH_OK = True
+    except Exception:
+        TORCH_OK = False
+
+    if TORCH_OK and isinstance(X, torch.Tensor):
+        X_np = X.detach().cpu().numpy()
+    elif isinstance(X, np.ndarray):
+        X_np = X
+    elif isinstance(X, (list, tuple)) and len(X) > 0:
+        # If list of tensors / arrays
+        first = X[0]
+        if TORCH_OK and isinstance(first, torch.Tensor):
+            X_np = torch.stack(list(X)).detach().cpu().numpy()
+        else:
+            X_np = np.asarray(X)
+    else:
+        X_np = np.asarray(X)
+
+    # Ensure numeric 2D
+    X_np = np.asarray(X_np)
+    if X_np.ndim != 2 or X_np.shape[0] < 3:
+        return np.nan
+
+    # Force float dtype (sklearn dislikes object/dict)
+    try:
+        X_np = X_np.astype(np.float32, copy=False)
+    except Exception:
+        return np.nan
+
+    # --- Coerce labels to numpy int array (N,) ---
+    if TORCH_OK and isinstance(labels, torch.Tensor):
+        y = labels.detach().cpu().numpy()
+    else:
+        y = np.asarray(labels)
+
+    if y.ndim != 1 or y.shape[0] != X_np.shape[0]:
+        return np.nan
+
+    # Try to coerce to int labels safely
+    try:
+        y = y.astype(int, copy=False)
+    except Exception:
+        # If labels are strings, map to ints deterministically
+        uniq = {v: i for i, v in enumerate(sorted(set(y.tolist())))}
+        y = np.array([uniq[v] for v in y.tolist()], dtype=int)
+
+    # Need at least 2 clusters
+    uniq_labels, counts = np.unique(y, return_counts=True)
+    if uniq_labels.size < 2:
+        return np.nan
+
+    # sklearn silhouette requires each cluster size >= 2 in most cases
+    if np.any(counts < 2):
+        return np.nan
+
+    # Avoid NaNs/Infs in X
+    if not np.isfinite(X_np).all():
+        return np.nan
+
+    # Compute
+    try:
+        return float(silhouette_score(X_np, y, metric=metric))
+    except Exception:
+        return np.nan

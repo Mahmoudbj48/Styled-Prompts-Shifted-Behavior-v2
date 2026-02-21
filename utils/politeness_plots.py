@@ -2,7 +2,7 @@
 """
 NeurIPS-style plotting utilities for politeness experiment.
 
-Goals (NeurIPS):
+Goals (NeurIPS 2025 template-friendly figures):
 - Clean, legible, publication-ready.
 - No tiny text; consistent font sizes.
 - No clutter; legend outside or compact.
@@ -23,6 +23,12 @@ Standalone example:
     --strength_range -10 10 --strength_step 2 \
     --save_pdf
 """
+import os
+from typing import Dict, List, Optional, Sequence, Tuple
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
 
 import argparse
 import os
@@ -359,6 +365,275 @@ def make_all_plots_from_csvs(
     return df_rows, df_mean
 
 
+
+
+
+
+
+def _safe_name(x: Optional[str]) -> str:
+    if x is None:
+        return "none"
+    x = str(x)
+    return "".join([c if c.isalnum() or c in ("-", "_", ".", "=") else "_" for c in x])
+
+
+def _coords_cache_path(
+        *,
+        cache_dir: str,
+        dataset_name: str,
+        style_name: str,
+        model: str,
+        place: str,
+        strength: int,
+        method: str,
+) -> str:
+    return os.path.join(
+        os.path.expanduser(cache_dir),
+        "coords2d",
+        _safe_name(dataset_name),
+        _safe_name(style_name),
+        _safe_name(model),
+        _safe_name(place),
+        f"strength_{int(strength)}",
+        f"{_safe_name(method)}.csv",
+    )
+
+
+def save_coords2d(
+        *,
+        cache_dir: str,
+        dataset_name: str,
+        style_name: str,
+        model: str,
+        place: str,
+        strength: int,
+        method: str,
+        prompt_ids: List[int],
+        coords: np.ndarray,
+        meta: Optional[Dict[str, str]] = None,
+) -> str:
+    """
+    Save coords to CSV with schema:
+      prompt_id, x, y, model, place, strength, method, (optional meta cols)
+    """
+    coords = np.asarray(coords)
+    if coords.ndim != 2 or coords.shape[1] != 2:
+        raise ValueError(f"coords must be shape (N,2). got {coords.shape}")
+    if len(prompt_ids) != coords.shape[0]:
+        raise ValueError(f"prompt_ids length {len(prompt_ids)} != coords rows {coords.shape[0]}")
+
+    path = _coords_cache_path(
+        cache_dir=cache_dir,
+        dataset_name=dataset_name,
+        style_name=style_name,
+        model=model,
+        place=place,
+        strength=int(strength),
+        method=method,
+    )
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+
+    df = pd.DataFrame({
+        "prompt_id": prompt_ids,
+        "x": coords[:, 0],
+        "y": coords[:, 1],
+        "model": str(model),
+        "place": str(place),
+        "strength": int(strength),
+        "method": str(method),
+    })
+    if meta:
+        for k, v in meta.items():
+            df[str(k)] = str(v)
+
+    df.to_csv(path, index=False)
+    return path
+
+
+def load_coords2d(
+        *,
+        cache_dir: str,
+        dataset_name: str,
+        style_name: str,
+        model: str,
+        place: str,
+        strength: int,
+        method: str,
+) -> Optional[pd.DataFrame]:
+    path = _coords_cache_path(
+        cache_dir=cache_dir,
+        dataset_name=dataset_name,
+        style_name=style_name,
+        model=model,
+        place=place,
+        strength=int(strength),
+        method=method,
+    )
+    if not os.path.exists(path):
+        return None
+    return pd.read_csv(path)
+
+
+# --------------------------
+# 2D scatter: two clusters
+# --------------------------
+def plot_2d_scatter_two_clusters(
+        *,
+        coords: np.ndarray,
+        labels: np.ndarray,
+        out_path_png: str,
+        title: Optional[str],
+        xlabel: str,
+        ylabel: str,
+        legend_labels: Tuple[str, str] = ("harmless", "harmful"),
+) -> None:
+    """
+    coords: (N,2)
+    labels: (N,) with values {0,1}
+    """
+
+    apply_neurips_style()
+
+    import os
+    import matplotlib.pyplot as plt
+    from matplotlib.patches import Rectangle
+    import numpy as np
+
+    coords = np.asarray(coords)
+    labels = np.asarray(labels)
+
+    if coords.ndim != 2 or coords.shape[1] != 2:
+        return
+    if labels.shape[0] != coords.shape[0]:
+        return
+
+    os.makedirs(os.path.dirname(out_path_png), exist_ok=True)
+
+    fig, ax = plt.subplots(figsize=(6.8, 3.6))
+
+    m0 = labels == 0  # harmless
+    m1 = labels == 1  # harmful
+
+    # Blue for harmless
+    ax.scatter(
+        coords[m0, 0],
+        coords[m0, 1],
+        s=14,
+        alpha=0.75,
+        color="royalblue",
+        label=legend_labels[0],
+    )
+
+    # Red for harmful
+    ax.scatter(
+        coords[m1, 0],
+        coords[m1, 1],
+        s=14,
+        alpha=0.75,
+        color="crimson",
+        label=legend_labels[1],
+    )
+
+    if title:
+        ax.set_title(title)
+
+    # Remove axes completely
+    ax.set_axis_off()
+
+    # Add black rectangle border
+    rect = Rectangle(
+        (0, 0), 1, 1,
+        transform=ax.transAxes,
+        fill=False,
+        edgecolor="black",
+        linewidth=1.8,
+        clip_on=False
+    )
+    ax.add_patch(rect)
+
+    # Clean legend inside frame
+    ax.legend(
+        frameon=False,
+        loc="upper right"
+    )
+
+    fig.tight_layout()
+    fig.savefig(
+        out_path_png,
+        dpi=300,
+        bbox_inches="tight",
+        pad_inches=0.1
+    )
+    plt.close(fig)
+
+
+# --------------------------
+# Line plot: silhouette vs strength
+# --------------------------
+def plot_silhouette_vs_strength(
+        *,
+        df_summary: pd.DataFrame,
+        out_path_png: str,
+        group_by: Sequence[str],
+        title: Optional[str] = None,
+        legend_outside: bool = True,
+) -> None:
+    """
+    Expects df_summary columns:
+      - strength
+      - silhouette_cosine
+      - plus group_by columns (e.g. ["place"] or ["model","place"])
+    """
+    apply_neurips_style()
+
+    if df_summary is None or df_summary.empty:
+        return
+    if "strength" not in df_summary.columns or "silhouette_cosine" not in df_summary.columns:
+        return
+
+    d = df_summary.copy()
+    d["strength"] = pd.to_numeric(d["strength"], errors="coerce")
+    d["silhouette_cosine"] = pd.to_numeric(d["silhouette_cosine"], errors="coerce")
+    d = d.dropna(subset=["strength", "silhouette_cosine"])
+    if d.empty:
+        return
+
+    os.makedirs(os.path.dirname(out_path_png), exist_ok=True)
+
+    fig, ax = plt.subplots(figsize=(6.8, 2.8))
+
+    groups = list(d.groupby(list(group_by), dropna=False))
+    for key, sub in groups:
+        sub = sub.sort_values("strength")
+        xs = sub["strength"].values
+        ys = sub["silhouette_cosine"].values
+
+        if not isinstance(key, tuple):
+            key = (key,)
+        label = "/".join([str(k) for k in key])
+
+        ax.plot(xs, ys, marker="o", label=label)
+
+    ax.set_xlabel("Strength")
+    ax.set_ylabel("Silhouette (cosine)")
+    if title:
+        ax.set_title(title)
+    ax.set_axisbelow(True)
+
+    try:
+        ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
+    except Exception:
+        pass
+
+    if len(groups) > 1:
+        if legend_outside:
+            ax.legend(frameon=False, loc="upper left", bbox_to_anchor=(1.02, 1.0))
+        else:
+            ax.legend(frameon=False)
+
+    fig.tight_layout()
+    fig.savefig(out_path_png, dpi=300, bbox_inches="tight")
+    plt.close(fig)
 # --------------------------
 # Standalone CLI
 # --------------------------

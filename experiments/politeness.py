@@ -36,10 +36,17 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 import matplotlib.pyplot as plt
-
+import os
+import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle
+import matplotlib as mpl
+import numpy as np
 import torch
 import torch.nn.functional as F
-
+import os
+os.environ["HF_HUB_DISABLE_TELEMETRY"] = "1"
+os.environ["HF_HUB_OFFLINE"] = "1"
+os.environ["TRANSFORMERS_OFFLINE"] = "1"
 # Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -620,32 +627,75 @@ def run_for_one_model(
         row_pbar.close()
 
     df = pd.DataFrame(rows)
+
     out_csv = os.path.join(run_dir, f"{model_name}_results.csv")
     df.to_csv(out_csv, index=False)
     print(f"✓ Saved per-example results: {out_csv}")
 
     # t-SNE plots (kept)
     if "activation" in experiments and activations_cache is not None:
+
+
         plot_dir = os.path.join(run_dir, "plots_tsne", model_name)
         os.makedirs(plot_dir, exist_ok=True)
         viz_sample_size = min(50, len(items))
 
+        # ---- Ordinal color setup ----
+        strength_sorted = sorted(strength_levels)
+        norm = mpl.colors.Normalize(
+            vmin=min(strength_sorted),
+            vmax=max(strength_sorted)
+        )
+        cmap = mpl.cm.viridis  # perceptually uniform (good for ordinal data)
+
         for place in places:
             fig, ax = plt.subplots(figsize=(10, 7))
-            for strength in sorted(strength_levels):
+
+            for strength in strength_sorted:
                 acts = activations_cache[(place, strength)][:viz_sample_size]
                 if len(acts) < 2:
                     continue
-                coords = reduce_activations_2d(acts, method="tsne", seed=seed)
-                ax.scatter(coords[:, 0], coords[:, 1], alpha=0.6, s=35, label=f"s={strength}")
 
+                coords = reduce_activations_2d(acts, method="tsne", seed=seed)
+
+                ax.scatter(
+                    coords[:, 0],
+                    coords[:, 1],
+                    alpha=0.75,
+                    s=40,
+                    color=cmap(norm(strength))
+                )
+
+            # Title
             ax.set_title(f"t-SNE Activations (last layer) - {model_name} - {place}")
-            ax.set_xlabel("t-SNE 1")
-            ax.set_ylabel("t-SNE 2")
-            ax.grid(True, alpha=0.3)
-            ax.legend(bbox_to_anchor=(1.02, 1), loc="upper left")
+
+            # Remove axes
+            ax.set_axis_off()
+
+            # Add black rectangle border
+            rect = Rectangle(
+                (0, 0), 1, 1,
+                transform=ax.transAxes,
+                fill=False,
+                edgecolor="black",
+                linewidth=2,
+                clip_on=False
+            )
+            ax.add_patch(rect)
+
+            # Add colorbar (important for ordinal meaning)
+            sm = mpl.cm.ScalarMappable(norm=norm, cmap=cmap)
+            sm.set_array([])
+            cbar = fig.colorbar(sm, ax=ax, fraction=0.046, pad=0.04)
+            cbar.set_label("Strength (ordinal)")
+
             plt.tight_layout()
-            plt.savefig(os.path.join(plot_dir, f"tsne_{place}.png"), dpi=250, bbox_inches="tight")
+            plt.savefig(
+                os.path.join(plot_dir, f"tsne_{place}.png"),
+                dpi=250,
+                bbox_inches="tight",
+                pad_inches=0.1
+            )
             plt.close(fig)
 
     return df
