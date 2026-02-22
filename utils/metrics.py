@@ -51,18 +51,115 @@ def compute_bleu(reference: str, candidate: str) -> float:
     bleu = corpus_bleu([candidate], [[reference]])
     return float(bleu.score)
 
+import torch
+from typing import Optional, Tuple, List
+
+# bert-score
+from bert_score import BERTScorer
+
+_BERTSCORER_CACHE = {}  # key -> BERTScorer
+
+
+def get_bertscorer(
+        *,
+        model_type: str = "roberta-large",
+        lang: str = "en",
+        device: Optional[str] = None,
+        rescale_with_baseline: bool = False,
+) -> BERTScorer:
+    """
+    Lazy-load and cache BERTScorer so RoBERTa is loaded ONLY ONCE per process.
+
+    Keyed by (model_type, lang, device, rescale_with_baseline).
+    """
+    if device is None:
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+
+    key = (model_type, lang, device, bool(rescale_with_baseline))
+    if key in _BERTSCORER_CACHE:
+        return _BERTSCORER_CACHE[key]
+
+    # Load once
+    scorer = BERTScorer(
+        model_type=model_type,
+        lang=lang,
+        device=device,
+        rescale_with_baseline=rescale_with_baseline,
+        verbose=False,
+    )
+    _BERTSCORER_CACHE[key] = scorer
+    return scorer
+
 
 def compute_bertscore(
         reference: str,
         candidate: str,
-        device: str = "cuda" if torch.cuda.is_available() else "cpu",
+        *,
+        device: Optional[str] = None,
+        model_type: str = "roberta-large",
+        lang: str = "en",
+        rescale_with_baseline: bool = False,
 ) -> float:
     """
     Compute BERTScore (F1) between reference and candidate.
+    Uses a cached BERTScorer -> no repeated RoBERTa loading.
     Returns F1 (0-1).
     """
-    P, R, F1 = bert_score([candidate], [reference], lang="en", verbose=False, device=device,model_type="roberta-large",)
-    return float(F1.item())
+    scorer = get_bertscorer(
+        model_type=model_type,
+        lang=lang,
+        device=device,
+        rescale_with_baseline=rescale_with_baseline,
+    )
+
+    # scorer.score expects lists
+    P, R, F1 = scorer.score([candidate], [reference])
+    return float(F1[0].item())
+
+
+def compute_bertscore_batch(
+        references: List[str],
+        candidates: List[str],
+        *,
+        device: Optional[str] = None,
+        model_type: str = "roberta-large",
+        lang: str = "en",
+        rescale_with_baseline: bool = False,
+        batch_size: int = 16,
+) -> List[float]:
+    """
+    Batched BERTScore with caching + internal batching (faster than per-example calls).
+    Returns list of F1 scores.
+    """
+    if len(references) != len(candidates):
+        raise ValueError("references and candidates must have the same length")
+
+    scorer = get_bertscorer(
+        model_type=model_type,
+        lang=lang,
+        device=device,
+        rescale_with_baseline=rescale_with_baseline,
+    )
+
+    f1s: List[float] = []
+    for i in range(0, len(candidates), int(batch_size)):
+        cand_batch = candidates[i : i + int(batch_size)]
+        ref_batch = references[i : i + int(batch_size)]
+        _, _, F1 = scorer.score(cand_batch, ref_batch)
+        f1s.extend([float(x.item()) for x in F1])
+
+    return f1s
+# def compute_bertscore(
+#         reference: str,
+#         candidate: str,
+#         device: str = "cuda" if torch.cuda.is_available() else "cpu",
+# ) -> float:
+#     """
+#     Compute BERTScore (F1) between reference and candidate.
+#     Returns F1 (0-1).
+#     """
+#     P, R, F1 = bert_score([candidate], [reference], lang="en", verbose=False, device=device,model_type="roberta-large",)
+#     return float(F1.item())
 
 
 # =============================================================================
