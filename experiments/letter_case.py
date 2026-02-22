@@ -759,6 +759,31 @@ def run_experiment(
     df_all.to_csv(full_path, index=False)
     print(f"✓ Saved combined full results: {full_path}")
 
+    # Generate plots automatically
+    try:
+        from utils.surface_plots import make_all_plots_from_csvs
+        
+        plot_dir = os.path.join(run_dir, "plots_metrics")
+        os.makedirs(plot_dir, exist_ok=True)
+        
+        make_all_plots_from_csvs(
+            plot_inputs=[run_dir],
+            out_dir=plot_dir,
+            strengths=strength_levels,
+            places_filter=places,
+            models_filter=models,
+            dataset_name=dataset_name,
+            style_name="letter_case",
+            save_pdf=False,
+            include_title=False,
+            legend_outside=True,
+        )
+        print(f"✓ Generated plots: {plot_dir}")
+    except ImportError:
+        print("⚠️ Plotting module not found - skipping plots")
+    except Exception as e:
+        print(f"⚠️ Plotting failed: {e}")
+
     return run_dir
 
 
