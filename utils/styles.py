@@ -294,9 +294,9 @@ def apply_politeness(
     # -------------------------
     POLITE_PREFIX = {
         1:  "Hello. ",
-        2:  "Hello, please ",
-        3:  "Hello, could you please ",
-        4:  "Hello, could you please, when you have a moment, ",
+        2:  "Hello, please answer,",
+        3:  "Hello, could you please answer, ",
+        4:  "Hello, could you please answer, when you have a moment, ",
         5:  "Hello, could you please answer, when you have a moment, if it’s not too much trouble, ",
         6:  "Hello, could you please answer, when you have a moment, if it’s not too much trouble, I’d appreciate it if you could answer, ",
         7:  "Hello, could you please answer, when you have a moment, if it’s not too much trouble, I’d really appreciate it if you could answer, ",
