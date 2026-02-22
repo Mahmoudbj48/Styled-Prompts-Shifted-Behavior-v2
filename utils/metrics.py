@@ -62,7 +62,7 @@ _BERTSCORER_CACHE = {}  # key -> BERTScorer
 
 def get_bertscorer(
         *,
-        model_type: str = "roberta-large",
+        model_type: str = "roberta-base",
         lang: str = "en",
         device: Optional[str] = None,
         rescale_with_baseline: bool = False,
@@ -96,7 +96,7 @@ def compute_bertscore(
         candidate: str,
         *,
         device: Optional[str] = None,
-        model_type: str = "roberta-large",
+        model_type: str = "roberta-base",
         lang: str = "en",
         rescale_with_baseline: bool = False,
 ) -> float:
@@ -122,7 +122,7 @@ def compute_bertscore_batch(
         candidates: List[str],
         *,
         device: Optional[str] = None,
-        model_type: str = "roberta-large",
+        model_type: str = "roberta-base",
         lang: str = "en",
         rescale_with_baseline: bool = False,
         batch_size: int = 16,
