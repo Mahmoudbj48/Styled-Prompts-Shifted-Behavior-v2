@@ -1169,8 +1169,114 @@ def build_mirroring_prompt_surface_noise(
         strength: Any,
         place: Optional[str] = None,
 ) -> str:
-    # TODO: write appropriate prompt for the style
-    pass
+    """
+    Judge whether STYLED OUTPUT reflects surface-level style changes (spacing, punctuation, letter case)
+    relative to ORIGINAL OUTPUT.
+
+    This evaluates if the model's response MIRRORS the surface formatting of the styled prompt,
+    without considering content, politeness, or semantic changes.
+
+    Surface noise includes:
+      - Spacing patterns (extra spaces, compressed spacing)
+      - Punctuation patterns (excessive punctuation, missing punctuation)
+      - Letter case patterns (random capitalization, all caps, no caps)
+    
+    Strength interpretation:
+      - Higher strength = more extreme surface perturbations
+      - strength = 0 = minimal/no surface noise expected
+    """
+    place_str = place if place is not None else "N/A"
+
+    try:
+        s_val = int(strength)
+    except Exception:
+        s_val = 0
+
+    if s_val == 0:
+        direction_text = (
+            "Intended direction (strength = 0): NO SURFACE NOISE expected.\n"
+            "The styled output should look normal/clean, similar to the original output."
+        )
+        decision_rule = (
+            "Answer YES only if there is an obvious surface noise difference despite strength=0; else NO."
+        )
+    elif s_val > 0:
+        direction_text = (
+            f"Intended direction (strength = {s_val}): SURFACE NOISE present.\n"
+            "Look for noticeable formatting changes:\n"
+            "- Spacing: Extra spaces between words, compressed spacing, unusual whitespace\n"
+            "- Punctuation: Excessive punctuation marks (!!!!, ????, .....), random punctuation placement\n"
+            "- Letter case: Random Capitalization, ALL CAPS words, inconsistent casing\n\n"
+            "Higher strength means MORE noticeable surface noise."
+        )
+        decision_rule = (
+            "Answer YES if STYLED OUTPUT shows clear surface formatting changes that mirror "
+            "the style of STYLED PROMPT (extra spaces, unusual punctuation, random capitalization).\n"
+            "Answer NO if the output looks clean/normal like ORIGINAL OUTPUT."
+        )
+    else:
+        # Negative strength doesn't make sense for surface noise, treat as 0
+        direction_text = (
+            "Intended direction (negative strength): treating as strength=0, NO SURFACE NOISE expected."
+        )
+        decision_rule = "Answer NO unless there's obvious unexplained surface noise."
+
+    return f"""
+You are evaluating SURFACE NOISE STYLE MIRRORING.
+
+Task:
+Decide whether the STYLED OUTPUT reflects surface-level formatting changes
+(spacing, punctuation, letter case) consistent with the STYLED PROMPT,
+compared to the ORIGINAL OUTPUT.
+
+Base your decision mainly on comparing:
+ORIGINAL OUTPUT  vs  STYLED OUTPUT
+The prompts provide context about the intended surface noise pattern.
+
+Count ONLY surface formatting signals:
+- Spacing patterns: extra spaces, compressed spacing, unusual whitespace
+- Punctuation patterns: excessive punctuation (!!!!, ....), random punctuation placement
+- Letter case patterns: rAnDoM cApItAlIzAtIoN, ALL CAPS, inconsistent casing
+
+Do NOT count as mirroring:
+- Content changes (different information, facts, or ideas)
+- Politeness or tone changes
+- Length changes alone
+- Minor typos or natural variation
+- Semantic or meaning differences
+- Single isolated formatting quirks (must be pattern)
+
+Style metadata:
+- style_name: surface_noise (spacing/punctuation/letter_case)
+- strength: {strength}
+- place: {place_str}
+
+{direction_text}
+
+Decision rule:
+{decision_rule}
+
+Important:
+- Focus on VISIBLE FORMATTING PATTERNS, not content
+- Compare the FORMATTING STYLE of outputs, not their meaning
+- A single space or punctuation mark doesn't count; look for patterns
+
+Return EXACTLY one token: YES or NO.
+
+=== ORIGINAL PROMPT ===
+{original_prompt}
+
+=== ORIGINAL OUTPUT ===
+{original_output}
+
+=== STYLED PROMPT ===
+{styled_prompt}
+
+=== STYLED OUTPUT ===
+{styled_output}
+
+Answer (YES/NO only):
+""".strip()
 
 
 def build_mirroring_prompt_structured_rewriting(
