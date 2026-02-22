@@ -43,10 +43,7 @@ import matplotlib as mpl
 import numpy as np
 import torch
 import torch.nn.functional as F
-# import os
-# os.environ["HF_HUB_DISABLE_TELEMETRY"] = "1"
-# os.environ["HF_HUB_OFFLINE"] = "1"
-# os.environ["TRANSFORMERS_OFFLINE"] = "1"
+
 # Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -54,7 +51,7 @@ from utils.data import load_dataset_by_name
 from utils.models import load_model, generate_response
 from utils.metrics import (
     compute_bleu,
-    compute_bertscore,
+    compute_bertscore,   # (kept import; not used in the new batched path)
     compute_confidence,
     get_layer_activations_batch,
     reduce_activations_2d,
@@ -65,6 +62,63 @@ from utils.styles import apply_politeness
 
 # Import plotting functions from the separate file
 from utils.politeness_plots import make_all_plots_from_csvs
+
+
+# -----------------------------------------------------------------------------
+# NEW: Fast batched BERTScore (loads RoBERTa once, scores in batches)
+# -----------------------------------------------------------------------------
+from bert_score import BERTScorer
+
+_BERTSCORER_CACHE = {}  # (model_type, lang, device) -> BERTScorer
+
+
+def _get_bertscorer_cached(
+        *,
+        model_type: str = "roberta-large",
+        lang: str = "en",
+        device: str = "cpu",
+) -> BERTScorer:
+    key = (model_type, lang, device)
+    if key in _BERTSCORER_CACHE:
+        return _BERTSCORER_CACHE[key]
+    scorer = BERTScorer(
+        model_type=model_type,
+        lang=lang,
+        device=device,
+
+    )
+    _BERTSCORER_CACHE[key] = scorer
+    return scorer
+
+
+def compute_bertscore_batch(
+        references: List[str],
+        candidates: List[str],
+        *,
+        device: str = "cpu",
+        model_type: str = "roberta-large",
+        lang: str = "en",
+        batch_size: int = 16,
+) -> List[float]:
+    """
+    Batched BERTScore F1 for (references, candidates).
+    Returns list[float] with same length.
+    """
+    if len(references) != len(candidates):
+        raise ValueError("references and candidates must have the same length")
+
+    scorer = _get_bertscorer_cached(model_type=model_type, lang=lang, device=device)
+
+    f1s: List[float] = []
+    bs = int(batch_size) if int(batch_size) > 0 else len(candidates)
+
+    for i in range(0, len(candidates), bs):
+        cand_b = candidates[i:i + bs]
+        ref_b = references[i:i + bs]
+        _, _, F1 = scorer.score(cand_b, ref_b)
+        f1s.extend([float(x.item()) for x in F1])
+
+    return f1s
 
 
 VALID_EXPERIMENTS = {"prompt", "response", "activation", "confidence", "mirroring"}
@@ -476,13 +530,16 @@ def run_for_one_model(
             for strength in strength_levels:
                 batch_pert_prompts = [apply_politeness(p, strength, place=place) for p in batch_orig_prompts]
 
-                # Prompt BERTScore
+                # Prompt BERTScore (BATCHED)
                 batch_prompt_bs = None
                 if "prompt" in experiments:
-                    batch_prompt_bs = [
-                        compute_bertscore(o, s, device="cpu")
-                        for o, s in zip(batch_orig_prompts, batch_pert_prompts)
-                    ]
+                    batch_prompt_bs = compute_bertscore_batch(
+                        references=batch_orig_prompts,
+                        candidates=batch_pert_prompts,
+                        device="cpu",
+                        model_type="roberta-large",
+                        batch_size=min(32, max(1, len(batch_orig_prompts))),
+                    )
 
                 # Responses (baseline + styled) with caching
                 batch_response_orig = None
@@ -517,6 +574,18 @@ def run_for_one_model(
                     batch_response_pert = out["output_styled_raw"]
                     batch_response_orig_clean = out["output_orig_clean"]
                     batch_response_pert_clean = out["output_styled_clean"]
+
+                # Response BERTScore (BATCHED)
+                batch_response_bs = None
+                if run_llm_phase and ("response" in experiments):
+                    # Use CPU to avoid fighting GPU memory with the main LLM.
+                    batch_response_bs = compute_bertscore_batch(
+                        references=batch_response_orig,
+                        candidates=batch_response_pert,
+                        device="cpu",
+                        model_type="roberta-large",
+                        batch_size=min(16, max(1, len(batch_response_orig))),
+                    )
 
                 # Styled activations
                 batch_act_pert = None
@@ -595,7 +664,7 @@ def run_for_one_model(
                         ro = batch_response_orig[j]
                         rp = batch_response_pert[j]
                         row["bleu"] = float(compute_bleu(ro, rp))
-                        row["bertscore_response"] = float(compute_bertscore(ro, rp, device=str(model.device)))
+                        row["bertscore_response"] = float(batch_response_bs[j])
 
                     if run_llm_phase and ("activation" in experiments):
                         a0 = batch_act_orig[j]
@@ -634,7 +703,6 @@ def run_for_one_model(
 
     # t-SNE plots (kept)
     if "activation" in experiments and activations_cache is not None:
-
 
         plot_dir = os.path.join(run_dir, "plots_tsne", model_name)
         os.makedirs(plot_dir, exist_ok=True)
