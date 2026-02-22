@@ -16,8 +16,14 @@ datasets:
     split: "validation"
     sample_size: 128
 
+    gsm8k: 
+    config_name: "main"
+    split: "test"
+    sample_size: 128
+
 defaults:
   max_new_tokens: 100
+  max_new_tokens_cot: 512
   device_map: "auto"
   dtype: "float16"
   random_seed: 42

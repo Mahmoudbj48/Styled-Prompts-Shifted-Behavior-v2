@@ -2472,3 +2472,256 @@ def _compute_bias_metrics(predictions):
         },
         'details': predictions
     }
+
+
+
+
+# utils/metrics.py (ADD TO EXISTING FILE)
+
+import json
+import re
+from typing import Any, Dict, List, Optional, Callable
+
+
+# =============================================================================
+# Chain-of-Thought (CoT) Reasoning Evaluation
+# =============================================================================
+
+def add_cot_prompt(question: str) -> str:
+    """
+    Add Chain-of-Thought reasoning instruction to a question.
+    
+    Prompts the model to provide step-by-step reasoning in JSON format.
+    
+    Args:
+        question: The original question/problem
+        
+    Returns:
+        Question with CoT instruction appended
+        
+    Example:
+        >>> q = "What is 5 + 3?"
+        >>> add_cot_prompt(q)
+        'What is 5 + 3?\n\nSolve this step by step...'
+    """
+    cot_instruction = """
+
+Solve this problem step by step. Respond in this exact JSON format:
+{
+  "step_1": "first step of reasoning",
+  "step_2": "second step of reasoning",
+  "step_3": "third step of reasoning",
+  "answer": "final answer"
+}
+
+Use as many steps as needed. Each step should be clear and build on the previous one."""
+
+    return question.strip() + cot_instruction
+
+
+def parse_cot_response(response: str) -> Dict[str, Any]:
+    """
+    Parse Chain-of-Thought JSON response and extract reasoning steps.
+    
+    Args:
+        response: Model's raw response text
+        
+    Returns:
+        Dictionary with:
+            - num_steps: int (count of step_N keys)
+            - steps: dict (all step_N: content pairs)
+            - answer: str or None
+            - raw_json: dict or None (parsed JSON)
+            - parse_success: bool
+            - parse_error: str or None
+            - total_reasoning_length: int
+            - avg_step_length: float
+            
+    Example:
+        >>> response = '{"step_1": "Add 5", "step_2": "Result is 8", "answer": "8"}'
+        >>> result = parse_cot_response(response)
+        >>> result['num_steps']
+        2
+    """
+    result = {
+        "num_steps": 0,
+        "steps": {},
+        "answer": None,
+        "raw_json": None,
+        "parse_success": False,
+        "parse_error": None,
+        "total_reasoning_length": 0,
+        "avg_step_length": 0.0,
+    }
+    
+    # Clean response - extract JSON if wrapped in markdown or other text
+    cleaned = response.strip()
+    
+    # Remove markdown code blocks
+    cleaned = re.sub(r'^```(?:json)?\s*', '', cleaned, flags=re.MULTILINE)
+    cleaned = re.sub(r'\s*```$', '', cleaned, flags=re.MULTILINE)
+    
+    # Try to find JSON object
+    json_match = re.search(r'\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}', cleaned, re.DOTALL)
+    if json_match:
+        cleaned = json_match.group(0)
+    
+    # Parse JSON
+    try:
+        data = json.loads(cleaned)
+        result["raw_json"] = data
+        result["parse_success"] = True
+        
+        # Extract steps
+        step_keys = sorted([k for k in data.keys() if k.startswith("step_")])
+        result["num_steps"] = len(step_keys)
+        
+        for key in step_keys:
+            result["steps"][key] = str(data[key])
+        
+        # Extract answer
+        if "answer" in data:
+            result["answer"] = str(data["answer"])
+        
+        # Compute step statistics
+        if result["steps"]:
+            step_lengths = [len(str(v)) for v in result["steps"].values()]
+            result["total_reasoning_length"] = sum(step_lengths)
+            result["avg_step_length"] = result["total_reasoning_length"] / len(step_lengths)
+        
+    except json.JSONDecodeError as e:
+        result["parse_error"] = f"JSON parse error: {str(e)}"
+    except Exception as e:
+        result["parse_error"] = f"Unexpected error: {str(e)}"
+    
+    return result
+
+
+def evaluate_cot_reasoning_comparison(
+        model,
+        tokenizer,
+        questions: List[str],
+        *,
+        style_fn: Optional[Callable] = None,
+        strength: int = 0,
+        place: str = "global",
+        max_new_tokens: int = 512,
+        batch_size: int = 8,
+        apply_cot_before_style: bool = True,
+) -> List[Dict[str, Any]]:
+    """
+    Evaluate CoT reasoning with original vs styled prompts comparison.
+    
+    Generates responses for BOTH original and styled prompts, then compares
+    the number of reasoning steps.
+    
+    Args:
+        model: Loaded language model
+        tokenizer: Corresponding tokenizer
+        questions: List of questions/problems
+        style_fn: Optional style function (if None, no style applied)
+        strength: Style strength (passed to metadata)
+        place: Style placement (passed to metadata)
+        max_new_tokens: Maximum tokens to generate
+        batch_size: Batch size for generation
+        apply_cot_before_style: Whether to apply CoT before or after style
+        
+    Returns:
+        List of dicts with keys:
+            - question_original: str
+            - prompt_original_cot: str
+            - prompt_styled_cot: str
+            - response_original: str
+            - response_styled: str
+            - num_steps_original: int
+            - num_steps_styled: int
+            - steps_diff: int (styled - original)
+            - parse_success_original: bool
+            - parse_success_styled: bool
+            - strength: int
+            - place: str
+    """
+    from utils.models import generate_response
+    
+    # Prepare ORIGINAL prompts (with CoT, no style)
+    prompts_original = [add_cot_prompt(q) for q in questions]
+    
+    # Prepare STYLED prompts (with CoT + style)
+    prompts_styled = []
+    for question in questions:
+        if style_fn is None:
+            # No style, same as original
+            prompt = add_cot_prompt(question)
+        elif apply_cot_before_style:
+            # CoT first, then style
+            prompt = add_cot_prompt(question)
+            prompt = style_fn(prompt)
+        else:
+            # Style first, then CoT
+            prompt = style_fn(question)
+            prompt = add_cot_prompt(prompt)
+        prompts_styled.append(prompt)
+    
+    # BATCHED GENERATION for original
+    responses_original = generate_response(
+        model,
+        tokenizer,
+        prompts=prompts_original,
+        max_new_tokens=max_new_tokens,
+        batch_size=batch_size,
+    )
+    
+    # BATCHED GENERATION for styled
+    responses_styled = generate_response(
+        model,
+        tokenizer,
+        prompts=prompts_styled,
+        max_new_tokens=max_new_tokens,
+        batch_size=batch_size,
+    )
+    
+    # Parse and compare
+    results = []
+    for i, question in enumerate(questions):
+        # Parse original
+        parsed_orig = parse_cot_response(responses_original[i])
+        
+        # Parse styled
+        parsed_styled = parse_cot_response(responses_styled[i])
+        
+        # Compute difference
+        steps_diff = parsed_styled["num_steps"] - parsed_orig["num_steps"]
+        
+        result = {
+            "question_original": question,
+            "prompt_original_cot": prompts_original[i],
+            "prompt_styled_cot": prompts_styled[i],
+            "response_original": responses_original[i],
+            "response_styled": responses_styled[i],
+            
+            # Original metrics
+            "num_steps_original": parsed_orig["num_steps"],
+            "parse_success_original": parsed_orig["parse_success"],
+            "avg_step_length_original": parsed_orig["avg_step_length"],
+            "total_reasoning_length_original": parsed_orig["total_reasoning_length"],
+            "answer_original": parsed_orig["answer"],
+            
+            # Styled metrics
+            "num_steps_styled": parsed_styled["num_steps"],
+            "parse_success_styled": parsed_styled["parse_success"],
+            "avg_step_length_styled": parsed_styled["avg_step_length"],
+            "total_reasoning_length_styled": parsed_styled["total_reasoning_length"],
+            "answer_styled": parsed_styled["answer"],
+            
+            # Comparison
+            "steps_diff": steps_diff,
+            "steps_change_pct": (steps_diff / parsed_orig["num_steps"] * 100) if parsed_orig["num_steps"] > 0 else 0.0,
+            
+            # Metadata
+            "strength": strength,
+            "place": place,
+        }
+        
+        results.append(result)
+    
+    return results
