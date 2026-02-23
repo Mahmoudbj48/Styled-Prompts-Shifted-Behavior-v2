@@ -1,0 +1,136 @@
+========================================
+Running: experiments/letter_case.py --models L3.2-3B
+========================================
+
+================================================================================
+LETTER CASE EXPERIMENT (MULTI-MODEL, BATCHED) + DATA CACHING
+================================================================================
+Models: ['L3.2-3B']
+Dataset: truthful_qa
+Experiments: ['activation', 'confidence', 'mirroring', 'prompt', 'response']
+Sample size: 128
+Strengths: [0, 10, 25, 50, 75, 100]
+Places: ['prefix', 'suffix', 'global']
+Batch size: 21
+Max new tokens: 100
+Data cache dir: data
+Overwrite sample cache: False
+Overwrite output cache: False
+Mirroring judge: openai/gpt-4o-mini  max_calls=200000
+Output dir (results): results/letter_case/run_multi_truthful_qa_20260223_140059
+================================================================================
+
+Loading model: meta-llama/Llama-3.2-3B-Instruct...
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:06<00:06,  6.68s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:08<00:00,  3.97s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:08<00:00,  4.38s/it]
+Model loaded successfully on cuda:0
+[L3.2-3B] batch-groups:   0%|          | 0/126 [00:00<?, ?group/s]Some weights of RobertaModel were not initialized from the model checkpoint at roberta-base and are newly initialized: ['roberta.pooler.dense.bias', 'roberta.pooler.dense.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+/home/mahmoud.j/.venv/lib/python3.8/site-packages/transformers/generation/configuration_utils.py:590: UserWarning: `do_sample` is set to `False`. However, `temperature` is set to `0.6` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `temperature`.
+  warnings.warn(
+/home/mahmoud.j/.venv/lib/python3.8/site-packages/transformers/generation/configuration_utils.py:595: UserWarning: `do_sample` is set to `False`. However, `top_p` is set to `0.9` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `top_p`.
+  warnings.warn(
+Some weights of RobertaModel were not initialized from the model checkpoint at roberta-base and are newly initialized: ['roberta.pooler.dense.bias', 'roberta.pooler.dense.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+[L3.2-3B] batch-groups:   1%|          | 1/126 [01:59<4:08:08, 119.11s/group][L3.2-3B] batch-groups:   2%|▏         | 2/126 [04:11<4:22:17, 126.92s/group][L3.2-3B] batch-groups:   2%|▏         | 3/126 [06:23<4:24:33, 129.05s/group][L3.2-3B] batch-groups:   3%|▎         | 4/126 [08:39<4:28:21, 131.98s/group][L3.2-3B] batch-groups:   4%|▍         | 5/126 [10:55<4:29:07, 133.45s/group][L3.2-3B] batch-groups:   5%|▍         | 6/126 [13:09<4:27:23, 133.69s/group][L3.2-3B] batch-groups:   6%|▌         | 7/126 [15:19<4:22:45, 132.48s/group][L3.2-3B] batch-groups:   6%|▋         | 8/126 [17:29<4:19:04, 131.74s/group][L3.2-3B] batch-groups:   7%|▋         | 9/126 [19:45<4:19:21, 133.01s/group][L3.2-3B] batch-groups:   8%|▊         | 10/126 [22:01<4:18:43, 133.82s/group]Generating responses for prompts 0 to 20...
+the number of prompts in this batch is 21
+Generating responses for prompts 0 to 20...
+the number of prompts in this batch is 21
+Generating responses for prompts 0 to 20...
+the number of prompts in this batch is 21
+Generating responses for prompts 0 to 20...
+the number of prompts in this batch is 21
+Generating responses for prompts 0 to 20...
+the number of prompts in this batch is 21
+Generating responses for prompts 0 to 20...
+the number of prompts in this batch is 21
+Generating responses for prompts 0 to 20...
+the number of prompts in this batch is 21
+Generating responses for prompts 0 to 20...
+the number of prompts in this batch is 21
+Generating responses for prompts 0 to 20...
+the number of prompts in this batch is 21
+Generating responses for prompts 0 to 20...
+the number of prompts in this batch is 21
+Generating responses for prompts 0 to 20...
+the number of prompts in this batch is 21
+Generating responses for prompts 0 to 20...
+the number of prompts in this batch is 21
+Generating responses for prompts 0 to 20...
+the number of prompts in this batch is 21
+Generating responses for prompts 0 to 20...
+the number of prompts in this batch is 21
+Generating responses for prompts 0 to 20...
+the number of prompts in this batch is 21
+Generating responses for prompts 0 to 20...
+the number of prompts in this batch is 21
+Generating responses for prompts 0 to 20...
+the number of prompts in this batch is 21
+Generating responses for prompts 0 to 20...
+the number of prompts in this batch is 21
+Generating responses for prompts 0 to 20...
+the number of prompts in this batch is 21
+Generating responses for prompts 0 to 20...
+the number of prompts in this batch is 21
+Generating responses for prompts 0 to 20...
+the number of prompts in this batch is 21
+Generating responses for prompts 0 to 20...
+the number of prompts in this batch is 21
+Traceback (most recent call last):
+  File "experiments/letter_case.py", line 857, in <module>
+    main()
+  File "experiments/letter_case.py", line 832, in main
+    run_experiment(
+  File "experiments/letter_case.py", line 720, in run_experiment
+    df_model = run_for_one_model(
+  File "experiments/letter_case.py", line 516, in run_for_one_model
+    batch_act_pert = get_layer_activations_batch(
+  File "/home/mahmoud.j/Styled-Prompts-Shifted-Behavior-v2/utils/metrics.py", line 365, in get_layer_activations_batch
+    outputs = model(
+  File "/home/mahmoud.j/.venv/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/mahmoud.j/.venv/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/mahmoud.j/.venv/lib/python3.8/site-packages/transformers/models/llama/modeling_llama.py", line 1210, in forward
+    logits = self.lm_head(hidden_states[:, -num_logits_to_keep:, :])
+  File "/home/mahmoud.j/.venv/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/mahmoud.j/.venv/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/mahmoud.j/.venv/lib/python3.8/site-packages/torch/nn/modules/linear.py", line 117, in forward
+    return F.linear(input, self.weight, self.bias)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 366.00 MiB. GPU 0 has a total capacity of 7.79 GiB of which 64.50 MiB is free. Including non-PyTorch memory, this process has 7.72 GiB memory in use. Of the allocated memory 7.23 GiB is allocated by PyTorch, and 359.05 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+[L3.2-3B] batch-groups:   8%|▊         | 10/126 [24:00<4:38:30, 144.06s/group]Done: experiments/letter_case.py --models L3.2-3B
+========================================
+Running: experiments/letter_case.py --models G-2B
+========================================
+`config.hidden_act` is ignored, you should use `config.hidden_activation` instead.
+Gemma's activation function will be set to `gelu_pytorch_tanh`. Please, use
+`config.hidden_activation` if you want to override this behaviour.
+See https://github.com/huggingface/transformers/pull/29402 for more details.
+
+================================================================================
+LETTER CASE EXPERIMENT (MULTI-MODEL, BATCHED) + DATA CACHING
+================================================================================
+Models: ['G-2B']
+Dataset: truthful_qa
+Experiments: ['activation', 'confidence', 'mirroring', 'prompt', 'response']
+Sample size: 128
+Strengths: [0, 10, 25, 50, 75, 100]
+Places: ['prefix', 'suffix', 'global']
+Batch size: 21
+Max new tokens: 100
+Data cache dir: data
+Overwrite sample cache: False
+Overwrite output cache: False
+Mirroring judge: openai/gpt-4o-mini  max_calls=200000
+Output dir (results): results/letter_case/run_multi_truthful_qa_20260223_142522
+================================================================================
+
+Loading model: google/gemma-2b-it...
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:35<00:35, 35.60s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:36<00:00, 15.03s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:36<00:00, 18.11s/it]
+Model loaded successfully on cuda:0
+[G-2B] batch-groups:   0%|          | 0/126 [00:00<?, ?group/s]Some weights of RobertaModel were not initialized from the model checkpoint at roberta-base and are newly initialized: ['roberta.pooler.dense.bias', 'roberta.pooler.dense.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Some weights of RobertaModel were not initialized from the model checkpoint at roberta-base and are newly initialized: ['roberta.pooler.dense.bias', 'roberta.pooler.dense.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+[G-2B] batch-groups:   1%|          | 1/126 [01:18<2:43:25, 78.44s/group][G-2B] batch-groups:   2%|▏         | 2/126 [02:32<2:36:41, 75.82s/group][G-2B] batch-groups:   2%|▏         | 3/126 [03:47<2:34:49, 75.52s/group]

@@ -412,8 +412,8 @@ def run_for_one_model(
     if run_llm_phase:
         model, tokenizer = load_model(
             model_path,
-            device_map=config["defaults"].get("device_map", "auto"),
-            dtype=config["defaults"].get("dtype", "float32"),
+            device_map="auto",
+            dtype="float16",
         )
 
     seed = int(config["defaults"].get("random_seed", 42))
