@@ -166,6 +166,71 @@ def load_alpaca_hf(
     print(f"Loaded {len(prompts)} Alpaca prompts (split='{use_split}').")
     return prompts
 
+# -----------------------------------------------------------------------------
+# GSM8K (Hugging Face: "openai/gsm8k")
+# -----------------------------------------------------------------------------
+def load_gsm8k(
+        sample_size: int = 128,
+        seed: int = 42,
+        *,
+        repo_id: str = "openai/gsm8k",
+        config_name: str = "main",
+        split: str = "test",
+) -> List[Dict[str, Any]]:
+    """
+    Load GSM8K (Grade School Math 8K) dataset for reasoning evaluation.
+
+    GSM8K contains grade school math word problems that require multi-step reasoning.
+    Each problem has a question and a solution with step-by-step reasoning.
+
+    Args:
+        sample_size: Number of problems to load
+        seed: Random seed for shuffling
+        repo_id: HuggingFace repo (default: "openai/gsm8k")
+        config_name: Dataset config (default: "main")
+        split: Dataset split ("train" or "test", default: "test")
+
+    Returns:
+        list[dict] with keys:
+            - question: str (the math word problem)
+            - best_answer: str (final numerical answer)
+            - category: str ("gsm8k")
+            - meta: dict containing:
+                - solution: str (full step-by-step solution from dataset)
+                - raw: dict (original item)
+    """
+    print(f"Loading GSM8K ({config_name}, {split})...")
+    dataset = load_dataset(repo_id, config_name, split=split)
+
+    shuffled = dataset.shuffle(seed=seed)
+    count = min(sample_size, len(shuffled))
+    subset = shuffled.select(range(count))
+
+    prompts = []
+    for item in subset:
+        question = item["question"].strip()
+        answer_with_solution = item["answer"].strip()
+        
+        # GSM8K answers are formatted as:
+        # "Step 1 explanation\nStep 2 explanation\n#### 42"
+        # Extract the final answer after "####"
+        final_answer = None
+        if "####" in answer_with_solution:
+            final_answer = answer_with_solution.split("####")[-1].strip()
+        
+        prompts.append({
+            "question": question,
+            "best_answer": final_answer,
+            "category": "gsm8k",
+            "meta": {
+                "solution": answer_with_solution,  # Full solution with steps
+                "raw": dict(item),
+            }
+        })
+
+    print(f"Loaded {len(prompts)} GSM8K problems.")
+    return prompts
+
 
 # -----------------------------------------------------------------------------
 # Dataset factory
@@ -191,6 +256,7 @@ def load_dataset_by_name(dataset_name, **kwargs):
         "alpaca": load_alpaca_hf,
         "bbq": load_bbq_hf,
         "harmbench": load_harmbench_hf,
+        "gsm8k": load_gsm8k,
     }
 
     if dataset_name not in loaders:
