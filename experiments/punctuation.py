@@ -52,7 +52,7 @@ from utils.metrics import (
 from utils.styles import apply_punctuation
 
 
-VALID_EXPERIMENTS = {"prompt", "response", "activation", "confidence", "mirroring"}
+VALID_EXPERIMENTS = {"prompt", "response", "activation", "confidence"} # , "mirroring"
 
 
 # --------------------------
@@ -386,13 +386,13 @@ def run_for_one_model(
         batch_size: int,
         max_new_tokens: int,
         show_row_pbar: bool = False,
-        # mirroring judge params
-        judge_provider: str = "openai",
-        judge_model: str = "gpt-4o-mini",
-        openai_key_env: str = "OPENAI_API_KEY",
-        gemini_key_env: str = "GEMINI_API_KEY",
-        judge_max_output_tokens: int = 16,
-        max_mirroring_judge_calls: int = 999999999,
+        # # mirroring judge params
+        # judge_provider: str = "openai",
+        # judge_model: str = "gpt-4o-mini",
+        # openai_key_env: str = "OPENAI_API_KEY",
+        # gemini_key_env: str = "GEMINI_API_KEY",
+        # judge_max_output_tokens: int = 16,
+        # max_mirroring_judge_calls: int = 999999999,
         # data cache params
         data_dir: str,
         dataset_name: str,
@@ -434,7 +434,7 @@ def run_for_one_model(
         total_rows = n * len(places) * len(strength_levels)
         row_pbar = tqdm(total=total_rows, desc=f"[{model_name}] rows", unit="row", leave=False)
 
-    mirroring_calls_used = 0
+    # mirroring_calls_used = 0
 
     for b in range(n_batches):
         start = b * batch_size
@@ -521,43 +521,43 @@ def run_for_one_model(
                     if batch_act_pert.shape[0] != len(batch_pert_prompts):
                         raise RuntimeError("get_layer_activations_batch returned wrong batch size (styled).")
 
-                # Mirroring
-                mir_yes = 0
-                mir_total = 0
-                mir_rate = np.nan
-                mirroring_verdicts: List[Optional[bool]] = [None] * len(batch_orig_prompts)
-                mirroring_raws: List[str] = [""] * len(batch_orig_prompts)
+                # # Mirroring
+                # mir_yes = 0
+                # mir_total = 0
+                # mir_rate = np.nan
+                # mirroring_verdicts: List[Optional[bool]] = [None] * len(batch_orig_prompts)
+                # mirroring_raws: List[str] = [""] * len(batch_orig_prompts)
 
-                if "mirroring" in experiments:
-                    for j in range(len(batch_orig_prompts)):
-                        if mirroring_calls_used >= max_mirroring_judge_calls:
-                            break
-                        verdict, judge_raw, _ = judge_with_retries(
-                            judge_provider=judge_provider,
-                            original_prompt=batch_orig_prompts[j],
-                            original_output=batch_response_orig_clean[j],
-                            styled_prompt=batch_pert_prompts[j],
-                            styled_output=batch_response_pert_clean[j],
-                            style_name="punctuation",
-                            strength=int(strength),
-                            place=place,
-                            judge_model=judge_model,
-                            openai_key_env=openai_key_env,
-                            gemini_key_env=gemini_key_env,
-                            max_output_tokens=judge_max_output_tokens,
-                            use_false_positive_guard=False,  # Not needed for surface noise
-                        )
-                        mirroring_calls_used += 1
-                        mirroring_verdicts[j] = verdict
-                        mirroring_raws[j] = judge_raw or ""
+                # if "mirroring" in experiments:
+                #     for j in range(len(batch_orig_prompts)):
+                #         if mirroring_calls_used >= max_mirroring_judge_calls:
+                #             break
+                #         verdict, judge_raw, _ = judge_with_retries(
+                #             judge_provider=judge_provider,
+                #             original_prompt=batch_orig_prompts[j],
+                #             original_output=batch_response_orig_clean[j],
+                #             styled_prompt=batch_pert_prompts[j],
+                #             styled_output=batch_response_pert_clean[j],
+                #             style_name="punctuation",
+                #             strength=int(strength),
+                #             place=place,
+                #             judge_model=judge_model,
+                #             openai_key_env=openai_key_env,
+                #             gemini_key_env=gemini_key_env,
+                #             max_output_tokens=judge_max_output_tokens,
+                #             use_false_positive_guard=False,  # Not needed for surface noise
+                #         )
+                #         mirroring_calls_used += 1
+                #         mirroring_verdicts[j] = verdict
+                #         mirroring_raws[j] = judge_raw or ""
 
-                        if verdict is not None:
-                            mir_total += 1
-                            if verdict:
-                                mir_yes += 1
+                #         if verdict is not None:
+                #             mir_total += 1
+                #             if verdict:
+                #                 mir_yes += 1
 
-                    if mir_total > 0:
-                        mir_rate = mir_yes / mir_total
+                #     if mir_total > 0:
+                #         mir_rate = mir_yes / mir_total
 
                 # Per-example rows (include everything needed for plotting)
                 for j in range(len(batch_orig_prompts)):
@@ -599,14 +599,14 @@ def run_for_one_model(
                         conf = compute_confidence(model, tokenizer, orig, pert, batch_response_orig[j])
                         row.update(conf)
 
-                    if "mirroring" in experiments:
-                        row["mirroring_verdict"] = (
-                            "YES" if mirroring_verdicts[j] is True else
-                            "NO" if mirroring_verdicts[j] is False else
-                            ""
-                        )
-                        row["mirroring_judge_raw"] = mirroring_raws[j]
-                        row["mirroring_rate_batch"] = float(mir_rate) if np.isfinite(mir_rate) else np.nan
+                    # if "mirroring" in experiments:
+                    #     row["mirroring_verdict"] = (
+                    #         "YES" if mirroring_verdicts[j] is True else
+                    #         "NO" if mirroring_verdicts[j] is False else
+                    #         ""
+                    #     )
+                    #     row["mirroring_judge_raw"] = mirroring_raws[j]
+                    #     row["mirroring_rate_batch"] = float(mir_rate) if np.isfinite(mir_rate) else np.nan
 
                     rows.append(row)
                     if row_pbar is not None:
@@ -642,12 +642,12 @@ def run_experiment(
         strengths_explicit: Optional[List[int]],
         strength_range: Optional[Tuple[int, int]],
         strength_step: int,
-        judge_provider: str,
-        judge_model: str,
-        openai_key_env: str,
-        gemini_key_env: str,
-        judge_max_output_tokens: int,
-        max_mirroring_judge_calls: int,
+        # judge_provider: str,
+        # judge_model: str,
+        # openai_key_env: str,
+        # gemini_key_env: str,
+        # judge_max_output_tokens: int,
+        # max_mirroring_judge_calls: int,
         data_dir: str,
         overwrite_sample_cache: bool,
         overwrite_output_cache: bool,
@@ -695,8 +695,8 @@ def run_experiment(
     print(f"Data cache dir: {data_dir}")
     print(f"Overwrite sample cache: {overwrite_sample_cache}")
     print(f"Overwrite output cache: {overwrite_output_cache}")
-    if "mirroring" in experiments_set:
-        print(f"Mirroring judge: {judge_provider}/{judge_model}  max_calls={max_mirroring_judge_calls}")
+    # if "mirroring" in experiments_set:
+    #     print(f"Mirroring judge: {judge_provider}/{judge_model}  max_calls={max_mirroring_judge_calls}")
     print(f"Output dir (results): {run_dir}")
     print(f"{'='*80}\n")
 
@@ -725,12 +725,12 @@ def run_experiment(
             batch_size=batch_size,
             max_new_tokens=max_new_tokens,
             show_row_pbar=show_row_pbar,
-            judge_provider=judge_provider,
-            judge_model=judge_model,
-            openai_key_env=openai_key_env,
-            gemini_key_env=gemini_key_env,
-            judge_max_output_tokens=judge_max_output_tokens,
-            max_mirroring_judge_calls=max_mirroring_judge_calls,
+            # judge_provider=judge_provider,
+            # judge_model=judge_model,
+            # openai_key_env=openai_key_env,
+            # gemini_key_env=gemini_key_env,
+            # judge_max_output_tokens=judge_max_output_tokens,
+            # max_mirroring_judge_calls=max_mirroring_judge_calls,
             data_dir=data_dir,
             dataset_name=dataset_name,
             dataset_config_name=dataset_config.get("config_name"),
@@ -799,12 +799,12 @@ def main():
     parser.add_argument("--strength_range", nargs=2, type=int, default=None, metavar=("LO", "HI"))
     parser.add_argument("--strength_step", type=int, default=1)
 
-    parser.add_argument("--judge_provider", type=str, default="openai", choices=["openai", "gemini"])
-    parser.add_argument("--judge_model", type=str, default="gpt-4o-mini")
-    parser.add_argument("--openai_key_env", type=str, default="OPENAI_API_KEY")
-    parser.add_argument("--gemini_key_env", type=str, default="GEMINI_API_KEY")
-    parser.add_argument("--judge_max_output_tokens", type=int, default=16)
-    parser.add_argument("--max_mirroring_judge_calls", type=int, default=200000)
+    # parser.add_argument("--judge_provider", type=str, default="openai", choices=["openai", "gemini"])
+    # parser.add_argument("--judge_model", type=str, default="gpt-4o-mini")
+    # parser.add_argument("--openai_key_env", type=str, default="OPENAI_API_KEY")
+    # parser.add_argument("--gemini_key_env", type=str, default="GEMINI_API_KEY")
+    # parser.add_argument("--judge_max_output_tokens", type=int, default=16)
+    # parser.add_argument("--max_mirroring_judge_calls", type=int, default=200000)
 
     parser.add_argument("--data_dir", type=str, default=None,
                         help="Base data dir for caches (default=../data). Separate from results.")
@@ -816,12 +816,12 @@ def main():
     config = load_config()
     models = _normalize_models(args.models, config)
 
-    experiments_set = _normalize_experiments(args.experiments)
-    if "mirroring" in experiments_set:
-        if args.judge_provider == "openai" and not os.environ.get(args.openai_key_env):
-            raise SystemExit(f"ERROR: {args.openai_key_env} not set. export {args.openai_key_env}='...'")
-        if args.judge_provider == "gemini" and not os.environ.get(args.gemini_key_env):
-            raise SystemExit(f"ERROR: {args.gemini_key_env} not set. export {args.gemini_key_env}='...'")
+    # experiments_set = _normalize_experiments(args.experiments)
+    # if "mirroring" in experiments_set:
+    #     if args.judge_provider == "openai" and not os.environ.get(args.openai_key_env):
+    #         raise SystemExit(f"ERROR: {args.openai_key_env} not set. export {args.openai_key_env}='...'")
+    #     if args.judge_provider == "gemini" and not os.environ.get(args.gemini_key_env):
+    #         raise SystemExit(f"ERROR: {args.gemini_key_env} not set. export {args.gemini_key_env}='...'")
 
     data_dir = args.data_dir or os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
 
@@ -836,12 +836,12 @@ def main():
         strengths_explicit=args.strengths,
         strength_range=tuple(args.strength_range) if args.strength_range else None,
         strength_step=int(args.strength_step),
-        judge_provider=args.judge_provider,
-        judge_model=args.judge_model,
-        openai_key_env=args.openai_key_env,
-        gemini_key_env=args.gemini_key_env,
-        judge_max_output_tokens=int(args.judge_max_output_tokens),
-        max_mirroring_judge_calls=int(args.max_mirroring_judge_calls),
+        # judge_provider=args.judge_provider,
+        # judge_model=args.judge_model,
+        # openai_key_env=args.openai_key_env,
+        # gemini_key_env=args.gemini_key_env,
+        # judge_max_output_tokens=int(args.judge_max_output_tokens),
+        # max_mirroring_judge_calls=int(args.max_mirroring_judge_calls),
         data_dir=data_dir,
         overwrite_sample_cache=bool(args.overwrite_sample_cache),
         overwrite_output_cache=bool(args.overwrite_output_cache),

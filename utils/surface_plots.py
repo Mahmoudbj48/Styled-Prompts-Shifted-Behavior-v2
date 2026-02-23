@@ -90,7 +90,7 @@ PLOT_METRICS_DEFAULT = [
     "entropy_shift",
     "jsd_drift",
     "activation_similarity",
-    "mirroring_rate",
+    # "mirroring_rate",
 ]
 
 
