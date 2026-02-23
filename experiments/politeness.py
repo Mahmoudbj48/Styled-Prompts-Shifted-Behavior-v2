@@ -391,15 +391,15 @@ def _load_or_generate_outputs_for_bucket(
     """
     n = len(prompt_orig_list)
 
-    if os.path.exists(cache_path) and (not overwrite_output_cache):
-        rows = _read_jsonl_gz(cache_path)
-        if len(rows) == n:
-            return {
-                "output_orig_raw": [r["output_orig_raw"] for r in rows],
-                "output_orig_clean": [r["output_orig_clean"] for r in rows],
-                "output_styled_raw": [r["output_styled_raw"] for r in rows],
-                "output_styled_clean": [r["output_styled_clean"] for r in rows],
-            }
+    # if os.path.exists(cache_path) and (not overwrite_output_cache):
+    #     rows = _read_jsonl_gz(cache_path)
+    #     if len(rows) == n:
+    #         return {
+    #             "output_orig_raw": [r["output_orig_raw"] for r in rows],
+    #             "output_orig_clean": [r["output_orig_clean"] for r in rows],
+    #             "output_styled_raw": [r["output_styled_raw"] for r in rows],
+    #             "output_styled_clean": [r["output_styled_clean"] for r in rows],
+    #         }
 
     out_orig_raw = generate_response(
         model, tokenizer,

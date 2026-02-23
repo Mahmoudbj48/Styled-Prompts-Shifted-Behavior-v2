@@ -85,7 +85,7 @@ def get_bertscorer(
         lang=lang,
         device=device,
         rescale_with_baseline=rescale_with_baseline,
-        verbose=False,
+        # verbose=False,
     )
     _BERTSCORER_CACHE[key] = scorer
     return scorer
