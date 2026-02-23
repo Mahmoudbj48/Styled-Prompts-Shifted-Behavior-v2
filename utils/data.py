@@ -257,6 +257,7 @@ def load_dataset_by_name(dataset_name, **kwargs):
         "bbq": load_bbq_hf,
         "harmbench": load_harmbench_hf,
         "gsm8k": load_gsm8k,
+        "natural_questions": load_natural_questions,
     }
 
     if dataset_name not in loaders:
@@ -432,4 +433,68 @@ def load_harmbench_hf(
         })
 
     print(f"Loaded {len(prompts)} HarmBench prompts (config='{config_name}', split='{use_split}').")
+    return prompts
+
+
+
+# -----------------------------------------------------------------------------
+# Natural Questions
+# -----------------------------------------------------------------------------
+def load_natural_questions(
+        sample_size: int = 256,
+        seed: int = 42,
+        *,
+        repo_id: str = "google-research-datasets/natural_questions",
+        config_name: str = "default",
+        split: str = "validation",
+) -> List[Dict[str, Any]]:
+    """
+    Load Natural Questions dataset.
+
+    Natural Questions contains real user queries paired with
+    annotated short and long answers.
+
+    Returns:
+        list[dict] with keys:
+            - question: str
+            - best_answer: str (short answer if available)
+            - category: str ("natural_questions")
+            - meta: dict (raw fields + long answer info)
+    """
+
+    print(f"Loading Natural Questions ({config_name}, {split})...")
+    dataset = load_dataset(repo_id, config_name, split=split)
+
+    shuffled = dataset.shuffle(seed=seed)
+    count = min(sample_size, len(shuffled))
+    subset = shuffled.select(range(count))
+
+    prompts: List[Dict[str, Any]] = []
+
+    for item in subset:
+        ex = dict(item)
+
+        question = ex.get("question", "").strip()
+
+        # Attempt to extract short answer
+        best_answer = None
+        short_answers = ex.get("short_answers")
+
+        if short_answers and isinstance(short_answers, list):
+            if len(short_answers) > 0:
+                best_answer = short_answers[0].get("text")
+
+        prompts.append({
+            "question": question,
+            "best_answer": best_answer,
+            "category": "natural_questions",
+            "meta": {
+                "long_answer": ex.get("long_answer"),
+                "short_answers": short_answers,
+                "document": ex.get("document"),
+                "raw": ex,
+            }
+        })
+
+    print(f"Loaded {len(prompts)} Natural Questions prompts.")
     return prompts

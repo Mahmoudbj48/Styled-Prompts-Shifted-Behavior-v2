@@ -16,10 +16,15 @@ datasets:
     split: "validation"
     sample_size: 128
 
-  gsm8k: 
+  gsm8k:
     config_name: "main"
     split: "test"
     sample_size: 128
+
+  natural_questions:
+    config_name: "default"
+    split: "validation"
+    sample_size: 256
 
 defaults:
   max_new_tokens: 100
