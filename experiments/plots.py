@@ -7,35 +7,22 @@ What this script does
 1) Load and merge run summaries from multiple run directories.
    Expected file per run:
      <RUN_DIR>/plots_metrics/combined_means_by_model_place_strength.csv
-   (This is what your existing pipeline writes.)
 
-2) For EACH metric column:
-   - Line plot: x=strength, y=metric, one color per model, shades per place.
+2) For EACH metric column (restricted to a selected set):
+   - Line plot: x=strength (interpreted as), y=metric,
+     one color per model, shades per place.
    - Radar plot Type A: axes=places, lines=models (colors=models).
    - Radar plot Type B: axes=models, lines=places (colors=places).
    - Radar plot Type C: axes=metrics, lines=(model,place) with:
         color=model, linestyle=place.
 
-Design goals
-------------
-- Darker, readable colors (closer to your reference).
-- Proper polar grid with multiple inner circles.
-- Larger fonts and thicker lines.
-- Do NOT inject 0 for missing values (use NaN and skip safely).
-- Optional normalization for radar plots so different metrics are comparable.
-
-Usage
------
-python plots.py \
-  --runs results/politeness_safety/run_20260101_120000 results/politeness_safety/run_20260101_121000 \
-  --out_dir results/combined_plots \
-  --save_pdf \
-  --radar_norm minmax
-
 Notes
 -----
-- If you only want a subset of metrics, pass --metrics metric1 metric2 ...
-- If you want only specific places/models, pass --places ... / --models ...
+- This file intentionally keeps your plotting logic the same, except:
+  * Titles and axis labels are fixed as requested.
+  * Metric display names are mapped (y-axis + titles).
+  * Only a specific metric subset is plotted (plus optional bertscore_prompt special case).
+  * bertscore_prompt is plotted for only ONE model across 3 places, and title omits model.
 """
 
 import os
@@ -46,6 +33,38 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.colors import to_rgb
+
+
+# ============================================================
+# Metric selection + display name mapping
+# ============================================================
+
+# Metrics we want for all models and places
+ALLOWED_METRICS = [
+    "bleu",
+    "bertscore_response",
+    "delta_log_prob",
+    "entropy_shift",
+    "activation_similarity",
+    "mirroring_rate",
+]
+
+# Optional special-case metric (not for all models)
+SPECIAL_SINGLE_MODEL_METRIC = "bertscore_prompt"
+
+METRIC_DISPLAY = {
+    "bleu": "BLEU",
+    "bertscore_response": "BERTScore (Response)",
+    "delta_log_prob": "Δ Log Prob",
+    "entropy_shift": "Entropy Shift",
+    "activation_similarity": "Activation Similarity",
+    "mirroring_rate": "Mirroring Rate",
+    "bertscore_prompt": "BERTScore (Prompt)",
+}
+
+
+def metric_display_name(metric: str) -> str:
+    return METRIC_DISPLAY.get(metric, metric)
 
 
 # ============================================================
@@ -115,7 +134,6 @@ def load_all_runs(run_dirs: List[str]) -> pd.DataFrame:
 def infer_metric_columns(df: pd.DataFrame) -> List[str]:
     base = {"model", "place", "strength", "run_dir"}
     metrics = [c for c in df.columns if c not in base]
-    # keep only numeric-like columns
     keep = []
     for c in metrics:
         s = pd.to_numeric(df[c], errors="coerce")
@@ -124,11 +142,21 @@ def infer_metric_columns(df: pd.DataFrame) -> List[str]:
     return keep
 
 
+def select_metrics(df: pd.DataFrame) -> List[str]:
+    """
+    Keep ONLY the allowed metrics, plus bertscore_prompt if present (special-case).
+    """
+    present = set(infer_metric_columns(df))
+    chosen = [m for m in ALLOWED_METRICS if m in present]
+    if SPECIAL_SINGLE_MODEL_METRIC in present:
+        chosen.append(SPECIAL_SINGLE_MODEL_METRIC)
+    return chosen
+
+
 # ============================================================
 # Colors: darker palette + per-place shade
 # ============================================================
 
-# Dark, distinct colors (closer to your reference feel than pastels)
 DARK_MODEL_BASE = [
     "#1f77b4",  # blue
     "#ff7f0e",  # orange
@@ -164,7 +192,6 @@ def build_model_color_map(models: List[str]) -> Dict[str, str]:
 
 
 def build_place_color_map(places: List[str]) -> Dict[str, str]:
-    # fallback to a stable dark palette if unknown place names appear
     fallback = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"]
     out = {}
     for i, p in enumerate(sorted(places)):
@@ -173,12 +200,7 @@ def build_place_color_map(places: List[str]) -> Dict[str, str]:
 
 
 def shade_for_place(base_color: str, place: str, places_sorted: List[str]) -> Tuple[float, float, float]:
-    """
-    Create a consistent shade of a model's base color for each place.
-    """
     idx = places_sorted.index(place)
-    # 0 -> darkest, higher -> slightly lighter
-    # keep darker overall than pastels
     alpha = 0.05 + 0.18 * idx
     return _mix_with_white(base_color, alpha)
 
@@ -192,13 +214,16 @@ PLACE_LINESTYLE = {
 
 
 # ============================================================
-# Line plot: metric vs strength (models as colors, places as shades)
+# Line plot: metric vs "Style Strength" (strength)
 # ============================================================
-
-def plot_metric_lines(df: pd.DataFrame, metric: str, out_path: str,
-                      models: Optional[List[str]] = None,
-                      places: Optional[List[str]] = None,
-                      save_pdf: bool = False):
+def plot_metric_lines(
+        df: pd.DataFrame,
+        metric: str,
+        out_path: str,
+        models: Optional[List[str]] = None,
+        places: Optional[List[str]] = None,
+        save_pdf: bool = False,
+):
     apply_style()
 
     d = df.copy()
@@ -213,16 +238,21 @@ def plot_metric_lines(df: pd.DataFrame, metric: str, out_path: str,
 
     d[metric] = pd.to_numeric(d[metric], errors="coerce")
     d = d.dropna(subset=["strength", metric])
-
     if d.empty:
         return
 
     models_u = sorted(d["model"].unique().tolist())
     places_u = sorted(d["place"].unique().tolist())
 
+    # Special case: bertscore_prompt -> show ONLY ONE model (since same across models)
+    single_model_mode = (metric == SPECIAL_SINGLE_MODEL_METRIC and len(models_u) > 0)
+    if single_model_mode:
+        keep_model = models_u[0]
+        d = d[d["model"] == keep_model].copy()
+        models_u = [keep_model]
+
     model_colors = build_model_color_map(models_u)
 
-    # Slightly taller figure to reduce vertical compression
     fig, ax = plt.subplots(figsize=(8.2, 4.6))
 
     for model in models_u:
@@ -231,6 +261,9 @@ def plot_metric_lines(df: pd.DataFrame, metric: str, out_path: str,
             sub = d[(d["model"] == model) & (d["place"] == place)].sort_values("strength")
             if sub.empty:
                 continue
+
+            # Special case: labels omit model for bertscore_prompt
+            series_label = f"{place}" if single_model_mode else f"{model} · {place}"
 
             ax.plot(
                 sub["strength"].values,
@@ -241,50 +274,65 @@ def plot_metric_lines(df: pd.DataFrame, metric: str, out_path: str,
                 color=shade_for_place(base, place, places_u),
                 linestyle=PLACE_LINESTYLE.get(place, "-"),
                 alpha=0.9,
-                label=f"{model} · {place}",
+                label=series_label,
             )
 
-    ax.set_xlabel("Strength")
-    ax.set_ylabel(metric)
-
+    # Axis labels + title fixes
+    ax.set_xlabel("Style Strength")
+    ax.set_ylabel(metric_display_name(metric))
     ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
 
+    if single_model_mode:
+        ax.set_title(f"{metric_display_name(metric)} vs. Style Strength (All Places)")
+    else:
+        ax.set_title(f"{metric_display_name(metric)} vs. Style Strength (All Models and Places)")
+
     # ---- Dynamic y padding (prevents stiff look) ----
-    ymin = d[metric].min()
-    ymax = d[metric].max()
+    ymin = float(d[metric].min())
+    ymax = float(d[metric].max())
     if ymin != ymax:
         pad = 0.12 * (ymax - ymin)
-        ax.set_ylim(ymin - pad, ymax + pad)
+        ylo, yhi = ymin - pad, ymax + pad
     else:
-        ax.set_ylim(ymin - 0.1, ymax + 0.1)
+        ylo, yhi = ymin - 0.1, ymax + 0.1
 
-    # Optional: small margin safeguard
+    # Add threshold line ONLY for prompt plot, and ensure it's within ylim
+    if metric == "bertscore_prompt":
+        thr = 0.85
+        ylo = min(ylo, thr - 0.02)
+        yhi = max(yhi, thr + 0.02)
+        ax.axhline(
+            y=thr,
+            color="black",
+            linestyle="--",
+            linewidth=1.5,
+            alpha=0.8,
+            label="Threshold (0.85)",
+            zorder=3,
+        )
+
+    ax.set_ylim(ylo, yhi)
     ax.margins(y=0.05)
 
     ax.legend(
         bbox_to_anchor=(1.02, 1.0),
         loc="upper left",
         frameon=False,
-        ncol=1
+        ncol=1,
     )
 
     plt.tight_layout()
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     plt.savefig(out_path, dpi=300, bbox_inches="tight")
-
     if save_pdf:
-        plt.savefig(os.path.splitext(out_path)[0] + ".pdf",
-                    bbox_inches="tight")
-
+        plt.savefig(os.path.splitext(out_path)[0] + ".pdf", bbox_inches="tight")
     plt.close()
-
 
 # ============================================================
 # Radar helpers
 # ============================================================
 
 def _radar_setup(ax, labels: List[str], title: Optional[str] = None):
-    # angles
     n = len(labels)
     angles = np.linspace(0, 2 * np.pi, n, endpoint=False).tolist()
     angles += angles[:1]
@@ -295,7 +343,6 @@ def _radar_setup(ax, labels: List[str], title: Optional[str] = None):
     ax.set_xticks(angles[:-1])
     ax.set_xticklabels(labels, fontsize=12)
 
-    # multiple inner circles (r-grids)
     ax.set_rlabel_position(0)
     ax.grid(True, alpha=0.45, linewidth=0.9)
 
@@ -306,10 +353,6 @@ def _radar_setup(ax, labels: List[str], title: Optional[str] = None):
 
 
 def _aggregate_for_radar(df: pd.DataFrame, metric: str) -> pd.DataFrame:
-    """
-    For radar plots we aggregate over strength (mean across strengths),
-    but never fill missing combos with 0.
-    """
     d = df.copy()
     d[metric] = pd.to_numeric(d[metric], errors="coerce")
     agg = d.groupby(["model", "place"], dropna=False)[metric].mean().reset_index()
@@ -317,13 +360,6 @@ def _aggregate_for_radar(df: pd.DataFrame, metric: str) -> pd.DataFrame:
 
 
 def _normalize_table(values: pd.DataFrame, cols: List[str], mode: str) -> pd.DataFrame:
-    """
-    Normalize values across the entire plotted table to improve comparability.
-    mode:
-      - "none"
-      - "minmax"  -> (x-min)/(max-min)
-      - "zscore"  -> (x-mean)/std then map to [0,1] with sigmoid-like squash
-    """
     if mode == "none":
         return values
 
@@ -351,13 +387,8 @@ def _normalize_table(values: pd.DataFrame, cols: List[str], mode: str) -> pd.Dat
 
 
 def _set_rgrid(ax, data_max: float):
-    """
-    Make inner circles visible and readable.
-    """
     if not np.isfinite(data_max) or data_max <= 0:
         data_max = 1.0
-
-    # choose 5 rings
     rings = np.linspace(0, data_max, 6)[1:]
     ax.set_yticks(rings)
     ax.set_yticklabels([f"{r:.2f}" for r in rings], fontsize=10)
@@ -386,16 +417,26 @@ def plot_radar_places_axes(df: pd.DataFrame, metric: str, out_path: str,
     models_u = sorted(agg["model"].unique().tolist())
     places_u = sorted(agg["place"].unique().tolist())
 
-    # pivot: rows=models, cols=places
+    # Special case: bertscore_prompt -> show ONLY ONE model
+    if metric == SPECIAL_SINGLE_MODEL_METRIC and len(models_u) > 0:
+        keep_model = models_u[0]
+        agg = agg[agg["model"] == keep_model].copy()
+        models_u = [keep_model]
+
     tab = agg.pivot(index="model", columns="place", values=metric).reindex(index=models_u, columns=places_u)
     tab = _normalize_table(tab, cols=places_u, mode=radar_norm)
 
     fig, ax = plt.subplots(figsize=(6.2, 6.2), subplot_kw=dict(polar=True))
-    angles = _radar_setup(ax, places_u, title=f"{metric} (axes=places)")
+
+    if metric == SPECIAL_SINGLE_MODEL_METRIC:
+        title = f"{metric_display_name(metric)} by Place (Averaged over Style Strength)"
+    else:
+        title = f"{metric_display_name(metric)} by Place and Model (Averaged over Style Strength)"
+
+    angles = _radar_setup(ax, places_u, title=title)
 
     model_colors = build_model_color_map(models_u)
 
-    # determine max for rings (after normalization)
     vmax = np.nanmax(tab.to_numpy(dtype=float))
     if radar_norm != "none":
         vmax = 1.0
@@ -441,12 +482,18 @@ def plot_radar_models_axes(df: pd.DataFrame, metric: str, out_path: str,
     models_u = sorted(agg["model"].unique().tolist())
     places_u = sorted(agg["place"].unique().tolist())
 
-    # pivot: rows=places, cols=models
+    # Special case: bertscore_prompt -> show ONLY ONE model, but this plot is axes=models.
+    # With one model, the radar becomes degenerate; we keep behavior safe by returning.
+    if metric == SPECIAL_SINGLE_MODEL_METRIC:
+        if len(models_u) <= 1:
+            return
+
     tab = agg.pivot(index="place", columns="model", values=metric).reindex(index=places_u, columns=models_u)
     tab = _normalize_table(tab, cols=models_u, mode=radar_norm)
 
     fig, ax = plt.subplots(figsize=(6.6, 6.6), subplot_kw=dict(polar=True))
-    angles = _radar_setup(ax, models_u, title=f"{metric} (axes=models)")
+    title = f"{metric_display_name(metric)} by Model and Place (Averaged over Style Strength)"
+    angles = _radar_setup(ax, models_u, title=title)
 
     place_colors = build_place_color_map(places_u)
 
@@ -482,14 +529,6 @@ def plot_radar_metrics_axes(df: pd.DataFrame, metrics: List[str], out_path: str,
                             places: Optional[List[str]] = None,
                             radar_norm: str = "minmax",
                             save_pdf: bool = False):
-    """
-    One radar chart:
-      - axes are metrics
-      - each line corresponds to (model, place)
-      - color encodes model
-      - linestyle encodes place
-    Recommended: radar_norm=minmax (default) to put metrics on a comparable [0,1] scale.
-    """
     apply_style()
 
     d = df.copy()
@@ -500,8 +539,7 @@ def plot_radar_metrics_axes(df: pd.DataFrame, metrics: List[str], out_path: str,
     if d.empty:
         return
 
-    # mean over strength for each (model, place, metric)
-    keep_metrics = [m for m in metrics if m in d.columns]
+    keep_metrics = [m for m in metrics if m in d.columns and m in ALLOWED_METRICS]
     if not keep_metrics:
         return
 
@@ -521,17 +559,17 @@ def plot_radar_metrics_axes(df: pd.DataFrame, metrics: List[str], out_path: str,
 
     models_u = sorted(long["model"].unique().tolist())
     places_u = sorted(long["place"].unique().tolist())
-    metrics_u = keep_metrics[:]  # keep user order
+    metrics_u = keep_metrics[:]  # keep order
 
-    # wide table: index=(model,place), columns=metric
     tab = long.pivot_table(index=["model", "place"], columns="metric", values="value", aggfunc="mean")
     tab = tab.reindex(columns=metrics_u)
-
-    # normalize globally across all (model,place) values
     tab = _normalize_table(tab, cols=metrics_u, mode=radar_norm)
 
+    metric_labels = [metric_display_name(m) for m in metrics_u]
+
     fig, ax = plt.subplots(figsize=(7.0, 7.0), subplot_kw=dict(polar=True))
-    angles = _radar_setup(ax, metrics_u, title="(axes=metrics)")
+    title = "Metric Profile by Model and Place (Normalized, Averaged over Style Strength)"
+    angles = _radar_setup(ax, metric_labels, title=title)
 
     model_colors = build_model_color_map(models_u)
 
@@ -540,7 +578,6 @@ def plot_radar_metrics_axes(df: pd.DataFrame, metrics: List[str], out_path: str,
         vmax = 1.0
     _set_rgrid(ax, float(vmax) if np.isfinite(vmax) else 1.0)
 
-    # plot each (model, place)
     for (model, place), row in tab.iterrows():
         vals = row.to_numpy(dtype=float)
         if np.all(np.isnan(vals)):
@@ -557,7 +594,6 @@ def plot_radar_metrics_axes(df: pd.DataFrame, metrics: List[str], out_path: str,
             label=f"{model} · {place}",
         )
 
-    # compact legend (can be large). Still outside.
     ax.legend(bbox_to_anchor=(1.25, 1.08), loc="upper left", frameon=False, ncol=1)
     plt.tight_layout()
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
@@ -579,10 +615,10 @@ def main():
     parser.add_argument("--models", nargs="+", default=None)
     parser.add_argument("--places", nargs="+", default=None)
 
-    parser.add_argument("--metrics", nargs="+", default=None, help="If omitted: infer all numeric metrics.")
+    # Kept for compatibility, but we will still enforce allowed metrics + optional bertscore_prompt.
+    parser.add_argument("--metrics", nargs="+", default=None, help="(Ignored except for intersection with allowed metrics.)")
     parser.add_argument("--save_pdf", action="store_true")
 
-    # Radar normalization
     parser.add_argument("--radar_norm", type=str, default="minmax",
                         choices=["none", "minmax", "zscore"],
                         help="Normalization for radar plots. Recommended: minmax.")
@@ -593,7 +629,6 @@ def main():
 
     df = load_all_runs(args.runs)
 
-    # Optional filters
     if args.models is not None:
         df = df[df["model"].isin(args.models)]
     if args.places is not None:
@@ -602,7 +637,11 @@ def main():
     if df.empty:
         raise SystemExit("No data left after filtering.")
 
-    metrics = args.metrics if args.metrics is not None else infer_metric_columns(df)
+    metrics = select_metrics(df)
+
+    # If user provided --metrics, intersect with our selected set (no other changes)
+    if args.metrics is not None:
+        metrics = [m for m in metrics if m in set(args.metrics)]
 
     # --- Line + per-metric radars (A+B) ---
     for metric in metrics:
@@ -634,11 +673,15 @@ def main():
             save_pdf=bool(args.save_pdf),
         )
 
-    # --- Radar Type C: one radar over metrics ---
+    # --- Radar Type C: one radar over metrics (only the allowed metrics) ---
+    metrics_for_type_c = [
+    m for m in metrics
+    if m in ALLOWED_METRICS and m not in ["bleu", "delta_log_prob"]
+]
     plot_radar_metrics_axes(
         df,
-        metrics=metrics,
-        out_path=os.path.join(args.out_dir, f"radar_axes_metrics_all.png"),
+        metrics=metrics_for_type_c,
+        out_path=os.path.join(args.out_dir, "radar_axes_metrics_all.png"),
         models=args.models,
         places=args.places,
         radar_norm=args.radar_norm,
