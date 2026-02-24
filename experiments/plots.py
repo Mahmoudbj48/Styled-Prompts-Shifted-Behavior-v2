@@ -9,7 +9,7 @@ What this script does
      <RUN_DIR>/plots_metrics/combined_means_by_model_place_strength.csv
 
 2) For EACH metric column (restricted to a selected set):
-   - Line plot: x=strength (interpreted as), y=metric,
+   - Line plot: x=strength (Style Strength), y=metric,
      one color per model, shades per place.
    - Radar plot Type A: axes=places, lines=models (colors=models).
    - Radar plot Type B: axes=models, lines=places (colors=places).
@@ -19,7 +19,7 @@ What this script does
 Notes
 -----
 - This file intentionally keeps your plotting logic the same, except:
-  * Titles and axis labels are fixed as requested.
+  * Titles and axis labels are fixed as requested (now include dataset name).
   * Metric display names are mapped (y-axis + titles).
   * Only a specific metric subset is plotted (plus optional bertscore_prompt special case).
   * bertscore_prompt is plotted for only ONE model across 3 places, and title omits model.
@@ -47,6 +47,9 @@ ALLOWED_METRICS = [
     "entropy_shift",
     "activation_similarity",
     "mirroring_rate",
+    # NEW:
+    "asr_harmbench",
+    "silhouette_score_harmbench_alpaca",
 ]
 
 # Optional special-case metric (not for all models)
@@ -60,11 +63,85 @@ METRIC_DISPLAY = {
     "activation_similarity": "Activation Similarity",
     "mirroring_rate": "Mirroring Rate",
     "bertscore_prompt": "BERTScore (Prompt)",
+    # NEW:
+    "asr_harmbench": "ASR (HarmBench)",
+    "silhouette_score_harmbench_alpaca": "Silhouette Score (HarmBench + Alpaca)",
 }
 
 
 def metric_display_name(metric: str) -> str:
     return METRIC_DISPLAY.get(metric, metric)
+
+
+# ============================================================
+# Dataset name (TruthfulQA / Natural Questions) for titles
+# ============================================================
+
+_DATASET_CANON = {
+    "truthfulqa": "TruthfulQA",
+    "truthful_qa": "TruthfulQA",
+    "natural_questions": "Natural Questions",
+    "naturalquestions": "Natural Questions",
+    "nq": "Natural Questions",
+}
+
+
+def _canon_dataset_name(raw: str) -> Optional[str]:
+    if raw is None:
+        return None
+    s = str(raw).strip().lower()
+    if not s:
+        return None
+    if s in _DATASET_CANON:
+        return _DATASET_CANON[s]
+    # substring match
+    for k, v in _DATASET_CANON.items():
+        if k in s:
+            return v
+    return None
+
+
+def dataset_title_suffix(d: pd.DataFrame) -> str:
+    """
+    Returns a title suffix like:
+      " (TruthfulQA)" or " (Natural Questions)" or " (TruthfulQA + Natural Questions)"
+    If dataset cannot be inferred, returns "".
+    """
+    names: List[str] = []
+
+    # Preferred: explicit dataset column if present
+    for col in ["dataset", "benchmark", "task"]:
+        if col in d.columns:
+            vals = [x for x in d[col].dropna().unique().tolist()]
+            for v in vals:
+                cn = _canon_dataset_name(v)
+                if cn and cn not in names:
+                    names.append(cn)
+
+    # Fallback: infer from run_dir names
+    if not names and "run_dir" in d.columns:
+        vals = [x for x in d["run_dir"].dropna().unique().tolist()]
+        for v in vals:
+            cn = _canon_dataset_name(v)
+            if cn and cn not in names:
+                names.append(cn)
+
+    if not names:
+        return ""
+
+    # keep stable ordering TruthfulQA then NQ if both exist
+    ordered = []
+    for v in ["TruthfulQA", "Natural Questions"]:
+        if v in names:
+            ordered.append(v)
+    # add any extras deterministically (unlikely)
+    for v in sorted(set(names)):
+        if v not in ordered:
+            ordered.append(v)
+
+    if len(ordered) == 1:
+        return f" ({ordered[0]})"
+    return " (" + " + ".join(ordered) + ")"
 
 
 # ============================================================
@@ -216,6 +293,7 @@ PLACE_LINESTYLE = {
 # ============================================================
 # Line plot: metric vs "Style Strength" (strength)
 # ============================================================
+
 def plot_metric_lines(
         df: pd.DataFrame,
         metric: str,
@@ -241,6 +319,8 @@ def plot_metric_lines(
     if d.empty:
         return
 
+    ds_suffix = dataset_title_suffix(d)
+
     models_u = sorted(d["model"].unique().tolist())
     places_u = sorted(d["place"].unique().tolist())
 
@@ -262,7 +342,6 @@ def plot_metric_lines(
             if sub.empty:
                 continue
 
-            # Special case: labels omit model for bertscore_prompt
             series_label = f"{place}" if single_model_mode else f"{model} · {place}"
 
             ax.plot(
@@ -277,15 +356,14 @@ def plot_metric_lines(
                 label=series_label,
             )
 
-    # Axis labels + title fixes
     ax.set_xlabel("Style Strength")
     ax.set_ylabel(metric_display_name(metric))
     ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
 
     if single_model_mode:
-        ax.set_title(f"{metric_display_name(metric)} vs. Style Strength (All Places)")
+        ax.set_title(f"{metric_display_name(metric)} vs. Style Strength{ds_suffix} (All Places)")
     else:
-        ax.set_title(f"{metric_display_name(metric)} vs. Style Strength (All Models and Places)")
+        ax.set_title(f"{metric_display_name(metric)} vs. Style Strength{ds_suffix} (All Models and Places)")
 
     # ---- Dynamic y padding (prevents stiff look) ----
     ymin = float(d[metric].min())
@@ -327,6 +405,7 @@ def plot_metric_lines(
     if save_pdf:
         plt.savefig(os.path.splitext(out_path)[0] + ".pdf", bbox_inches="tight")
     plt.close()
+
 
 # ============================================================
 # Radar helpers
@@ -398,6 +477,10 @@ def _set_rgrid(ax, data_max: float):
 # ============================================================
 # Radar Type A: axes=places, colors=models
 # ============================================================
+# ============================================================
+# Radar Type A: axes=places, colors=models
+# (FIXED: titles now match the line-plot pattern + include dataset name)
+# ============================================================
 
 def plot_radar_places_axes(df: pd.DataFrame, metric: str, out_path: str,
                            models: Optional[List[str]] = None,
@@ -414,11 +497,14 @@ def plot_radar_places_axes(df: pd.DataFrame, metric: str, out_path: str,
     if agg.empty:
         return
 
+    ds_suffix = dataset_title_suffix(agg)
+
     models_u = sorted(agg["model"].unique().tolist())
     places_u = sorted(agg["place"].unique().tolist())
 
     # Special case: bertscore_prompt -> show ONLY ONE model
-    if metric == SPECIAL_SINGLE_MODEL_METRIC and len(models_u) > 0:
+    single_model_mode = (metric == SPECIAL_SINGLE_MODEL_METRIC and len(models_u) > 0)
+    if single_model_mode:
         keep_model = models_u[0]
         agg = agg[agg["model"] == keep_model].copy()
         models_u = [keep_model]
@@ -428,11 +514,11 @@ def plot_radar_places_axes(df: pd.DataFrame, metric: str, out_path: str,
 
     fig, ax = plt.subplots(figsize=(6.2, 6.2), subplot_kw=dict(polar=True))
 
-    if metric == SPECIAL_SINGLE_MODEL_METRIC:
-        title = f"{metric_display_name(metric)} by Place (Averaged over Style Strength)"
+    # Title style aligned with your rule
+    if single_model_mode:
+        title = f"{metric_display_name(metric)} vs. Place{ds_suffix} (All Places)"
     else:
-        title = f"{metric_display_name(metric)} by Place and Model (Averaged over Style Strength)"
-
+        title = f"{metric_display_name(metric)} vs. Place{ds_suffix} (All Models and Places)"
     angles = _radar_setup(ax, places_u, title=title)
 
     model_colors = build_model_color_map(models_u)
@@ -462,6 +548,7 @@ def plot_radar_places_axes(df: pd.DataFrame, metric: str, out_path: str,
 
 # ============================================================
 # Radar Type B: axes=models, colors=places
+# (FIXED: titles now match the line-plot pattern + include dataset name)
 # ============================================================
 
 def plot_radar_models_axes(df: pd.DataFrame, metric: str, out_path: str,
@@ -479,20 +566,22 @@ def plot_radar_models_axes(df: pd.DataFrame, metric: str, out_path: str,
     if agg.empty:
         return
 
+    ds_suffix = dataset_title_suffix(agg)
+
     models_u = sorted(agg["model"].unique().tolist())
     places_u = sorted(agg["place"].unique().tolist())
 
-    # Special case: bertscore_prompt -> show ONLY ONE model, but this plot is axes=models.
-    # With one model, the radar becomes degenerate; we keep behavior safe by returning.
-    if metric == SPECIAL_SINGLE_MODEL_METRIC:
-        if len(models_u) <= 1:
-            return
+    # Special case: bertscore_prompt -> this plot can be degenerate if 1 model; skip safely
+    if metric == SPECIAL_SINGLE_MODEL_METRIC and len(models_u) <= 1:
+        return
 
     tab = agg.pivot(index="place", columns="model", values=metric).reindex(index=places_u, columns=models_u)
     tab = _normalize_table(tab, cols=models_u, mode=radar_norm)
 
     fig, ax = plt.subplots(figsize=(6.6, 6.6), subplot_kw=dict(polar=True))
-    title = f"{metric_display_name(metric)} by Model and Place (Averaged over Style Strength)"
+
+    # Title style aligned with your rule
+    title = f"{metric_display_name(metric)} vs. Model{ds_suffix} (All Models and Places)"
     angles = _radar_setup(ax, models_u, title=title)
 
     place_colors = build_place_color_map(places_u)
@@ -522,6 +611,7 @@ def plot_radar_models_axes(df: pd.DataFrame, metric: str, out_path: str,
 
 # ============================================================
 # Radar Type C: axes=metrics, color=model, linestyle=place
+# (FIXED: title includes dataset name)
 # ============================================================
 
 def plot_radar_metrics_axes(df: pd.DataFrame, metrics: List[str], out_path: str,
@@ -538,6 +628,8 @@ def plot_radar_metrics_axes(df: pd.DataFrame, metrics: List[str], out_path: str,
         d = d[d["place"].isin(places)]
     if d.empty:
         return
+
+    ds_suffix = dataset_title_suffix(d)
 
     keep_metrics = [m for m in metrics if m in d.columns and m in ALLOWED_METRICS]
     if not keep_metrics:
@@ -568,7 +660,7 @@ def plot_radar_metrics_axes(df: pd.DataFrame, metrics: List[str], out_path: str,
     metric_labels = [metric_display_name(m) for m in metrics_u]
 
     fig, ax = plt.subplots(figsize=(7.0, 7.0), subplot_kw=dict(polar=True))
-    title = "Metric Profile by Model and Place (Normalized, Averaged over Style Strength)"
+    title = f"Metric Profile by Model and Place{ds_suffix} (Normalized, Avg. over Style Strength)"
     angles = _radar_setup(ax, metric_labels, title=title)
 
     model_colors = build_model_color_map(models_u)
@@ -601,7 +693,6 @@ def plot_radar_metrics_axes(df: pd.DataFrame, metrics: List[str], out_path: str,
     if save_pdf:
         plt.savefig(os.path.splitext(out_path)[0] + ".pdf", bbox_inches="tight")
     plt.close()
-
 
 # ============================================================
 # Main
@@ -675,9 +766,10 @@ def main():
 
     # --- Radar Type C: one radar over metrics (only the allowed metrics) ---
     metrics_for_type_c = [
-    m for m in metrics
-    if m in ALLOWED_METRICS and m not in ["bleu", "delta_log_prob"]
-]
+        m for m in metrics
+        if m in ALLOWED_METRICS and m not in ["bleu", "delta_log_prob"]
+    ]
+
     plot_radar_metrics_axes(
         df,
         metrics=metrics_for_type_c,
