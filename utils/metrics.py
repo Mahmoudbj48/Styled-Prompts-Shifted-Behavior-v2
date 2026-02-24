@@ -1749,13 +1749,25 @@ def compute_asr_from_scores(scores: Sequence[Optional[int]]) -> float:
 # ----------------------------
 @dataclass
 class LlamaGuard3Result:
-    score: int
-    output: str
-    unsafe_category: str = ""
-    unsafe_code: str = ""
+    score: int                    # 0=safe, 1=unsafe
+    output: str                   # raw decoded judge output
+    unsafe_category: str = ""     # best-effort mapped category (optional)
+    unsafe_code: str = ""         # e.g. "S10"
 
 
 class LlamaGuard3Scorer:
+    """
+    Llama-Guard-3 scorer (HF torch mode by default, optional vLLM mode).
+
+    Usage:
+        guard = LlamaGuard3Scorer(model_path="meta-llama/Llama-Guard-3-8B")
+        results = guard.batch_score(queries, responses, batch_size=8)
+        scores = [r.score for r in results]
+        asr = compute_asr_from_scores(scores)
+
+    This is designed to be placed in utils/metrics.py (global utilities).
+    """
+
     def __init__(
             self,
             *,
@@ -1763,29 +1775,15 @@ class LlamaGuard3Scorer:
             tokenizer_path: Optional[str] = None,
             device: str = "cuda:0",
             vllm_mode: bool = False,
-
-            # generation config
+            # generation config for judge
             max_new_tokens: int = 128,
             do_sample: bool = False,
-
-            # torch dtype (only used when NOT using bnb quant)
             torch_dtype: str = "bfloat16",
-
-            # HF offline / cache flags
+            # HF offline / cache flags (important for restricted envs)
             local_files_only: bool = False,
             trust_remote_code: bool = True,
             hf_token: Optional[str] = None,
-
-            # ---------- NEW: HF quantization knobs ----------
-            hf_load_in_8bit: bool = False,   # bitsandbytes int8
-            hf_load_in_4bit: bool = False,   # bitsandbytes 4bit (NF4/FP4)
-            bnb_4bit_quant_type: str = "nf4", # "nf4" (common) or "fp4"
-            bnb_4bit_compute_dtype: str = "bfloat16",  # bf16/fp16/fp32
-            bnb_4bit_use_double_quant: bool = True,
-
-            # ---------- NEW: vLLM quantization knob ----------
-            # e.g. "awq", "gptq", "fp8" (depends on your vLLM build/model)
-            vllm_quantization: Optional[str] = None,
+            # vLLM options
             vllm_gpu_memory_utilization: float = 0.8,
     ):
         self.model_path = model_path
@@ -1803,14 +1801,6 @@ class LlamaGuard3Scorer:
         self.trust_remote_code = bool(trust_remote_code)
         self.hf_token = hf_token
 
-        # new quant fields
-        self.hf_load_in_8bit = bool(hf_load_in_8bit)
-        self.hf_load_in_4bit = bool(hf_load_in_4bit)
-        self.bnb_4bit_quant_type = str(bnb_4bit_quant_type)
-        self.bnb_4bit_compute_dtype = str(bnb_4bit_compute_dtype)
-        self.bnb_4bit_use_double_quant = bool(bnb_4bit_use_double_quant)
-
-        self.vllm_quantization = vllm_quantization
         self.vllm_gpu_memory_utilization = float(vllm_gpu_memory_utilization)
 
         self.category_map = {
@@ -1832,41 +1822,31 @@ class LlamaGuard3Scorer:
 
         self.tokenizer = None
         self.model = None
-        self.sampling_params = None
-
-        # safety: don't allow both at once
-        if self.hf_load_in_8bit and self.hf_load_in_4bit:
-            raise ValueError("Choose only one: hf_load_in_8bit or hf_load_in_4bit (not both).")
+        self.sampling_params = None  # only in vLLM mode
 
         self._load_model()
 
     def _dtype_obj(self):
         import torch
-        t = self.torch_dtype.lower()
-        if t in ("bf16", "bfloat16"):
-            return torch.bfloat16
-        if t in ("fp16", "float16"):
-            return torch.float16
-        if t in ("fp32", "float32"):
-            return torch.float32
-        return torch.bfloat16
 
-    def _bnb_compute_dtype_obj(self):
-        import torch
-        t = self.bnb_4bit_compute_dtype.lower()
-        if t in ("bf16", "bfloat16"):
+        if self.torch_dtype.lower() in ("bf16", "bfloat16"):
             return torch.bfloat16
-        if t in ("fp16", "float16"):
+        if self.torch_dtype.lower() in ("fp16", "float16"):
             return torch.float16
-        if t in ("fp32", "float32"):
+        if self.torch_dtype.lower() in ("fp32", "float32"):
             return torch.float32
+        # default safe
         return torch.bfloat16
 
     def _load_model(self) -> None:
         print(f"[LlamaGuard3Scorer] Loading Llama-Guard-3 from: {self.model_path}")
-        print(f"[LlamaGuard3Scorer] Mode: {'vLLM' if self.vllm_mode else 'HF/torch'}")
+        if self.vllm_mode:
+            print("[LlamaGuard3Scorer] Mode: vLLM")
+        else:
+            print("[LlamaGuard3Scorer] Mode: HF/torch")
 
         if self.vllm_mode:
+            # vLLM mode
             from transformers import AutoTokenizer
             from vllm import LLM, SamplingParams
 
@@ -1876,25 +1856,20 @@ class LlamaGuard3Scorer:
                 local_files_only=self.local_files_only,
                 token=self.hf_token,
             )
+            # important for padding
             if self.tokenizer.pad_token is None:
                 self.tokenizer.pad_token = self.tokenizer.eos_token
 
-            llm_kwargs: Dict[str, Any] = dict(
+            self.model = LLM(
                 model=self.model_path,
                 device=self.device,
                 tensor_parallel_size=1,
                 trust_remote_code=self.trust_remote_code,
                 gpu_memory_utilization=self.vllm_gpu_memory_utilization,
             )
-            # NEW: allow vLLM quantization selection (depends on vLLM/model support)
-            if self.vllm_quantization:
-                llm_kwargs["quantization"] = self.vllm_quantization
 
-            self.model = LLM(**llm_kwargs)
-
-            generation_params: Dict[str, Any] = {
-                "max_tokens": int(self.generation_config.get("max_new_tokens", 128)),
-            }
+            generation_params: Dict[str, Any] = {}
+            generation_params["max_tokens"] = int(self.generation_config.get("max_new_tokens", 128))
             if not self.generation_config.get("do_sample", False):
                 generation_params["temperature"] = 0.0
 
@@ -1917,40 +1892,16 @@ class LlamaGuard3Scorer:
         if self.tokenizer.pad_token is None:
             self.tokenizer.pad_token = self.tokenizer.eos_token
 
-        # NEW: quantization configs
-        load_kwargs: Dict[str, Any] = dict(
+        model = AutoModelForCausalLM.from_pretrained(
+            self.model_path,
             trust_remote_code=self.trust_remote_code,
+            torch_dtype=self._dtype_obj(),
             local_files_only=self.local_files_only,
             token=self.hf_token,
         )
+        self.model = model.to(device_obj).eval()
 
-        if self.hf_load_in_8bit:
-            # requires: bitsandbytes installed
-            load_kwargs["load_in_8bit"] = True
-            # don't pass torch_dtype in 8bit mode (bnb handles)
-        elif self.hf_load_in_4bit:
-            # requires: bitsandbytes installed
-            from transformers import BitsAndBytesConfig
-            bnb_cfg = BitsAndBytesConfig(
-                load_in_4bit=True,
-                bnb_4bit_quant_type=self.bnb_4bit_quant_type,  # "nf4" is typical
-                bnb_4bit_compute_dtype=self._bnb_compute_dtype_obj(),
-                bnb_4bit_use_double_quant=self.bnb_4bit_use_double_quant,
-            )
-            load_kwargs["quantization_config"] = bnb_cfg
-        else:
-            # standard fp16/bf16
-            load_kwargs["torch_dtype"] = self._dtype_obj()
-
-        model = AutoModelForCausalLM.from_pretrained(self.model_path, **load_kwargs)
-
-        # With bnb quant, model may already be on correct device via device_map;
-        # but to keep your behavior consistent, we move if it's a normal torch model.
-        if not (self.hf_load_in_8bit or self.hf_load_in_4bit):
-            model = model.to(device_obj)
-
-        self.model = model.eval()
-        print(f"[LlamaGuard3Scorer] Loaded on device: {device_obj}")
+        print(f"[LlamaGuard3Scorer] Loaded on device: {device_obj} dtype={self._dtype_obj()}")
 
     def _build_prompts(self, queries: Sequence[str], responses: Sequence[str]) -> List[str]:
         assert self.tokenizer is not None
