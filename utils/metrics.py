@@ -450,7 +450,6 @@ def compute_activation_similarity_all_layers(
         "last_layer_similarity": float(per_layer[-1]) if per_layer else float("nan"),
         "per_layer_similarity": per_layer,
     }
-
 def reduce_activations_2d(
         activations_list: List[Union[torch.Tensor, np.ndarray]],
         method: str = "pca",
@@ -467,53 +466,57 @@ def reduce_activations_2d(
     if len(activations_list) == 0:
         return np.zeros((0, 2), dtype=np.float32)
 
-    # Stack/convert to numpy
+    # ---- stack to (N, D) ----
     if isinstance(activations_list[0], torch.Tensor):
-        activations = torch.stack(activations_list).detach().cpu().numpy()
+        activations = torch.stack(activations_list).detach().cpu().float().numpy()
     else:
-        activations = np.asarray(activations_list)
+        activations = np.asarray(activations_list, dtype=np.float32)
+
+    if activations.ndim != 2:
+        raise ValueError(f"Expected activations shape (N,D), got {activations.shape}")
+
+    # ---- IMPORTANT: standardize features (stabilizes PCA/UMAP/tSNE a lot) ----
+    mu = activations.mean(axis=0, keepdims=True)
+    sd = activations.std(axis=0, keepdims=True) + 1e-8
+    X = (activations - mu) / sd
 
     method_l = method.lower()
+    n_samples = X.shape[0]
 
     if method_l == "pca":
         reducer = PCA(n_components=2, random_state=seed)
 
     elif method_l == "tsne":
-        n_samples = activations.shape[0]
-        # t-SNE requires perplexity < n_samples; also keep it in a sane range
-        perplexity = min(30, max(2, n_samples - 1))
+        # Perplexity MUST be < n_samples, and is typically ~ [5..50] but << n_samples
+        # A safe rule: min(30, (n_samples-1)//3) with lower bound 2
+        perplexity = max(2, min(30, (n_samples - 1) // 3))
         reducer = TSNE(
             n_components=2,
             perplexity=perplexity,
             random_state=seed,
-            init="pca",          # usually more stable than random
-            learning_rate="auto" # sklearn recommended default
+            init="pca",
+            learning_rate="auto",
         )
 
     elif method_l == "umap":
         try:
             import umap
         except ImportError as e:
-            raise ImportError(
-                "UMAP requested but not installed. Install with: pip install umap-learn"
-            ) from e
+            raise ImportError("UMAP requested but not installed. Install: pip install umap-learn") from e
 
-        # For small sample sizes, keep neighbors < n_samples
-        n_samples = activations.shape[0]
-        n_neighbors = min(15, max(2, n_samples - 1))
-
+        n_neighbors = max(2, min(15, n_samples - 1))
         reducer = umap.UMAP(
             n_components=2,
             n_neighbors=n_neighbors,
             min_dist=0.1,
-            metric="cosine",      # often good for activations/embeddings
+            metric="cosine",
             random_state=seed,
         )
 
     else:
         raise ValueError("method must be one of: 'pca', 'tsne', 'umap'")
 
-    coords = reducer.fit_transform(activations)
+    coords = reducer.fit_transform(X)
     return np.asarray(coords, dtype=np.float32)
 
 def collect_activations_for_prompts(

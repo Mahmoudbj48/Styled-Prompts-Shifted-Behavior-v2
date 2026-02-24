@@ -484,6 +484,7 @@ def plot_2d_scatter_two_clusters(
         xlabel: str,
         ylabel: str,
         legend_labels: Tuple[str, str] = ("harmless", "harmful"),
+        jitter: float = 0.0,   # <-- add this
 ) -> None:
     """
     Square 2D scatter with:
@@ -492,7 +493,6 @@ def plot_2d_scatter_two_clusters(
       - black border
       - clean legend
     """
-
     apply_neurips_style()
 
     import os
@@ -500,7 +500,7 @@ def plot_2d_scatter_two_clusters(
     import matplotlib.pyplot as plt
     from matplotlib.patches import Rectangle
 
-    coords = np.asarray(coords)
+    coords = np.asarray(coords, dtype=np.float32)
     labels = np.asarray(labels)
 
     if coords.ndim != 2 or coords.shape[1] != 2:
@@ -508,86 +508,40 @@ def plot_2d_scatter_two_clusters(
     if labels.shape[0] != coords.shape[0]:
         return
 
-    os.makedirs(os.path.dirname(out_path_png), exist_ok=True)
+    # Optional tiny jitter for visibility when points overlap
+    if jitter and jitter > 0:
+        rng = np.random.default_rng(0)
+        coords = coords + jitter * rng.standard_normal(coords.shape).astype(np.float32)
 
-    # 🔵 SQUARE FIGURE
-    fig, ax = plt.subplots(figsize=(6, 6))  # <- square
+    os.makedirs(os.path.dirname(out_path_png), exist_ok=True)
+    fig, ax = plt.subplots(figsize=(6, 6))
 
     m0 = labels == 0
     m1 = labels == 1
 
-    # Blue cluster
-    ax.scatter(
-        coords[m0, 0],
-        coords[m0, 1],
-        s=16,
-        alpha=0.8,
-        color="royalblue",
-        edgecolors="none",
-        label=legend_labels[0],
-    )
+    ax.scatter(coords[m0, 0], coords[m0, 1], s=8, alpha=0.35, color="royalblue", edgecolors="none",
+               label=legend_labels[0], rasterized=True)
+    ax.scatter(coords[m1, 0], coords[m1, 1], s=8, alpha=0.35, color="crimson", edgecolors="none",
+               label=legend_labels[1], rasterized=True)
 
-    # Red cluster
-    ax.scatter(
-        coords[m1, 0],
-        coords[m1, 1],
-        s=16,
-        alpha=0.8,
-        color="crimson",
-        edgecolors="none",
-        label=legend_labels[1],
-    )
-
-    # 🔒 Equal geometric scaling
     ax.set_aspect("equal", adjustable="datalim")
 
-    # 🔄 Make limits symmetric for square look
-    xmin, xmax = ax.get_xlim()
-    ymin, ymax = ax.get_ylim()
-
-    x_center = (xmin + xmax) / 2
-    y_center = (ymin + ymax) / 2
-
-    max_range = max(xmax - xmin, ymax - ymin) / 2
-
-    ax.set_xlim(x_center - max_range, x_center + max_range)
-    ax.set_ylim(y_center - max_range, y_center + max_range)
-
-    # 📴 Remove axes
-    ax.set_xticks([])
-    ax.set_yticks([])
-    ax.set_xlabel("")
-    ax.set_ylabel("")
+    # Keep your square border logic
+    ax.set_xticks([]); ax.set_yticks([])
+    ax.set_xlabel(""); ax.set_ylabel("")
     ax.set_frame_on(False)
 
-    # ⬛ Add clean square border
-    border = Rectangle(
-        (0, 0), 1, 1,
-        transform=ax.transAxes,
-        fill=False,
-        edgecolor="black",
-        linewidth=1.6,
-        clip_on=False,
-    )
+    border = Rectangle((0, 0), 1, 1, transform=ax.transAxes, fill=False,
+                       edgecolor="black", linewidth=1.6, clip_on=False)
     ax.add_patch(border)
 
-    # 📌 Legend inside upper right
-    ax.legend(
-        frameon=False,
-        loc="upper right",
-        fontsize=9,
-    )
+    ax.legend(frameon=False, loc="upper right", fontsize=9)
 
     if title:
         ax.set_title(title, pad=12)
 
     fig.tight_layout()
-    fig.savefig(
-        out_path_png,
-        dpi=300,
-        bbox_inches="tight",
-        pad_inches=0.05
-    )
+    fig.savefig(out_path_png, dpi=300, bbox_inches="tight", pad_inches=0.05)
     plt.close(fig)
 
 def plot_metric_vs_strength(

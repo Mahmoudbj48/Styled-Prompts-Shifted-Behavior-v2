@@ -462,38 +462,37 @@ def load_natural_questions(
             - meta: dict (raw fields + long answer info)
     """
 
-    print(f"Loading Natural Questions ({config_name}, {split})...")
-    dataset = load_dataset(repo_id, config_name, split=split)
+    print(f"Loading Natural Questions ({split})...")
+    dataset = load_dataset(repo_id, split=split)
 
-    shuffled = dataset.shuffle(seed=seed)
-    count = min(sample_size, len(shuffled))
-    subset = shuffled.select(range(count))
+    dataset = dataset.shuffle(seed=seed)
+    count = min(sample_size, len(dataset))
+    dataset = dataset.select(range(count))
 
-    prompts: List[Dict[str, Any]] = []
+    prompts = []
 
-    for item in subset:
-        ex = dict(item)
+    for ex in dataset:
+        # --- FIXED QUESTION EXTRACTION ---
+        q = ex.get("question", "")
 
-        question = ex.get("question", "").strip()
+        if isinstance(q, dict):
+            q = q.get("text", "")
 
-        # Attempt to extract short answer
+        question = str(q).strip()
+
+
         best_answer = None
-        short_answers = ex.get("short_answers")
-
-        if short_answers and isinstance(short_answers, list):
-            if len(short_answers) > 0:
-                best_answer = short_answers[0].get("text")
+        # annotations = ex.get("annotations", [])
+        # if annotations:
+        #     short_answers = annotations[0].get("short_answers", [])
+        #     if short_answers:
+        #         best_answer = short_answers[0].get("text", None)
 
         prompts.append({
             "question": question,
             "best_answer": best_answer,
             "category": "natural_questions",
-            "meta": {
-                "long_answer": ex.get("long_answer"),
-                "short_answers": short_answers,
-                "document": ex.get("document"),
-                "raw": ex,
-            }
+            "meta": {"raw": ex},
         })
 
     print(f"Loaded {len(prompts)} Natural Questions prompts.")
