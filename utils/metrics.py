@@ -2491,111 +2491,119 @@ from typing import Any, Dict, List, Optional, Callable
 # =============================================================================
 
 def add_cot_prompt(question: str) -> str:
-    """
-    Add Chain-of-Thought reasoning instruction to a question.
-    
-    Prompts the model to provide step-by-step reasoning in JSON format.
-    
-    Args:
-        question: The original question/problem
-        
-    Returns:
-        Question with CoT instruction appended
-        
-    Example:
-        >>> q = "What is 5 + 3?"
-        >>> add_cot_prompt(q)
-        'What is 5 + 3?\n\nSolve this step by step...'
-    """
+    """Add CoT instruction - simple and direct."""
     cot_instruction = """
 
-Solve this problem step by step. Respond in this exact JSON format:
+Let's think step by step. Return your answer only as JSON in this format:
 {
-  "step_1": "first step of reasoning",
-  "step_2": "second step of reasoning",
-  "step_3": "third step of reasoning",
-  "answer": "final answer"
-}
-
-Use as many steps as needed. Each step should be clear and build on the previous one."""
-
+  "step_1": "your first reasoning step here",
+  "step_2": "your second reasoning step here",
+  "answer": "your final numerical answer"
+}"""
     return question.strip() + cot_instruction
 
 
 def parse_cot_response(response: str) -> Dict[str, Any]:
     """
-    Parse Chain-of-Thought JSON response and extract reasoning steps.
+    Parse CoT response - simple step counting.
     
-    Args:
-        response: Model's raw response text
-        
-    Returns:
-        Dictionary with:
-            - num_steps: int (count of step_N keys)
-            - steps: dict (all step_N: content pairs)
-            - answer: str or None
-            - raw_json: dict or None (parsed JSON)
-            - parse_success: bool
-            - parse_error: str or None
-            - total_reasoning_length: int
-            - avg_step_length: float
-            
-    Example:
-        >>> response = '{"step_1": "Add 5", "step_2": "Result is 8", "answer": "8"}'
-        >>> result = parse_cot_response(response)
-        >>> result['num_steps']
-        2
+    Strategy:
+    1. Try to parse as JSON → count step_N keys
+    2. If JSON fails → count "step_1", "step_2", etc. in text
     """
     result = {
         "num_steps": 0,
-        "steps": {},
+        "steps": [],
         "answer": None,
-        "raw_json": None,
         "parse_success": False,
         "parse_error": None,
         "total_reasoning_length": 0,
         "avg_step_length": 0.0,
     }
     
-    # Clean response - extract JSON if wrapped in markdown or other text
+    if not response or not response.strip():
+        result["parse_error"] = "Empty response"
+        return result
+    
     cleaned = response.strip()
     
-    # Remove markdown code blocks
-    cleaned = re.sub(r'^```(?:json)?\s*', '', cleaned, flags=re.MULTILINE)
-    cleaned = re.sub(r'\s*```$', '', cleaned, flags=re.MULTILINE)
+    # Remove common prefixes
+    cleaned = re.sub(r'^.*?(?:assistant|Assistant)\s*:?\s*', '', cleaned, count=1, flags=re.IGNORECASE)
+    cleaned = re.sub(r'^.*?(?:Let\'s think step by step\.?\s*)+', '', cleaned, count=1, flags=re.IGNORECASE)
     
-    # Try to find JSON object
-    json_match = re.search(r'\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}', cleaned, re.DOTALL)
-    if json_match:
-        cleaned = json_match.group(0)
-    
-    # Parse JSON
+    # === METHOD 1: Try JSON parsing ===
     try:
-        data = json.loads(cleaned)
-        result["raw_json"] = data
-        result["parse_success"] = True
+        # Find JSON object
+        json_match = re.search(r'\{.*\}', cleaned, re.DOTALL)
+        if json_match:
+            json_str = json_match.group(0)
+            
+            # Fix common issues
+            if not json_str.endswith('}'):
+                json_str += '}'
+            json_str = re.sub(r',\s*}', '}', json_str)  # Remove trailing commas
+            
+            data = json.loads(json_str)
+            
+            # Extract steps
+            steps = []
+            step_num = 1
+            while f"step_{step_num}" in data:
+                step_content = str(data[f"step_{step_num}"]).strip()
+                
+                # Filter template echoes
+                if len(step_content) > 5 and "reasoning step here" not in step_content.lower():
+                    steps.append(step_content)
+                
+                step_num += 1
+            
+            # Extract answer
+            if "answer" in data:
+                answer = str(data["answer"]).strip()
+                if answer and "your final" not in answer.lower():
+                    result["answer"] = answer
+            
+            result["steps"] = steps
+            result["num_steps"] = len(steps)
+            result["parse_success"] = True
+            
+    except (json.JSONDecodeError, Exception) as e:
+        # === METHOD 2: Fallback - count step patterns in text ===
+        result["parse_error"] = f"JSON parse failed: {str(e)}"
         
-        # Extract steps
-        step_keys = sorted([k for k in data.keys() if k.startswith("step_")])
-        result["num_steps"] = len(step_keys)
+        # Count "step_1", "step_2", etc. (case-insensitive)
+        steps_found = []
+        step_num = 1
         
-        for key in step_keys:
-            result["steps"][key] = str(data[key])
+        while True:
+            # Try both formats: "step_1" and "step 1"
+            pattern1 = rf'"?step_{step_num}"?\s*:\s*"?([^"}}]+)"?'
+            pattern2 = rf'step\s+{step_num}\s*[:\.]\s*([^\n]+)'
+            
+            match = re.search(pattern1, cleaned, re.IGNORECASE)
+            if not match:
+                match = re.search(pattern2, cleaned, re.IGNORECASE)
+            
+            if match:
+                step_content = match.group(1).strip()
+                if len(step_content) > 5:
+                    steps_found.append(step_content)
+                step_num += 1
+            else:
+                break
         
-        # Extract answer
-        if "answer" in data:
-            result["answer"] = str(data["answer"])
+        result["steps"] = steps_found
+        result["num_steps"] = len(steps_found)
+        result["parse_success"] = len(steps_found) > 0
         
-        # Compute step statistics
-        if result["steps"]:
-            step_lengths = [len(str(v)) for v in result["steps"].values()]
-            result["total_reasoning_length"] = sum(step_lengths)
-            result["avg_step_length"] = result["total_reasoning_length"] / len(step_lengths)
-        
-    except json.JSONDecodeError as e:
-        result["parse_error"] = f"JSON parse error: {str(e)}"
-    except Exception as e:
-        result["parse_error"] = f"Unexpected error: {str(e)}"
+        if not result["parse_success"]:
+            result["parse_error"] = "No steps found in text"
+    
+    # Compute statistics
+    if result["steps"]:
+        step_lengths = [len(s) for s in result["steps"]]
+        result["total_reasoning_length"] = sum(step_lengths)
+        result["avg_step_length"] = result["total_reasoning_length"] / len(result["steps"])
     
     return result
 

@@ -12,14 +12,10 @@ run_experiment() {
 
 
 
-run_experiment experiments/letter_case.py Q2.5-1.5B
 
-run_experiment experiments/punctuation.py L3.2-3B
-run_experiment experiments/punctuation.py G-2B
+
 run_experiment experiments/punctuation.py Q2.5-1.5B
-
 run_experiment experiments/spacing.py L3.2-3B
-run_experiment experiments/spacing.py G-2B
 run_experiment experiments/spacing.py Q2.5-1.5B
 
 echo "ALL DONE"
