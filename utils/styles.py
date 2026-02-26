@@ -5,6 +5,8 @@ Functions:
     - apply_spacing: Add random spaces
     - apply_punctuation: Add random punctuation marks
     - apply_politeness: Add polite language
+    - apply_interrogative: Rephrase prompt as interrogative or declarative (LLM-based)
+    - apply_length_variation: Expand/compress prompt to target multiplier (LLM-based)
 """
 
 import random
@@ -429,3 +431,320 @@ def apply_politeness(
             return GLOBAL_NEG[abs(s)].format(text=text)
 
     raise ValueError("place must be 'prefix', 'suffix', or 'global'")
+
+
+# =========================================================================
+# STRUCTUREDNESS STYLES
+# =========================================================================
+
+import os
+import json
+import hashlib
+from typing import Dict, Optional
+
+
+# ---------------------------------------------------------------------------
+# Shared LLM-rewrite helpers
+# ---------------------------------------------------------------------------
+
+# In-memory cache: (function_name, text, key_params_hash) -> rewritten text
+_LLM_REWRITE_CACHE: Dict[str, str] = {}
+
+
+def _cache_key(*parts) -> str:
+    """Deterministic hash for cache lookup."""
+    raw = json.dumps(parts, sort_keys=True, ensure_ascii=True)
+    return hashlib.sha256(raw.encode()).hexdigest()
+
+
+def _call_openai(
+        system_prompt: str,
+        user_prompt: str,
+        *,
+        model: str = "gpt-4o-mini",
+        api_key_env: str = "OPENAI_API_KEY",
+        temperature: float = 0.3,
+        max_output_tokens: int = 512,
+) -> str:
+    """
+    Lightweight OpenAI wrapper following the same pattern used in
+    utils/metrics.py (judge_style_mirroring_openai).
+    """
+    api_key = os.environ.get(api_key_env)
+    if not api_key:
+        raise RuntimeError(
+            f"Missing API key env var: {api_key_env}. "
+            f"Set it with: export {api_key_env}='sk-...'"
+        )
+
+    from openai import OpenAI
+    client = OpenAI(api_key=api_key)
+
+    resp = client.chat.completions.create(
+        model=model,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt},
+        ],
+        temperature=temperature,
+        max_tokens=max_output_tokens,
+    )
+
+    return resp.choices[0].message.content.strip()
+
+
+def _call_gemini(
+        system_prompt: str,
+        user_prompt: str,
+        *,
+        model: str = "gemini-2.0-flash",
+        api_key_env: str = "GEMINI_API_KEY",
+        temperature: float = 0.3,
+        max_output_tokens: int = 512,
+) -> str:
+    """
+    Lightweight Gemini wrapper following the same pattern used in
+    utils/metrics.py (judge_style_mirroring_gemini).
+    """
+    api_key = os.environ.get(api_key_env)
+    if not api_key:
+        raise RuntimeError(
+            f"Missing API key env var: {api_key_env}. "
+            f"Set it with: export {api_key_env}='...'"
+        )
+
+    from google import genai
+    from google.genai import types
+
+    client = genai.Client(api_key=api_key)
+    resp = client.models.generate_content(
+        model=model,
+        contents=f"{system_prompt}\n\n{user_prompt}",
+        config=types.GenerateContentConfig(
+            temperature=temperature,
+            max_output_tokens=max_output_tokens,
+        ),
+    )
+    return (resp.text or "").strip()
+
+
+def _llm_rewrite(
+        system_prompt: str,
+        user_prompt: str,
+        *,
+        cache_key_parts: tuple,
+        provider: str = "openai",
+        model: str = "gpt-4o-mini",
+        api_key_env: Optional[str] = None,
+        temperature: float = 0.3,
+        max_output_tokens: int = 512,
+) -> str:
+    """
+    Cached LLM rewrite.  Checks in-memory cache first, then calls the
+    chosen provider.  The cache avoids redundant (and costly) API calls
+    when the same prompt is rewritten multiple times (e.g. across models).
+    """
+    key = _cache_key(*cache_key_parts)
+    if key in _LLM_REWRITE_CACHE:
+        return _LLM_REWRITE_CACHE[key]
+
+    if api_key_env is None:
+        api_key_env = (
+            "OPENAI_API_KEY" if provider == "openai" else "GEMINI_API_KEY"
+        )
+
+    if provider == "openai":
+        result = _call_openai(
+            system_prompt, user_prompt,
+            model=model,
+            api_key_env=api_key_env,
+            temperature=temperature,
+            max_output_tokens=max_output_tokens,
+        )
+    elif provider == "gemini":
+        result = _call_gemini(
+            system_prompt, user_prompt,
+            model=model,
+            api_key_env=api_key_env,
+            temperature=temperature,
+            max_output_tokens=max_output_tokens,
+        )
+    else:
+        raise ValueError(f"Unknown provider: {provider}. Use 'openai' or 'gemini'.")
+
+    _LLM_REWRITE_CACHE[key] = result
+    return result
+
+
+# ---------------------------------------------------------------------------
+# 1. Interrogative / Declarative rephrasing  (LLM-based)
+# ---------------------------------------------------------------------------
+
+_INTERROGATIVE_SYSTEM = (
+    "You are a precise text-rewriting assistant. "
+    "Your ONLY job is to rephrase text into the requested form while preserving its EXACT original meaning. "
+    "The requested form is either 'interrogative' (phrase the user's statement as a question) "
+    "or 'declarative' (phrase the user's question as if it's an instruction). "
+    "Do NOT answer the question. Do NOT add any information. "
+    "Do NOT add any preamble, explanation, or commentary. "
+    "Output ONLY the rephrased text, nothing else."
+    "example: interrogative: 'Who is the author of Harry Potter?' turns into 'Tell me who's the author of Harry Potter.'"
+    "declarative: 'Tell me who's the author of Harry Potter.' turns into 'Who is the author of Harry Potter?'"
+)
+
+_INTERROGATIVE_USER_TEMPLATE = (
+    "Rephrase the following text as a {mode} sentence. "
+    "Preserve the original meaning exactly.\n\n"
+    "Original text:\n{text}\n\n"
+    "Rephrased text:"
+)
+
+
+def apply_interrogative(
+        text: str,
+        mode: str = "declarative",
+        *,
+        provider: str = "openai",
+        model: str = "gpt-4o-mini",
+        api_key_env: Optional[str] = None,
+        temperature: float = 0.3,
+        max_output_tokens: int = 256,
+) -> str:
+    """
+    Rephrase a prompt as interrogative or declarative using an LLM.
+
+    Args:
+        text: The original prompt text.
+        mode: "interrogative" or "declarative".
+            - "interrogative": ensure the text is phrased as a question.
+            - "declarative": rephrase the question as a statement/instruction.
+            If the text is already in the target form, it may be returned
+            nearly unchanged (up to minor LLM variation).
+        provider: "openai" or "gemini".
+        model: LLM model name (e.g. "gpt-4o-mini").
+        api_key_env: Environment variable for the API key.
+        temperature: Sampling temperature.
+        max_output_tokens: Max tokens for the LLM response.
+
+    Returns:
+        Rephrased text.
+
+    Examples:
+        >>> apply_interrogative("Who sings 'Starships'?", mode="declarative")
+        "Tell me the capital of France."
+
+        >>> apply_interrogative("Tell me the capital of France.", mode="interrogative")
+        "What is the capital of France?"
+    """
+    mode = mode.strip().lower()
+    if mode not in ("interrogative", "declarative"):
+        raise ValueError(f"mode must be 'interrogative' or 'declarative', got '{mode}'")
+
+    user_prompt = _INTERROGATIVE_USER_TEMPLATE.format(mode=mode, text=text)
+
+    return _llm_rewrite(
+        system_prompt=_INTERROGATIVE_SYSTEM,
+        user_prompt=user_prompt,
+        cache_key_parts=("interrogative", text, mode, provider, model),
+        provider=provider,
+        model=model,
+        api_key_env=api_key_env,
+        temperature=temperature,
+        max_output_tokens=max_output_tokens,
+    )
+
+
+# ---------------------------------------------------------------------------
+# 2. Prompt length variation  (LLM-based)
+# ---------------------------------------------------------------------------
+
+_LENGTH_SYSTEM = (
+    "You are a precise text-rewriting assistant. "
+    "Your ONLY job is to rewrite the text into approximately "
+    "{multiplier}x its original length, while preserving the EXACT original meaning. "
+    "If the multiplier is < 1, make the text more concise. "
+    "If the multiplier is > 1, make the text more verbose and elaborated. "
+    "Do NOT answer the question. Do NOT add any information that changes the meaning. "
+    "Do NOT add any preamble, explanation, or commentary. Do not add length by being polite (for example, don't add 'could you please'). "
+    "Keep the question in interrogative form. "
+    "Output ONLY the rewritten text, nothing else."
+    "example: with multiplier=2, 'Who wrote Harry Potter?' could become 'Who is the person that wrote Harry Potter?'"
+)
+
+_LENGTH_USER_TEMPLATE = (
+    "Rewrite the following text so it is approximately {multiplier}x its "
+    "current length (that is, from {orig_words} words to about {target_words} words). "
+    "Preserve the original meaning exactly.\n\n"
+    "Original text:\n{text}\n\n"
+    "Rewritten text:"
+)
+
+
+def apply_length_variation(
+        text: str,
+        multiplier: float = 1.0,
+        *,
+        provider: str = "openai",
+        model: str = "gpt-4.1-nano",
+        api_key_env: Optional[str] = None,
+        temperature: float = 0.3,
+        max_output_tokens: int = 512,
+) -> str:
+    """
+    Expand or compress a prompt to approximately `multiplier` × its original
+    word count using an LLM.
+
+    Args:
+        text: The original prompt text.
+        multiplier: Target length multiplier.
+            - 0.5 → roughly half the words.
+            - 1.0 → approximately unchanged (baseline).
+            - 2.0 → roughly double the words.
+            - 3.0 → roughly triple the words.
+        provider: "openai" or "gemini".
+        model: LLM model name.
+        api_key_env: Env var for API key.
+        temperature: Sampling temperature.
+        max_output_tokens: Max tokens for the LLM response.
+
+    Returns:
+        Rewritten text at approximately the target length.
+
+    Examples:
+        >>> apply_length_variation("Who wrote Harry Potter?", multiplier=2.0)
+        "Who is the person that wrote Harry Potter?"
+
+        >>> apply_length_variation(
+        ...     "What is the city that serves as France's capital?",
+        ...     multiplier=0.5,
+        ... )
+        "What is France's Capital?"
+    """
+    if multiplier <= 0:
+        raise ValueError(f"multiplier must be > 0, got {multiplier}")
+
+    # For multiplier ≈ 1.0, return the text as-is (no API call needed).
+    if abs(multiplier - 1.0) < 0.05:
+        return text
+
+    orig_words = len(text.split())
+    target_words = max(1, int(round(orig_words * multiplier)))
+
+    system_prompt = _LENGTH_SYSTEM.format(multiplier=multiplier)
+    user_prompt = _LENGTH_USER_TEMPLATE.format(
+        multiplier=multiplier,
+        orig_words=orig_words,
+        target_words=target_words,
+        text=text,
+    )
+
+    return _llm_rewrite(
+        system_prompt=system_prompt,
+        user_prompt=user_prompt,
+        cache_key_parts=("length_variation", text, multiplier, provider, model),
+        provider=provider,
+        model=model,
+        api_key_env=api_key_env,
+        temperature=temperature,
+        max_output_tokens=max_output_tokens,
+    )
