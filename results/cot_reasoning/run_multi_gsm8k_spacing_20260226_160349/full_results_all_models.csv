@@ -1,0 +1,270 @@
+question_original,prompt_original_cot,prompt_styled_cot,response_original,response_styled,num_steps_original,parse_success_original,avg_step_length_original,total_reasoning_length_original,answer_original,num_steps_styled,parse_success_styled,avg_step_length_styled,total_reasoning_length_styled,answer_styled,steps_diff,steps_change_pct,strength,place,model,style,problem_id,category
+"Darrell and Allen's ages are in the ratio of 7:11. If their total age now is 162, calculate Allen's age 10 years from now.","Darrell and Allen's ages are in the ratio of 7:11. If their total age now is 162, calculate Allen's age 10 years from now.
+
+Let's think step by step. Return your answer only as JSON in this format:
+{
+  ""step_1"": ""your first reasoning step here"",
+  ""step_2"": ""your second reasoning step here"",
+  ""answer"": ""your final numerical answer""
+}","Darrell and Allen's ages are in the ratio of 7:11. If their total age now is 162, calculate Allen's age 10 years from now.
+
+Let's think step by step. Return your answer only as JSON in this format:
+{
+  ""step_1"": ""your first reasoning step here"",
+  ""step_2"": ""your second reasoning step here"",
+  ""answer"": ""your final numerical answer""
+}","10 years from now.
+
+Let's think step by step. Return your answer only as JSON in this format:
+{
+  ""step_1"": ""your first reasoning step here"",
+  ""step_2"": ""your second reasoning step here"",
+  ""answer"": ""your final numerical answer""
+}assistant
+
+{
+  ""step_1"": ""Let's denote Darrell's age as 7x and Allen's age as 11x, since their ages are in the ratio of 7:11."",
+  ""step_2"": ""We know that their total age now is 162, so we can set up the equation 7x + 11x = 162 to represent this."",
+  ""step_3"": ""Combine like terms to get 18x = 162."",
+  ""step_4"": ""Divide both sides of the equation by 18 to solve for x, resulting in x = 9."",
+  ""step_5"": ""Now that we know x is 9, we can calculate Allen's current age by multiplying 11 and 9, which equals 99."",
+  ""step_6"": ""To find Allen's age 10 years from now, we add 10 to his current age, resulting in 99 + 10 = 109.""
+}","10 years from now.
+
+Let's think step by step. Return your answer only as JSON in this format:
+{
+  ""step_1"": ""your first reasoning step here"",
+  ""step_2"": ""your second reasoning step here"",
+  ""answer"": ""your final numerical answer""
+}assistant
+
+{
+  ""step_1"": ""Let's denote Darrell's age as 7x and Allen's age as 11x, since their ages are in the ratio of 7:11."",
+  ""step_2"": ""We know that their total age now is 162, so we can set up the equation 7x + 11x = 162 to represent this."",
+  ""step_3"": ""Combine like terms to get 18x = 162."",
+  ""step_4"": ""Divide both sides of the equation by 18 to solve for x, resulting in x = 9."",
+  ""step_5"": ""Now that we know x is 9, we can calculate Allen's current age by multiplying 11 and 9, which equals 99."",
+  ""step_6"": ""To find Allen's age 10 years from now, we add 10 to his current age, resulting in 99 + 10 = 109.""
+}",6,True,61.833333333333336,371,,6,True,61.833333333333336,371,,0,0.0,0,global,L3.2-3B,spacing,0,gsm8k
+Lorraine and Colleen are trading stickers for buttons. Each large sticker is worth a large button or three small buttons. A small sticker is worth one small button. A large button is worth three small stickers. Lorraine starts with 30 small stickers and 40 large stickers. She trades 90% of her small stickers for large buttons. She trades 50% of her large stickers for large buttons and trades the rest of them for small buttons. How many buttons does she have by the end?,"Lorraine and Colleen are trading stickers for buttons. Each large sticker is worth a large button or three small buttons. A small sticker is worth one small button. A large button is worth three small stickers. Lorraine starts with 30 small stickers and 40 large stickers. She trades 90% of her small stickers for large buttons. She trades 50% of her large stickers for large buttons and trades the rest of them for small buttons. How many buttons does she have by the end?
+
+Let's think step by step. Return your answer only as JSON in this format:
+{
+  ""step_1"": ""your first reasoning step here"",
+  ""step_2"": ""your second reasoning step here"",
+  ""answer"": ""your final numerical answer""
+}","Lorraine and Colleen are trading stickers for buttons. Each large sticker is worth a large button or three small buttons. A small sticker is worth one small button. A large button is worth three small stickers. Lorraine starts with 30 small stickers and 40 large stickers. She trades 90% of her small stickers for large buttons. She trades 50% of her large stickers for large buttons and trades the rest of them for small buttons. How many buttons does she have by the end?
+
+Let's think step by step. Return your answer only as JSON in this format:
+{
+  ""step_1"": ""your first reasoning step here"",
+  ""step_2"": ""your second reasoning step here"",
+  ""answer"": ""your final numerical answer""
+}","{
+  ""step_1"": ""Lorraine starts with 30 small stickers and 40 large stickers. She trades 90% of her small stickers for large buttons. 90% of 30 small stickers is 0.9 * 30 = 27 small stickers. So she has 30 - 27 = 3 small stickers left and 40 large stickers."",
+  ""step_2"": ""She trades 50% of her large stickers for large buttons. 50% of 40 large stickers is 0.5 * 40 = 20 large stickers. She now has 40 - 20 = 20 large stickers left. She trades the rest of her large stickers for small buttons. So she trades 20 large stickers for 20 * 3 = 60 small stickers. Now she has 3 + 60 = 63 small stickers and 20 large stickers."",
+  ""answer"": 83","{
+  ""step_1"": ""Lorraine starts with 30 small stickers and 40 large stickers. She trades 90% of her small stickers for large buttons. 90% of 30 small stickers is 0.9 * 30 = 27 small stickers. So she has 30 - 27 = 3 small stickers left and 40 large stickers."",
+  ""step_2"": ""She trades 50% of her large stickers for large buttons. 50% of 40 large stickers is 0.5 * 40 = 20 large stickers. She now has 40 - 20 = 20 large stickers left. She trades the rest of her large stickers for small buttons. So she trades 20 large stickers for 20 * 3 = 60 small stickers. Now she has 3 + 60 = 63 small stickers and 20 large stickers."",
+  ""answer"": 83",0,False,0.0,0,,0,False,0.0,0,,0,0.0,0,global,L3.2-3B,spacing,1,gsm8k
+Indras has 6 letters in her name. Her sister's name has 4 more letters than half of the letters in Indras' name. How many letters are in Indras and her sister's names?,"Indras has 6 letters in her name. Her sister's name has 4 more letters than half of the letters in Indras' name. How many letters are in Indras and her sister's names?
+
+Let's think step by step. Return your answer only as JSON in this format:
+{
+  ""step_1"": ""your first reasoning step here"",
+  ""step_2"": ""your second reasoning step here"",
+  ""answer"": ""your final numerical answer""
+}","Indras has 6 letters in her name. Her sister's name has 4 more letters than half of the letters in Indras' name. How many letters are in Indras and her sister's names?
+
+Let's think step by step. Return your answer only as JSON in this format:
+{
+  ""step_1"": ""your first reasoning step here"",
+  ""step_2"": ""your second reasoning step here"",
+  ""answer"": ""your final numerical answer""
+}","{
+  ""step_1"": ""Indras has 6 letters in her name. To find the number of letters in her sister's name, we need to calculate half of the letters in Indras' name first."",
+  ""step_2"": ""Half of 6 is 3, so her sister's name has 3 + 4 = 7 letters."",
+  ""answer"": 13","{
+  ""step_1"": ""Indras has 6 letters in her name. To find the number of letters in her sister's name, we need to calculate half of the letters in Indras' name first."",
+  ""step_2"": ""Half of 6 is 3, so her sister's name has 3 + 4 = 7 letters."",
+  ""answer"": 13",0,False,0.0,0,,0,False,0.0,0,,0,0.0,0,global,L3.2-3B,spacing,2,gsm8k
+"Darrell and Allen's ages are in the ratio of 7:11. If their total age now is 162, calculate Allen's age 10 years from now.","Darrell and Allen's ages are in the ratio of 7:11. If their total age now is 162, calculate Allen's age 10 years from now.
+
+Let's think step by step. Return your answer only as JSON in this format:
+{
+  ""step_1"": ""your first reasoning step here"",
+  ""step_2"": ""your second reasoning step here"",
+  ""answer"": ""your final numerical answer""
+}","Darrell and  Allen's ages are in the ratio  of  7:11. If their total age now is  162, calculate Allen's age 10 years from now.
+
+Let's think step by step. Return your  answer only as JSON in this  format:
+{
+  ""step_1"": ""your  first reasoning  step here"",
+  ""step_2"": ""your second reasoning step here"",
+  ""answer"": ""your final  numerical answer""
+} ","10 years from now.
+
+Let's think step by step. Return your answer only as JSON in this format:
+{
+  ""step_1"": ""your first reasoning step here"",
+  ""step_2"": ""your second reasoning step here"",
+  ""answer"": ""your final numerical answer""
+}assistant
+
+{
+  ""step_1"": ""Let's denote Darrell's age as 7x and Allen's age as 11x, since their ages are in the ratio of 7:11."",
+  ""step_2"": ""We know that their total age now is 162, so we can set up the equation 7x + 11x = 162 to represent this."",
+  ""step_3"": ""Combine like terms to get 18x = 162."",
+  ""step_4"": ""Divide both sides of the equation by 18 to solve for x, resulting in x = 9."",
+  ""step_5"": ""Now that we know x is 9, we can calculate Allen's current age by multiplying 11 and 9, which equals 99."",
+  ""step_6"": ""To find Allen's age 10 years from now, we add 10 to his current age, resulting in 99 + 10 = 109.""
+}","Let's think step by step. Return your  answer only as JSON in this  format:
+{
+  ""step_1"": ""your  first reasoning  step here"",
+  ""step_2"": ""your second reasoning step here"",
+  ""answer"": ""your final  numerical answer""
+}assistant
+
+{
+  ""step_1"": ""Let's denote Darrell's age as 7x and Allen's age as 11x, since their ages are in the ratio of 7:11."",
+  ""step_2"": ""We know that their total age now is 162, so we can set up the equation 7x + 11x = 162 to represent this."",
+  ""step_3"": ""Combine like terms to get 18x = 162."",
+  ""step_4"": ""Divide both sides of the equation by 18 to solve for x, resulting in x = 9."",
+  ""step_5"": ""Now that we know x is 9, we can calculate Allen's current age by multiplying 11 and 9, which equals 99."",
+  ""step_6"": ""To find Allen's age 10 years from now, we add 10 to his current age, resulting in 99 + 10 = 109.""
+}",6,True,61.833333333333336,371,,6,True,62.166666666666664,373,,0,0.0,10,global,L3.2-3B,spacing,0,gsm8k
+Lorraine and Colleen are trading stickers for buttons. Each large sticker is worth a large button or three small buttons. A small sticker is worth one small button. A large button is worth three small stickers. Lorraine starts with 30 small stickers and 40 large stickers. She trades 90% of her small stickers for large buttons. She trades 50% of her large stickers for large buttons and trades the rest of them for small buttons. How many buttons does she have by the end?,"Lorraine and Colleen are trading stickers for buttons. Each large sticker is worth a large button or three small buttons. A small sticker is worth one small button. A large button is worth three small stickers. Lorraine starts with 30 small stickers and 40 large stickers. She trades 90% of her small stickers for large buttons. She trades 50% of her large stickers for large buttons and trades the rest of them for small buttons. How many buttons does she have by the end?
+
+Let's think step by step. Return your answer only as JSON in this format:
+{
+  ""step_1"": ""your first reasoning step here"",
+  ""step_2"": ""your second reasoning step here"",
+  ""answer"": ""your final numerical answer""
+}"," Lorraine  and Colleen are  trading stickers for  buttons. Each large sticker  is worth a large button or three small buttons. A small sticker is worth one small button. A large button is worth three small  stickers. Lorraine starts with 30 small stickers and  40 large stickers. She trades  90% of her small stickers for large buttons. She trades 50% of her large stickers for large buttons and trades the rest of  them for small buttons. How many buttons does she have by the end?
+
+Let's think step by step. Return your answer only as JSON in this format:
+{
+   ""step_1"": ""your first reasoning step here"",
+  ""step_2"": ""your second reasoning step here"",
+  ""answer"": ""your final numerical answer""
+ }","{
+  ""step_1"": ""Lorraine starts with 30 small stickers and 40 large stickers. She trades 90% of her small stickers for large buttons. 90% of 30 small stickers is 0.9 * 30 = 27 small stickers. So she has 30 - 27 = 3 small stickers left and 40 large stickers."",
+  ""step_2"": ""She trades 50% of her large stickers for large buttons. 50% of 40 large stickers is 0.5 * 40 = 20 large stickers. She now has 40 - 20 = 20 large stickers left. She trades the rest of her large stickers for small buttons. So she trades 20 large stickers for 20 * 3 = 60 small stickers. Now she has 3 + 60 = 63 small stickers and 20 large stickers."",
+  ""answer"": 83","{
+  ""step_1"": ""Lorraine starts with 30 small stickers and 40 large stickers. She trades 90% of her small stickers for large buttons. This means she trades 0.9 * 30 = 27 small stickers for large buttons."",
+  ""step_2"": ""After trading 27 small stickers for large buttons, Lorraine has 30 - 27 = 3 small stickers left. She also has 40 large stickers. She trades 50% of her large stickers for large buttons, which is 0.5 * 40 = 20 large stickers. She trades the rest of her large stickers for small buttons, which is 40 - 20 = 20 large stickers."",
+  ""step_3"": ""Now, Lorraine trades 20 large stickers for small buttons. Since each large sticker is worth 3 small stickers, she gets 20 * 3 = 60 small stickers. So, she now has 3 + 60 = 63 small stickers and 20 large stickers."",
+  ""answer"": ""63""",0,False,0.0,0,,0,False,0.0,0,,0,0.0,10,global,L3.2-3B,spacing,1,gsm8k
+Indras has 6 letters in her name. Her sister's name has 4 more letters than half of the letters in Indras' name. How many letters are in Indras and her sister's names?,"Indras has 6 letters in her name. Her sister's name has 4 more letters than half of the letters in Indras' name. How many letters are in Indras and her sister's names?
+
+Let's think step by step. Return your answer only as JSON in this format:
+{
+  ""step_1"": ""your first reasoning step here"",
+  ""step_2"": ""your second reasoning step here"",
+  ""answer"": ""your final numerical answer""
+}","Indras has 6 letters in her  name. Her sister's name has 4 more letters than half of the letters in Indras'   name. How  many  letters are  in  Indras and  her sister's names?
+
+Let's think step by step. Return your answer only as JSON in this  format:
+{
+  ""step_1"": ""your first reasoning step here"",
+  ""step_2"": ""your second reasoning step here"",
+   ""answer"": ""your final numerical answer""
+}","{
+  ""step_1"": ""Indras has 6 letters in her name. To find the number of letters in her sister's name, we need to calculate half of the letters in Indras' name first."",
+  ""step_2"": ""Half of 6 is 3, so her sister's name has 3 + 4 = 7 letters."",
+  ""answer"": 13","{
+  ""step_1"": ""Indras' name has 6 letters. To find half of the letters in her name, we divide 6 by 2, which equals 3."",
+  ""step_2"": ""Her sister's name has 4 more letters than half of the letters in Indras' name. So, we add 4 to 3, which equals 7. This means her sister's name has 7 letters."",
+  ""answer"": 13",0,False,0.0,0,,0,False,0.0,0,,0,0.0,10,global,L3.2-3B,spacing,2,gsm8k
+"Darrell and Allen's ages are in the ratio of 7:11. If their total age now is 162, calculate Allen's age 10 years from now.","Darrell and Allen's ages are in the ratio of 7:11. If their total age now is 162, calculate Allen's age 10 years from now.
+
+Let's think step by step. Return your answer only as JSON in this format:
+{
+  ""step_1"": ""your first reasoning step here"",
+  ""step_2"": ""your second reasoning step here"",
+  ""answer"": ""your final numerical answer""
+}","Darrell   and  Allen's  ages are  in  the ratio of 7:11.  If   their  total   age now is  162, calculate  Allen's  age  10 years from now.
+
+   Let's   think   step by  step.  Return your answer   only as JSON   in this  format:
+ {
+  ""step_1"":  ""your  first reasoning   step   here"",
+   ""step_2"":  ""your   second  reasoning step  here"",
+   ""answer"":  ""your    final  numerical  answer""
+}","10 years from now.
+
+Let's think step by step. Return your answer only as JSON in this format:
+{
+  ""step_1"": ""your first reasoning step here"",
+  ""step_2"": ""your second reasoning step here"",
+  ""answer"": ""your final numerical answer""
+}assistant
+
+{
+  ""step_1"": ""Let's denote Darrell's age as 7x and Allen's age as 11x, since their ages are in the ratio of 7:11."",
+  ""step_2"": ""We know that their total age now is 162, so we can set up the equation 7x + 11x = 162 to represent this."",
+  ""step_3"": ""Combine like terms to get 18x = 162."",
+  ""step_4"": ""Divide both sides of the equation by 18 to solve for x, resulting in x = 9."",
+  ""step_5"": ""Now that we know x is 9, we can calculate Allen's current age by multiplying 11 and 9, which equals 99."",
+  ""step_6"": ""To find Allen's age 10 years from now, we add 10 to his current age, resulting in 99 + 10 = 109.""
+}",".  Return your answer   only as JSON   in this  format:
+ {
+  ""step_1"":  ""your  first reasoning   step   here"",
+   ""step_2"":  ""your   second  reasoning step  here"",
+   ""answer"":  ""your    final  numerical  answer""
+}assistant
+
+{
+  ""step_1"": ""Let's denote Darrell's age as 7x and Allen's age as 11x, since their ages are in the ratio of 7:11."",
+  ""step_2"": ""We know that their total age now is 162, so we can set up the equation 7x + 11x = 162 to represent this."",
+  ""step_2"": ""Combine like terms to get 18x = 162."",
+  ""step_3"": ""Divide both sides of the equation by 18 to solve for x: x = 162 / 18 = 9."",
+  ""step_4"": ""Now that we know x, we can find Allen's current age by multiplying 11 and x: 11 * 9 = 99."",
+  ""step_5"": ""To find Allen's age 10 years from now, we add 10 to his current age: 99 + 10 = 109.""
+}",6,True,61.833333333333336,371,,5,True,63.0,315,,-1,-16.666666666666664,50,global,L3.2-3B,spacing,0,gsm8k
+Lorraine and Colleen are trading stickers for buttons. Each large sticker is worth a large button or three small buttons. A small sticker is worth one small button. A large button is worth three small stickers. Lorraine starts with 30 small stickers and 40 large stickers. She trades 90% of her small stickers for large buttons. She trades 50% of her large stickers for large buttons and trades the rest of them for small buttons. How many buttons does she have by the end?,"Lorraine and Colleen are trading stickers for buttons. Each large sticker is worth a large button or three small buttons. A small sticker is worth one small button. A large button is worth three small stickers. Lorraine starts with 30 small stickers and 40 large stickers. She trades 90% of her small stickers for large buttons. She trades 50% of her large stickers for large buttons and trades the rest of them for small buttons. How many buttons does she have by the end?
+
+Let's think step by step. Return your answer only as JSON in this format:
+{
+  ""step_1"": ""your first reasoning step here"",
+  ""step_2"": ""your second reasoning step here"",
+  ""answer"": ""your final numerical answer""
+}","Lorraine  and Colleen  are trading  stickers for  buttons. Each large  sticker is  worth a large button or  three small buttons. A small sticker is worth   one  small button.   A large button is worth  three small   stickers. Lorraine  starts with 30  small stickers and   40 large stickers. She trades  90% of  her     small stickers for large buttons. She  trades 50% of her large  stickers  for large buttons and trades  the rest  of them  for small buttons. How  many   buttons   does  she have by the end?
+
+Let's think step  by step. Return  your   answer   only as JSON in    this  format:
+{
+  ""step_1"": ""your first  reasoning step here"",
+  ""step_2"": ""your  second reasoning step here"",
+  ""answer"": ""your final numerical  answer""
+}","{
+  ""step_1"": ""Lorraine starts with 30 small stickers and 40 large stickers. She trades 90% of her small stickers for large buttons. 90% of 30 small stickers is 0.9 * 30 = 27 small stickers. So she has 30 - 27 = 3 small stickers left and 40 large stickers."",
+  ""step_2"": ""She trades 50% of her large stickers for large buttons. 50% of 40 large stickers is 0.5 * 40 = 20 large stickers. She now has 40 - 20 = 20 large stickers left. She trades the rest of her large stickers for small buttons. So she trades 20 large stickers for 20 * 3 = 60 small stickers. Now she has 3 + 60 = 63 small stickers and 20 large stickers."",
+  ""answer"": 83","{
+  ""step_1"": ""Lorraine starts with 30 small stickers and 40 large stickers. She trades 90% of her small stickers for large buttons. This means she trades 0.9 * 30 = 27 small stickers for large buttons."",
+  ""step_2"": ""After trading 27 small stickers for large buttons, Lorraine has 30 - 27 = 3 small stickers left. She also has 40 large stickers. She trades 50% of her large stickers for large buttons, which is 0.5 * 40 = 20 large stickers. She trades the rest of her large stickers for small buttons, which is 40 - 20 = 20 large stickers."",
+  ""step_3"": ""Now, Lorraine trades 20 large stickers for small buttons. Since each large sticker is worth 3 small stickers, she gets 20 * 3 = 60 small stickers. So, she now has 3 + 60 = 63 small stickers and 20 large stickers."",
+  ""answer"": {
+    ""small_buttons"": 63,
+    ""large_buttons"": 20
+  }
+}",0,False,0.0,0,,3,True,240.33333333333334,721,"{'small_buttons': 63, 'large_buttons': 20}",3,0.0,50,global,L3.2-3B,spacing,1,gsm8k
+Indras has 6 letters in her name. Her sister's name has 4 more letters than half of the letters in Indras' name. How many letters are in Indras and her sister's names?,"Indras has 6 letters in her name. Her sister's name has 4 more letters than half of the letters in Indras' name. How many letters are in Indras and her sister's names?
+
+Let's think step by step. Return your answer only as JSON in this format:
+{
+  ""step_1"": ""your first reasoning step here"",
+  ""step_2"": ""your second reasoning step here"",
+  ""answer"": ""your final numerical answer""
+}"," Indras   has 6 letters  in  her name. Her  sister's name has   4 more letters than   half   of  the  letters in  Indras'  name.    How   many  letters are in  Indras and her sister's   names?
+
+ Let's   think  step   by  step. Return your   answer  only as JSON  in  this format:
+  {
+   ""step_1"": ""your first  reasoning   step here"",
+   ""step_2"": ""your  second   reasoning step  here"",
+   ""answer"": ""your final numerical answer""
+ } ","{
+  ""step_1"": ""Indras has 6 letters in her name. To find the number of letters in her sister's name, we need to calculate half of the letters in Indras' name first."",
+  ""step_2"": ""Half of 6 is 3, so her sister's name has 3 + 4 = 7 letters."",
+  ""answer"": 13","{
+  ""step_1"": ""Indras has 6 letters in her name. To find half of the letters in her name, we need to divide 6 by 2. 6 / 2 = 3"",
+  ""step_2"": ""Her sister's name has 4 more letters than half of the letters in Indras' name. Half of the letters in Indras' name is 3. So, her sister's name has 3 + 4 = 7 letters"",
+  ""answer"": 13",0,False,0.0,0,,0,False,0.0,0,,0,0.0,50,global,L3.2-3B,spacing,2,gsm8k
