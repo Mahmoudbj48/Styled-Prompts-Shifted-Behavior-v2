@@ -28,7 +28,7 @@ datasets:
 
 defaults:
   max_new_tokens: 100
-  max_new_tokens_cot: 512
+  max_new_tokens_cot: 150
   device_map: "auto"
   dtype: "float16"
   random_seed: 42
