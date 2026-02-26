@@ -2685,7 +2685,9 @@ def evaluate_cot_reasoning_comparison(
     
     # Parse and compare
     results = []
-    for i, question in enumerate(questions):
+    print("Parsing CoT responses and comparing metrics...")
+    print(f"Number of questions: {len(questions)}")
+    for i, question in enumerate(tqdm(questions, desc="Processing questions")):
         # Parse original
         parsed_orig = parse_cot_response(responses_original[i])
         
