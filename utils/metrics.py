@@ -2483,123 +2483,250 @@ def _compute_bias_metrics(predictions):
 
 import json
 import re
-from typing import Any, Dict, List, Optional, Callable
+from typing import Any, Dict, List, Optional, Callable, Tuple
 
 
 # =============================================================================
 # Chain-of-Thought (CoT) Reasoning Evaluation
 # =============================================================================
 
+
 def add_cot_prompt(question: str) -> str:
-    """Add CoT instruction - simple and direct."""
+    """
+    Minimal CoT prompt that reduces echo behavior.
+    """
     cot_instruction = """
 
-Let's think step by step. Return your answer only as JSON in this format:
+Let's think step by step. Return ONLY valid JSON:
 {
-  "step_1": "your first reasoning step here",
-  "step_2": "your second reasoning step here",
-  "answer": "your final numerical answer"
+  "step_1": "first reasoning step",
+  "step_2": "second reasoning step",
+  "answer": "final answer"
 }"""
     return question.strip() + cot_instruction
 
 
+def clean_response(response: str) -> Tuple[str, Dict[str, Any]]:
+    """
+    Aggressively clean response and log all transformations.
+    
+    Returns:
+        (cleaned_text, cleaning_log)
+    """
+    log = {
+        "original_length": len(response),
+        "had_assistant_prefix": False,
+        "had_echoed_prompt": False,
+        "had_markdown": False,
+        "cleaned_length": 0,
+    }
+    
+    cleaned = response.strip()
+    
+    # Remove everything before "assistant:" marker
+    assistant_pattern = r'(?:^|\n)\s*(?:assistant|Assistant)\s*:?\s*'
+    if re.search(assistant_pattern, cleaned, re.IGNORECASE):
+        log["had_assistant_prefix"] = True
+        match = re.search(assistant_pattern, cleaned, re.IGNORECASE)
+        if match:
+            cleaned = cleaned[match.end():]
+    
+    # Remove echoed instruction (everything before first real {)
+    # Look for the SECOND { (first is in the echoed example)
+    parts = cleaned.split('{')
+    if len(parts) > 2:
+        # Find where actual JSON starts (after echoed template)
+        for i in range(1, len(parts)):
+            potential_json = '{' + '{'.join(parts[i:])
+            if '"step_1"' in potential_json or '"step_2"' in potential_json:
+                cleaned = potential_json
+                log["had_echoed_prompt"] = True
+                break
+    
+    # Remove markdown code blocks
+    if '```' in cleaned:
+        log["had_markdown"] = True
+        cleaned = re.sub(r'^```(?:json)?\s*', '', cleaned, flags=re.MULTILINE)
+        cleaned = re.sub(r'\s*```$', '', cleaned, flags=re.MULTILINE)
+    
+    cleaned = cleaned.strip()
+    log["cleaned_length"] = len(cleaned)
+    
+    return cleaned, log
+
+
+def repair_json(json_str: str) -> Tuple[str, Dict[str, bool]]:
+    """
+    Repair common JSON issues.
+    
+    Returns:
+        (repaired_json, repair_log)
+    """
+    repairs = {
+        "added_closing_brace": False,
+        "removed_trailing_comma": False,
+        "fixed_duplicate_keys": False,
+    }
+    
+    repaired = json_str.strip()
+    
+    # Fix missing closing brace
+    if repaired.count('{') > repaired.count('}'):
+        repaired += '\n}'
+        repairs["added_closing_brace"] = True
+    
+    # Remove trailing commas before } or ]
+    if re.search(r',\s*[}\]]', repaired):
+        repaired = re.sub(r',\s*([}\]])', r'\1', repaired)
+        repairs["removed_trailing_comma"] = True
+    
+    # Handle duplicate step keys (take last occurrence)
+    # This is complex, so we'll let JSON parser handle it
+    
+    return repaired, repairs
+
+
+def extract_steps_from_json(data: dict) -> Tuple[List[str], Dict[str, Any]]:
+    """
+    Extract and validate reasoning steps from parsed JSON.
+    
+    Returns:
+        (valid_steps, extraction_log)
+    """
+    log = {
+        "total_step_keys": 0,
+        "template_steps_filtered": 0,
+        "short_steps_filtered": 0,
+        "duplicate_steps_filtered": 0,
+        "valid_steps": 0,
+    }
+    
+    steps = []
+    seen_content = set()
+    step_num = 1
+    
+    # Count until we hit a missing step number
+    while f"step_{step_num}" in data:
+        log["total_step_keys"] += 1
+        step_content = str(data[f"step_{step_num}"]).strip()
+        step_lower = step_content.lower()
+        
+        # Filter template echoes
+        template_phrases = [
+            "your first reasoning",
+            "your second reasoning",
+            "first reasoning step here",
+            "second reasoning step here",
+            "reasoning step here",
+        ]
+        
+        if any(phrase in step_lower for phrase in template_phrases):
+            log["template_steps_filtered"] += 1
+            step_num += 1
+            continue
+        
+        # Filter very short steps (likely incomplete)
+        if len(step_content) < 10:
+            log["short_steps_filtered"] += 1
+            step_num += 1
+            continue
+        
+        # Filter duplicates (exact content match)
+        if step_content in seen_content:
+            log["duplicate_steps_filtered"] += 1
+            step_num += 1
+            continue
+        
+        seen_content.add(step_content)
+        steps.append(step_content)
+        step_num += 1
+    
+    log["valid_steps"] = len(steps)
+    return steps, log
+
+
 def parse_cot_response(response: str) -> Dict[str, Any]:
     """
-    Parse CoT response - simple step counting.
+    Academic-grade CoT response parser with comprehensive logging.
     
-    Strategy:
-    1. Try to parse as JSON → count step_N keys
-    2. If JSON fails → count "step_1", "step_2", etc. in text
+    Returns full parsing metadata for transparency and debugging.
     """
     result = {
+        # Core metrics
         "num_steps": 0,
         "steps": [],
         "answer": None,
         "parse_success": False,
         "parse_error": None,
+        
+        # Statistics
         "total_reasoning_length": 0,
         "avg_step_length": 0.0,
+        
+        # Transparency logs
+        "cleaning_log": {},
+        "repair_log": {},
+        "extraction_log": {},
+        "response_cleaned": "",
+        "json_repaired": "",
     }
     
     if not response or not response.strip():
         result["parse_error"] = "Empty response"
         return result
     
-    cleaned = response.strip()
+    # === STEP 1: CLEAN ===
+    cleaned, cleaning_log = clean_response(response)
+    result["cleaning_log"] = cleaning_log
+    result["response_cleaned"] = cleaned
     
-    # Remove common prefixes
-    cleaned = re.sub(r'^.*?(?:assistant|Assistant)\s*:?\s*', '', cleaned, count=1, flags=re.IGNORECASE)
-    cleaned = re.sub(r'^.*?(?:Let\'s think step by step\.?\s*)+', '', cleaned, count=1, flags=re.IGNORECASE)
+    if not cleaned:
+        result["parse_error"] = "Response empty after cleaning"
+        return result
     
-    # === METHOD 1: Try JSON parsing ===
+    # === STEP 2: EXTRACT JSON ===
+    json_match = re.search(r'\{.*\}', cleaned, re.DOTALL)
+    
+    if not json_match:
+        result["parse_error"] = "No JSON object found"
+        return result
+    
+    json_str = json_match.group(0)
+    
+    # === STEP 3: REPAIR ===
+    json_repaired, repair_log = repair_json(json_str)
+    result["repair_log"] = repair_log
+    result["json_repaired"] = json_repaired
+    
+    # === STEP 4: PARSE ===
     try:
-        # Find JSON object
-        json_match = re.search(r'\{.*\}', cleaned, re.DOTALL)
-        if json_match:
-            json_str = json_match.group(0)
-            
-            # Fix common issues
-            if not json_str.endswith('}'):
-                json_str += '}'
-            json_str = re.sub(r',\s*}', '}', json_str)  # Remove trailing commas
-            
-            data = json.loads(json_str)
-            
-            # Extract steps
-            steps = []
-            step_num = 1
-            while f"step_{step_num}" in data:
-                step_content = str(data[f"step_{step_num}"]).strip()
-                
-                # Filter template echoes
-                if len(step_content) > 5 and "reasoning step here" not in step_content.lower():
-                    steps.append(step_content)
-                
-                step_num += 1
-            
-            # Extract answer
-            if "answer" in data:
-                answer = str(data["answer"]).strip()
-                if answer and "your final" not in answer.lower():
-                    result["answer"] = answer
-            
-            result["steps"] = steps
-            result["num_steps"] = len(steps)
-            result["parse_success"] = True
-            
-    except (json.JSONDecodeError, Exception) as e:
-        # === METHOD 2: Fallback - count step patterns in text ===
-        result["parse_error"] = f"JSON parse failed: {str(e)}"
+        data = json.loads(json_repaired)
         
-        # Count "step_1", "step_2", etc. (case-insensitive)
-        steps_found = []
-        step_num = 1
+        # === STEP 5: EXTRACT STEPS ===
+        steps, extraction_log = extract_steps_from_json(data)
+        result["extraction_log"] = extraction_log
+        result["steps"] = steps
+        result["num_steps"] = len(steps)
         
-        while True:
-            # Try both formats: "step_1" and "step 1"
-            pattern1 = rf'"?step_{step_num}"?\s*:\s*"?([^"}}]+)"?'
-            pattern2 = rf'step\s+{step_num}\s*[:\.]\s*([^\n]+)'
-            
-            match = re.search(pattern1, cleaned, re.IGNORECASE)
-            if not match:
-                match = re.search(pattern2, cleaned, re.IGNORECASE)
-            
-            if match:
-                step_content = match.group(1).strip()
-                if len(step_content) > 5:
-                    steps_found.append(step_content)
-                step_num += 1
-            else:
-                break
+        # === STEP 6: EXTRACT ANSWER ===
+        if "answer" in data:
+            answer = str(data["answer"]).strip()
+            # Don't save template echoes
+            if answer and "your final" not in answer.lower():
+                result["answer"] = answer
         
-        result["steps"] = steps_found
-        result["num_steps"] = len(steps_found)
-        result["parse_success"] = len(steps_found) > 0
+        # === STEP 7: SUCCESS ===
+        result["parse_success"] = len(steps) > 0
         
         if not result["parse_success"]:
-            result["parse_error"] = "No steps found in text"
+            result["parse_error"] = "No valid steps after filtering"
+        
+    except json.JSONDecodeError as e:
+        result["parse_error"] = f"JSON decode error: {str(e)}"
+    except Exception as e:
+        result["parse_error"] = f"Unexpected error: {str(e)}"
     
-    # Compute statistics
+    # === STEP 8: STATISTICS ===
     if result["steps"]:
         step_lengths = [len(s) for s in result["steps"]]
         result["total_reasoning_length"] = sum(step_lengths)
