@@ -46,7 +46,7 @@ ALLOWED_METRICS = [
     "entropy_shift",
     "activation_similarity",
     "mirroring_rate",
-    # NEW:
+
     "asr",
     "silhouette",
 ]
