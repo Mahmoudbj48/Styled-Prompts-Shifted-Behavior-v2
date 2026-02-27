@@ -58,8 +58,8 @@ METRIC_DISPLAY = {
     "mirroring_rate": "Mirroring Rate",
     "bertscore_prompt": "BERTScore (Prompt)",
     # NEW:
-    "asr": "ASR (HarmBench)",
-    "silhouette": "Silhouette Score (HarmBench + Alpaca)",
+    "asr": "ASR",
+    "silhouette": "Silhouette Score",
 }
 
 
