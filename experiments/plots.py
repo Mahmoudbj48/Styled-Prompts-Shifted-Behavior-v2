@@ -9,8 +9,13 @@ What this script does
      <RUN_DIR>/plots_metrics/combined_means_by_model_place_strength.csv
 
 2) For EACH metric column (restricted to a selected set):
-   - Line plot: x=strength (Style Strength), y=metric,
-     one color per model, shades per place.
+   - Line plot TYPE 1 : all models+places together
+       color = model, shade = place
+   - Line plot TYPE 2 : per-model (one figure per model), combine all places
+       color shade = place, single base color for the model
+   - Line plot TYPE 3 : per-place (one figure per place), combine all models
+       color = model (no shading)
+
    - Radar plot Type A: axes=places, lines=models (colors=models).
    - Radar plot Type B: axes=models, lines=places (colors=places).
    - Radar plot Type C: axes=metrics, lines=(model,place) with:
@@ -314,8 +319,7 @@ def _filter_df(df: pd.DataFrame, models: Optional[List[str]], places: Optional[L
 
 
 # ============================================================
-# Line plot: metric vs "Style Strength" (strength)
-# (FIXED: titles include dataset name via metric rules)
+# Line plot TYPE 1: all models + all places (existing)
 # ============================================================
 
 def plot_metric_lines(
@@ -425,6 +429,178 @@ def plot_metric_lines(
 
 
 # ============================================================
+# Line plot TYPE 2 (NEW): per-model (combine all places)
+#   One figure per model, shade lines by place.
+# ============================================================
+
+def plot_metric_lines_per_model(
+        df: pd.DataFrame,
+        metric: str,
+        out_dir: str,
+        models: Optional[List[str]] = None,
+        places: Optional[List[str]] = None,
+        save_pdf: bool = False,
+        dataset_name: Optional[str] = None,
+):
+    apply_style()
+
+    d = _filter_df(df, models, places)
+    if d.empty or metric not in d.columns:
+        return
+
+    d[metric] = pd.to_numeric(d[metric], errors="coerce")
+    d = d.dropna(subset=["strength", metric])
+    if d.empty:
+        return
+
+    ds_suffix = metric_dataset_suffix(metric, d, dataset_name=dataset_name)
+
+    models_u = sorted(d["model"].unique().tolist())
+    places_u = sorted(d["place"].unique().tolist())
+
+    single_model_mode = (metric == SPECIAL_SINGLE_MODEL_METRIC and len(models_u) > 0)
+    if single_model_mode:
+        # keep existing single-model behavior: just one model anyway
+        models_u = [models_u[0]]
+        d = d[d["model"] == models_u[0]].copy()
+
+    model_colors = build_model_color_map(models_u)
+
+    os.makedirs(out_dir, exist_ok=True)
+
+    for model in models_u:
+        fig, ax = plt.subplots(figsize=(7.6, 4.4))
+        base = model_colors[model]
+
+        for place in places_u:
+            sub = d[(d["model"] == model) & (d["place"] == place)].sort_values("strength")
+            if sub.empty:
+                continue
+
+            ax.plot(
+                sub["strength"].values,
+                sub[metric].values,
+                marker="o",
+                markersize=4,
+                linewidth=1.8,
+                color=shade_for_place(base, place, places_u),
+                linestyle=PLACE_LINESTYLE.get(place, "-"),
+                alpha=0.95,
+                label=str(place),
+            )
+
+        ax.set_xlabel("Style Strength")
+        ax.set_ylabel(metric_display_name(metric))
+        ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
+        ax.set_title(f"{metric_display_name(metric)} vs. Style Strength{ds_suffix} ({model})")
+
+        ymin = float(d[d["model"] == model][metric].min())
+        ymax = float(d[d["model"] == model][metric].max())
+        if np.isfinite(ymin) and np.isfinite(ymax) and ymin != ymax:
+            pad = 0.12 * (ymax - ymin)
+            ax.set_ylim(ymin - pad, ymax + pad)
+
+        if metric == "bertscore_prompt":
+            thr = 0.85
+            ax.axhline(y=thr, color="black", linestyle="--", linewidth=1.5, alpha=0.8, zorder=3)
+
+        ax.legend(frameon=False, loc="upper left", bbox_to_anchor=(1.02, 1.0))
+        plt.tight_layout()
+
+        out_path = os.path.join(out_dir, f"{_sanitize_filename(metric)}_line_per_model__{_sanitize_filename(model)}.png")
+        plt.savefig(out_path, dpi=300, bbox_inches="tight")
+        if save_pdf:
+            plt.savefig(os.path.splitext(out_path)[0] + ".pdf", bbox_inches="tight")
+        plt.close()
+
+
+# ============================================================
+# Line plot TYPE 3 (NEW): per-place (combine all models)
+#   One figure per place, color lines by model.
+# ============================================================
+
+def plot_metric_lines_per_place(
+        df: pd.DataFrame,
+        metric: str,
+        out_dir: str,
+        models: Optional[List[str]] = None,
+        places: Optional[List[str]] = None,
+        save_pdf: bool = False,
+        dataset_name: Optional[str] = None,
+):
+    apply_style()
+
+    d = _filter_df(df, models, places)
+    if d.empty or metric not in d.columns:
+        return
+
+    d[metric] = pd.to_numeric(d[metric], errors="coerce")
+    d = d.dropna(subset=["strength", metric])
+    if d.empty:
+        return
+
+    ds_suffix = metric_dataset_suffix(metric, d, dataset_name=dataset_name)
+
+    models_u = sorted(d["model"].unique().tolist())
+    places_u = sorted(d["place"].unique().tolist())
+
+    single_model_mode = (metric == SPECIAL_SINGLE_MODEL_METRIC and len(models_u) > 0)
+    if single_model_mode:
+        # in special single-model metric, per-place plot is trivial but still valid
+        keep_model = models_u[0]
+        d = d[d["model"] == keep_model].copy()
+        models_u = [keep_model]
+
+    model_colors = build_model_color_map(models_u)
+
+    os.makedirs(out_dir, exist_ok=True)
+
+    for place in places_u:
+        fig, ax = plt.subplots(figsize=(7.6, 4.4))
+
+        for model in models_u:
+            sub = d[(d["model"] == model) & (d["place"] == place)].sort_values("strength")
+            if sub.empty:
+                continue
+
+            ax.plot(
+                sub["strength"].values,
+                sub[metric].values,
+                marker="o",
+                markersize=4,
+                linewidth=1.8,
+                color=model_colors[model],
+                linestyle="-",
+                alpha=0.95,
+                label=str(model),
+            )
+
+        ax.set_xlabel("Style Strength")
+        ax.set_ylabel(metric_display_name(metric))
+        ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
+        ax.set_title(f"{metric_display_name(metric)} vs. Style Strength{ds_suffix} ({place})")
+
+        ymin = float(d[d["place"] == place][metric].min())
+        ymax = float(d[d["place"] == place][metric].max())
+        if np.isfinite(ymin) and np.isfinite(ymax) and ymin != ymax:
+            pad = 0.12 * (ymax - ymin)
+            ax.set_ylim(ymin - pad, ymax + pad)
+
+        if metric == "bertscore_prompt":
+            thr = 0.85
+            ax.axhline(y=thr, color="black", linestyle="--", linewidth=1.5, alpha=0.8, zorder=3)
+
+        ax.legend(frameon=False, loc="upper left", bbox_to_anchor=(1.02, 1.0))
+        plt.tight_layout()
+
+        out_path = os.path.join(out_dir, f"{_sanitize_filename(metric)}_line_per_place__{_sanitize_filename(place)}.png")
+        plt.savefig(out_path, dpi=300, bbox_inches="tight")
+        if save_pdf:
+            plt.savefig(os.path.splitext(out_path)[0] + ".pdf", bbox_inches="tight")
+        plt.close()
+
+
+# ============================================================
 # Radar helpers
 # ============================================================
 
@@ -493,7 +669,6 @@ def _set_rgrid(ax, data_max: float):
 
 # ============================================================
 # Radar Type A: axes=places, colors=models
-# (FIXED: titles include dataset name via metric rules)
 # ============================================================
 
 def plot_radar_places_axes(df: pd.DataFrame, metric: str, out_path: str,
@@ -563,7 +738,6 @@ def plot_radar_places_axes(df: pd.DataFrame, metric: str, out_path: str,
 
 # ============================================================
 # Radar Type B: axes=models, colors=places
-# (FIXED: titles include dataset name via metric rules)
 # ============================================================
 
 def plot_radar_models_axes(df: pd.DataFrame, metric: str, out_path: str,
@@ -627,7 +801,6 @@ def plot_radar_models_axes(df: pd.DataFrame, metric: str, out_path: str,
 
 # ============================================================
 # Radar Type C: axes=metrics, color=model, linestyle=place
-# (unchanged title structure; keep as in your current file)
 # ============================================================
 
 def plot_radar_metrics_axes(df: pd.DataFrame, metrics: List[str], out_path: str,
@@ -642,7 +815,6 @@ def plot_radar_metrics_axes(df: pd.DataFrame, metrics: List[str], out_path: str,
     if d.empty:
         return
 
-    # For Type C we keep the original behavior: use argument dataset_name inference.
     ds_suffix = dataset_title_suffix(d, dataset_name=dataset_name)
 
     keep_metrics = [m for m in metrics if m in d.columns and m in ALLOWED_METRICS]
@@ -713,7 +885,6 @@ def plot_radar_metrics_axes(df: pd.DataFrame, metrics: List[str], out_path: str,
 
 # ============================================================
 # Ridge plot (distribution per strength)
-# (FIXED: title includes dataset name via metric rules)
 # ============================================================
 
 def _kde_1d(x: np.ndarray, grid: np.ndarray) -> np.ndarray:
@@ -875,9 +1046,30 @@ def main():
     for metric in metrics:
         print(f"[PLOT] {metric}")
 
+        # TYPE 1: all models + all places
         plot_metric_lines(
             df, metric,
             out_path=os.path.join(args.out_dir, f"{metric}_line.png"),
+            models=args.models,
+            places=args.places,
+            save_pdf=bool(args.save_pdf),
+            dataset_name=args.dataset_name,
+        )
+
+        # TYPE 2: per-model (combine all places)
+        plot_metric_lines_per_model(
+            df, metric,
+            out_dir=os.path.join(args.out_dir, "line_per_model"),
+            models=args.models,
+            places=args.places,
+            save_pdf=bool(args.save_pdf),
+            dataset_name=args.dataset_name,
+        )
+
+        # TYPE 3: per-place (combine all models)
+        plot_metric_lines_per_place(
+            df, metric,
+            out_dir=os.path.join(args.out_dir, "line_per_place"),
             models=args.models,
             places=args.places,
             save_pdf=bool(args.save_pdf),
