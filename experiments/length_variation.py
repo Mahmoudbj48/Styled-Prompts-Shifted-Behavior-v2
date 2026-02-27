@@ -269,7 +269,7 @@ def _load_or_generate_styled_prompts(
 # ---------------------------------------------------------------------------
 def _outputs_cache_path(
         *, data_dir, dataset, config_name, split, seed, sample_size,
-        model_name, multiplier, batch_idx=None,
+        model_name, place, multiplier, batch_idx=None,
 ) -> str:
     base = os.path.join(
         data_dir, "outputs_cache",
@@ -279,7 +279,7 @@ def _outputs_cache_path(
         f"seed_{seed}", f"n_{sample_size}",
         _safe_name(model_name),
         _safe_name(STYLE_NAME),
-        "global",
+        _safe_name(place),
     )
     fname = f"strength_{_safe_name(str(multiplier))}"
     if batch_idx is not None:
@@ -370,6 +370,7 @@ def run_for_one_model(
         run_dir: str,
         experiments: Set[str],
         *,
+        places: List[str],
         batch_size: int,
         max_new_tokens: int,
         show_row_pbar: bool = False,
@@ -398,12 +399,12 @@ def run_for_one_model(
 
     rows: List[dict] = []
 
-    total_groups = n_batches * len(multipliers)
+    total_groups = n_batches * len(places) * len(multipliers)
     batch_pbar = tqdm(total=total_groups, desc=f"[{model_name}] batch-groups", unit="group")
 
     row_pbar = None
     if show_row_pbar:
-        total_rows = n * len(multipliers)
+        total_rows = n * len(places) * len(multipliers)
         row_pbar = tqdm(total=total_rows, desc=f"[{model_name}] rows", unit="row", leave=False)
 
     for b in range(n_batches):
@@ -423,114 +424,116 @@ def run_for_one_model(
             if batch_act_orig.shape[0] != len(batch_orig_prompts):
                 raise RuntimeError("get_layer_activations_batch returned wrong batch size.")
 
-        for multiplier in multipliers:
-            # Styled prompts for this multiplier (pre-generated)
-            all_styled = styled_prompts_by_mult[multiplier]
-            batch_styled_prompts = all_styled[start:end]
+        for place in places:
+            for multiplier in multipliers:
+                # Styled prompts for this multiplier (pre-generated)
+                all_styled = styled_prompts_by_mult[multiplier]
+                batch_styled_prompts = all_styled[start:end]
 
-            # Prompt BERTScore
-            batch_prompt_bs = None
-            if "prompt" in experiments:
-                batch_prompt_bs = compute_bertscore_batch(
-                    references=batch_orig_prompts,
-                    candidates=batch_styled_prompts,
-                    device=str(model.device) if model else None,
-                )
-
-            # Responses (baseline + styled) with caching
-            batch_response_orig = None
-            batch_response_pert = None
-            batch_response_orig_clean = None
-            batch_response_pert_clean = None
-
-            if run_llm_phase and ("response" in experiments or "confidence" in experiments):
-                cache_path = _outputs_cache_path(
-                    data_dir=data_dir,
-                    dataset=dataset_name,
-                    config_name=dataset_config_name,
-                    split=dataset_split,
-                    seed=dataset_seed,
-                    sample_size=dataset_sample_size,
-                    model_name=model_name,
-                    multiplier=multiplier,
-                    batch_idx=b,
-                )
-                out = _load_or_generate_outputs_for_bucket(
-                    cache_path=cache_path,
-                    overwrite_output_cache=overwrite_output_cache,
-                    model=model, tokenizer=tokenizer,
-                    prompt_orig_list=batch_orig_prompts,
-                    prompt_styled_list=batch_styled_prompts,
-                    max_new_tokens=max_new_tokens,
-                    batch_size=batch_size,
-                )
-                batch_response_orig = out["output_orig_raw"]
-                batch_response_pert = out["output_styled_raw"]
-                batch_response_orig_clean = out["output_orig_clean"]
-                batch_response_pert_clean = out["output_styled_clean"]
-
-            # Response BERTScore
-            batch_resp_bs = None
-            if run_llm_phase and "response" in experiments:
-                batch_resp_bs = compute_bertscore_batch(
-                    references=batch_response_orig,
-                    candidates=batch_response_pert,
-                    device=str(model.device) if model else None,
-                )
-
-            # Styled activations
-            batch_act_pert = None
-            if run_llm_phase and ("activation" in experiments):
-                batch_act_pert = get_layer_activations_batch(
-                    model, tokenizer, prompts=batch_styled_prompts, layer_idx=-1,
-                )
-                if batch_act_pert.shape[0] != len(batch_styled_prompts):
-                    raise RuntimeError("get_layer_activations_batch returned wrong batch size (styled).")
-
-            # Per-example rows
-            for j in range(len(batch_orig_prompts)):
-                i = batch_ids[j]
-                orig = batch_orig_prompts[j]
-                pert = batch_styled_prompts[j]
-                cat = batch_categories[j]
-
-                row = {
-                    "model": model_name,
-                    "prompt_id": i,
-                    "place": "global",  # always global for LLM rewriting
-                    "strength": float(multiplier),
-                    "category": cat,
-                    "prompt_orig": orig,
-                    "prompt_pert": pert,
-                }
-
+                # Prompt BERTScore
+                batch_prompt_bs = None
                 if "prompt" in experiments:
-                    row["bertscore_prompt"] = float(batch_prompt_bs[j])
-
-                if run_llm_phase and ("response" in experiments or "confidence" in experiments):
-                    row["response_orig"] = batch_response_orig[j]
-                    row["response_pert"] = batch_response_pert[j]
-
-                if run_llm_phase and "response" in experiments:
-                    row["bleu"] = float(compute_bleu(batch_response_orig[j], batch_response_pert[j]))
-                    row["bertscore_response"] = float(batch_resp_bs[j])
-
-                if run_llm_phase and "activation" in experiments:
-                    a0 = batch_act_orig[j]
-                    a1 = batch_act_pert[j]
-                    row["activation_similarity"] = float(
-                        F.cosine_similarity(a0.unsqueeze(0), a1.unsqueeze(0)).item()
+                    batch_prompt_bs = compute_bertscore_batch(
+                        references=batch_orig_prompts,
+                        candidates=batch_styled_prompts,
+                        device=str(model.device) if model else None,
                     )
 
-                if run_llm_phase and "confidence" in experiments:
-                    conf = compute_confidence(model, tokenizer, orig, pert, batch_response_orig[j])
-                    row.update(conf)
+                # Responses (baseline + styled) with caching
+                batch_response_orig = None
+                batch_response_pert = None
+                batch_response_orig_clean = None
+                batch_response_pert_clean = None
 
-                rows.append(row)
-                if row_pbar is not None:
-                    row_pbar.update(1)
+                if run_llm_phase and ("response" in experiments or "confidence" in experiments):
+                    cache_path = _outputs_cache_path(
+                        data_dir=data_dir,
+                        dataset=dataset_name,
+                        config_name=dataset_config_name,
+                        split=dataset_split,
+                        seed=dataset_seed,
+                        sample_size=dataset_sample_size,
+                        model_name=model_name,
+                        place=place,
+                        multiplier=multiplier,
+                        batch_idx=b,
+                    )
+                    out = _load_or_generate_outputs_for_bucket(
+                        cache_path=cache_path,
+                        overwrite_output_cache=overwrite_output_cache,
+                        model=model, tokenizer=tokenizer,
+                        prompt_orig_list=batch_orig_prompts,
+                        prompt_styled_list=batch_styled_prompts,
+                        max_new_tokens=max_new_tokens,
+                        batch_size=batch_size,
+                    )
+                    batch_response_orig = out["output_orig_raw"]
+                    batch_response_pert = out["output_styled_raw"]
+                    batch_response_orig_clean = out["output_orig_clean"]
+                    batch_response_pert_clean = out["output_styled_clean"]
 
-            batch_pbar.update(1)
+                # Response BERTScore
+                batch_resp_bs = None
+                if run_llm_phase and "response" in experiments:
+                    batch_resp_bs = compute_bertscore_batch(
+                        references=batch_response_orig,
+                        candidates=batch_response_pert,
+                        device=str(model.device) if model else None,
+                    )
+
+                # Styled activations
+                batch_act_pert = None
+                if run_llm_phase and ("activation" in experiments):
+                    batch_act_pert = get_layer_activations_batch(
+                        model, tokenizer, prompts=batch_styled_prompts, layer_idx=-1,
+                    )
+                    if batch_act_pert.shape[0] != len(batch_styled_prompts):
+                        raise RuntimeError("get_layer_activations_batch returned wrong batch size (styled).")
+
+                # Per-example rows
+                for j in range(len(batch_orig_prompts)):
+                    i = batch_ids[j]
+                    orig = batch_orig_prompts[j]
+                    pert = batch_styled_prompts[j]
+                    cat = batch_categories[j]
+
+                    row = {
+                        "model": model_name,
+                        "prompt_id": i,
+                        "place": place,
+                        "strength": float(multiplier),
+                        "category": cat,
+                        "prompt_orig": orig,
+                        "prompt_pert": pert,
+                    }
+
+                    if "prompt" in experiments:
+                        row["bertscore_prompt"] = float(batch_prompt_bs[j])
+
+                    if run_llm_phase and ("response" in experiments or "confidence" in experiments):
+                        row["response_orig"] = batch_response_orig[j]
+                        row["response_pert"] = batch_response_pert[j]
+
+                    if run_llm_phase and "response" in experiments:
+                        row["bleu"] = float(compute_bleu(batch_response_orig[j], batch_response_pert[j]))
+                        row["bertscore_response"] = float(batch_resp_bs[j])
+
+                    if run_llm_phase and "activation" in experiments:
+                        a0 = batch_act_orig[j]
+                        a1 = batch_act_pert[j]
+                        row["activation_similarity"] = float(
+                            F.cosine_similarity(a0.unsqueeze(0), a1.unsqueeze(0)).item()
+                        )
+
+                    if run_llm_phase and "confidence" in experiments:
+                        conf = compute_confidence(model, tokenizer, orig, pert, batch_response_orig[j])
+                        row.update(conf)
+
+                    rows.append(row)
+                    if row_pbar is not None:
+                        row_pbar.update(1)
+
+                batch_pbar.update(1)
 
     batch_pbar.close()
     if row_pbar is not None:
@@ -564,6 +567,7 @@ def run_experiment(
         overwrite_sample_cache: bool,
         overwrite_output_cache: bool,
         overwrite_style_cache: bool,
+        places_override: Optional[List[str]] = None,
 ) -> str:
     config = load_config()
     experiments_set = _normalize_experiments(experiments)
@@ -583,6 +587,15 @@ def run_experiment(
     if max_new_tokens is None:
         max_new_tokens = int(config["defaults"].get("max_new_tokens", 256))
 
+    # --- Places (default: global only, since length variation is a global rewrite) ---
+    if places_override:
+        places = [p for p in places_override if p in {"prefix", "suffix", "global"}]
+    else:
+        places = [p for p in config.get("style_positions", {}).get("length_variation", ["global"])]
+        places = [p for p in places if p in {"prefix", "suffix", "global"}]
+    if not places:
+        places = ["global"]
+
     # --- Output directory ---
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     base_results_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "results")
@@ -598,6 +611,7 @@ def run_experiment(
     print(f"Experiments:       {sorted(experiments_set)}")
     print(f"Sample size:       {sample_size}")
     print(f"Multipliers:       {multipliers}")
+    print(f"Places:            {places}")
     print(f"Rewrite LLM:       {rewrite_provider}/{rewrite_model}")
     print(f"Batch size:        {batch_size}")
     print(f"Max new tokens:    {max_new_tokens}")
@@ -645,6 +659,7 @@ def run_experiment(
             config=config,
             run_dir=run_dir,
             experiments=experiments_set,
+            places=places,
             batch_size=batch_size,
             max_new_tokens=max_new_tokens,
             show_row_pbar=show_row_pbar,
@@ -682,7 +697,7 @@ def run_experiment(
             plot_inputs=[run_dir],
             out_dir=plot_dir,
             strengths=None,
-            places_filter=["global"],
+            places_filter=places,
             models_filter=models,
             dataset_name=dataset_name,
             style_name=STYLE_NAME,
@@ -743,6 +758,10 @@ def main():
     parser.add_argument("--multipliers", nargs="+", type=float, default=None,
                         help="Override multipliers (e.g. --multipliers 0.5 1.5 2.0)")
 
+    # Places
+    parser.add_argument("--places", nargs="+", default=None,
+                        help="Override places (default: global). E.g. --places global")
+
     # LLM for rewriting prompts (NOT the model being tested)
     parser.add_argument("--rewrite_provider", type=str, default="openai",
                         choices=["openai", "gemini"],
@@ -787,6 +806,7 @@ def main():
         overwrite_sample_cache=bool(args.overwrite_sample_cache),
         overwrite_output_cache=bool(args.overwrite_output_cache),
         overwrite_style_cache=bool(args.overwrite_style_cache),
+        places_override=args.places,
     )
 
 

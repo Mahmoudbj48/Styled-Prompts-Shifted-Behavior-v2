@@ -51,6 +51,7 @@ style_positions:
   punctuation: ["prefix", "suffix", "global"]
   letter_case: ["prefix", "suffix", "global"]
   politeness: ["prefix", "suffix", "global"]
+  length_variation: ["global"]
 style_defaults:
   politeness:
     strength_range: [-10, 10]
