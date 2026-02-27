@@ -1,0 +1,284 @@
+model,style,problem_id,category,strength,place,question_original,prompt_original_cot,prompt_styled_cot,response_original,response_styled
+L3.2-3B,letter_case,0,gsm8k,0,global,"Darrell and Allen's ages are in the ratio of 7:11. If their total age now is 162, calculate Allen's age 10 years from now.","Darrell and Allen's ages are in the ratio of 7:11. If their total age now is 162, calculate Allen's age 10 years from now.
+
+Let's think step by step","Darrell and Allen's ages are in the ratio of 7:11. If their total age now is 162, calculate Allen's age 10 years from now.
+
+Let's think step by step","December 2023
+Today Date: 27 Feb 2026
+
+user
+
+Darrell and Allen's ages are in the ratio of 7:11. If their total age now is 162, calculate Allen's age 10 years from now.
+
+Let's think step by stepassistant
+
+To solve this problem, let's break it down step by step.
+
+Step 1: Let's represent Darrell's age as 7x and Allen's age as 11x, since their ages are in the ratio of 7:11.
+
+Step 2: We know that their total age now is 162, so we can set up an equation:
+
+7x + 11x = 162
+
+Step 3: Combine like terms:
+
+18x = 162
+
+Step 4: Divide both sides by 18:
+
+x = 162 / 18
+x = 9
+
+Step 5: Now that we know x, we can find Darrell's current age:
+
+Darrell's age = 7x =","December 2023
+Today Date: 27 Feb 2026
+
+user
+
+Darrell and Allen's ages are in the ratio of 7:11. If their total age now is 162, calculate Allen's age 10 years from now.
+
+Let's think step by stepassistant
+
+To solve this problem, let's break it down step by step.
+
+Step 1: Let's represent Darrell's age as 7x and Allen's age as 11x, since their ages are in the ratio of 7:11.
+
+Step 2: We know that their total age now is 162, so we can set up an equation:
+
+7x + 11x = 162
+
+Step 3: Combine like terms:
+
+18x = 162
+
+Step 4: Divide both sides by 18:
+
+x = 162 / 18
+x = 9
+
+Step 5: Now that we know x, we can find Darrell's current age:
+
+Darrell's age = 7x ="
+L3.2-3B,letter_case,1,gsm8k,0,global,Lorraine and Colleen are trading stickers for buttons. Each large sticker is worth a large button or three small buttons. A small sticker is worth one small button. A large button is worth three small stickers. Lorraine starts with 30 small stickers and 40 large stickers. She trades 90% of her small stickers for large buttons. She trades 50% of her large stickers for large buttons and trades the rest of them for small buttons. How many buttons does she have by the end?,"Lorraine and Colleen are trading stickers for buttons. Each large sticker is worth a large button or three small buttons. A small sticker is worth one small button. A large button is worth three small stickers. Lorraine starts with 30 small stickers and 40 large stickers. She trades 90% of her small stickers for large buttons. She trades 50% of her large stickers for large buttons and trades the rest of them for small buttons. How many buttons does she have by the end?
+
+Let's think step by step","Lorraine and Colleen are trading stickers for buttons. Each large sticker is worth a large button or three small buttons. A small sticker is worth one small button. A large button is worth three small stickers. Lorraine starts with 30 small stickers and 40 large stickers. She trades 90% of her small stickers for large buttons. She trades 50% of her large stickers for large buttons and trades the rest of them for small buttons. How many buttons does she have by the end?
+
+Let's think step by step","To solve this problem, let's break it down step by step.
+
+Initially, Lorraine has:
+
+- 30 small stickers
+- 40 large stickers
+
+She trades 90% of her small stickers for large buttons. To find out how many small stickers she trades, we multiply the number of small stickers by 0.9 (which is 90%):
+
+30 small stickers * 0.9 = 27 small stickers traded
+
+So, she has 30 - 27 = 3 small stickers left.
+
+She trades 50% of her large stickers for large buttons. To find out how many large stickers she trades, we multiply the number of large stickers by 0.5 (which is 50%):
+
+40 large stickers","To solve this problem, let's break it down step by step.
+
+Initially, Lorraine has:
+
+- 30 small stickers
+- 40 large stickers
+
+She trades 90% of her small stickers for large buttons. To find out how many small stickers she trades, we multiply the number of small stickers by 0.9 (which is 90%):
+
+30 small stickers * 0.9 = 27 small stickers traded
+
+So, she has 30 - 27 = 3 small stickers left.
+
+She trades 50% of her large stickers for large buttons. To find out how many large stickers she trades, we multiply the number of large stickers by 0.5 (which is 50%):
+
+40 large stickers"
+L3.2-3B,letter_case,0,gsm8k,50,global,"Darrell and Allen's ages are in the ratio of 7:11. If their total age now is 162, calculate Allen's age 10 years from now.","Darrell and Allen's ages are in the ratio of 7:11. If their total age now is 162, calculate Allen's age 10 years from now.
+
+Let's think step by step","DaRReLL aND AllEn's aGeS Are iN THE RatIO of 7:11. IF tHEiR tOtal agE NoW is 162, CaLCulaTE ALleN'S aGE 10 YEars FrOm NOW.
+
+Let's ThinK sTEP by StEp","December 2023
+Today Date: 27 Feb 2026
+
+user
+
+Darrell and Allen's ages are in the ratio of 7:11. If their total age now is 162, calculate Allen's age 10 years from now.
+
+Let's think step by stepassistant
+
+To solve this problem, let's break it down step by step.
+
+Step 1: Let's represent Darrell's age as 7x and Allen's age as 11x, since their ages are in the ratio of 7:11.
+
+Step 2: We know that their total age now is 162, so we can set up an equation:
+
+7x + 11x = 162
+
+Step 3: Combine like terms:
+
+18x = 162
+
+Step 4: Divide both sides by 18:
+
+x = 162 / 18
+x = 9
+
+Step 5: Now that we know x, we can find Darrell's current age:
+
+Darrell's age = 7x =","system
+
+Cutting Knowledge Date: December 2023
+Today Date: 27 Feb 2026
+
+user
+
+DaRReLL aND AllEn's aGeS Are iN THE RatIO of 7:11. IF tHEiR tOtal agE NoW is 162, CaLCulaTE ALleN'S aGE 10 YEars FrOm NOW.
+
+Let's ThinK sTEP by StEpassistant
+
+Let's break this problem down step by step.
+
+Let's denote Darren's age as D and Allen's age as A. We know that their ages are in the ratio of 7:11, so we can write an equation:
+
+D:A = 7:11
+
+We also know that their total age is 162, so we can write another equation:
+
+D + A = 162
+
+Now, we are asked to find Allen's age 10 years from now. To do this, we need to find Allen's current age, A.
+
+Since the ratio of their ages is 7:11, we can let D = 7x and A = 11x, where x is a constant.
+
+Substituting these expressions into"
+L3.2-3B,letter_case,1,gsm8k,50,global,Lorraine and Colleen are trading stickers for buttons. Each large sticker is worth a large button or three small buttons. A small sticker is worth one small button. A large button is worth three small stickers. Lorraine starts with 30 small stickers and 40 large stickers. She trades 90% of her small stickers for large buttons. She trades 50% of her large stickers for large buttons and trades the rest of them for small buttons. How many buttons does she have by the end?,"Lorraine and Colleen are trading stickers for buttons. Each large sticker is worth a large button or three small buttons. A small sticker is worth one small button. A large button is worth three small stickers. Lorraine starts with 30 small stickers and 40 large stickers. She trades 90% of her small stickers for large buttons. She trades 50% of her large stickers for large buttons and trades the rest of them for small buttons. How many buttons does she have by the end?
+
+Let's think step by step","LorRAiNe ANd CollEen ARe TRaDInG Stickers fOr BuTTOns. Each LArgE sTICKer is wORtH a lArge bUttON oR THRee SmAll bUttoNs. A SMALl sTiCKEr IS WoRth OnE sMALL bUtToN. A LaRGE butTon IS wortH tHreE SMAll StICkeRS. LoRRAINe STArTS WiTH 30 sMAlL stIcKerS aND 40 LArGe StickeRS. SHe traDes 90% oF Her smALL stIcKers FoR LaRGE BuTTONS. SHe TraDES 50% Of hER LarGe sTIcKerS FOR LaRGE BUTtONs aNd TRADES The Rest oF ThEm foR sMall bUttoNs. HOw MAnY BuTtonS DoEs she HaVE bY the eNd?
+
+LeT's think stEp By STep","To solve this problem, let's break it down step by step.
+
+Initially, Lorraine has:
+
+- 30 small stickers
+- 40 large stickers
+
+She trades 90% of her small stickers for large buttons. To find out how many small stickers she trades, we multiply the number of small stickers by 0.9 (which is 90%):
+
+30 small stickers * 0.9 = 27 small stickers traded
+
+So, she has 30 - 27 = 3 small stickers left.
+
+She trades 50% of her large stickers for large buttons. To find out how many large stickers she trades, we multiply the number of large stickers by 0.5 (which is 50%):
+
+40 large stickers","Let's break it down step by step:
+
+1. LorRaine starts with 30 small stickers and 40 large stickers.
+
+2. She trades 90% of her small stickers for large buttons. To find out how many small stickers she trades, we multiply 30 by 0.9:
+   30 x 0.9 = 27 small stickers traded
+
+   She now has:
+   - 30 - 27 = 3 small stickers left
+   - 40 large stickers (no change)
+
+3. She trades 50% of her large stickers for small buttons. To find out how many large stickers she trades, we multiply 40 by 0.5:
+   40 x 0.5 ="
+L3.2-3B,letter_case,0,gsm8k,100,global,"Darrell and Allen's ages are in the ratio of 7:11. If their total age now is 162, calculate Allen's age 10 years from now.","Darrell and Allen's ages are in the ratio of 7:11. If their total age now is 162, calculate Allen's age 10 years from now.
+
+Let's think step by step","DARRELL AND ALLEN'S AGES ARE IN THE RATIO OF 7:11. IF THEIR TOTAL AGE NOW IS 162, CALCULATE ALLEN'S AGE 10 YEARS FROM NOW.
+
+LET'S THINK STEP BY STEP","December 2023
+Today Date: 27 Feb 2026
+
+user
+
+Darrell and Allen's ages are in the ratio of 7:11. If their total age now is 162, calculate Allen's age 10 years from now.
+
+Let's think step by stepassistant
+
+To solve this problem, let's break it down step by step.
+
+Step 1: Let's represent Darrell's age as 7x and Allen's age as 11x, since their ages are in the ratio of 7:11.
+
+Step 2: We know that their total age now is 162, so we can set up an equation:
+
+7x + 11x = 162
+
+Step 3: Combine like terms:
+
+18x = 162
+
+Step 4: Divide both sides by 18:
+
+x = 162 / 18
+x = 9
+
+Step 5: Now that we know x, we can find Darrell's current age:
+
+Darrell's age = 7x =","system
+
+Cutting Knowledge Date: December 2023
+Today Date: 27 Feb 2026
+
+user
+
+DARRELL AND ALLEN'S AGES ARE IN THE RATIO OF 7:11. IF THEIR TOTAL AGE NOW IS 162, CALCULATE ALLEN'S AGE 10 YEARS FROM NOW.
+
+LET'S THINK STEP BY STEPassistant
+
+To solve this problem, we'll follow these steps:
+
+Step 1: Let's represent Darrell's age as 7x and Allen's age as 11x, since their ages are in the ratio of 7:11.
+
+Step 2: We know that their total age is 162, so we can set up the equation:
+7x + 11x = 162
+
+Step 3: Combine like terms:
+18x = 162
+
+Step 4: Divide both sides by 18:
+x = 162 / 18
+x = 9
+
+Step 5: Now that we know x, we can find Allen's current age by multiplying 11x:
+Allen's current age = 11x"
+L3.2-3B,letter_case,1,gsm8k,100,global,Lorraine and Colleen are trading stickers for buttons. Each large sticker is worth a large button or three small buttons. A small sticker is worth one small button. A large button is worth three small stickers. Lorraine starts with 30 small stickers and 40 large stickers. She trades 90% of her small stickers for large buttons. She trades 50% of her large stickers for large buttons and trades the rest of them for small buttons. How many buttons does she have by the end?,"Lorraine and Colleen are trading stickers for buttons. Each large sticker is worth a large button or three small buttons. A small sticker is worth one small button. A large button is worth three small stickers. Lorraine starts with 30 small stickers and 40 large stickers. She trades 90% of her small stickers for large buttons. She trades 50% of her large stickers for large buttons and trades the rest of them for small buttons. How many buttons does she have by the end?
+
+Let's think step by step","LORRAINE AND COLLEEN ARE TRADING STICKERS FOR BUTTONS. EACH LARGE STICKER IS WORTH A LARGE BUTTON OR THREE SMALL BUTTONS. A SMALL STICKER IS WORTH ONE SMALL BUTTON. A LARGE BUTTON IS WORTH THREE SMALL STICKERS. LORRAINE STARTS WITH 30 SMALL STICKERS AND 40 LARGE STICKERS. SHE TRADES 90% OF HER SMALL STICKERS FOR LARGE BUTTONS. SHE TRADES 50% OF HER LARGE STICKERS FOR LARGE BUTTONS AND TRADES THE REST OF THEM FOR SMALL BUTTONS. HOW MANY BUTTONS DOES SHE HAVE BY THE END?
+
+LET'S THINK STEP BY STEP","To solve this problem, let's break it down step by step.
+
+Initially, Lorraine has:
+
+- 30 small stickers
+- 40 large stickers
+
+She trades 90% of her small stickers for large buttons. To find out how many small stickers she trades, we multiply the number of small stickers by 0.9 (which is 90%):
+
+30 small stickers * 0.9 = 27 small stickers traded
+
+So, she has 30 - 27 = 3 small stickers left.
+
+She trades 50% of her large stickers for large buttons. To find out how many large stickers she trades, we multiply the number of large stickers by 0.5 (which is 50%):
+
+40 large stickers","Let's break it down step by step:
+
+Initially, Lorraine has:
+
+- 30 small stickers
+- 40 large stickers
+
+She trades 90% of her small stickers for large buttons. To find out how many small stickers she trades, we multiply 30 by 0.9:
+30 x 0.9 = 27 small stickers traded
+
+So, she has:
+- 30 - 27 = 3 small stickers left
+- 40 large stickers
+
+She trades 50% of her large stickers for large buttons. To find out how many large stickers she trades, we multiply 40 by 0.5:
+40 x 0.5 = 20 large stickers traded
+
+So, she has:
+-"
