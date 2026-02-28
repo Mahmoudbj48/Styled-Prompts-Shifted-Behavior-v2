@@ -5,11 +5,9 @@ CoT Response Generation - PRODUCTION OPTIMIZED
 
 OPTIMIZATIONS:
 1. ✅ Generate baseline ONCE per batch (not per strength/place combo)
-2. ✅ Adaptive token generation (start 100, extend to 200 if truncated)
-3. ✅ Batch styled prompts together for GPU efficiency
-4. ✅ Comprehensive caching with separate baseline cache
-5. ✅ Progress tracking with time estimates
-6. ✅ Truncation detection and reporting
+2. ✅ Batch styled prompts together for GPU efficiency
+3. ✅ Comprehensive caching with separate baseline cache
+4. ✅ Progress tracking with time estimates
 
 Performance: ~10x faster than naive implementation
 
@@ -20,6 +18,7 @@ Run:
     --sample_size 128 \
     --style spacing \
     --batch_size 32 \
+    --max_new_tokens 200 \
     --strengths 0 50 100 \
     --places global
 """
@@ -40,7 +39,7 @@ from tqdm import tqdm
 os.environ["HF_HUB_DISABLE_TELEMETRY"] = "1"
 
 # Add parent directory to path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(os.path.dirname(os.path.dirname(__file__))))
 
 from utils.data import load_dataset_by_name
 from utils.models import load_model, generate_response
@@ -48,11 +47,6 @@ from utils.styles import apply_spacing, apply_punctuation, apply_letter_case, ap
 
 
 VALID_STYLES = {"spacing", "punctuation", "letter_case", "politeness"}
-
-# Adaptive token generation settings
-INITIAL_MAX_TOKENS = 150
-EXTENDED_MAX_TOKENS = 250
-TRUNCATION_THRESHOLD = 0.90  # Flag if response uses >90% of tokens
 
 
 # =============================================================================
@@ -251,76 +245,13 @@ def _write_jsonl_gz(path: str, rows: List[dict]):
 
 
 # =============================================================================
-# OPTIMIZATION: Adaptive Token Generation
-# =============================================================================
-
-def _is_truncated(response: str, max_tokens: int) -> bool:
-    """Check if response is likely truncated (using >90% of tokens)."""
-    # Rough estimate: 1 token ≈ 4 characters
-    estimated_tokens = len(response) / 4
-    return estimated_tokens > (max_tokens * TRUNCATION_THRESHOLD)
-
-
-def _generate_with_adaptive_tokens(
-        model, tokenizer, prompts: List[str], batch_size: int,
-        initial_max: int = INITIAL_MAX_TOKENS,
-        extended_max: int = EXTENDED_MAX_TOKENS) -> Tuple[List[str], Dict]:
-    """
-    OPTIMIZATION: Start with initial_max tokens, extend only truncated responses.
-    
-    Returns:
-        (responses, stats_dict)
-    """
-    start_time = time.time()
-    
-    # Phase 1: Generate with initial token limit
-    responses_initial = generate_response(
-        model, tokenizer, prompts,
-        max_new_tokens=initial_max,
-        batch_size=batch_size,
-    )
-    
-    # Detect truncated responses
-    truncated_indices = []
-    for i, response in enumerate(responses_initial):
-        if _is_truncated(response, initial_max):
-            truncated_indices.append(i)
-    
-    # Phase 2: Regenerate truncated responses with extended limit
-    if truncated_indices:
-        print(f"    ⚠️  {len(truncated_indices)}/{len(prompts)} responses truncated, regenerating with {extended_max} tokens...")
-        truncated_prompts = [prompts[i] for i in truncated_indices]
-        
-        responses_extended = generate_response(
-            model, tokenizer, truncated_prompts,
-            max_new_tokens=extended_max,
-            batch_size=batch_size,
-        )
-        
-        # Replace truncated responses
-        for idx, extended_response in zip(truncated_indices, responses_extended):
-            responses_initial[idx] = extended_response
-    
-    elapsed = time.time() - start_time
-    
-    stats = {
-        "total_prompts": len(prompts),
-        "truncated_count": len(truncated_indices),
-        "truncation_rate": len(truncated_indices) / len(prompts) if prompts else 0.0,
-        "generation_time": elapsed,
-        "time_per_prompt": elapsed / len(prompts) if prompts else 0.0,
-    }
-    
-    return responses_initial, stats
-
-
-# =============================================================================
-# OPTIMIZATION: Baseline Generation (Once Per Batch)
+# Baseline Generation (Once Per Batch)
 # =============================================================================
 
 def _load_or_generate_baseline(
         *, cache_path, overwrite_cache, model, tokenizer,
-        prompts_cot: List[str], batch_ids: List[int], batch_size: int) -> List[str]:
+        prompts_cot: List[str], batch_ids: List[int], 
+        max_new_tokens: int, batch_size: int) -> List[str]:
     """
     Load or generate baseline responses.
     These are cached ONCE and reused across all strength/place combos.
@@ -344,18 +275,20 @@ def _load_or_generate_baseline(
         except Exception as e:
             print(f"  ⚠️  Cache read failed ({e}), regenerating...")
     
-    # Generate baseline with adaptive tokens
+    # Generate baseline
     print(f"  → Generating {n} baseline responses (ONCE for all combos)...")
-    responses, stats = _generate_with_adaptive_tokens(
-        model, tokenizer, prompts_cot, batch_size
+    start_time = time.time()
+    
+    responses = generate_response(
+        model, tokenizer, prompts_cot,
+        max_new_tokens=max_new_tokens,
+        batch_size=batch_size,
     )
     
-    print(f"    ✓ Generated in {stats['generation_time']:.1f}s "
-          f"({stats['time_per_prompt']:.2f}s/prompt, "
-          f"{stats['truncation_rate']*100:.1f}% truncated)")
+    elapsed = time.time() - start_time
+    print(f"    ✓ Generated in {elapsed:.1f}s ({elapsed/n:.2f}s per response)")
     
     # Cache baseline responses
-    # Note: We cache ALL baseline responses, not just this batch
     # Load existing cache if it exists
     existing_rows = {}
     if os.path.exists(cache_path):
@@ -381,12 +314,13 @@ def _load_or_generate_baseline(
 
 
 # =============================================================================
-# OPTIMIZATION: Batch Styled Generation
+# Styled Generation
 # =============================================================================
 
 def _load_or_generate_styled(
         *, cache_path, overwrite_cache, model, tokenizer,
-        prompts_styled: List[str], batch_ids: List[int], batch_size: int) -> List[str]:
+        prompts_styled: List[str], batch_ids: List[int],
+        max_new_tokens: int, batch_size: int) -> List[str]:
     """Load or generate styled responses for a specific (place, strength) combo."""
     n = len(prompts_styled)
     
@@ -401,10 +335,16 @@ def _load_or_generate_styled(
         except Exception as e:
             print(f"  ⚠️  Styled cache read failed ({e}), regenerating...")
     
-    # Generate styled responses with adaptive tokens
-    responses, stats = _generate_with_adaptive_tokens(
-        model, tokenizer, prompts_styled, batch_size
+    # Generate styled responses
+    start_time = time.time()
+    
+    responses = generate_response(
+        model, tokenizer, prompts_styled,
+        max_new_tokens=max_new_tokens,
+        batch_size=batch_size,
     )
+    
+    elapsed = time.time() - start_time
     
     # Cache styled responses
     rows = []
@@ -420,19 +360,18 @@ def _load_or_generate_styled(
 
 
 # =============================================================================
-# Main Experiment (FULLY OPTIMIZED)
+# Main Experiment (OPTIMIZED)
 # =============================================================================
 
 def run_for_one_model(
         model_name, model_path, items, strength_levels, places,
         style_name, config, run_dir, *,
-        batch_size, data_dir, dataset_name, dataset_config_name,
+        batch_size, max_new_tokens, data_dir, dataset_name, dataset_config_name,
         dataset_split, dataset_seed, dataset_sample_size, overwrite_output_cache):
     """
     OPTIMIZED: 
     1. Generate baseline ONCE per batch
-    2. Adaptive token generation (100 → 200 if needed)
-    3. Batch styled prompts efficiently
+    2. Batch styled prompts efficiently
     """
     
     # Load model
@@ -464,7 +403,8 @@ def run_for_one_model(
     print(f"  • {len(strength_levels)} strengths × {len(places)} places = {len(strength_levels) * len(places)} combos")
     print(f"  • Baseline: {n_batches} generations (ONCE per batch)")
     print(f"  • Styled: {total_styled_generations} generations")
-    print(f"  • Total: {n_batches + total_styled_generations} generations\n")
+    print(f"  • Total: {n_batches + total_styled_generations} generations")
+    print(f"  • max_new_tokens: {max_new_tokens}\n")
     
     rows: List[dict] = []
     
@@ -491,7 +431,7 @@ def run_for_one_model(
         batch_orig_prompts_cot = [p + "\n\nLet's think step by step" for p in batch_orig_prompts]
         
         # ================================================================
-        # OPTIMIZATION 1: Generate baseline ONCE per batch
+        # OPTIMIZATION: Generate baseline ONCE per batch
         # ================================================================
         batch_response_baseline = _load_or_generate_baseline(
             cache_path=baseline_cache,
@@ -500,6 +440,7 @@ def run_for_one_model(
             tokenizer=tokenizer,
             prompts_cot=batch_orig_prompts_cot,
             batch_ids=batch_ids,
+            max_new_tokens=max_new_tokens,
             batch_size=batch_size,
         )
         
@@ -520,9 +461,7 @@ def run_for_one_model(
                     
                     batch_styled_prompts_cot = [style_fn(p) for p in batch_orig_prompts_cot]
                 
-                # ================================================================
-                # OPTIMIZATION 2: Generate styled with adaptive tokens
-                # ================================================================
+                # Generate styled responses
                 styled_cache = _styled_cache_path(
                     data_dir=data_dir, dataset=dataset_name,
                     config_name=dataset_config_name, split=dataset_split,
@@ -538,6 +477,7 @@ def run_for_one_model(
                     tokenizer=tokenizer,
                     prompts_styled=batch_styled_prompts_cot,
                     batch_ids=batch_ids,
+                    max_new_tokens=max_new_tokens,
                     batch_size=batch_size,
                 )
                 
@@ -579,7 +519,7 @@ def run_for_one_model(
 
 def run_experiment(
         models, dataset_name, sample_size, style_name, *,
-        batch_size, strengths_explicit, strength_range, strength_step,
+        batch_size, max_new_tokens, strengths_explicit, strength_range, strength_step,
         data_dir, overwrite_sample_cache, overwrite_output_cache, places_override):
     
     config = load_config()
@@ -600,6 +540,9 @@ def run_experiment(
         strength_step=strength_step,
     )
     
+    if max_new_tokens is None:
+        max_new_tokens = int(config["defaults"].get("max_new_tokens_cot", 200))
+    
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     base_results_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "results")
     style_dir = os.path.join(base_results_dir, "cot_responses")
@@ -616,7 +559,7 @@ def run_experiment(
     print(f"Strengths: {strength_levels}")
     print(f"Places: {places}")
     print(f"Batch size: {batch_size}")
-    print(f"Adaptive tokens: {INITIAL_MAX_TOKENS} → {EXTENDED_MAX_TOKENS} (if needed)")
+    print(f"Max new tokens: {max_new_tokens}")
     print(f"Data cache: {data_dir}")
     print(f"Output: {run_dir}")
     print(f"{'='*80}\n")
@@ -646,6 +589,7 @@ def run_experiment(
             config=config,
             run_dir=run_dir,
             batch_size=batch_size,
+            max_new_tokens=max_new_tokens,
             data_dir=data_dir,
             dataset_name=dataset_name,
             dataset_config_name=dataset_config.get("config_name"),
@@ -692,6 +636,8 @@ def main():
     
     parser.add_argument("--batch_size", type=int, default=32,
                         help="Batch size for generation (default: 32)")
+    parser.add_argument("--max_new_tokens", type=int, default=None,
+                        help="Maximum tokens to generate (default: from config, typically 200)")
     
     parser.add_argument("--places", nargs="+", default=None)
     parser.add_argument("--strengths", nargs="+", type=int, default=None)
@@ -714,6 +660,7 @@ def main():
         sample_size=args.sample_size,
         style_name=args.style,
         batch_size=int(args.batch_size),
+        max_new_tokens=args.max_new_tokens,
         strengths_explicit=args.strengths,
         strength_range=tuple(args.strength_range) if args.strength_range else None,
         strength_step=int(args.strength_step),
