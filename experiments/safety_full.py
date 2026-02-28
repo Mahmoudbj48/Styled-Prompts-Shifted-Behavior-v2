@@ -332,6 +332,8 @@ def run_for_one_model(
                         "prompt_id": list(range(len(harmful_styled))),
                         "harmful_prompt": harmful_styled,
                         "model_response": harmful_outputs,
+                        "style_family": style_family,
+                        "surface_style": surface_style,
                     })
                     df_out.to_csv(out_csv, index=False)
                     print(f"[ASR stage1] ✓ Saved outputs: {out_csv}")
@@ -376,6 +378,8 @@ def run_for_one_model(
                     df_j["unsafe_category"] = asr_pack["unsafe_categories"]
                     df_j["unsafe_code"] = asr_pack["unsafe_codes"]
                     df_j["judge_raw"] = asr_pack["raw_outputs"]
+                    df_j["style_family"] = style_family
+                    df_j["surface_style"] = surface_style
                     df_j.to_csv(judged_path, index=False)
                     print(f"[ASR stage2] ✓ Saved judgments: {judged_path}")
 
@@ -388,6 +392,8 @@ def run_for_one_model(
                 "strength": s_int,
                 "silhouette": sil,
                 "asr": asr,
+                "style_family": style_family,
+                "surface_style": surface_style,
             })
 
     df = pd.DataFrame(summary_rows)
