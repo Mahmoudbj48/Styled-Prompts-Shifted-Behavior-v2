@@ -50,8 +50,8 @@ from utils.styles import apply_spacing, apply_punctuation, apply_letter_case, ap
 VALID_STYLES = {"spacing", "punctuation", "letter_case", "politeness"}
 
 # Adaptive token generation settings
-INITIAL_MAX_TOKENS = 100
-EXTENDED_MAX_TOKENS = 200
+INITIAL_MAX_TOKENS = 150
+EXTENDED_MAX_TOKENS = 250
 TRUNCATION_THRESHOLD = 0.90  # Flag if response uses >90% of tokens
 
 
