@@ -39,7 +39,7 @@ from tqdm import tqdm
 os.environ["HF_HUB_DISABLE_TELEMETRY"] = "1"
 
 # Add parent directory to path
-sys.path.append(os.path.dirname(os.path.dirname(__file__))))
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 from utils.data import load_dataset_by_name
 from utils.models import load_model, generate_response
