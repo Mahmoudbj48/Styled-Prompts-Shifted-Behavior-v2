@@ -47,6 +47,12 @@ from utils.metrics import (
     clean_chatty_generation,
 )
 from utils.styles import apply_length_variation
+from utils.llm_style_cache import (
+    safe_name as _safe_name,
+    read_jsonl as _read_jsonl,
+    write_jsonl as _write_jsonl,
+    load_or_generate_styled_prompts,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -122,11 +128,6 @@ def _get_prompt_text(item: dict) -> str:
 # ---------------------------------------------------------------------------
 # Data cache helpers  (same pattern as punctuation.py)
 # ---------------------------------------------------------------------------
-def _safe_name(x: Optional[str]) -> str:
-    if x is None:
-        return "none"
-    x = str(x)
-    return "".join([c if c.isalnum() or c in ("-", "_", ".", "=") else "_" for c in x])
 
 
 def _sample_cache_dir(*, data_dir, dataset, config_name, split, seed, sample_size) -> str:
@@ -145,22 +146,6 @@ def _sample_cache_path(sample_dir: str) -> str:
 def _meta_path(sample_dir: str) -> str:
     return os.path.join(sample_dir, "meta.yaml")
 
-
-def _write_jsonl(path: str, rows: List[dict]) -> None:
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, "w", encoding="utf-8") as f:
-        for r in rows:
-            f.write(json.dumps(r, ensure_ascii=False) + "\n")
-
-
-def _read_jsonl(path: str) -> List[dict]:
-    out = []
-    with open(path, "r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if line:
-                out.append(json.loads(line))
-    return out
 
 
 def _write_yaml(path: str, obj: dict) -> None:
@@ -198,70 +183,6 @@ def _load_or_create_sample(
     })
     return items
 
-
-# ---------------------------------------------------------------------------
-# LLM-style cache  (rewritten prompts, separate from model output cache)
-# ---------------------------------------------------------------------------
-_STYLE_CACHE_DIR = None  # set at runtime
-
-
-def _style_cache_dir(data_dir: str) -> str:
-    return os.path.join(data_dir, "llm_style_cache")
-
-
-def _style_cache_path(data_dir: str, dataset: str, multiplier: float) -> str:
-    return os.path.join(
-        _style_cache_dir(data_dir),
-        _safe_name(dataset),
-        f"length_variation__{_safe_name(str(multiplier))}.jsonl",
-    )
-
-
-def _load_or_generate_styled_prompts(
-        *,
-        data_dir: str,
-        dataset: str,
-        prompts: List[str],
-        multiplier: float,
-        rewrite_provider: str,
-        rewrite_model: str,
-        rewrite_api_key_env: str,
-        overwrite_style_cache: bool,
-) -> List[str]:
-    """
-    Generate or load cached LLM-rewritten prompts for one multiplier.
-    Returns list of styled prompts (same length as `prompts`).
-    """
-    cpath = _style_cache_path(data_dir, dataset, multiplier)
-
-    if not overwrite_style_cache and os.path.exists(cpath):
-        rows = _read_jsonl(cpath)
-        if len(rows) == len(prompts):
-            print(f"  ✓ Loaded styled prompts from cache ({len(rows)} rows): {cpath}")
-            return [r["prompt_styled"] for r in rows]
-
-    print(f"  Generating styled prompts (multiplier={multiplier}) via {rewrite_provider}/{rewrite_model} ...")
-    styled: List[str] = []
-    rows_to_cache: List[dict] = []
-
-    for p in tqdm(prompts, desc=f"  length×{multiplier}", unit="prompt"):
-        s = apply_length_variation(
-            p, multiplier=multiplier,
-            provider=rewrite_provider,
-            model=rewrite_model,
-            api_key_env=rewrite_api_key_env,
-        )
-        styled.append(s)
-        rows_to_cache.append({
-            "prompt_orig": p,
-            "prompt_styled": s,
-            "style": STYLE_NAME,
-            "param": str(multiplier),
-        })
-
-    _write_jsonl(cpath, rows_to_cache)
-    print(f"  ✓ Cached {len(rows_to_cache)} styled prompts → {cpath}")
-    return styled
 
 
 # ---------------------------------------------------------------------------
@@ -635,15 +556,16 @@ def run_experiment(
     # --- Pre-generate styled prompts for ALL multipliers ---
     styled_prompts_by_mult: Dict[float, List[str]] = {}
     for mult in multipliers:
-        styled_prompts_by_mult[mult] = _load_or_generate_styled_prompts(
+        styled_prompts_by_mult[mult] = load_or_generate_styled_prompts(
             data_dir=data_dir,
             dataset=dataset_name,
             prompts=prompts,
-            multiplier=mult,
+            style_name="length_variation",
+            param=mult,
             rewrite_provider=rewrite_provider,
             rewrite_model=rewrite_model,
             rewrite_api_key_env=rewrite_api_key_env,
-            overwrite_style_cache=overwrite_style_cache,
+            overwrite=overwrite_style_cache,
         )
 
     # --- Run per model ---

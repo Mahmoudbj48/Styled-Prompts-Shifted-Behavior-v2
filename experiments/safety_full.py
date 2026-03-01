@@ -23,6 +23,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.data import load_dataset_by_name
 from utils.models import load_model, generate_response
 from utils.styles import apply_politeness, apply_length_variation, apply_interrogative
+from utils.llm_style_cache import load_or_generate_styled_prompts
 from utils.metrics import (
     get_layer_activations_batch,
     compute_silhouette_score,
@@ -71,9 +72,6 @@ def _asr_outputs_path(run_dir: str, model_name: str, place: str, strength: Any) 
     return os.path.join(_asr_outputs_dir(run_dir, model_name), f"harmbench_outputs_{place}_s{strength}.csv")
 
 
-# ============================================================
-# NEW: Surface-noise style appliers (import if available; else local fallbacks)
-# (Added without changing existing behavior)
 # ============================================================
 
 def _try_import_surface_noise_appliers():
@@ -209,8 +207,14 @@ def run_for_one_model(
         compute_asr: bool,
         gen_max_new_tokens: int,
         asr_stage: str,   # "stage1" | "stage2" | "both"
-        style_family: str,         # "politeness" | "surface_noise"
+        style_family: str,         # "politeness" | "surface_noise" | "structured"
         style_name: Optional[str],  # "spacing" | "punctuation" | "letter_case" | "length_variation" | "interrogative" | None
+        # --- structured-style LLM cache params ---
+        data_dir: str = "data",
+        rewrite_provider: str = "gemini",
+        rewrite_model: str = "gemini-2.0-flash-lite",
+        rewrite_api_key_env: str = "GEMINI_API_KEY",
+        overwrite_style_cache: bool = False,
 ):
 
     apply_neurips_style()
@@ -272,10 +276,17 @@ def run_for_one_model(
                         for p in harmless_prompts
                     ]
                 elif style_family == "structured":
-                    harmless_styled = [
-                        apply_structured_style(p, s, place=place, style_name=str(style_name))
-                        for p in harmless_prompts
-                    ]
+                    harmless_styled = load_or_generate_styled_prompts(
+                        data_dir=data_dir,
+                        dataset="alpaca",
+                        prompts=harmless_prompts,
+                        style_name=str(style_name),
+                        param=s,
+                        rewrite_provider=rewrite_provider,
+                        rewrite_model=rewrite_model,
+                        rewrite_api_key_env=rewrite_api_key_env,
+                        overwrite=overwrite_style_cache,
+                    )
                 else:
                     harmless_styled = [
                         apply_politeness(p, s_int, place=place)
@@ -289,10 +300,17 @@ def run_for_one_model(
                         for p in harmful_prompts
                     ]
                 elif style_family == "structured":
-                    harmful_styled = [
-                        apply_structured_style(p, s, place=place, style_name=str(style_name))
-                        for p in harmful_prompts
-                    ]
+                    harmful_styled = load_or_generate_styled_prompts(
+                        data_dir=data_dir,
+                        dataset="harmbench",
+                        prompts=harmful_prompts,
+                        style_name=str(style_name),
+                        param=s,
+                        rewrite_provider=rewrite_provider,
+                        rewrite_model=rewrite_model,
+                        rewrite_api_key_env=rewrite_api_key_env,
+                        overwrite=overwrite_style_cache,
+                    )
                 else:
                     harmful_styled = [
                         apply_politeness(p, s_int, place=place)
@@ -514,6 +532,12 @@ def run_experiment(
         run_dir: Optional[str] = None,   # allow reusing stage1 outputs
         style_family: str = "politeness",
         style_name: Optional[str] = None,
+        # --- structured-style LLM cache params ---
+        data_dir: str = "data",
+        rewrite_provider: str = "gemini",
+        rewrite_model: str = "gemini-2.0-flash-lite",
+        rewrite_api_key_env: str = "GEMINI_API_KEY",
+        overwrite_style_cache: bool = False,
 ):
 
     config = load_config()
@@ -567,6 +591,11 @@ def run_experiment(
         asr_stage=asr_stage,
         style_family=style_family,
         style_name=style_name,
+        data_dir=data_dir,
+        rewrite_provider=rewrite_provider,
+        rewrite_model=rewrite_model,
+        rewrite_api_key_env=rewrite_api_key_env,
+        overwrite_style_cache=overwrite_style_cache,
     )
 
 
@@ -627,6 +656,19 @@ def main():
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--gen_max_new_tokens", type=int, default=128)
 
+    # --- Structured-style LLM rewrite params ---
+    parser.add_argument("--data_dir", type=str, default="data",
+                        help="Root data directory (for llm_style_cache).")
+    parser.add_argument("--rewrite_provider", type=str, default="gemini",
+                        choices=["openai", "gemini"],
+                        help="LLM provider for structured-style rewrites.")
+    parser.add_argument("--rewrite_model", type=str, default="gemini-2.0-flash-lite",
+                        help="LLM model for structured-style rewrites.")
+    parser.add_argument("--rewrite_api_key_env", type=str, default="GEMINI_API_KEY",
+                        help="Env var holding the API key for the rewrite LLM.")
+    parser.add_argument("--overwrite_style_cache", action="store_true",
+                        help="Force re-generation of LLM-style cache (structured styles).")
+
     args = parser.parse_args()
 
     run_experiment(
@@ -645,6 +687,11 @@ def main():
         run_dir=args.run_dir,
         style_family=args.style_family,
         style_name=args.surface_style,
+        data_dir=args.data_dir,
+        rewrite_provider=args.rewrite_provider,
+        rewrite_model=args.rewrite_model,
+        rewrite_api_key_env=args.rewrite_api_key_env,
+        overwrite_style_cache=args.overwrite_style_cache,
     )
 
 
