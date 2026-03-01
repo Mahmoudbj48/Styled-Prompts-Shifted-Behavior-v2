@@ -141,7 +141,7 @@ def _resolve_style_from_config_or_cli(
         *,
         config: Dict[str, Any],
         style_family: str,
-        surface_style: Optional[str],
+        style_name: Optional[str],
         places_cli: List[str],
         strengths_cli: List[int],
 ) -> (List[str], List[int], Optional[str]):
@@ -151,41 +151,39 @@ def _resolve_style_from_config_or_cli(
       - "surface_noise" (uses config.style_positions + config.style_levels)
       - "structured" (uses config.style_positions + config.style_levels)
 
-    surface_style:
+    style_name:
       - "spacing" | "punctuation" | "letter_case" (surface_noise)
-
-    structured_style:
       - "length_variation" | "interrogative" (structured)
     """
     if style_family not in ("surface_noise", "structured"):
         return places_cli, strengths_cli, None
 
-    if surface_style is None:
-        raise ValueError("--surface_style must be provided when --style_family is surface_noise or structured")
+    if style_name is None:
+        raise ValueError("--style_name must be provided when --style_family is surface_noise or structured")
 
     cfg_places = (
-            (config.get("style_positions") or {}).get(surface_style, None)
-            or (config.get("style_defaults") or {}).get(surface_style, {}).get("positions", None)
+            (config.get("style_positions") or {}).get(style_name, None)
+            or (config.get("style_defaults") or {}).get(style_name, {}).get("positions", None)
     )
-    cfg_strengths = (config.get("style_levels") or {}).get(surface_style, None)
+    cfg_strengths = (config.get("style_levels") or {}).get(style_name, None)
 
     if not cfg_places:
-        raise ValueError(f"Config missing style_positions for '{surface_style}'")
+        raise ValueError(f"Config missing style_positions for '{style_name}'")
     if not cfg_strengths:
-        raise ValueError(f"Config missing style_levels for '{surface_style}'")
+        raise ValueError(f"Config missing style_levels for '{style_name}'")
 
     # keep types consistent with the rest of the code:
     places = [str(x) for x in cfg_places]
 
     # Strengths can be int (surface noise), float (length_variation), or str (interrogative)
-    if surface_style == "interrogative":
+    if style_name == "interrogative":
         strengths = [str(x) for x in cfg_strengths]
-    elif surface_style == "length_variation":
+    elif style_name == "length_variation":
         strengths = [float(x) for x in cfg_strengths]
     else:
         strengths = [int(x) for x in cfg_strengths]
 
-    return places, strengths, surface_style
+    return places, strengths, style_name
 
 
 # ============================================================
@@ -394,7 +392,7 @@ def run_for_one_model(
                         "harmful_prompt": harmful_styled,
                         "model_response": harmful_outputs,
                         "style_family": style_family,
-                        "surface_style": style_name,
+                        "style_name": style_name,
                     })
                     df_out.to_csv(out_csv, index=False)
                     print(f"[ASR stage1] ✓ Saved outputs: {out_csv}")
@@ -440,7 +438,7 @@ def run_for_one_model(
                     df_j["unsafe_code"] = asr_pack["unsafe_codes"]
                     df_j["judge_raw"] = asr_pack["raw_outputs"]
                     df_j["style_family"] = style_family
-                    df_j["surface_style"] = style_name
+                    df_j["style_name"] = style_name
                     df_j.to_csv(judged_path, index=False)
                     print(f"[ASR stage2] ✓ Saved judgments: {judged_path}")
 
@@ -454,7 +452,7 @@ def run_for_one_model(
                 "silhouette": sil,
                 "asr": asr,
                 "style_family": style_family,
-                "surface_style": style_name,
+                "style_name": style_name,
             })
 
     df = pd.DataFrame(summary_rows)
@@ -542,11 +540,11 @@ def run_experiment(
 
     config = load_config()
 
-    # NEW: override places/strengths from config when running a surface-noise style
+    # Override places/strengths from config when running a non-politeness style
     places, strengths, style_name = _resolve_style_from_config_or_cli(
         config=config,
         style_family=style_family,
-        surface_style=style_name,
+        style_name=style_name,
         places_cli=places,
         strengths_cli=strengths,
     )
@@ -627,7 +625,7 @@ def main():
         help="Optional: reuse an existing run directory (recommended for ASR stage2)."
     )
 
-    # NEW: choose style family + which surface-noise style (each alone)
+    # Choose style family + which specific sub-style
     parser.add_argument(
         "--style_family",
         type=str,
@@ -636,7 +634,7 @@ def main():
         help="Which style family to apply: politeness (existing) | surface_noise (spacing/punctuation/letter_case) | structured (length_variation/interrogative)."
     )
     parser.add_argument(
-        "--surface_style",
+        "--style_name",
         type=str,
         default=None,
         choices=["spacing", "punctuation", "letter_case", "length_variation", "interrogative"],
@@ -686,7 +684,7 @@ def main():
         asr_stage=args.asr_stage,
         run_dir=args.run_dir,
         style_family=args.style_family,
-        style_name=args.surface_style,
+        style_name=args.style_name,
         data_dir=args.data_dir,
         rewrite_provider=args.rewrite_provider,
         rewrite_model=args.rewrite_model,
