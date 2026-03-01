@@ -52,6 +52,7 @@ style_positions:
   letter_case: ["prefix", "suffix", "global"]
   politeness: ["prefix", "suffix", "global"]
   length_variation: ["global"]
+  interrogative: ["global"]
 style_defaults:
   politeness:
     strength_range: [-10, 10]

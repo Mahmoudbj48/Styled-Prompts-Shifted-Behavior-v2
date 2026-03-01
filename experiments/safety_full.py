@@ -22,7 +22,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from utils.data import load_dataset_by_name
 from utils.models import load_model, generate_response
-from utils.styles import apply_politeness
+from utils.styles import apply_politeness, apply_length_variation, apply_interrogative
 from utils.metrics import (
     get_layer_activations_batch,
     compute_silhouette_score,
@@ -67,8 +67,8 @@ def _asr_outputs_dir(run_dir: str, model_name: str) -> str:
     return d
 
 
-def _asr_outputs_path(run_dir: str, model_name: str, place: str, strength: int) -> str:
-    return os.path.join(_asr_outputs_dir(run_dir, model_name), f"harmbench_outputs_{place}_s{int(strength)}.csv")
+def _asr_outputs_path(run_dir: str, model_name: str, place: str, strength: Any) -> str:
+    return os.path.join(_asr_outputs_dir(run_dir, model_name), f"harmbench_outputs_{place}_s{strength}.csv")
 
 
 # ============================================================
@@ -122,6 +122,23 @@ def apply_surface_noise_style(text: str, strength: Any, *, place: str, style_nam
     raise ValueError(f"Unknown surface noise style: {style_name}")
 
 
+def apply_structured_style(text: str, strength: Any, *, place: str, style_name: str) -> str:
+    """
+    Apply one structured style by name.
+    style_name in {"length_variation", "interrogative"}.
+
+    Note: these are global rewrites — `place` is accepted for interface
+    consistency but is not forwarded to the underlying functions.
+    """
+    if style_name == "length_variation":
+        return apply_length_variation(text, float(strength))
+
+    if style_name == "interrogative":
+        return apply_interrogative(text, mode=str(strength))
+
+    raise ValueError(f"Unknown structured style: {style_name}")
+
+
 def _resolve_style_from_config_or_cli(
         *,
         config: Dict[str, Any],
@@ -133,16 +150,20 @@ def _resolve_style_from_config_or_cli(
     """
     style_family:
       - "politeness" (existing behavior, uses CLI places/strengths)
-      - "surface_noise" (NEW: uses config.style_positions + config.style_levels)
+      - "surface_noise" (uses config.style_positions + config.style_levels)
+      - "structured" (uses config.style_positions + config.style_levels)
 
     surface_style:
-      - "spacing" | "punctuation" | "letter_case" (each alone)
+      - "spacing" | "punctuation" | "letter_case" (surface_noise)
+
+    structured_style:
+      - "length_variation" | "interrogative" (structured)
     """
-    if style_family != "surface_noise":
+    if style_family not in ("surface_noise", "structured"):
         return places_cli, strengths_cli, None
 
     if surface_style is None:
-        raise ValueError("--surface_style must be provided when --style_family surface_noise")
+        raise ValueError("--surface_style must be provided when --style_family is surface_noise or structured")
 
     cfg_places = (
             (config.get("style_positions") or {}).get(surface_style, None)
@@ -157,7 +178,14 @@ def _resolve_style_from_config_or_cli(
 
     # keep types consistent with the rest of the code:
     places = [str(x) for x in cfg_places]
-    strengths = [int(x) if surface_style != "letter_case" else int(x) for x in cfg_strengths]
+
+    # Strengths can be int (surface noise), float (length_variation), or str (interrogative)
+    if surface_style == "interrogative":
+        strengths = [str(x) for x in cfg_strengths]
+    elif surface_style == "length_variation":
+        strengths = [float(x) for x in cfg_strengths]
+    else:
+        strengths = [int(x) for x in cfg_strengths]
 
     return places, strengths, surface_style
 
@@ -182,7 +210,7 @@ def run_for_one_model(
         gen_max_new_tokens: int,
         asr_stage: str,   # "stage1" | "stage2" | "both"
         style_family: str,         # "politeness" | "surface_noise"
-        surface_style: Optional[str],  # "spacing" | "punctuation" | "letter_case" | None
+        style_name: Optional[str],  # "spacing" | "punctuation" | "letter_case" | "length_variation" | "interrogative" | None
 ):
 
     apply_neurips_style()
@@ -221,7 +249,12 @@ def run_for_one_model(
         for s in strengths:
 
             print(f"\n[BUCKET] place={place} strength={s}")
-            s_int = int(s)
+            # Build a label for filenames / summary rows
+            try:
+                s_int = int(s)
+            except (ValueError, TypeError):
+                s_int = s  # keep as-is for string/float strengths
+            s_label = str(s)
 
             sil = np.nan
             asr = np.nan
@@ -235,7 +268,12 @@ def run_for_one_model(
             if compute_activations:
                 if style_family == "surface_noise":
                     harmless_styled = [
-                        apply_surface_noise_style(p, s_int, place=place, style_name=str(surface_style))
+                        apply_surface_noise_style(p, s_int, place=place, style_name=str(style_name))
+                        for p in harmless_prompts
+                    ]
+                elif style_family == "structured":
+                    harmless_styled = [
+                        apply_structured_style(p, s, place=place, style_name=str(style_name))
                         for p in harmless_prompts
                     ]
                 else:
@@ -247,7 +285,12 @@ def run_for_one_model(
             if compute_activations or compute_asr:
                 if style_family == "surface_noise":
                     harmful_styled = [
-                        apply_surface_noise_style(p, s_int, place=place, style_name=str(surface_style))
+                        apply_surface_noise_style(p, s_int, place=place, style_name=str(style_name))
+                        for p in harmful_prompts
+                    ]
+                elif style_family == "structured":
+                    harmful_styled = [
+                        apply_structured_style(p, s, place=place, style_name=str(style_name))
                         for p in harmful_prompts
                     ]
                 else:
@@ -285,14 +328,14 @@ def run_for_one_model(
 
                     plot_path = os.path.join(
                         run_dir,
-                        f"{method}_{place}_s{s_int}.png"
+                        f"{method}_{place}_s{s_label}.png"
                     )
 
                     plot_2d_scatter_two_clusters(
                         coords=coords,
                         labels=y,
                         out_path_png=plot_path,
-                        title=f"{method.upper()} (place={place}, s={s_int})",
+                        title=f"{method.upper()} (place={place}, s={s_label})",
                         xlabel="Dim 1",
                         ylabel="Dim 2",
                     )
@@ -307,7 +350,7 @@ def run_for_one_model(
             # =====================================================
             if compute_asr:
 
-                out_csv = _asr_outputs_path(run_dir, model_name, place, s_int)
+                out_csv = _asr_outputs_path(run_dir, model_name, place, s_label)
 
                 # ---------------------------
                 # Stage 1: generate outputs
@@ -333,7 +376,7 @@ def run_for_one_model(
                         "harmful_prompt": harmful_styled,
                         "model_response": harmful_outputs,
                         "style_family": style_family,
-                        "surface_style": surface_style,
+                        "surface_style": style_name,
                     })
                     df_out.to_csv(out_csv, index=False)
                     print(f"[ASR stage1] ✓ Saved outputs: {out_csv}")
@@ -372,14 +415,14 @@ def run_for_one_model(
 
                     asr = float(asr_pack["asr"])
 
-                    judged_path = os.path.join(_asr_outputs_dir(run_dir, model_name), f"harmbench_judged_{place}_s{s_int}.csv")
+                    judged_path = os.path.join(_asr_outputs_dir(run_dir, model_name), f"harmbench_judged_{place}_s{s_label}.csv")
                     df_j = df_in.copy()
                     df_j["unsafe_score"] = asr_pack["scores"]
                     df_j["unsafe_category"] = asr_pack["unsafe_categories"]
                     df_j["unsafe_code"] = asr_pack["unsafe_codes"]
                     df_j["judge_raw"] = asr_pack["raw_outputs"]
                     df_j["style_family"] = style_family
-                    df_j["surface_style"] = surface_style
+                    df_j["surface_style"] = style_name
                     df_j.to_csv(judged_path, index=False)
                     print(f"[ASR stage2] ✓ Saved judgments: {judged_path}")
 
@@ -393,7 +436,7 @@ def run_for_one_model(
                 "silhouette": sil,
                 "asr": asr,
                 "style_family": style_family,
-                "surface_style": surface_style,
+                "surface_style": style_name,
             })
 
     df = pd.DataFrame(summary_rows)
@@ -470,16 +513,16 @@ def run_experiment(
         asr_stage,
         run_dir: Optional[str] = None,   # allow reusing stage1 outputs
         style_family: str = "politeness",
-        surface_style: Optional[str] = None,
+        style_name: Optional[str] = None,
 ):
 
     config = load_config()
 
     # NEW: override places/strengths from config when running a surface-noise style
-    places, strengths, surface_style = _resolve_style_from_config_or_cli(
+    places, strengths, style_name = _resolve_style_from_config_or_cli(
         config=config,
         style_family=style_family,
-        surface_style=surface_style,
+        surface_style=style_name,
         places_cli=places,
         strengths_cli=strengths,
     )
@@ -523,7 +566,7 @@ def run_experiment(
         gen_max_new_tokens=gen_max_new_tokens,
         asr_stage=asr_stage,
         style_family=style_family,
-        surface_style=surface_style,
+        style_name=style_name,
     )
 
 
@@ -560,15 +603,15 @@ def main():
         "--style_family",
         type=str,
         default="politeness",
-        choices=["politeness", "surface_noise"],
-        help="Which style family to apply: politeness (existing) or surface_noise (spacing/punctuation/letter_case)."
+        choices=["politeness", "surface_noise", "structured"],
+        help="Which style family to apply: politeness (existing) | surface_noise (spacing/punctuation/letter_case) | structured (length_variation/interrogative)."
     )
     parser.add_argument(
         "--surface_style",
         type=str,
         default=None,
-        choices=["spacing", "punctuation", "letter_case"],
-        help="When --style_family surface_noise, choose ONE: spacing | punctuation | letter_case. "
+        choices=["spacing", "punctuation", "letter_case", "length_variation", "interrogative"],
+        help="When --style_family is surface_noise or structured, choose ONE sub-style. "
              "Places/strengths will be taken from config.yaml for that style."
     )
 
@@ -601,7 +644,7 @@ def main():
         asr_stage=args.asr_stage,
         run_dir=args.run_dir,
         style_family=args.style_family,
-        surface_style=args.surface_style,
+        style_name=args.surface_style,
     )
 
 
