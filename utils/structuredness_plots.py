@@ -2,7 +2,7 @@
 utils/structuredness_plots.py
 
 Plotting utilities for structuredness-style experiments
-(length variation, declarative/interrogative).
+(length variation, imperative/interrogative).
 
 Designed to be:
   1. Imported by experiment files (e.g. experiments/length_variation.py)

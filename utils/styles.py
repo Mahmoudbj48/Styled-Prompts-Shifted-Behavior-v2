@@ -5,7 +5,7 @@ Functions:
     - apply_spacing: Add random spaces
     - apply_punctuation: Add random punctuation marks
     - apply_politeness: Add polite language
-    - apply_interrogative: Rephrase prompt as interrogative or declarative (LLM-based)
+    - apply_interrogative: Rephrase prompt as interrogative or imperative (LLM-based)
     - apply_length_variation: Expand/compress prompt to target multiplier (LLM-based)
 """
 
@@ -577,19 +577,19 @@ def _llm_rewrite(
 
 
 # ---------------------------------------------------------------------------
-# 1. Interrogative / Declarative rephrasing  (LLM-based)
+# 1. Interrogative / Imperative rephrasing  (LLM-based)
 # ---------------------------------------------------------------------------
 
 _INTERROGATIVE_SYSTEM = (
     "You are a precise text-rewriting assistant. "
     "Your ONLY job is to rephrase text into the requested form while preserving its EXACT original meaning. "
     "The requested form is either 'interrogative' (phrase the user's statement as a question) "
-    "or 'declarative' (phrase the user's question as if it's an instruction). "
+    "or 'imperative' (phrase the user's question as if it's an instruction). "
     "Do NOT answer the question. Do NOT add any information. "
     "Do NOT add any preamble, explanation, or commentary. "
     "Output ONLY the rephrased text, nothing else."
     "example: interrogative: 'Who is the author of Harry Potter?' turns into 'Tell me who's the author of Harry Potter.'"
-    "declarative: 'Tell me who's the author of Harry Potter.' turns into 'Who is the author of Harry Potter?'"
+    "imperative: 'Tell me who's the author of Harry Potter.' turns into 'Who is the author of Harry Potter?'"
 )
 
 _INTERROGATIVE_USER_TEMPLATE = (
@@ -602,7 +602,7 @@ _INTERROGATIVE_USER_TEMPLATE = (
 
 def apply_interrogative(
         text: str,
-        mode: str = "declarative",
+        mode: str = "imperative",
         *,
         provider: str = "openai",
         model: str = "gpt-4o-mini",
@@ -611,13 +611,13 @@ def apply_interrogative(
         max_output_tokens: int = 256,
 ) -> str:
     """
-    Rephrase a prompt as interrogative or declarative using an LLM.
+    Rephrase a prompt as interrogative or imperative using an LLM.
 
     Args:
         text: The original prompt text.
-        mode: "interrogative" or "declarative".
+        mode: "interrogative" or "imperative".
             - "interrogative": ensure the text is phrased as a question.
-            - "declarative": rephrase the question as a statement/instruction.
+            - "imperative": rephrase the question as a statement/instruction.
             If the text is already in the target form, it may be returned
             nearly unchanged (up to minor LLM variation).
         provider: "openai" or "gemini".
@@ -630,12 +630,12 @@ def apply_interrogative(
         Rephrased text.
 
     Examples:
-        >>> apply_interrogative("What is the capital of France?", mode="declarative")
+        >>> apply_interrogative("What is the capital of France?", mode="imperative")
         "Tell me the capital of France."
     """
     mode = mode.strip().lower()
-    if mode not in ("interrogative", "declarative"):
-        raise ValueError(f"mode must be 'interrogative' or 'declarative', got '{mode}'")
+    if mode not in ("interrogative", "imperative"):
+        raise ValueError(f"mode must be 'interrogative' or 'imperative', got '{mode}'")
 
     user_prompt = _INTERROGATIVE_USER_TEMPLATE.format(mode=mode, text=text)
 

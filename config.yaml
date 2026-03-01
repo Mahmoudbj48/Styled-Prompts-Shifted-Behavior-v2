@@ -38,7 +38,7 @@ style_levels:
   punctuation: [0, 1, 3, 5, 10, 20]
   letter_case : [0,10, 25, 50, 75, 100]
   politeness: [-10,-8,-6,-4,-2,0, 2, 4,6,8,10]
-  interrogative: ["interrogative", "declarative"]
+  interrogative: ["interrogative", "imperative"]
   length_variation: [0.25, 0.5, 1.0, 1.5, 2.0, 3.0]
 
 safety_models:
