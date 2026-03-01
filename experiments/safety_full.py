@@ -534,9 +534,9 @@ def run_experiment(
         style_name: Optional[str] = None,
         # --- structured-style LLM cache params ---
         data_dir: str = "data",
-        rewrite_provider: str = "gemini",
-        rewrite_model: str = "gemini-2.0-flash-lite",
-        rewrite_api_key_env: str = "GEMINI_API_KEY",
+        rewrite_provider: str = "openai",
+        rewrite_model: str = "gpt-4o-mini",
+        rewrite_api_key_env: str = "OPENAI_API_KEY",
         overwrite_style_cache: bool = False,
 ):
 
@@ -659,12 +659,12 @@ def main():
     # --- Structured-style LLM rewrite params ---
     parser.add_argument("--data_dir", type=str, default="data",
                         help="Root data directory (for llm_style_cache).")
-    parser.add_argument("--rewrite_provider", type=str, default="gemini",
+    parser.add_argument("--rewrite_provider", type=str, default="openai",
                         choices=["openai", "gemini"],
                         help="LLM provider for structured-style rewrites.")
-    parser.add_argument("--rewrite_model", type=str, default="gemini-2.0-flash-lite",
+    parser.add_argument("--rewrite_model", type=str, default="gpt-4o-mini",
                         help="LLM model for structured-style rewrites.")
-    parser.add_argument("--rewrite_api_key_env", type=str, default="GEMINI_API_KEY",
+    parser.add_argument("--rewrite_api_key_env", type=str, default="OPENAI_API_KEY",
                         help="Env var holding the API key for the rewrite LLM.")
     parser.add_argument("--overwrite_style_cache", action="store_true",
                         help="Force re-generation of LLM-style cache (structured styles).")
