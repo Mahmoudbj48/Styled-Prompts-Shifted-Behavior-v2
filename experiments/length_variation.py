@@ -45,6 +45,7 @@ from utils.metrics import (
     compute_confidence,
     get_layer_activations_batch,
     clean_chatty_generation,
+    compute_length_mirroring_batch,
 )
 from utils.styles import apply_length_variation
 from utils.llm_style_cache import (
@@ -58,8 +59,12 @@ from utils.llm_style_cache import (
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
-VALID_EXPERIMENTS = {"prompt", "response", "activation", "confidence"}
+VALID_EXPERIMENTS = {"prompt", "response", "activation", "confidence", "mirroring"}
 STYLE_NAME = "length_variation"
+
+# Mirroring: relative tolerance for output-length ratio check.
+# If multiplier is m, verdict = YES when  ratio ∈ [m*(1-ε), m*(1+ε)]
+MIRRORING_EPSILON = 0.25
 
 
 # ---------------------------------------------------------------------------
@@ -295,6 +300,7 @@ def run_for_one_model(
         batch_size: int,
         max_new_tokens: int,
         show_row_pbar: bool = False,
+        mirroring_epsilon: float = MIRRORING_EPSILON,
         data_dir: str,
         dataset_name: str,
         dataset_config_name: Optional[str],
@@ -304,7 +310,7 @@ def run_for_one_model(
         overwrite_output_cache: bool,
 ) -> pd.DataFrame:
 
-    llm_experiments = {"response", "activation", "confidence"}
+    llm_experiments = {"response", "activation", "confidence", "mirroring"}
     run_llm_phase = len(experiments.intersection(llm_experiments)) > 0
 
     model = None
@@ -366,7 +372,7 @@ def run_for_one_model(
                 batch_response_orig_clean = None
                 batch_response_pert_clean = None
 
-                if run_llm_phase and ("response" in experiments or "confidence" in experiments):
+                if run_llm_phase and ("response" in experiments or "confidence" in experiments or "mirroring" in experiments):
                     cache_path = _outputs_cache_path(
                         data_dir=data_dir,
                         dataset=dataset_name,
@@ -411,6 +417,26 @@ def run_for_one_model(
                     if batch_act_pert.shape[0] != len(batch_styled_prompts):
                         raise RuntimeError("get_layer_activations_batch returned wrong batch size (styled).")
 
+                # ---- Mirroring (length-based) ----
+                mir_yes = 0
+                mir_total = 0
+                mir_rate = np.nan
+                mirroring_verdicts = [None] * len(batch_orig_prompts)
+                mirroring_ratios = [np.nan] * len(batch_orig_prompts)
+
+                if "mirroring" in experiments and batch_response_orig_clean is not None:
+                    mir = compute_length_mirroring_batch(
+                        baseline_outputs=batch_response_orig_clean,
+                        styled_outputs=batch_response_pert_clean,
+                        expected_ratio=multiplier,
+                        epsilon=mirroring_epsilon,
+                    )
+                    mirroring_verdicts = mir["verdicts"]
+                    mirroring_ratios = mir["ratios"]
+                    mir_yes = mir["mir_yes"]
+                    mir_total = mir["mir_total"]
+                    mir_rate = mir["mir_rate"]
+
                 # Per-example rows
                 for j in range(len(batch_orig_prompts)):
                     i = batch_ids[j]
@@ -431,7 +457,7 @@ def run_for_one_model(
                     if "prompt" in experiments:
                         row["bertscore_prompt"] = float(batch_prompt_bs[j])
 
-                    if run_llm_phase and ("response" in experiments or "confidence" in experiments):
+                    if run_llm_phase and ("response" in experiments or "confidence" in experiments or "mirroring" in experiments):
                         row["response_orig"] = batch_response_orig[j]
                         row["response_pert"] = batch_response_pert[j]
 
@@ -449,6 +475,16 @@ def run_for_one_model(
                     if run_llm_phase and "confidence" in experiments:
                         conf = compute_confidence(model, tokenizer, orig, pert, batch_response_orig[j])
                         row.update(conf)
+
+                    if "mirroring" in experiments:
+                        row["mirroring_verdict"] = (
+                            "YES" if mirroring_verdicts[j] is True else
+                            "NO" if mirroring_verdicts[j] is False else
+                            ""
+                        )
+                        row["mirroring_length_ratio"] = float(mirroring_ratios[j]) if np.isfinite(mirroring_ratios[j]) else np.nan
+                        row["mirroring_expected_ratio"] = float(multiplier)
+                        row["mirroring_rate_batch"] = float(mir_rate) if np.isfinite(mir_rate) else np.nan
 
                     rows.append(row)
                     if row_pbar is not None:
@@ -489,6 +525,7 @@ def run_experiment(
         overwrite_output_cache: bool,
         overwrite_style_cache: bool,
         places_override: Optional[List[str]] = None,
+        mirroring_epsilon: float = MIRRORING_EPSILON,
 ) -> str:
     config = load_config()
     experiments_set = _normalize_experiments(experiments)
@@ -585,6 +622,7 @@ def run_experiment(
             batch_size=batch_size,
             max_new_tokens=max_new_tokens,
             show_row_pbar=show_row_pbar,
+            mirroring_epsilon=mirroring_epsilon,
             data_dir=data_dir,
             dataset_name=dataset_name,
             dataset_config_name=dataset_config.get("config_name"),
@@ -669,12 +707,17 @@ def main():
 
     # Experiment selection
     parser.add_argument("--experiments", nargs="+", default=["all"],
-                        help="all OR subset of: prompt response activation confidence")
+                        help="all OR subset of: prompt response activation confidence mirroring")
 
     # Generation
     parser.add_argument("--batch_size", type=int, default=16)
     parser.add_argument("--max_new_tokens", type=int, default=None)
     parser.add_argument("--show_row_pbar", action="store_true")
+
+    # Mirroring
+    parser.add_argument("--mirroring_epsilon", type=float, default=None,
+                        help="Relative tolerance for length-ratio mirroring (default: 0.25). "
+                             "Verdict=YES when ratio ∈ [mult*(1-ε), mult*(1+ε)].")
 
     # Length multipliers
     parser.add_argument("--multipliers", nargs="+", type=float, default=None,
@@ -729,6 +772,7 @@ def main():
         overwrite_output_cache=bool(args.overwrite_output_cache),
         overwrite_style_cache=bool(args.overwrite_style_cache),
         places_override=args.places,
+        mirroring_epsilon=args.mirroring_epsilon if args.mirroring_epsilon is not None else MIRRORING_EPSILON,
     )
 
 
