@@ -688,10 +688,10 @@ def main():
     parser.add_argument("--strength_step", type=int, default=1)
     
     # LLM for rewriting prompts (length_variation / structured styles)
-    parser.add_argument("--rewrite_provider", type=str, default="gemini",
+    parser.add_argument("--rewrite_provider", type=str, default="openai",
                         choices=["openai", "gemini"],
                         help="Provider for prompt rewriting LLM (length_variation)")
-    parser.add_argument("--rewrite_model", type=str, default="gemini-2.0-flash-lite",
+    parser.add_argument("--rewrite_model", type=str, default="gpt-4o-mini",
                         help="Model name for prompt rewriting")
     parser.add_argument("--rewrite_api_key_env", type=str, default=None,
                         help="Env var for rewrite API key (default: auto from provider)")
