@@ -1282,18 +1282,6 @@ Answer (YES/NO only):
 """.strip()
 
 
-def build_mirroring_prompt_structured_rewriting(
-        *,
-        original_prompt: str,
-        original_output: str,
-        styled_prompt: str,
-        styled_output: str,
-        strength: Any,
-        place: Optional[str] = None,
-) -> str:
-    # TODO: write appropriate prompt for the style
-    pass
-
 
 # =============================================================================
 # DISPATCHER (style_name -> builder)
@@ -1324,15 +1312,6 @@ def build_mirroring_prompt_for_style(
         )
     if s == "surface_noise":
         return build_mirroring_prompt_surface_noise(
-            original_prompt=original_prompt,
-            original_output=original_output,
-            styled_prompt=styled_prompt,
-            styled_output=styled_output,
-            strength=strength,
-            place=place,
-        )
-    if s == "structured_rewriting":
-        return build_mirroring_prompt_structured_rewriting(
             original_prompt=original_prompt,
             original_output=original_output,
             styled_prompt=styled_prompt,
@@ -1619,6 +1598,88 @@ def judge_with_retries(
             return None, f"ERROR: {e}", judge_prompt
 
     return None, "ERROR: rate-limited after retries", judge_prompt
+
+
+# =============================================================================
+# Length-based mirroring (no LLM judge needed)
+# =============================================================================
+
+def compute_length_mirroring_batch(
+        *,
+        baseline_outputs: List[str],
+        styled_outputs: List[str],
+        expected_ratio: float,
+        epsilon: float = 0.25,
+) -> Dict[str, Any]:
+    """
+    Determine whether a model mirrors the *length* change implied by a
+    prompt-length multiplier.
+
+    For each example, computes::
+
+        ratio = len(styled_output) / len(baseline_output)
+
+    Verdict is **YES** when ``ratio ∈ [expected_ratio*(1-ε), expected_ratio*(1+ε)]``.
+
+    Args:
+        baseline_outputs: cleaned baseline (1×) model outputs.
+        styled_outputs:   cleaned styled (multiplier×) model outputs.
+        expected_ratio:   the multiplier applied to the prompt (e.g. 2.0).
+        epsilon:          relative tolerance (default 0.25 → ±25 %).
+
+    Returns:
+        dict with keys:
+
+        - ``verdicts``   – list[Optional[bool]]: per-example YES/NO/None
+        - ``ratios``     – list[float]:           per-example len(styled)/len(baseline)
+        - ``mir_yes``    – int:                   count of YES verdicts
+        - ``mir_total``  – int:                   count of judged (non-None) verdicts
+        - ``mir_rate``   – float:                 mir_yes / mir_total (or nan)
+    """
+    import numpy as _np
+
+    n = len(baseline_outputs)
+    if len(styled_outputs) != n:
+        raise ValueError(
+            f"baseline_outputs ({n}) and styled_outputs ({len(styled_outputs)}) "
+            f"must have the same length."
+        )
+
+    verdicts: List[Optional[bool]] = [None] * n
+    ratios: List[float] = [float("nan")] * n
+    mir_yes = 0
+    mir_total = 0
+
+    lo = expected_ratio * (1.0 - epsilon)
+    hi = expected_ratio * (1.0 + epsilon)
+
+    for i in range(n):
+        len_base = len(baseline_outputs[i].strip())
+        len_styled = len(styled_outputs[i].strip())
+
+        if len_base == 0:
+            # Cannot compute ratio; mark as inconclusive
+            continue
+
+        ratio = len_styled / len_base
+        ratios[i] = ratio
+
+        verdict = (lo <= ratio <= hi)
+        verdicts[i] = verdict
+
+        mir_total += 1
+        if verdict:
+            mir_yes += 1
+
+    mir_rate = (mir_yes / mir_total) if mir_total > 0 else float("nan")
+
+    return {
+        "verdicts": verdicts,
+        "ratios": ratios,
+        "mir_yes": mir_yes,
+        "mir_total": mir_total,
+        "mir_rate": mir_rate,
+    }
 
 
 def compute_silhouette_score(
