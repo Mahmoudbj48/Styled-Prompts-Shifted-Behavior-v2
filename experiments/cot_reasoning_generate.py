@@ -44,9 +44,10 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from utils.data import load_dataset_by_name
 from utils.models import load_model, generate_response
 from utils.styles import apply_spacing, apply_punctuation, apply_letter_case, apply_politeness
+from utils.llm_style_cache import load_or_generate_styled_prompts
 
 
-VALID_STYLES = {"spacing", "punctuation", "letter_case", "politeness"}
+VALID_STYLES = {"spacing", "punctuation", "letter_case", "politeness", "length_variation"}
 
 
 # =============================================================================
@@ -88,11 +89,12 @@ def _num_batches(n: int, bs: int) -> int:
 
 
 def _select_strengths(
-        *, config_strengths, explicit_strengths, strength_range, strength_step) -> List[int]:
+        *, config_strengths, explicit_strengths, strength_range, strength_step,
+        as_float=False) -> list:
     if explicit_strengths:
         out, seen = [], set()
         for s in explicit_strengths:
-            s = int(s)
+            s = float(s) if as_float else int(s)
             if s not in seen:
                 out.append(s)
                 seen.add(s)
@@ -106,6 +108,8 @@ def _select_strengths(
             lo, hi = hi, lo
         return list(range(int(lo), int(hi) + 1, int(strength_step)))
 
+    if as_float:
+        return [float(x) for x in config_strengths]
     return [int(x) for x in config_strengths]
 
 
@@ -124,6 +128,8 @@ def _get_style_function(style_name: str):
         "letter_case": apply_letter_case,
         "politeness": apply_politeness,
     }
+    if style_name == "length_variation":
+        return None  # uses LLM style cache, not an inline function
     if style_name not in style_map:
         raise ValueError(f"Unknown style: {style_name}")
     return style_map[style_name]
@@ -222,7 +228,7 @@ def _styled_cache_path(*, data_dir, dataset, config_name, split, seed, sample_si
         f"split_{_safe_name(split)}",
         f"seed_{seed}", f"n_{sample_size}",
         _safe_name(model_name), _safe_name(style),
-        _safe_name(place), f"strength_{int(strength)}.jsonl.gz",
+        _safe_name(place), f"strength_{_safe_name(str(strength))}.jsonl.gz",
     )
 
 
@@ -367,7 +373,9 @@ def run_for_one_model(
         model_name, model_path, items, strength_levels, places,
         style_name, config, run_dir, *,
         batch_size, max_new_tokens, data_dir, dataset_name, dataset_config_name,
-        dataset_split, dataset_seed, dataset_sample_size, overwrite_output_cache):
+        dataset_split, dataset_seed, dataset_sample_size, overwrite_output_cache,
+        rewrite_provider="openai", rewrite_model="gpt-4o-mini",
+        rewrite_api_key_env="OPENAI_API_KEY", overwrite_style_cache=False):
     """
     OPTIMIZED: 
     1. Generate baseline ONCE per batch
@@ -395,6 +403,25 @@ def run_for_one_model(
     n = len(prompts_text)
     n_batches = _num_batches(n, batch_size)
     
+    # ------------------------------------------------------------------
+    # Pre-load LLM-rewritten styled prompts for length_variation
+    # (loaded from / generated into data/llm_style_cache/)
+    # ------------------------------------------------------------------
+    styled_prompts_by_mult: Dict[float, List[str]] = {}
+    if style_name == "length_variation":
+        for mult in strength_levels:
+            styled_prompts_by_mult[mult] = load_or_generate_styled_prompts(
+                data_dir=data_dir,
+                dataset=dataset_name,
+                prompts=prompts_text,
+                style_name="length_variation",
+                param=mult,
+                rewrite_provider=rewrite_provider,
+                rewrite_model=rewrite_model,
+                rewrite_api_key_env=rewrite_api_key_env,
+                overwrite=overwrite_style_cache,
+            )
+
     # Calculate total work
     total_styled_generations = n_batches * len(places) * len(strength_levels)
     
@@ -451,7 +478,14 @@ def run_for_one_model(
             for strength in strength_levels:
                 
                 # Apply style (with fixed lambda closure)
-                if strength == 0:
+                if style_name == "length_variation":
+                    # Use pre-loaded LLM-rewritten prompts + CoT suffix
+                    all_styled = styled_prompts_by_mult[strength]
+                    batch_styled_prompts_cot = [
+                        sp + "\n\nLet's think step by step"
+                        for sp in all_styled[start:end]
+                    ]
+                elif strength == 0:
                     batch_styled_prompts_cot = batch_orig_prompts_cot
                 else:
                     if style_name == "politeness":
@@ -490,7 +524,7 @@ def run_for_one_model(
                         "style": style_name,
                         "problem_id": i,
                         "category": batch_categories[j],
-                        "strength": int(strength),
+                        "strength": strength,
                         "place": place,
                         "question_original": batch_orig_prompts[j],
                         "prompt_original_cot": batch_orig_prompts_cot[j],
@@ -520,8 +554,10 @@ def run_for_one_model(
 def run_experiment(
         models, dataset_name, sample_size, style_name, *,
         batch_size, max_new_tokens, strengths_explicit, strength_range, strength_step,
-        data_dir, overwrite_sample_cache, overwrite_output_cache, places_override):
-    
+        data_dir, overwrite_sample_cache, overwrite_output_cache, places_override,
+        rewrite_provider="openai", rewrite_model="gpt-4o-mini",
+        rewrite_api_key_env="OPENAI_API_KEY", overwrite_style_cache=False):
+
     config = load_config()
     
     if dataset_name not in config["datasets"]:
@@ -533,11 +569,13 @@ def run_experiment(
     
     places = places_override if places_override else _get_places(config, style_name)
     
+    as_float = (style_name == "length_variation")
     strength_levels = _select_strengths(
         config_strengths=config["style_levels"][style_name],
         explicit_strengths=strengths_explicit,
         strength_range=strength_range,
         strength_step=strength_step,
+        as_float=as_float,
     )
     
     if max_new_tokens is None:
@@ -597,6 +635,10 @@ def run_experiment(
             dataset_seed=int(config["defaults"]["random_seed"]),
             dataset_sample_size=int(sample_size),
             overwrite_output_cache=bool(overwrite_output_cache),
+            rewrite_provider=rewrite_provider,
+            rewrite_model=rewrite_model,
+            rewrite_api_key_env=rewrite_api_key_env,
+            overwrite_style_cache=overwrite_style_cache,
         )
         if df_model is not None and not df_model.empty:
             all_rows.append(df_model)
@@ -640,10 +682,22 @@ def main():
                         help="Maximum tokens to generate (default: from config, typically 200)")
     
     parser.add_argument("--places", nargs="+", default=None)
-    parser.add_argument("--strengths", nargs="+", type=int, default=None)
+    parser.add_argument("--strengths", nargs="+", type=float, default=None,
+                        help="Override strengths/multipliers (e.g. --strengths 0.5 1.5 2.0)")
     parser.add_argument("--strength_range", nargs=2, type=int, default=None)
     parser.add_argument("--strength_step", type=int, default=1)
     
+    # LLM for rewriting prompts (length_variation / structured styles)
+    parser.add_argument("--rewrite_provider", type=str, default="gemini",
+                        choices=["openai", "gemini"],
+                        help="Provider for prompt rewriting LLM (length_variation)")
+    parser.add_argument("--rewrite_model", type=str, default="gemini-2.0-flash-lite",
+                        help="Model name for prompt rewriting")
+    parser.add_argument("--rewrite_api_key_env", type=str, default=None,
+                        help="Env var for rewrite API key (default: auto from provider)")
+    parser.add_argument("--overwrite_style_cache", action="store_true",
+                        help="Re-generate LLM-rewritten prompts even if cached")
+
     parser.add_argument("--data_dir", type=str, default=None)
     parser.add_argument("--overwrite_sample_cache", action="store_true")
     parser.add_argument("--overwrite_output_cache", action="store_true")
@@ -654,6 +708,10 @@ def main():
     models = _normalize_models(args.models, config)
     data_dir = args.data_dir or os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
     
+    rewrite_api_key_env = args.rewrite_api_key_env or (
+        "OPENAI_API_KEY" if args.rewrite_provider == "openai" else "GEMINI_API_KEY"
+    )
+
     run_experiment(
         models=models,
         dataset_name=args.dataset,
@@ -668,6 +726,10 @@ def main():
         overwrite_sample_cache=bool(args.overwrite_sample_cache),
         overwrite_output_cache=bool(args.overwrite_output_cache),
         places_override=args.places,
+        rewrite_provider=args.rewrite_provider,
+        rewrite_model=args.rewrite_model,
+        rewrite_api_key_env=rewrite_api_key_env,
+        overwrite_style_cache=bool(args.overwrite_style_cache),
     )
 
 
