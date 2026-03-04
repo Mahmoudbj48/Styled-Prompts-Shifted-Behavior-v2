@@ -174,8 +174,27 @@ python experiments/interrogative_vs_imperative.py \
     --rewrite_model gpt-4o-mini
 ```
 
+---
+### Chain-of-Thought Reasoning
+
+```bash
+# Generate CoT responses
+python experiments/cot_reasoning_generate.py \
+    --models L3.1-8B \
+    --dataset gsm8k \
+    --style politeness \
+    --batch_size 32
+
+# Analyze CoT structure
+python experiments/cot_reasoning.py \
+    --models L3.1-8B \
+    --dataset gsm8k \
+    --style politeness
+```
 
 ---
+
+
 
 ### Safety Analysis
 
@@ -215,25 +234,6 @@ python experiments/safety_full.py \
 python experiments/bbq_bias_full.py --model L3.1-8B --sample_size 128
 ```
 
-
----
-
-### Chain-of-Thought Reasoning
-
-```bash
-# Generate CoT responses
-python experiments/cot_reasoning_generate.py \
-    --models L3.1-8B \
-    --dataset gsm8k \
-    --style politeness \
-    --batch_size 32
-
-# Analyze CoT structure
-python experiments/cot_reasoning.py \
-    --models L3.1-8B \
-    --dataset gsm8k \
-    --style politeness
-```
 
 ---
 
