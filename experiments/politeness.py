@@ -61,7 +61,7 @@ from utils.metrics import (
 from utils.styles import apply_politeness
 
 # Import plotting functions from the separate file
-from utils.politeness_plots import make_all_plots_from_csvs
+from utils.plots import make_all_plots_from_csvs_politeness as make_all_plots_from_csvs
 
 
 # -----------------------------------------------------------------------------

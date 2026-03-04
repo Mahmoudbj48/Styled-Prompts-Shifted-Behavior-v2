@@ -89,12 +89,7 @@ experiments/
 └── polite_prompt_check.py         # BERTScore prompt preservation check (all datasets)
 
 utils/
-├── plot_utils.py                  # Shared NeurIPS-style plot helpers 
-├── aggregate_plots.py             # Aggregate line / radar / ridge plots across runs
-├── politeness_plots.py            # Politeness-specific plots + BERTScore prompt plot
-├── surface_plots.py               # Surface noise experiment plots
-├── structuredness_plots.py        # Structured rewriting experiment plots
-├── cot_plots.py                   # Chain-of-thought reasoning plots
+├── plots.py                       # All plotting utilities (politeness, surface noise, structuredness, CoT, and aggregate line/radar/ridge plots)
 ├── latex_plots.py                 # LaTeX figure string generation for the paper
 ├── data.py                        # Dataset loading utilities
 ├── models.py                      # Model loading and generation

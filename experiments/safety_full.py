@@ -32,7 +32,7 @@ from utils.metrics import (
     LlamaGuard3Scorer,
 )
 
-from utils.politeness_plots import (
+from utils.plots import (
     apply_neurips_style,
     plot_2d_scatter_two_clusters,
     plot_silhouette_vs_strength,
@@ -477,7 +477,7 @@ def run_for_one_model(
             df["silhouette_cosine"] = df["silhouette"]
 
         if _has_categorical_strengths:
-            from utils.structuredness_plots import plot_metric_lines as _plot_metric_lines_struct
+            from utils.plots import plot_metric_lines as _plot_metric_lines_struct
 
             _plot_metric_lines_struct(
                 df_mean=df.rename(columns={"silhouette_cosine": "silhouette"}),
@@ -506,7 +506,7 @@ def run_for_one_model(
             asr_path = os.path.join(run_dir, "asr_vs_strength.png")
 
             if _has_categorical_strengths:
-                from utils.structuredness_plots import plot_metric_lines as _plot_metric_lines_struct
+                from utils.plots import plot_metric_lines as _plot_metric_lines_struct
 
                 _plot_metric_lines_struct(
                     df_mean=df,

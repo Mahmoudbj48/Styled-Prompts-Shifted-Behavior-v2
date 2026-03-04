@@ -28,7 +28,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from utils.data import load_dataset_by_name
 from utils.styles import apply_politeness
-from utils.politeness_plots import plot_bertscore_prompt_lines
+from utils.plots import plot_bertscore_prompt_lines
 
 
 # ============================================================
