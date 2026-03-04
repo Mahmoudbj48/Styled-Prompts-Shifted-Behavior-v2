@@ -65,6 +65,7 @@ Each dataset is evaluated on a subset of approximately 128 prompts.
 |---------|-----|
 | **TruthfulQA** | Activation similarity, confidence, and uncertainty analysis |
 | **Natural Questions** | Validation of activation and confidence patterns on real queries |
+| **GSM8K** | Chain-of-thought reasoning structure analysis |
 | **HarmBench** | Harmful prompts for safety analysis |
 | **Alpaca** | Harmless prompts paired with HarmBench for silhouette separation |
 | **BBQ** | Demographic bias sensitivity measurement |
