@@ -1,5 +1,6 @@
 torch>=2.0.0
 transformers>=4.30.0
+accelerate>=0.24.0
 datasets>=2.14.0
 sacrebleu>=2.3.0
 bert-score>=0.3.13
@@ -12,4 +13,5 @@ tqdm>=4.65.0
 scikit-learn
 bitsandbytes>=0.46.1
 umap-learn>=0.5.3
-#pyyaml
+openai>=1.0.0
+google-genai>=1.0.0

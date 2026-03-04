@@ -62,7 +62,7 @@ from utils.llm_style_cache import (
 # Constants
 # ---------------------------------------------------------------------------
 VALID_EXPERIMENTS = {"prompt", "response", "activation", "confidence"}
-STYLE_NAME = "interrogative"
+STYLE_NAME = "inter_vs_imper"
 DEFAULT_MODES = ["interrogative", "imperative"]
 
 
@@ -320,17 +320,21 @@ def run_for_one_model(
     prompts_text = [_get_prompt_text(it) for it in items]
     categories = [it.get("category", "Unknown") for it in items]
 
+    # Prepend "original" so it appears as the left-most point on line plots.
+    # When mode == "original", styled prompts = original prompts (self-comparison).
+    all_modes = ["original"] + list(modes)
+
     n = len(prompts_text)
     n_batches = _num_batches(n, batch_size)
 
     rows: List[dict] = []
 
-    total_groups = n_batches * len(places) * len(modes)
+    total_groups = n_batches * len(places) * len(all_modes)
     batch_pbar = tqdm(total=total_groups, desc=f"[{model_name}] batch-groups", unit="group")
 
     row_pbar = None
     if show_row_pbar:
-        total_rows = n * len(places) * len(modes)
+        total_rows = n * len(places) * len(all_modes)
         row_pbar = tqdm(total=total_rows, desc=f"[{model_name}] rows", unit="row", leave=False)
 
     for b in range(n_batches):
@@ -351,10 +355,14 @@ def run_for_one_model(
                 raise RuntimeError("get_layer_activations_batch returned wrong batch size.")
 
         for place in places:
-            for mode in modes:
-                # Styled prompts for this mode (pre-generated)
-                all_styled = styled_prompts_by_mode[mode]
-                batch_styled_prompts = all_styled[start:end]
+            for mode in all_modes:
+                # For "original" mode, compare the prompt against itself (baseline)
+                if mode == "original":
+                    batch_styled_prompts = list(batch_orig_prompts)
+                else:
+                    # Styled prompts for this mode (pre-generated)
+                    all_styled = styled_prompts_by_mode[mode]
+                    batch_styled_prompts = all_styled[start:end]
 
                 # Prompt BERTScore
                 batch_prompt_bs = None
@@ -506,7 +514,7 @@ def run_experiment(
         sample_size = int(dataset_config["sample_size"])
 
     modes = _select_modes(
-        config_modes=config["style_levels"].get("interrogative", DEFAULT_MODES),
+        config_modes=config["style_levels"].get("inter_vs_imper", DEFAULT_MODES),
         explicit_modes=modes_explicit,
     )
 
@@ -517,7 +525,7 @@ def run_experiment(
     if places_override:
         places = [p for p in places_override if p in {"prefix", "suffix", "global"}]
     else:
-        places = [p for p in config.get("style_positions", {}).get("interrogative", ["global"])]
+        places = [p for p in config.get("style_positions", {}).get("inter_vs_imper", ["global"])]
         places = [p for p in places if p in {"prefix", "suffix", "global"}]
     if not places:
         places = ["global"]
@@ -565,7 +573,7 @@ def run_experiment(
             data_dir=data_dir,
             dataset=dataset_name,
             prompts=prompts,
-            style_name="interrogative",
+            style_name="inter_vs_imper",
             param=mode,
             rewrite_provider=rewrite_provider,
             rewrite_model=rewrite_model,
@@ -613,12 +621,12 @@ def run_experiment(
 
     # --- Generate plots ---
     try:
-        from utils.surface_plots import make_all_plots_from_csvs
+        from utils.structuredness_plots import make_all_structuredness_metric_plots
 
         plot_dir = os.path.join(run_dir, "plots_metrics")
         os.makedirs(plot_dir, exist_ok=True)
 
-        make_all_plots_from_csvs(
+        make_all_structuredness_metric_plots(
             plot_inputs=[run_dir],
             out_dir=plot_dir,
             strengths=None,

@@ -123,7 +123,7 @@ def apply_surface_noise_style(text: str, strength: Any, *, place: str, style_nam
 def apply_structured_style(text: str, strength: Any, *, place: str, style_name: str) -> str:
     """
     Apply one structured style by name.
-    style_name in {"length_variation", "interrogative"}.
+    style_name in {"length_variation", "inter_vs_imper"}.
 
     Note: these are global rewrites — `place` is accepted for interface
     consistency but is not forwarded to the underlying functions.
@@ -131,7 +131,7 @@ def apply_structured_style(text: str, strength: Any, *, place: str, style_name: 
     if style_name == "length_variation":
         return apply_length_variation(text, float(strength))
 
-    if style_name == "interrogative":
+    if style_name == "inter_vs_imper":
         return apply_interrogative(text, mode=str(strength))
 
     raise ValueError(f"Unknown structured style: {style_name}")
@@ -153,7 +153,7 @@ def _resolve_style_from_config_or_cli(
 
     style_name:
       - "spacing" | "punctuation" | "letter_case" (surface_noise)
-      - "length_variation" | "interrogative" (structured)
+      - "length_variation" | "inter_vs_imper" (structured)
     """
     if style_family not in ("surface_noise", "structured"):
         return places_cli, strengths_cli, None
@@ -175,8 +175,8 @@ def _resolve_style_from_config_or_cli(
     # keep types consistent with the rest of the code:
     places = [str(x) for x in cfg_places]
 
-    # Strengths can be int (surface noise), float (length_variation), or str (interrogative)
-    if style_name == "interrogative":
+    # Strengths can be int (surface noise), float (length_variation), or str (inter_vs_imper)
+    if style_name == "inter_vs_imper":
         strengths = [str(x) for x in cfg_strengths]
     elif style_name == "length_variation":
         strengths = [float(x) for x in cfg_strengths]
@@ -206,7 +206,7 @@ def run_for_one_model(
         gen_max_new_tokens: int,
         asr_stage: str,   # "stage1" | "stage2" | "both"
         style_family: str,         # "politeness" | "surface_noise" | "structured"
-        style_name: Optional[str],  # "spacing" | "punctuation" | "letter_case" | "length_variation" | "interrogative" | None
+        style_name: Optional[str],  # "spacing" | "punctuation" | "letter_case" | "length_variation" | "inter_vs_imper" | None
         # --- structured-style LLM cache params ---
         data_dir: str = "data",
         rewrite_provider: str = "gemini",
@@ -462,6 +462,12 @@ def run_for_one_model(
     # Line plots
     # =====================================================
 
+    # Detect whether strengths are categorical (inter_vs_imper) vs numeric
+    _has_categorical_strengths = any(
+        isinstance(s, str) and not s.replace(".", "", 1).replace("-", "", 1).isdigit()
+        for s in strengths
+    )
+
     if compute_activations:
         sil_path = os.path.join(run_dir, "plots_metrics", "silhouette_vs_strength.png")
         os.makedirs(os.path.dirname(sil_path), exist_ok=True)
@@ -469,7 +475,22 @@ def run_for_one_model(
         if "silhouette_cosine" not in df.columns and "silhouette" in df.columns:
             df["silhouette_cosine"] = df["silhouette"]
 
-        try:
+        if _has_categorical_strengths:
+            from utils.structuredness_plots import plot_metric_lines as _plot_metric_lines_struct
+
+            _plot_metric_lines_struct(
+                df_mean=df.rename(columns={"silhouette_cosine": "silhouette"}),
+                metric="silhouette",
+                strengths=None,
+                out_path_png=sil_path,
+                dataset_name="safety",
+                style_name=style_name or style_family,
+                include_title=True,
+                legend_outside=True,
+                ylabel="Silhouette (cosine)",
+            )
+            print(f"[MAIN] ✓ Saved silhouette plot: {sil_path}")
+        else:
             plot_silhouette_vs_strength(
                 df_summary=df,
                 out_path_png=sil_path,
@@ -478,33 +499,34 @@ def run_for_one_model(
                 legend_outside=True,
             )
             print(f"[MAIN] ✓ Saved silhouette plot: {sil_path}")
-        except Exception as e:
-            print(f"[WARN] plot_silhouette_vs_strength failed ({e}); using fallback plot.")
-            import matplotlib.pyplot as plt
-
-            plt.figure()
-            for place_, sub in df.groupby("place"):
-                sub = sub.sort_values("strength")
-                plt.plot(sub["strength"], sub["silhouette_cosine"], label=str(place_))
-            plt.xlabel("Strength")
-            plt.ylabel("Silhouette (cosine)")
-            plt.title("Silhouette vs Strength")
-            plt.legend()
-            plt.tight_layout()
-            plt.savefig(sil_path, dpi=300)
-            plt.close()
-            print(f"[MAIN] ✓ Saved silhouette plot (fallback): {sil_path}")
 
     if compute_asr:
         if asr_stage in ("stage2", "both"):
-            plot_metric_vs_strength(
-                df_summary=df,
-                metric_col="asr",
-                out_path_png=os.path.join(run_dir, "asr_vs_strength.png"),
-                group_by=["place"],
-                title="ASR vs Strength",
-                ylabel="Attack Success Rate",
-            )
+            asr_path = os.path.join(run_dir, "asr_vs_strength.png")
+
+            if _has_categorical_strengths:
+                from utils.structuredness_plots import plot_metric_lines as _plot_metric_lines_struct
+
+                _plot_metric_lines_struct(
+                    df_mean=df,
+                    metric="asr",
+                    strengths=None,
+                    out_path_png=asr_path,
+                    dataset_name="safety",
+                    style_name=style_name or style_family,
+                    include_title=True,
+                    legend_outside=True,
+                )
+                print(f"[MAIN] ✓ Saved ASR plot: {asr_path}")
+            else:
+                plot_metric_vs_strength(
+                    df_summary=df,
+                    metric_col="asr",
+                    out_path_png=asr_path,
+                    group_by=["place"],
+                    title="ASR vs Strength",
+                    ylabel="Attack Success Rate",
+                )
 
     print("[MAIN] ✓ Experiment completed")
     return df
@@ -631,13 +653,13 @@ def main():
         type=str,
         default="politeness",
         choices=["politeness", "surface_noise", "structured"],
-        help="Which style family to apply: politeness (existing) | surface_noise (spacing/punctuation/letter_case) | structured (length_variation/interrogative)."
+        help="Which style family to apply: politeness (existing) | surface_noise (spacing/punctuation/letter_case) | structured (length_variation/inter_vs_imper)."
     )
     parser.add_argument(
         "--style_name",
         type=str,
         default=None,
-        choices=["spacing", "punctuation", "letter_case", "length_variation", "interrogative"],
+        choices=["spacing", "punctuation", "letter_case", "length_variation", "inter_vs_imper"],
         help="When --style_family is surface_noise or structured, choose ONE sub-style. "
              "Places/strengths will be taken from config.yaml for that style."
     )

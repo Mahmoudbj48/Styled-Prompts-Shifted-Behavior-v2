@@ -646,14 +646,12 @@ def run_experiment(
 
     # --- Generate plots ---
     try:
-        from utils.surface_plots import make_all_plots_from_csvs
+        from utils.structuredness_plots import make_all_structuredness_metric_plots
 
         plot_dir = os.path.join(run_dir, "plots_metrics")
         os.makedirs(plot_dir, exist_ok=True)
 
-        # surface_plots expects integer strengths in its x-axis tick logic;
-        # we pass None so it auto-detects from the CSV.
-        make_all_plots_from_csvs(
+        make_all_structuredness_metric_plots(
             plot_inputs=[run_dir],
             out_dir=plot_dir,
             strengths=None,
