@@ -253,10 +253,15 @@ def run_for_one_model(
 
             print(f"\n[BUCKET] place={place} strength={s}")
             # Build a label for filenames / summary rows
-            try:
-                s_int = int(s)
-            except (ValueError, TypeError):
-                s_int = s  # keep as-is for string/float strengths
+            # Preserve the original type: float for length_variation,
+            # str for inter_vs_imper, int for surface_noise / politeness.
+            if style_family == "structured":
+                s_val = s          # already float or str from _resolve_style_from_config_or_cli
+            else:
+                try:
+                    s_val = int(s)
+                except (ValueError, TypeError):
+                    s_val = s
             s_label = str(s)
 
             sil = np.nan
@@ -271,7 +276,7 @@ def run_for_one_model(
             if compute_activations:
                 if style_family == "surface_noise":
                     harmless_styled = [
-                        apply_surface_noise_style(p, s_int, place=place, style_name=str(style_name))
+                        apply_surface_noise_style(p, s_val, place=place, style_name=str(style_name))
                         for p in harmless_prompts
                     ]
                 elif style_family == "structured":
@@ -288,14 +293,14 @@ def run_for_one_model(
                     )
                 else:
                     harmless_styled = [
-                        apply_politeness(p, s_int, place=place)
+                        apply_politeness(p, s_val, place=place)
                         for p in harmless_prompts
                     ]
 
             if compute_activations or compute_asr:
                 if style_family == "surface_noise":
                     harmful_styled = [
-                        apply_surface_noise_style(p, s_int, place=place, style_name=str(style_name))
+                        apply_surface_noise_style(p, s_val, place=place, style_name=str(style_name))
                         for p in harmful_prompts
                     ]
                 elif style_family == "structured":
@@ -312,7 +317,7 @@ def run_for_one_model(
                     )
                 else:
                     harmful_styled = [
-                        apply_politeness(p, s_int, place=place)
+                        apply_politeness(p, s_val, place=place)
                         for p in harmful_prompts
                     ]
 
@@ -388,7 +393,7 @@ def run_for_one_model(
                     df_out = pd.DataFrame({
                         "model": model_name,
                         "place": place,
-                        "strength": s_int,
+                        "strength": s_val,
                         "prompt_id": list(range(len(harmful_styled))),
                         "harmful_prompt": harmful_styled,
                         "model_response": harmful_outputs,
@@ -449,7 +454,7 @@ def run_for_one_model(
             summary_rows.append({
                 "model": model_name,
                 "place": place,
-                "strength": s_int,
+                "strength": s_val,
                 "silhouette": sil,
                 "asr": asr,
                 "style_family": style_family,
@@ -476,58 +481,71 @@ def run_for_one_model(
         if "silhouette_cosine" not in df.columns and "silhouette" in df.columns:
             df["silhouette_cosine"] = df["silhouette"]
 
-        if _has_categorical_strengths:
-            from utils.plots import plot_metric_lines as _plot_metric_lines_struct
+        try:
+            if _has_categorical_strengths:
+                from utils.plots import plot_metric_lines as _plot_metric_lines_struct
 
-            _plot_metric_lines_struct(
-                df_mean=df.rename(columns={"silhouette_cosine": "silhouette"}),
-                metric="silhouette",
-                strengths=None,
-                out_path_png=sil_path,
-                dataset_name="safety",
-                style_name=style_name or style_family,
-                include_title=True,
-                legend_outside=True,
-                ylabel="Silhouette (cosine)",
-            )
-            print(f"[MAIN] ✓ Saved silhouette plot: {sil_path}")
-        else:
-            plot_silhouette_vs_strength(
-                df_summary=df,
-                out_path_png=sil_path,
-                group_by=["place"],
-                title="Silhouette vs Strength",
-                legend_outside=True,
-            )
-            print(f"[MAIN] ✓ Saved silhouette plot: {sil_path}")
+                _plot_metric_lines_struct(
+                    df_mean=df.rename(columns={"silhouette_cosine": "silhouette"}),
+                    metric="silhouette",
+                    strengths=None,
+                    out_path_png=sil_path,
+                    dataset_name="safety",
+                    style_name=style_name or style_family,
+                    include_title=True,
+                    legend_outside=True,
+                    ylabel="Silhouette (cosine)",
+                )
+            else:
+                plot_silhouette_vs_strength(
+                    df_summary=df,
+                    out_path_png=sil_path,
+                    group_by=["place"],
+                    title="Silhouette vs Strength",
+                    legend_outside=True,
+                )
+
+            if os.path.exists(sil_path):
+                print(f"[MAIN] ✓ Saved silhouette plot: {sil_path}")
+            else:
+                print(f"[MAIN] ⚠ Silhouette plot was NOT saved (function returned early — check that 'silhouette_cosine' column has non-NaN values)")
+        except Exception as e:
+            print(f"[MAIN] ⚠ Failed to generate silhouette plot: {e}")
 
     if compute_asr:
         if asr_stage in ("stage2", "both"):
             asr_path = os.path.join(run_dir, "asr_vs_strength.png")
 
-            if _has_categorical_strengths:
-                from utils.plots import plot_metric_lines as _plot_metric_lines_struct
+            try:
+                if _has_categorical_strengths:
+                    from utils.plots import plot_metric_lines as _plot_metric_lines_struct
 
-                _plot_metric_lines_struct(
-                    df_mean=df,
-                    metric="asr",
-                    strengths=None,
-                    out_path_png=asr_path,
-                    dataset_name="safety",
-                    style_name=style_name or style_family,
-                    include_title=True,
-                    legend_outside=True,
-                )
-                print(f"[MAIN] ✓ Saved ASR plot: {asr_path}")
-            else:
-                plot_metric_vs_strength(
-                    df_summary=df,
-                    metric_col="asr",
-                    out_path_png=asr_path,
-                    group_by=["place"],
-                    title="ASR vs Strength",
-                    ylabel="Attack Success Rate",
-                )
+                    _plot_metric_lines_struct(
+                        df_mean=df,
+                        metric="asr",
+                        strengths=None,
+                        out_path_png=asr_path,
+                        dataset_name="safety",
+                        style_name=style_name or style_family,
+                        include_title=True,
+                        legend_outside=True,
+                    )
+                else:
+                    plot_metric_vs_strength(
+                        df_summary=df,
+                        metric_col="asr",
+                        out_path_png=asr_path,
+                        group_by=["place"],
+                        title="ASR vs Strength",
+                        ylabel="Attack Success Rate",
+                    )
+
+                if os.path.exists(asr_path):
+                    print(f"[MAIN] ✓ Saved ASR plot: {asr_path}")
+                else:
+                    print(f"[MAIN] ⚠ ASR plot was NOT saved (function returned early — check that 'asr' column has non-NaN values)")
+            except Exception as e:
+                print(f"[MAIN] ⚠ Failed to generate ASR plot: {e}")
 
     print("[MAIN] ✓ Experiment completed")
     return df
