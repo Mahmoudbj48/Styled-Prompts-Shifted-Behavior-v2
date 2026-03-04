@@ -27,35 +27,13 @@ import pandas as pd
 import matplotlib
 import matplotlib.pyplot as plt
 
-
-# =========================================================================
-# NeurIPS-style matplotlib defaults
-# =========================================================================
-
-def apply_neurips_style() -> None:
-    """NeurIPS-friendly matplotlib defaults."""
-    plt.rcParams.update({
-        "figure.facecolor": "white",
-        "axes.facecolor": "white",
-        "savefig.facecolor": "white",
-        "font.size": 10,
-        "axes.titlesize": 10,
-        "axes.labelsize": 10,
-        "xtick.labelsize": 9,
-        "ytick.labelsize": 9,
-        "legend.fontsize": 8,
-        "lines.linewidth": 1.5,
-        "lines.markersize": 4,
-        "axes.linewidth": 0.8,
-        "axes.spines.top": False,
-        "axes.spines.right": False,
-        "axes.grid": True,
-        "grid.alpha": 0.2,
-        "grid.linewidth": 0.7,
-        "xtick.direction": "out",
-        "ytick.direction": "out",
-        "figure.autolayout": False,
-    })
+from utils.plot_utils import (
+    apply_neurips_style,
+    _coerce_numeric,
+    load_results_csvs,
+    _format_axis,
+    _save_figure,
+)
 
 
 # =========================================================================
@@ -87,61 +65,6 @@ def _is_numeric(val) -> bool:
         return False
 
 
-def _coerce_numeric(df: pd.DataFrame, cols: List[str]) -> pd.DataFrame:
-    for c in cols:
-        if c in df.columns:
-            df[c] = pd.to_numeric(df[c], errors="coerce")
-    return df
-
-
-def load_results_csvs(paths_or_dirs: List[str]) -> pd.DataFrame:
-    """
-    Load experiment results from run directories or CSV file paths.
-
-    Accepts:
-      - run directories containing full_results_all_models.csv or *_results.csv
-      - direct CSV file paths
-
-    Returns merged per-example DataFrame.
-    """
-    dfs = []
-    for p in paths_or_dirs:
-        p = os.path.expanduser(p)
-
-        if os.path.isfile(p) and p.endswith(".csv"):
-            df = pd.read_csv(p)
-            df["run_id"] = os.path.basename(os.path.dirname(p)) or "run"
-            dfs.append(df)
-            continue
-
-        if os.path.isdir(p):
-            run_id = os.path.basename(os.path.normpath(p))
-            preferred = os.path.join(p, "full_results_all_models.csv")
-            if os.path.exists(preferred):
-                df = pd.read_csv(preferred)
-                df["run_id"] = run_id
-                dfs.append(df)
-                continue
-            # fallback: per-model CSVs
-            for fn in sorted(os.listdir(p)):
-                if fn.endswith("_results.csv"):
-                    df = pd.read_csv(os.path.join(p, fn))
-                    df["run_id"] = run_id
-                    dfs.append(df)
-            continue
-
-        raise FileNotFoundError(f"Plot input not found: {p}")
-
-    if not dfs:
-        return pd.DataFrame()
-    return pd.concat(dfs, ignore_index=True)
-
-
-def _save_figure(fig, out_png: str, *, save_pdf: bool = False, dpi: int = 300) -> None:
-    os.makedirs(os.path.dirname(out_png), exist_ok=True)
-    fig.savefig(out_png, dpi=dpi, bbox_inches="tight")
-    if save_pdf:
-        fig.savefig(os.path.splitext(out_png)[0] + ".pdf", bbox_inches="tight")
 
 
 # =========================================================================

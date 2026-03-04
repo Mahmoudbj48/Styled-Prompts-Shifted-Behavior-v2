@@ -27,36 +27,13 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import argparse
 
-
-# --------------------------
-# NeurIPS-style matplotlib defaults
-# --------------------------
-def apply_neurips_style() -> None:
-    """Apply conservative, LaTeX-friendly style."""
-    plt.rcParams.update({
-        "figure.facecolor": "white",
-        "axes.facecolor": "white",
-        "savefig.facecolor": "white",
-        "font.size": 10,
-        "axes.titlesize": 10,
-        "axes.labelsize": 10,
-        "xtick.labelsize": 9,
-        "ytick.labelsize": 9,
-        "legend.fontsize": 8,
-        "lines.linewidth": 1.5,
-        "lines.markersize": 4,
-        "axes.linewidth": 0.8,
-        "axes.spines.top": False,
-        "axes.spines.right": False,
-        "axes.grid": True,
-        "grid.alpha": 0.2,
-        "grid.linewidth": 0.7,
-        "xtick.direction": "out",
-        "ytick.direction": "out",
-        "xtick.major.width": 0.8,
-        "ytick.major.width": 0.8,
-        "figure.autolayout": False,
-    })
+from utils.plot_utils import (
+    apply_neurips_style,
+    _coerce_numeric,
+    load_results_csvs,
+    _format_axis,
+    _save_figure,
+)
 
 
 PLOT_METRICS_DEFAULT = [
@@ -68,56 +45,6 @@ PLOT_METRICS_DEFAULT = [
     "avg_step_length_original",
     "avg_step_length_styled",
 ]
-
-
-# --------------------------
-# I/O helpers
-# --------------------------
-def _coerce_numeric(df: pd.DataFrame, cols: List[str]) -> pd.DataFrame:
-    for c in cols:
-        if c in df.columns:
-            df[c] = pd.to_numeric(df[c], errors="coerce")
-    return df
-
-
-def load_results_csvs(paths_or_dirs: List[str]) -> pd.DataFrame:
-    """Load CoT experiment CSVs from directories or file paths."""
-    dfs = []
-    for p in paths_or_dirs:
-        p = os.path.expanduser(p)
-
-        if os.path.isfile(p) and p.endswith(".csv"):
-            df = pd.read_csv(p)
-            run_id = os.path.basename(os.path.dirname(p)) or "run"
-            df["run_id"] = run_id
-            dfs.append(df)
-            continue
-
-        if os.path.isdir(p):
-            run_id = os.path.basename(os.path.normpath(p))
-            preferred = os.path.join(p, "full_results_all_models.csv")
-            if os.path.exists(preferred):
-                df = pd.read_csv(preferred)
-                df["run_id"] = run_id
-                dfs.append(df)
-                continue
-
-            # fallback: per-model CSVs
-            cand = []
-            for fn in os.listdir(p):
-                if fn.endswith("_results.csv"):
-                    cand.append(os.path.join(p, fn))
-            for fp in sorted(cand):
-                df = pd.read_csv(fp)
-                df["run_id"] = run_id
-                dfs.append(df)
-            continue
-
-        raise FileNotFoundError(f"plot input not found: {p}")
-
-    if not dfs:
-        return pd.DataFrame()
-    return pd.concat(dfs, ignore_index=True)
 
 
 # --------------------------
