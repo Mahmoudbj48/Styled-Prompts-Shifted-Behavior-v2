@@ -1,13 +1,35 @@
-# experiments/prompt_bertscore_all_datasets.py
+# experiments/polite_prompt_check.py
 """
-Compute BERTScore(prompt) for styled prompts across multiple datasets and strengths,
+BERTScore-based semantic preservation check for styled prompts.
 
+Computes BERTScore(prompt) — the semantic similarity between the original
+and styled prompt — across multiple datasets and politeness strengths.
+This validates that stylistic changes do not corrupt the original prompt meaning.
 
-Outputs:
-  results/prompt_bertscore_all_datasets/run_YYYYMMDD_HHMMSS/
-    - combined_means_by_dataset_place_strength.csv
-    - bertscore_prompt_line.png (+ optional pdf)
-    - threshold_pass_rates_0.85.csv
+Inputs:
+    - Multiple datasets (e.g. truthful_qa, natural_questions) via utils.data.load_dataset_by_name
+    - Politeness style applied via utils.styles.apply_politeness
+    - config.yaml is not required; strength grid is configured via CLI flags
+
+Outputs (saved to results/prompt_bertscore_all_datasets/run_YYYYMMDD_HHMMSS/):
+    - combined_means_by_dataset_place_strength.csv: mean BERTScore per
+      (dataset, place, strength) combination
+    - bertscore_prompt_line.png (+ optional .pdf): line plot of BERTScore vs. strength
+    - threshold_pass_rates_0.85.csv: fraction of prompts above the 0.85 preservation threshold
+
+Run:
+  python experiments/polite_prompt_check.py \\
+    --datasets truthful_qa natural_questions \\
+    --sample_size 128 \\
+    --places global prefix suffix \\
+    --strength_range -10 10 --strength_step 2
+
+Important flags:
+    --datasets        Space-separated dataset names to evaluate
+    --sample_size     Number of prompts per dataset
+    --places          Placement strategies to evaluate
+    --strength_range  Integer range for politeness strength grid
+    --strength_step   Step size within the range
 """
 
 import os
@@ -44,19 +66,20 @@ def strength_grid(lo: int = -10, hi: int = 10, step: int = 2) -> List[int]:
 
 
 # ============================================================
-# Prompt extraction (matches your standardized schema)
+# Prompt extraction (standardized schema from utils.data loaders)
 # ============================================================
 
 def _get_prompt_text(item: dict) -> str:
     """
-    Your loaders standardize to:
-      {"question": str, ...}
-    But keep this robust anyway.
+    Extract the prompt text from a standardised dataset item dict.
+
+    All loaders produce items with a "question" key, but this function
+    also handles fallback keys (prompt, instruction, text) for robustness.
     """
     if isinstance(item, dict):
         v = item.get("question", None)
         if v is not None:
-            # NQ loader already fixes dict->text; still be safe
+            # Natural Questions loader may return a nested dict; extract text safely.
             if isinstance(v, dict):
                 v = v.get("text", "")
             return str(v).strip()
@@ -132,7 +155,7 @@ def load_dataset_prompts(
         nq_split: str,
 ) -> List[dict]:
     """
-    Calls your load_dataset_by_name with the right kwargs for each dataset.
+    Calls load_dataset_by_name with the appropriate kwargs for each dataset.
     """
     if dataset_name == "truthful_qa":
         return load_dataset_by_name(
@@ -144,7 +167,7 @@ def load_dataset_prompts(
         )
 
     if dataset_name == "alpaca":
-        # your loader auto-picks split unless user passes one
+        # The Alpaca loader auto-picks the available split when none is specified.
         return load_dataset_by_name(
             "alpaca",
             sample_size=int(sample_size),
@@ -310,7 +333,7 @@ def main():
     parser.add_argument("--threshold", type=float, default=0.85)
     parser.add_argument("--save_pdf", action="store_true")
 
-    # Match your loaders
+    # Dataset-specific config args, matching the loaders in utils/data.py
     parser.add_argument("--harmbench_config", type=str, default="standard")
 
     parser.add_argument("--truthfulqa_config", type=str, default="generation")

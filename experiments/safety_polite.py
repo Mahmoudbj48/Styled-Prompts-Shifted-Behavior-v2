@@ -1,4 +1,35 @@
 # experiments/safety_polite.py
+"""
+Safety evaluation focused on politeness-style perturbations.
+
+Measures how politeness framing (positive and negative) affects model safety
+behaviour on HarmBench harmful prompts and Alpaca harmless prompts.
+
+Inputs:
+    - HarmBench harmful prompts (via utils.data.load_harmbench_hf)
+    - Alpaca harmless prompts (via utils.data.load_alpaca_hf)
+    - config.yaml for model paths, politeness strengths, and positions
+
+Outputs (saved to results/politeness_safety/run_YYYYMMDD_HHMMSS/):
+    - summary_all_models.csv: silhouette score and ASR per (model, place, strength)
+    - asr_outputs/{model}/: per-bucket response CSVs (stage 1) and
+      LlamaGuard-3 judgment CSVs (stage 2)
+    - PCA / t-SNE / UMAP scatter plots for each (place, strength) bucket
+
+Run:
+  python experiments/safety_polite.py \\
+    --models G-7B L3.1-8B \\
+    --strengths -10 -5 0 5 10 \\
+    --places prefix suffix global \\
+    --harmbench_size 200 --alpaca_size 200 \\
+    --batch_size 8 \\
+    --asr_stage both
+
+Important flags:
+    --asr_stage      Stage to run: stage1 (generate) | stage2 (judge) | both
+    --compute_activations  Whether to compute silhouette scores (default: True)
+    --compute_asr          Whether to compute ASR via LlamaGuard-3 (default: True)
+"""
 
 import argparse
 import os
@@ -262,7 +293,7 @@ def run_for_one_model(
 
                     asr = float(asr_pack["asr"])
 
-                    # Save judged per-example file (optional but keeps your behavior consistent)
+                    # Save judged per-example file alongside the raw outputs
                     judged_path = os.path.join(_asr_outputs_dir(run_dir, model_name), f"harmbench_judged_{place}_s{s_int}.csv")
                     df_j = df_in.copy()
                     df_j["unsafe_score"] = asr_pack["scores"]

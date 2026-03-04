@@ -1,4 +1,39 @@
 # experiments/safety_full.py
+"""
+Comprehensive safety evaluation across all style families.
+
+Measures how stylistic prompt variations (politeness, surface noise, structured
+rewrites) affect model safety behaviour on HarmBench harmful prompts and Alpaca
+harmless prompts.
+
+Inputs:
+    - HarmBench prompts (via utils.data.load_harmbench_hf)
+    - Alpaca harmless prompts (via utils.data.load_alpaca_hf)
+    - config.yaml for model paths, style levels, and style positions
+
+Outputs (saved to results/safety/run_YYYYMMDD_HHMMSS/):
+    - summary_all_models.csv: silhouette score and ASR per (model, place, strength)
+    - asr_outputs/{model}/: per-bucket CSVs of model responses (stage 1) and
+      LlamaGuard-3 judgments (stage 2)
+    - PCA / t-SNE / UMAP scatter plots for each (place, strength) bucket
+
+Run:
+  python experiments/safety_full.py \\
+    --models G-7B \\
+    --style_family politeness \\
+    --strengths -10 -5 0 5 10 \\
+    --places prefix suffix global \\
+    --harmbench_size 200 --alpaca_size 200 \\
+    --batch_size 8 \\
+    --asr_stage both
+
+Important flags:
+    --style_family   Style family to evaluate: politeness | surface_noise | structured
+    --style_name     Specific style within family (required for surface_noise/structured)
+    --asr_stage      Stage to run: stage1 (generate) | stage2 (judge) | both
+    --compute_activations  Whether to compute silhouette scores (default: True)
+    --compute_asr          Whether to compute ASR via LlamaGuard-3 (default: True)
+"""
 
 import argparse
 import os
@@ -77,8 +112,8 @@ def _asr_outputs_path(run_dir: str, model_name: str, place: str, strength: Any) 
 
 def _try_import_surface_noise_appliers():
     """
-    Best-effort import of surface-noise appliers from utils.styles if you already placed them there.
-    If not found, you can still run politeness-only experiments as before.
+    Best-effort import of surface-noise style appliers from utils.styles.
+    Falls back gracefully if not found; politeness-only experiments remain unaffected.
     """
     spacing = punctuation = letter_case = None
     try:

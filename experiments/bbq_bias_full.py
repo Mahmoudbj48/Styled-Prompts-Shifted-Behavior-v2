@@ -1,7 +1,24 @@
 """
-BBQ Bias Evaluation - Age and Gender Categories Only
-Tests all style/strength/placement combinations for a SINGLE MODEL.
-Usage: python experiments/bbq_bias_age_gender.py --model L3.2-1B
+BBQ Bias Evaluation — Gender Identity Category.
+
+Tests all style/strength/placement combinations for a single model and measures
+demographic bias sensitivity using the BBQ (Bias Benchmark for QA) dataset.
+
+Inputs:
+    - BBQ Gender_identity category (via utils.data.load_bbq_hf, ambiguous context only)
+    - config.yaml for model paths, style levels, and style positions
+
+Outputs (saved to results/bias_bbq_politeness/run_YYYYMMDD_HHMMSS/):
+    - bias_results.csv: bias score, accuracy, and raw counts per
+      (model, category, style, strength, placement) combination
+
+Run:
+  python experiments/bbq_bias_full.py --model L3.2-1B
+
+Important flags:
+    --model   Model alias from config.yaml (e.g. L3.2-1B, G-7B)
+    --sample_size  Number of BBQ examples per category (default: 128)
+    --seed         Random seed (default: 42)
 """
 
 import os

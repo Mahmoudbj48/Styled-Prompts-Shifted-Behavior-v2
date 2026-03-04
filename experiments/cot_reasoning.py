@@ -1,25 +1,34 @@
 # experiments/cot_reasoning.py
 """
-Chain-of-Thought Reasoning Trace Experiment (FULLY OPTIMIZED)
-==============================================================
+Chain-of-Thought reasoning trace experiment.
 
-OPTIMIZATIONS:
-1. ✅ Batched outer loop (same as spacing.py)
-2. ✅ Baseline response reuse (50% fewer generations)
-3. ✅ Output caching (resume from crashes)
-4. ✅ Incremental CSV saving (never lose data)
-5. ✅ Fixed lambda closure bug
-6. ✅ max_new_tokens = 200 (optimal for GSM8K)
+Analyses how stylistic prompt variations affect reasoning structure in model
+responses to GSM8K math problems. Parses CoT responses into reasoning steps
+and measures accuracy and structural preservation under each style perturbation.
 
-Performance: Same speed as spacing.py!
+Baseline responses are reused across strength/placement combinations to reduce
+redundant generation. Results are saved incrementally to support crash recovery.
+
+Inputs:
+    - GSM8K dataset (via utils.data.load_gsm8k)
+    - config.yaml for model paths, style levels, and style positions
+    - Model output cache from cot_reasoning_generate.py (if pre-generated)
+
+Outputs (saved to results/cot_reasoning/run_YYYYMMDD_HHMMSS/):
+    - full_results.csv: per-example accuracy and CoT structure metrics
+    - summary.csv: mean accuracy and metrics per (model, style, place, strength)
 
 Run:
-  python experiments/cot_reasoning.py \
-    --models L3.2-3B \
-    --dataset gsm8k \
-    --sample_size 128 \
-    --style spacing \
+  python experiments/cot_reasoning.py \\
+    --models L3.2-3B \\
+    --dataset gsm8k \\
+    --sample_size 128 \\
+    --style spacing \\
     --batch_size 16
+
+Important flags:
+    --style       Style family to apply (spacing, punctuation, letter_case, politeness)
+    --batch_size  Number of prompts per GPU forward pass (default: 16)
 """
 
 import argparse
@@ -301,13 +310,13 @@ def run_for_one_model(
         dataset_name, dataset_config_name, dataset_split,
         dataset_seed, dataset_sample_size, overwrite_output_cache):
     """
-    Run CoT experiment following EXACT pattern from spacing.py.
-    
-    KEY OPTIMIZATIONS:
-    1. Batched outer loop (process 16 questions at a time)
-    2. Baseline reuse (generate original only once per batch)
-    3. Output caching per (place, strength) combo
-    4. Incremental CSV saving
+    Run the CoT experiment for one model across all style/strength/placement combinations.
+
+    Processing strategy:
+        1. Batched outer loop (process questions in batches of batch_size)
+        2. Baseline response reuse (generate original response once per batch, not per combo)
+        3. Output caching per (place, strength) combination for crash recovery
+        4. Incremental CSV saving after each combination
     """
     
     # Load model

@@ -1,26 +1,37 @@
-# experiments/cot_generate_responses.py
+# experiments/cot_reasoning_generate.py
 """
-CoT Response Generation - PRODUCTION OPTIMIZED
-===============================================
+Chain-of-Thought response generation for reasoning analysis.
 
-OPTIMIZATIONS:
-1. ✅ Generate baseline ONCE per batch (not per strength/place combo)
-2. ✅ Batch styled prompts together for GPU efficiency
-3. ✅ Comprehensive caching with separate baseline cache
-4. ✅ Progress tracking with time estimates
+Generates model responses to styled GSM8K math prompts for subsequent
+analysis of reasoning structure preservation under stylistic variation.
+Baseline responses are generated once per model and cached to avoid
+redundant computation across style/strength/placement combinations.
 
-Performance: ~10x faster than naive implementation
+Inputs:
+    - GSM8K dataset (via utils.data.load_gsm8k)
+    - config.yaml for model paths, style levels, and style positions
+    - Optional: LLM style cache for structured styles (length_variation, inter_vs_imper)
+
+Outputs (saved to data/cot_styled_cache/ and data/cot_baseline_cache/):
+    - Per-(model, style, place, strength) JSONL.gz files of styled prompts and responses
+    - Separate baseline response cache per model
 
 Run:
-  python experiments/cot_generate_responses.py \
-    --models L3.1-8B \
-    --dataset gsm8k \
-    --sample_size 128 \
-    --style spacing \
-    --batch_size 32 \
-    --max_new_tokens 200 \
-    --strengths 0 50 100 \
+  python experiments/cot_reasoning_generate.py \\
+    --models L3.1-8B \\
+    --dataset gsm8k \\
+    --sample_size 128 \\
+    --style spacing \\
+    --batch_size 32 \\
+    --max_new_tokens 300 \\
+    --strengths 0 50 100 \\
     --places global
+
+Important flags:
+    --style          Style family to apply (spacing, punctuation, letter_case, politeness,
+                     length_variation, inter_vs_imper)
+    --max_new_tokens Max tokens to generate per response (default: 200, suitable for GSM8K)
+    --batch_size     Number of prompts per GPU forward pass
 """
 
 import argparse
@@ -609,7 +620,7 @@ def run_experiment(
     os.makedirs(run_dir, exist_ok=True)
     
     print(f"\n{'='*80}")
-    print("COT RESPONSE GENERATION - PRODUCTION OPTIMIZED")
+    print("COT RESPONSE GENERATION")
     print(f"{'='*80}")
     print(f"Models: {models}")
     print(f"Dataset: {dataset_name}")

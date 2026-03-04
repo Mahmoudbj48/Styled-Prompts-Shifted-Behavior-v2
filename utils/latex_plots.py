@@ -1,6 +1,28 @@
+"""
+utils/latex_plots.py — LaTeX figure string generation for paper publication.
+
+Generates LaTeX figure environments (\\begin{figure} ... \\end{figure}) for all
+behavioural axes and metrics evaluated in the styled-prompts study.
+
+Inputs:
+    - Assumes plot images already exist under the paths defined in AXES_META /
+      METRIC_LABELS (e.g. imgs/polite/, imgs/safety_polite/).
+    - Run as a script to print the full LaTeX results section to stdout:
+          python utils/latex_plots.py
+
+Outputs:
+    - A LaTeX string suitable for inclusion in an academic paper.
+      The string contains figure environments for every metric × dataset × plot type
+      combination (line per model, line per placement, radar, ridge).
+
+Assumptions:
+    - Image paths follow the naming convention produced by utils/plots.py.
+    - The caller is responsible for including the output in a LaTeX document.
+"""
+
 import os
 
-# Formal Axis Definitions grounded in your paper
+# Formal Axis Definitions grounded in the paper
 AXES_META = {
     "activation_geometry": {
         "title": "Activation Geometry",
@@ -41,7 +63,17 @@ METRIC_LABELS = {
     "bertscore_prompt": "BERTScore (Prompt)"
 }
 
-def generate_full_paper_results():
+def generate_full_paper_results() -> str:
+    """
+    Generate the complete LaTeX results section for the paper.
+
+    Iterates over all behavioural axes in AXES_META and all style families,
+    producing figure blocks for each metric × dataset × visualisation type.
+
+    Returns:
+        str: A LaTeX string containing all figure environments, ready to be
+             included in a paper document.
+    """
     # Model subsets
     all_models = ["G-2B", "G-7B", "L3.1-8B", "L3.2-3B", "Q2.5-1.5B", "Q2.5-7B"]
     big_models = ["G-7B", "L3.1-8B", "Q2.5-7B"]
@@ -94,6 +126,21 @@ def generate_full_paper_results():
     return "\n".join(latex_output)
 
 def generate_metric_block(metric, models, places, info, style, ds, base_dir):
+    """
+    Generate all figure blocks for one metric (line per model, line per place, radar, ridge).
+
+    Args:
+        metric:   Metric key from METRIC_LABELS (e.g. "activation_similarity").
+        models:   List of model aliases to include.
+        places:   List of placement strings (e.g. ["global", "prefix", "suffix"]).
+        info:     Axis metadata dict from AXES_META (must contain "desc").
+        style:    Style family label for captions (e.g. "Politeness").
+        ds:       Dataset name for captions (e.g. "TruthfulQA").
+        base_dir: Base image directory path (e.g. "imgs/polite").
+
+    Returns:
+        str: LaTeX string with all four figure environments for this metric.
+    """
     label = METRIC_LABELS.get(metric, metric)
     desc = info.get('desc', '')
     ds_slug = ds.lower().replace(" ", "_")
@@ -107,6 +154,23 @@ def generate_metric_block(metric, models, places, info, style, ds, base_dir):
     return "\n".join(blocks)
 
 def generate_grid(metric, p_type, items, label, desc, style, ds, base_dir, ds_slug):
+    """
+    Generate a LaTeX figure with a grid of subfigures (one per model or placement).
+
+    Args:
+        metric:   Metric key.
+        p_type:   Plot type string ("line_per_model" or "line_per_place").
+        items:    List of items (model aliases or placement strings) for subfigures.
+        label:    Human-readable metric label.
+        desc:     Short metric description for the caption.
+        style:    Style family label.
+        ds:       Dataset name.
+        base_dir: Base image directory.
+        ds_slug:  URL-safe dataset slug for LaTeX labels.
+
+    Returns:
+        str: LaTeX figure environment string.
+    """
     latex = ["\\begin{figure}[H]", "    \\centering"]
     for i, item in enumerate(items):
         path = f"{base_dir}/{p_type}/{metric}_{p_type}__{item}.png"
@@ -123,6 +187,21 @@ def generate_grid(metric, p_type, items, label, desc, style, ds, base_dir, ds_sl
     return "\n".join(latex)
 
 def generate_radar_pair(metric, label, desc, style, ds, base_dir, ds_slug):
+    """
+    Generate a LaTeX figure with two side-by-side radar plots (by model and by placement).
+
+    Args:
+        metric:   Metric key.
+        label:    Human-readable metric label.
+        desc:     Short metric description.
+        style:    Style family label.
+        ds:       Dataset name.
+        base_dir: Base image directory.
+        ds_slug:  URL-safe dataset slug for LaTeX labels.
+
+    Returns:
+        str: LaTeX figure environment string.
+    """
     path_m = f"{base_dir}/{metric}_radar_axes_models.png"
     path_p = f"{base_dir}/{metric}_radar_axes_places.png"
     return f"""\\begin{{figure}}[H]
@@ -134,6 +213,21 @@ def generate_radar_pair(metric, label, desc, style, ds, base_dir, ds_slug):
 \\end{{figure}}"""
 
 def generate_ridge(metric, label, desc, style, ds, base_dir, ds_slug):
+    """
+    Generate a LaTeX figure for a ridge plot of metric distributions across strength levels.
+
+    Args:
+        metric:   Metric key.
+        label:    Human-readable metric label.
+        desc:     Short metric description used in the caption.
+        style:    Style family label.
+        ds:       Dataset name.
+        base_dir: Base image directory.
+        ds_slug:  URL-safe dataset slug for LaTeX labels.
+
+    Returns:
+        str: LaTeX figure environment string.
+    """
     path = f"{base_dir}/ridge_plots/{metric}_ridge.png"
     return f"""\\begin{{figure}}[H]
     \\centering

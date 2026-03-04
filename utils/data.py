@@ -1,13 +1,27 @@
 """
 Dataset loading utilities.
 
+All loaders return a list of dicts with a standardised schema:
+    {
+        "question":    str,   # the prompt / input text
+        "best_answer": str,   # reference answer (None if unavailable)
+        "category":    str,   # dataset name or sub-category
+        "meta":        dict,  # dataset-specific raw fields
+    }
+
 Functions:
-    - load_truthfulqa: Load TruthfulQA dataset
-    - load_mmlu: Load MMLU dataset
-    - load_alpaca_hf: Load Alpaca (HF: tatsu-lab/alpaca)
-    - load_bbq_hf: Load BBQ (HF: HiTZ/bbq)
-    - load_harmbench_hf: Load HarmBench (HF: walledai/HarmBench by default)
+    - load_truthfulqa:      Load TruthfulQA (generation or multiple-choice config)
+    - load_mmlu:            Load MMLU (single subject)
+    - load_alpaca_hf:       Load Alpaca (HF: tatsu-lab/alpaca)
+    - load_gsm8k:           Load GSM8K math problems (HF: openai/gsm8k)
+    - load_bbq_hf:          Load BBQ demographic-bias benchmark (HF: HiTZ/bbq)
+    - load_harmbench_hf:    Load HarmBench harmful prompts (HF: walledai/HarmBench)
+    - load_natural_questions: Load Natural Questions (HF: google-research-datasets/natural_questions)
     - load_dataset_by_name: Factory function to load any dataset by name
+
+Assumptions:
+    - A valid HuggingFace token (HF_TOKEN) is set in the environment for gated repos.
+    - Sample sizes and seeds are respected via dataset shuffling before selection.
 """
 
 from datasets import load_dataset
@@ -277,6 +291,29 @@ def load_bbq_hf(
         category: Optional[Union[str, Sequence[str]]] = None,
         split: Optional[str] = 'test',
 ) -> List[Dict[str, Any]]:
+    """
+    Load BBQ (Bias Benchmark for QA) from HuggingFace.
+
+    BBQ is a multiple-choice QA benchmark for measuring demographic bias.
+    Each example contains a context, a question, and three candidate answers.
+
+    Args:
+        sample_size: Total number of examples to return across all categories.
+        seed: Random seed for shuffling.
+        repo_id: HuggingFace repo (default: "HiTZ/bbq").
+        category: BBQ category/config name(s) (e.g. "Age", "Gender_identity").
+            If None, all available configs are used.
+            Accepts an exact config name like "Age_ambig" or a prefix like "Age"
+            which expands to all matching configs.
+        split: Dataset split (default: "test").
+
+    Returns:
+        list[dict] with standardised keys plus meta fields:
+            - question:    str (formatted as "question\\n(a) ans0 (b) ans1 (c) ans2\\ncontext")
+            - best_answer: str | None (correct answer text, or None if label is absent)
+            - category:    str (BBQ config name, e.g. "Age_ambig")
+            - meta:        dict with raw fields, label, ans0/1/2, context, target_loc, etc.
+    """
 
     def _pick_split(ds_dict) -> str:
         if split is not None:
@@ -395,6 +432,27 @@ def load_harmbench_hf(
         config_name: str = "standard",   # e.g. standard / contextual / copyright (depends on repo)
         split: Optional[str] = None,
 ) -> List[Dict[str, Any]]:
+    """
+    Load HarmBench harmful prompts from HuggingFace.
+
+    HarmBench is a safety evaluation benchmark containing harmful requests
+    across multiple categories (standard, contextual, copyright, etc.).
+
+    Args:
+        sample_size: Number of prompts to load.
+        seed: Random seed for shuffling.
+        repo_id: HuggingFace repo (default: "walledai/HarmBench").
+        config_name: Dataset config (default: "standard").
+            Other options vary by repo version (e.g. "contextual", "copyright").
+        split: Dataset split. If None, selects the first available split.
+
+    Returns:
+        list[dict] with standardised keys:
+            - question:    str (the harmful prompt text)
+            - best_answer: None (HarmBench has no reference answers)
+            - category:    str ("harmbench/{config_name}")
+            - meta:        dict with the raw example fields
+    """
 
     def _pick_split(ds_dict) -> str:
         if split is not None:

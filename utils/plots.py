@@ -2,6 +2,23 @@
 """
 Unified plotting utilities for all styled-prompt experiments.
 
+Inputs:
+    - Per-example CSV files or run directories produced by experiment scripts.
+    - Metric columns: activation_similarity, bleu, bertscore_response/prompt,
+      delta_log_prob, entropy_shift, jsd_drift, mirroring_rate, silhouette, asr.
+
+Outputs:
+    - Line plots (metric vs. style strength, grouped by model or placement).
+    - Radar plots (multi-metric comparison across models or placements).
+    - Ridge plots (per-layer activation distribution across strength levels).
+    - PCA / t-SNE / UMAP scatter plots for 2-cluster activation visualisation.
+    - BERTScore prompt-preservation line plots across datasets.
+
+Assumptions:
+    - CSVs follow the standardised schema produced by the experiment scripts
+      (columns: model, place, strength, and one or more metric columns).
+    - Matplotlib is available; umap-learn is optional (UMAP plots will be skipped if absent).
+    - apply_neurips_style() should be called before plotting to set consistent aesthetics.
 """
 
 import os
