@@ -1,4 +1,4 @@
-# plots.py
+# utils/aggregate_plots.py
 """
 Global plotting utilities for styled-prompt experiments.
 

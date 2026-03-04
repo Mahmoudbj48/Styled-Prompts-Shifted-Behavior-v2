@@ -590,3 +590,99 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# ============================================================
+# BERTScore prompt preservation plot (used by polite_prompt_check.py)
+# ============================================================
+
+from utils.aggregate_plots import (
+    apply_style as _apply_aggregate_style,
+    DARK_MODEL_BASE as _DARK_BASE,
+    PLACE_LINESTYLE,
+    _mix_with_white,
+    shade_for_place,
+)
+
+
+def build_dataset_color_map(datasets: List[str]) -> Dict[str, str]:
+    """Map dataset names to distinct colors (uses the same palette as aggregate_plots)."""
+    ds_sorted = sorted(datasets)
+    return {d: _DARK_BASE[i % len(_DARK_BASE)] for i, d in enumerate(ds_sorted)}
+
+
+def plot_bertscore_prompt_lines(
+        df: pd.DataFrame,
+        out_path_png: str,
+        *,
+        threshold: float = 0.85,
+        save_pdf: bool = False,
+) -> None:
+    """
+    Line plot of BERTScore(prompt) vs style strength across all datasets and places.
+    Used by experiments/polite_prompt_check.py.
+    """
+    _apply_aggregate_style()
+
+    needed = {"dataset", "place", "strength", "bertscore_prompt"}
+    miss = [c for c in needed if c not in df.columns]
+    if miss:
+        raise ValueError(f"Missing columns for plotting: {miss}")
+
+    d = df.copy()
+    d["strength"] = pd.to_numeric(d["strength"], errors="coerce")
+    d["bertscore_prompt"] = pd.to_numeric(d["bertscore_prompt"], errors="coerce")
+    d = d.dropna(subset=["strength", "bertscore_prompt"])
+    if d.empty:
+        return
+
+    datasets_u = sorted(d["dataset"].unique().tolist())
+    places_u = sorted(d["place"].unique().tolist())
+    color_map = build_dataset_color_map(datasets_u)
+
+    fig, ax = plt.subplots(figsize=(8.2, 4.6))
+
+    for dataset in datasets_u:
+        base = color_map[dataset]
+        for place in places_u:
+            sub = d[(d["dataset"] == dataset) & (d["place"] == place)].sort_values("strength")
+            if sub.empty:
+                continue
+            ax.plot(
+                sub["strength"].values,
+                sub["bertscore_prompt"].values,
+                marker="o",
+                markersize=4,
+                linewidth=1.7,
+                color=shade_for_place(base, place, places_u),
+                linestyle=PLACE_LINESTYLE.get(place, "-"),
+                alpha=0.95,
+                label=f"{dataset} · {place}",
+            )
+
+    ax.set_xlabel("Style Strength")
+    ax.set_ylabel("BERTScore (Prompt)")
+    ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
+    ax.set_title("BERTScore (Prompt) vs. Style Strength (All Datasets and Places)")
+
+    ax.axhline(
+        y=float(threshold),
+        color="black",
+        linestyle="--",
+        linewidth=1.6,
+        alpha=0.9,
+        label=f"Threshold ({threshold:.2f})",
+        zorder=3,
+    )
+
+    ymin = float(d["bertscore_prompt"].min())
+    ymax = float(d["bertscore_prompt"].max())
+    ax.set_ylim(min(ymin, threshold) - 0.03, max(ymax, threshold) + 0.03)
+
+    ax.legend(bbox_to_anchor=(1.02, 1.0), loc="upper left", frameon=False, ncol=1)
+    plt.tight_layout()
+    os.makedirs(os.path.dirname(out_path_png), exist_ok=True)
+    plt.savefig(out_path_png, dpi=300, bbox_inches="tight")
+    if save_pdf:
+        plt.savefig(os.path.splitext(out_path_png)[0] + ".pdf", bbox_inches="tight")
+    plt.close()

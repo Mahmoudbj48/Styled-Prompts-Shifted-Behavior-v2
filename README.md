@@ -86,11 +86,22 @@ experiments/
 ├── bbq_bias_full.py               # Demographic bias analysis (BBQ benchmark)
 ├── cot_reasoning_generate.py      # Generate chain-of-thought responses
 ├── cot_reasoning.py               # Analyze CoT reasoning structure
-├── plots.py                       # General plotting utilities
-├── latex_plots.py                 # LaTeX-ready figure generation
-└── polite_prompt_check.py         # Sanity-check styled prompts
+└── polite_prompt_check.py         # BERTScore prompt preservation check (all datasets)
 
-utils/              # Shared utilities (data loading, styling, metrics, plotting)
+utils/
+├── plot_utils.py                  # Shared NeurIPS-style plot helpers 
+├── aggregate_plots.py             # Aggregate line / radar / ridge plots across runs
+├── politeness_plots.py            # Politeness-specific plots + BERTScore prompt plot
+├── surface_plots.py               # Surface noise experiment plots
+├── structuredness_plots.py        # Structured rewriting experiment plots
+├── cot_plots.py                   # Chain-of-thought reasoning plots
+├── latex_plots.py                 # LaTeX figure string generation for the paper
+├── data.py                        # Dataset loading utilities
+├── models.py                      # Model loading and generation
+├── styles.py                      # Style transformation functions
+├── metrics.py                     # Metric computation (activations, ASR, BERTScore, …)
+└── llm_style_cache.py             # LLM-rewrite cache for structured styles
+
 data/               # Cached styled prompts and model outputs
 results/            # Experiment outputs, plots, and summary CSVs
 config.yaml         # Model paths, style levels, and dataset configuration

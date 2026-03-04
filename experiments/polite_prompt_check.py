@@ -14,15 +14,13 @@ import os
 import sys
 import argparse
 from datetime import datetime
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 
 os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
 
 import numpy as np
 import pandas as pd
 import torch
-import matplotlib.pyplot as plt
-from matplotlib.colors import to_rgb
 from tqdm import tqdm
 
 # repo root
@@ -30,6 +28,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from utils.data import load_dataset_by_name
 from utils.styles import apply_politeness
+from utils.politeness_plots import plot_bertscore_prompt_lines
 
 
 # ============================================================
@@ -113,157 +112,6 @@ def compute_bertscore_f1(
             rescale_with_baseline=False,
         )
     return F1.detach().cpu().numpy().astype(np.float32)
-
-
-# ============================================================
-# Plot styling (like your plots.py dark + place shades)
-# ============================================================
-
-def apply_style():
-    plt.rcParams.update({
-        "figure.facecolor": "white",
-        "axes.facecolor": "white",
-        "savefig.facecolor": "white",
-
-        "font.size": 12,
-        "axes.titlesize": 14,
-        "axes.labelsize": 13,
-        "xtick.labelsize": 11,
-        "ytick.labelsize": 11,
-        "legend.fontsize": 10,
-
-        "axes.spines.top": False,
-        "axes.spines.right": False,
-
-        "axes.grid": True,
-        "grid.alpha": 0.35,
-        "grid.linewidth": 0.9,
-
-        "lines.linewidth": 2.4,
-        "lines.markersize": 5,
-    })
-
-
-DARK_BASE = [
-    "#1f77b4",  # blue
-    "#ff7f0e",  # orange
-    "#2ca02c",  # green
-    "#d62728",  # red
-    "#9467bd",  # purple
-    "#8c564b",  # brown
-    "#e377c2",  # pink
-    "#7f7f7f",  # gray
-    "#bcbd22",  # olive
-    "#17becf",  # cyan
-]
-
-PLACE_LINESTYLE = {
-    "prefix": "-",
-    "middle": "--",
-    "suffix": "-.",
-    "global": ":",
-}
-
-
-def _mix_with_white(hex_color: str, alpha: float) -> Tuple[float, float, float]:
-    rgb = np.array(to_rgb(hex_color))
-    return tuple((1 - alpha) * rgb + alpha * np.ones_like(rgb))
-
-
-def shade_for_place(base_color: str, place: str, places_sorted: List[str]) -> Tuple[float, float, float]:
-    idx = places_sorted.index(place)
-    alpha = 0.05 + 0.18 * idx
-    return _mix_with_white(base_color, alpha)
-
-
-def build_dataset_color_map(datasets: List[str]) -> Dict[str, str]:
-    ds_sorted = sorted(datasets)
-    return {d: DARK_BASE[i % len(DARK_BASE)] for i, d in enumerate(ds_sorted)}
-
-
-# ============================================================
-# Plot
-# ============================================================
-
-def plot_bertscore_prompt_lines(
-        df: pd.DataFrame,
-        out_path_png: str,
-        *,
-        threshold: float = 0.85,
-        save_pdf: bool = False,
-):
-    apply_style()
-
-    needed = {"dataset", "place", "strength", "bertscore_prompt"}
-    miss = [c for c in needed if c not in df.columns]
-    if miss:
-        raise ValueError(f"Missing columns for plotting: {miss}")
-
-    d = df.copy()
-    d["strength"] = pd.to_numeric(d["strength"], errors="coerce")
-    d["bertscore_prompt"] = pd.to_numeric(d["bertscore_prompt"], errors="coerce")
-    d = d.dropna(subset=["strength", "bertscore_prompt"])
-    if d.empty:
-        return
-
-    datasets_u = sorted(d["dataset"].unique().tolist())
-    places_u = sorted(d["place"].unique().tolist())
-    color_map = build_dataset_color_map(datasets_u)
-
-    fig, ax = plt.subplots(figsize=(8.2, 4.6))
-
-    for dataset in datasets_u:
-        base = color_map[dataset]
-        for place in places_u:
-            sub = d[(d["dataset"] == dataset) & (d["place"] == place)].sort_values("strength")
-            if sub.empty:
-                continue
-            ax.plot(
-                sub["strength"].values,
-                sub["bertscore_prompt"].values,
-                marker="o",
-                markersize=4,
-                linewidth=1.7,
-                color=shade_for_place(base, place, places_u),
-                linestyle=PLACE_LINESTYLE.get(place, "-"),
-                alpha=0.95,
-                label=f"{dataset} · {place}",
-            )
-
-    ax.set_xlabel("Style Strength")
-    ax.set_ylabel("BERTScore (Prompt)")
-    ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
-    ax.set_title("BERTScore (Prompt) vs. Style Strength (All Datasets and Places)")
-
-    ax.axhline(
-        y=float(threshold),
-        color="black",
-        linestyle="--",
-        linewidth=1.6,
-        alpha=0.9,
-        label=f"Threshold ({threshold:.2f})",
-        zorder=3,
-    )
-
-    ymin = float(d["bertscore_prompt"].min())
-    ymax = float(d["bertscore_prompt"].max())
-    ylo = min(ymin, threshold) - 0.03
-    yhi = max(ymax, threshold) + 0.03
-    ax.set_ylim(ylo, yhi)
-
-    ax.legend(
-        bbox_to_anchor=(1.02, 1.0),
-        loc="upper left",
-        frameon=False,
-        ncol=1,
-    )
-
-    plt.tight_layout()
-    os.makedirs(os.path.dirname(out_path_png), exist_ok=True)
-    plt.savefig(out_path_png, dpi=300, bbox_inches="tight")
-    if save_pdf:
-        plt.savefig(os.path.splitext(out_path_png)[0] + ".pdf", bbox_inches="tight")
-    plt.close()
 
 
 # ============================================================

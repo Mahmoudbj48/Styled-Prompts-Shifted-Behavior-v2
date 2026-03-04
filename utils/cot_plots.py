@@ -82,26 +82,6 @@ def build_means_from_rows(df_rows: pd.DataFrame) -> pd.DataFrame:
 # --------------------------
 # Plotting
 # --------------------------
-def _format_axis(ax, xlabel: str, ylabel: str, title: Optional[str] = None) -> None:
-    ax.set_xlabel(xlabel)
-    ax.set_ylabel(ylabel)
-    if title:
-        ax.set_title(title)
-    ax.set_axisbelow(True)
-    try:
-        ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
-    except Exception:
-        pass
-
-
-def _save_figure(fig, out_png: str, *, save_pdf: bool, dpi: int = 300) -> None:
-    os.makedirs(os.path.dirname(out_png), exist_ok=True)
-    fig.savefig(out_png, dpi=dpi, bbox_inches="tight")
-    if save_pdf:
-        out_pdf = os.path.splitext(out_png)[0] + ".pdf"
-        fig.savefig(out_pdf, bbox_inches="tight")
-
-
 def plot_metric_lines_general(
         df_mean: pd.DataFrame,
         metric: str,
