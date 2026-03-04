@@ -62,7 +62,7 @@ from utils.llm_style_cache import (
 # Constants
 # ---------------------------------------------------------------------------
 VALID_EXPERIMENTS = {"prompt", "response", "activation", "confidence"}
-STYLE_NAME = "interrogative"
+STYLE_NAME = "inter_vs_imper"
 DEFAULT_MODES = ["interrogative", "imperative"]
 
 
@@ -514,7 +514,7 @@ def run_experiment(
         sample_size = int(dataset_config["sample_size"])
 
     modes = _select_modes(
-        config_modes=config["style_levels"].get("interrogative", DEFAULT_MODES),
+        config_modes=config["style_levels"].get("inter_vs_imper", DEFAULT_MODES),
         explicit_modes=modes_explicit,
     )
 
@@ -525,7 +525,7 @@ def run_experiment(
     if places_override:
         places = [p for p in places_override if p in {"prefix", "suffix", "global"}]
     else:
-        places = [p for p in config.get("style_positions", {}).get("interrogative", ["global"])]
+        places = [p for p in config.get("style_positions", {}).get("inter_vs_imper", ["global"])]
         places = [p for p in places if p in {"prefix", "suffix", "global"}]
     if not places:
         places = ["global"]
@@ -573,7 +573,7 @@ def run_experiment(
             data_dir=data_dir,
             dataset=dataset_name,
             prompts=prompts,
-            style_name="interrogative",
+            style_name="inter_vs_imper",
             param=mode,
             rewrite_provider=rewrite_provider,
             rewrite_model=rewrite_model,

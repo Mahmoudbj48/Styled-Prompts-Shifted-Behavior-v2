@@ -2,7 +2,7 @@
 utils/structuredness_plots.py
 
 Plotting utilities for structuredness-style experiments
-(length variation, interrogative/imperative).
+(length variation, inter_vs_imper).
 
 Designed to be:
   1. Imported by experiment files (e.g. experiments/length_variation.py,
@@ -154,7 +154,7 @@ def build_means_from_rows(df_rows: pd.DataFrame) -> pd.DataFrame:
     Also recompute mirroring_rate from verdicts if available.
 
     Works for both numeric strengths (length variation multipliers)
-    and categorical strengths (interrogative/imperative modes).
+    and categorical strengths (inter_vs_imper modes).
     """
     if df_rows.empty:
         return pd.DataFrame()
@@ -252,7 +252,7 @@ def plot_metric_lines(
 
     Handles:
       - numeric x-axis (length multipliers like 0.25, 0.5, 1.5, …)
-      - categorical x-axis (modes like "original", "interrogative", "imperative")
+      - categorical x-axis (modes like "original", "interrogative", "imperative" for inter_vs_imper)
         with "original" always placed left-most.
     """
     if df_mean.empty or metric not in df_mean.columns:
@@ -581,7 +581,7 @@ def make_structuredness_plots(
 
     Called by experiment files after the run, or standalone via CLI.
     Currently produces length-ratio boxplots (only meaningful for
-    length_variation; silently skipped for interrogative/imperative).
+    length_variation; silently skipped for inter_vs_imper).
     """
     os.makedirs(out_dir, exist_ok=True)
 
@@ -610,7 +610,7 @@ def main():
     parser.add_argument("--dataset", type=str, default="",
                         help="Dataset name for plot titles.")
     parser.add_argument("--style_name", type=str, default="structuredness",
-                        help="Style name for plot titles (length_variation, interrogative, etc.)")
+                        help="Style name for plot titles (length_variation, inter_vs_imper, etc.)")
     parser.add_argument("--models", nargs="+", default=None,
                         help="Filter to these models.")
     parser.add_argument("--places", nargs="+", default=None,

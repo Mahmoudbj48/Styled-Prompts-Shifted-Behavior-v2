@@ -123,7 +123,7 @@ def apply_surface_noise_style(text: str, strength: Any, *, place: str, style_nam
 def apply_structured_style(text: str, strength: Any, *, place: str, style_name: str) -> str:
     """
     Apply one structured style by name.
-    style_name in {"length_variation", "interrogative"}.
+    style_name in {"length_variation", "inter_vs_imper"}.
 
     Note: these are global rewrites — `place` is accepted for interface
     consistency but is not forwarded to the underlying functions.
@@ -131,7 +131,7 @@ def apply_structured_style(text: str, strength: Any, *, place: str, style_name: 
     if style_name == "length_variation":
         return apply_length_variation(text, float(strength))
 
-    if style_name == "interrogative":
+    if style_name == "inter_vs_imper":
         return apply_interrogative(text, mode=str(strength))
 
     raise ValueError(f"Unknown structured style: {style_name}")
@@ -153,7 +153,7 @@ def _resolve_style_from_config_or_cli(
 
     style_name:
       - "spacing" | "punctuation" | "letter_case" (surface_noise)
-      - "length_variation" | "interrogative" (structured)
+      - "length_variation" | "inter_vs_imper" (structured)
     """
     if style_family not in ("surface_noise", "structured"):
         return places_cli, strengths_cli, None
@@ -175,8 +175,8 @@ def _resolve_style_from_config_or_cli(
     # keep types consistent with the rest of the code:
     places = [str(x) for x in cfg_places]
 
-    # Strengths can be int (surface noise), float (length_variation), or str (interrogative)
-    if style_name == "interrogative":
+    # Strengths can be int (surface noise), float (length_variation), or str (inter_vs_imper)
+    if style_name == "inter_vs_imper":
         strengths = [str(x) for x in cfg_strengths]
     elif style_name == "length_variation":
         strengths = [float(x) for x in cfg_strengths]
@@ -206,7 +206,7 @@ def run_for_one_model(
         gen_max_new_tokens: int,
         asr_stage: str,   # "stage1" | "stage2" | "both"
         style_family: str,         # "politeness" | "surface_noise" | "structured"
-        style_name: Optional[str],  # "spacing" | "punctuation" | "letter_case" | "length_variation" | "interrogative" | None
+        style_name: Optional[str],  # "spacing" | "punctuation" | "letter_case" | "length_variation" | "inter_vs_imper" | None
         # --- structured-style LLM cache params ---
         data_dir: str = "data",
         rewrite_provider: str = "gemini",
@@ -631,13 +631,13 @@ def main():
         type=str,
         default="politeness",
         choices=["politeness", "surface_noise", "structured"],
-        help="Which style family to apply: politeness (existing) | surface_noise (spacing/punctuation/letter_case) | structured (length_variation/interrogative)."
+        help="Which style family to apply: politeness (existing) | surface_noise (spacing/punctuation/letter_case) | structured (length_variation/inter_vs_imper)."
     )
     parser.add_argument(
         "--style_name",
         type=str,
         default=None,
-        choices=["spacing", "punctuation", "letter_case", "length_variation", "interrogative"],
+        choices=["spacing", "punctuation", "letter_case", "length_variation", "inter_vs_imper"],
         help="When --style_family is surface_noise or structured, choose ONE sub-style. "
              "Places/strengths will be taken from config.yaml for that style."
     )

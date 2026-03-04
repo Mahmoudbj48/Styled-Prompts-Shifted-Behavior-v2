@@ -47,7 +47,7 @@ from utils.styles import apply_spacing, apply_punctuation, apply_letter_case, ap
 from utils.llm_style_cache import load_or_generate_styled_prompts
 
 
-VALID_STYLES = {"spacing", "punctuation", "letter_case", "politeness", "length_variation", "interrogative"}
+VALID_STYLES = {"spacing", "punctuation", "letter_case", "politeness", "length_variation", "inter_vs_imper"}
 
 
 # =============================================================================
@@ -91,7 +91,7 @@ def _num_batches(n: int, bs: int) -> int:
 def _select_strengths(
         *, config_strengths, explicit_strengths, strength_range, strength_step,
         as_float=False, as_string=False) -> list:
-    # String modes (e.g. interrogative / imperative) — no numeric conversion
+    # String modes (e.g. inter_vs_imper) — no numeric conversion
     if as_string:
         if explicit_strengths:
             return [str(s) for s in explicit_strengths]
@@ -134,7 +134,7 @@ def _get_style_function(style_name: str):
         "letter_case": apply_letter_case,
         "politeness": apply_politeness,
     }
-    if style_name in ("length_variation", "interrogative"):
+    if style_name in ("length_variation", "inter_vs_imper"):
         return None  # uses LLM style cache, not an inline function
     if style_name not in style_map:
         raise ValueError(f"Unknown style: {style_name}")
@@ -427,13 +427,13 @@ def run_for_one_model(
                 rewrite_api_key_env=rewrite_api_key_env,
                 overwrite=overwrite_style_cache,
             )
-    elif style_name == "interrogative":
+    elif style_name == "inter_vs_imper":
         for mode in strength_levels:
             styled_prompts_by_strength[mode] = load_or_generate_styled_prompts(
                 data_dir=data_dir,
                 dataset=dataset_name,
                 prompts=prompts_text,
-                style_name="interrogative",
+                style_name="inter_vs_imper",
                 param=mode,
                 rewrite_provider=rewrite_provider,
                 rewrite_model=rewrite_model,
@@ -497,7 +497,7 @@ def run_for_one_model(
             for strength in strength_levels:
                 
                 # Apply style (with fixed lambda closure)
-                if style_name in ("length_variation", "interrogative"):
+                if style_name in ("length_variation", "inter_vs_imper"):
                     # Use pre-loaded LLM-rewritten prompts + CoT suffix
                     all_styled = styled_prompts_by_strength[strength]
                     batch_styled_prompts_cot = [
@@ -589,7 +589,7 @@ def run_experiment(
     places = places_override if places_override else _get_places(config, style_name)
     
     as_float = (style_name == "length_variation")
-    as_string = (style_name == "interrogative")
+    as_string = (style_name == "inter_vs_imper")
     strength_levels = _select_strengths(
         config_strengths=config["style_levels"][style_name],
         explicit_strengths=strengths_explicit,
