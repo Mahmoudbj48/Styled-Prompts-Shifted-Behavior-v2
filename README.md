@@ -74,7 +74,22 @@ Each dataset is evaluated on a subset of approximately 128 prompts.
 ## Repository Structure
 
 ```
-experiments/        # Experiment scripts per behavioral axis
+experiments/
+├── politeness.py                  # Politeness / social tone — all behavioral axes
+├── spacing.py                     # Surface noise: spacing irregularities
+├── punctuation.py                 # Surface noise: punctuation variation
+├── letter_case.py                 # Surface noise: letter case variation
+├── length_variation.py            # Structured rewriting: length expansion/compression
+├── interrogative_vs_imperative.py # Structured rewriting: interrogative vs imperative
+├── safety_full.py                 # Safety analysis (activations + ASR) — all styles
+├── mirroring.py                   # Style mirroring evaluation (LLM judge)
+├── bbq_bias_full.py               # Demographic bias analysis (BBQ benchmark)
+├── cot_reasoning_generate.py      # Generate chain-of-thought responses
+├── cot_reasoning.py               # Analyze CoT reasoning structure
+├── plots.py                       # General plotting utilities
+├── latex_plots.py                 # LaTeX-ready figure generation
+└── polite_prompt_check.py         # Sanity-check styled prompts
+
 utils/              # Shared utilities (data loading, styling, metrics, plotting)
 data/               # Cached styled prompts and model outputs
 results/            # Experiment outputs, plots, and summary CSVs
@@ -90,6 +105,12 @@ Model paths, style strength levels, and dataset settings are defined in `config.
 ---
 
 ## Running Experiments
+
+### Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
 
 All scripts are run from the repository root. Results are saved under `results/` in timestamped subdirectories.
 
