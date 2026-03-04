@@ -1,4 +1,4 @@
-# experiments/safety_polite.py
+# experiments/safety_full.py
 
 import argparse
 import os
@@ -44,6 +44,7 @@ from utils.politeness_plots import (
 # ============================================================
 
 def load_config():
+    """Load the project-level config.yaml from the repository root."""
     config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.yaml")
     with open(config_path, "r") as f:
         return yaml.safe_load(f)
