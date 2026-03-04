@@ -462,6 +462,12 @@ def run_for_one_model(
     # Line plots
     # =====================================================
 
+    # Detect whether strengths are categorical (inter_vs_imper) vs numeric
+    _has_categorical_strengths = any(
+        isinstance(s, str) and not s.replace(".", "", 1).replace("-", "", 1).isdigit()
+        for s in strengths
+    )
+
     if compute_activations:
         sil_path = os.path.join(run_dir, "plots_metrics", "silhouette_vs_strength.png")
         os.makedirs(os.path.dirname(sil_path), exist_ok=True)
@@ -469,7 +475,22 @@ def run_for_one_model(
         if "silhouette_cosine" not in df.columns and "silhouette" in df.columns:
             df["silhouette_cosine"] = df["silhouette"]
 
-        try:
+        if _has_categorical_strengths:
+            from utils.structuredness_plots import plot_metric_lines as _plot_metric_lines_struct
+
+            _plot_metric_lines_struct(
+                df_mean=df.rename(columns={"silhouette_cosine": "silhouette"}),
+                metric="silhouette",
+                strengths=None,
+                out_path_png=sil_path,
+                dataset_name="safety",
+                style_name=style_name or style_family,
+                include_title=True,
+                legend_outside=True,
+                ylabel="Silhouette (cosine)",
+            )
+            print(f"[MAIN] ✓ Saved silhouette plot: {sil_path}")
+        else:
             plot_silhouette_vs_strength(
                 df_summary=df,
                 out_path_png=sil_path,
@@ -478,33 +499,34 @@ def run_for_one_model(
                 legend_outside=True,
             )
             print(f"[MAIN] ✓ Saved silhouette plot: {sil_path}")
-        except Exception as e:
-            print(f"[WARN] plot_silhouette_vs_strength failed ({e}); using fallback plot.")
-            import matplotlib.pyplot as plt
-
-            plt.figure()
-            for place_, sub in df.groupby("place"):
-                sub = sub.sort_values("strength")
-                plt.plot(sub["strength"], sub["silhouette_cosine"], label=str(place_))
-            plt.xlabel("Strength")
-            plt.ylabel("Silhouette (cosine)")
-            plt.title("Silhouette vs Strength")
-            plt.legend()
-            plt.tight_layout()
-            plt.savefig(sil_path, dpi=300)
-            plt.close()
-            print(f"[MAIN] ✓ Saved silhouette plot (fallback): {sil_path}")
 
     if compute_asr:
         if asr_stage in ("stage2", "both"):
-            plot_metric_vs_strength(
-                df_summary=df,
-                metric_col="asr",
-                out_path_png=os.path.join(run_dir, "asr_vs_strength.png"),
-                group_by=["place"],
-                title="ASR vs Strength",
-                ylabel="Attack Success Rate",
-            )
+            asr_path = os.path.join(run_dir, "asr_vs_strength.png")
+
+            if _has_categorical_strengths:
+                from utils.structuredness_plots import plot_metric_lines as _plot_metric_lines_struct
+
+                _plot_metric_lines_struct(
+                    df_mean=df,
+                    metric="asr",
+                    strengths=None,
+                    out_path_png=asr_path,
+                    dataset_name="safety",
+                    style_name=style_name or style_family,
+                    include_title=True,
+                    legend_outside=True,
+                )
+                print(f"[MAIN] ✓ Saved ASR plot: {asr_path}")
+            else:
+                plot_metric_vs_strength(
+                    df_summary=df,
+                    metric_col="asr",
+                    out_path_png=asr_path,
+                    group_by=["place"],
+                    title="ASR vs Strength",
+                    ylabel="Attack Success Rate",
+                )
 
     print("[MAIN] ✓ Experiment completed")
     return df

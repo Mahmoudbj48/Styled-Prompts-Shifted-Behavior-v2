@@ -246,6 +246,7 @@ def plot_metric_lines(
         include_title: bool = False,
         legend_outside: bool = True,
         save_pdf: bool = False,
+        ylabel: Optional[str] = None,
 ) -> None:
     """
     NeurIPS-friendly line plot: metric vs strength (numeric or categorical).
@@ -313,8 +314,9 @@ def plot_metric_lines(
         ax.set_xticklabels([str(s) for s in strengths_sorted])
 
     xlabel = "Mode" if is_categorical else "Multiplier"
+    ylabel_final = ylabel if ylabel is not None else metric
     title = f"{metric} vs {xlabel.lower()} ({style_name}, {dataset_name})" if include_title else None
-    _format_axis(ax, xlabel=xlabel, ylabel=metric, title=title)
+    _format_axis(ax, xlabel=xlabel, ylabel=ylabel_final, title=title)
 
     if not is_categorical:
         try:
