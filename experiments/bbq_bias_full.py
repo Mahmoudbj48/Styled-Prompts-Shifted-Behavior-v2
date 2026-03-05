@@ -170,14 +170,30 @@ def generate_responses_batched(
     
     # Generate responses (using utils/models.py - same as CoT)
     print("\nGenerating styled responses...")
-    responses = generate_response(
-        model,
-        tokenizer,
-        prompts=prompts_styled,
-        max_new_tokens=max_new_tokens,
-        do_sample=False,  # Deterministic
-        batch_size=batch_size
-    )
+    
+    # Calculate number of batches for progress bar
+    num_batches = (len(prompts_styled) + batch_size - 1) // batch_size
+    print(f"Total batches: {num_batches}\n")
+    
+    # Create a wrapper to track progress
+    all_responses = []
+    with tqdm(total=len(prompts_styled), desc="Generating responses", unit="prompt") as pbar:
+        for i in range(0, len(prompts_styled), batch_size):
+            batch_prompts = prompts_styled[i:i+batch_size]
+            
+            batch_responses = generate_response(
+                model,
+                tokenizer,
+                prompts=batch_prompts,
+                max_new_tokens=max_new_tokens,
+                do_sample=False,  # Deterministic
+                batch_size=batch_size
+            )
+            
+            all_responses.extend(batch_responses)
+            pbar.update(len(batch_prompts))
+    
+    responses = all_responses
     
     # Package results
     results = []
