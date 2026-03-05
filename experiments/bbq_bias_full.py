@@ -1,24 +1,29 @@
 """
-BBQ Bias Evaluation — Gender Identity Category.
+BBQ Bias Evaluation — Proof of Concept
 
-Tests all style/strength/placement combinations for a single model and measures
-demographic bias sensitivity using the BBQ (Bias Benchmark for QA) dataset.
+Tests style sensitivity on demographic bias using BBQ (Bias Benchmark for QA).
 
-Inputs:
-    - BBQ Gender_identity category (via utils.data.load_bbq_hf, ambiguous context only)
-    - config.yaml for model paths, style levels, and style positions
+Proof-of-Concept Mode:
+    - Single model (Llama 3.1-8B)
+    - Gender_identity category only
+    - Small sample (32 examples)
+    - Subset of strengths (0, 50, 100)
+    - Global placement only
 
-Outputs (saved to results/bias_bbq_politeness/run_YYYYMMDD_HHMMSS/):
-    - bias_results.csv: bias score, accuracy, and raw counts per
-      (model, category, style, strength, placement) combination
+Full Evaluation Mode:
+    - All strengths from config
+    - All placements (global, prefix, suffix)
+    - Larger sample (128+ examples)
 
-Run:
-  python experiments/bbq_bias_full.py --model L3.2-1B
-
-Important flags:
-    --model   Model alias from config.yaml (e.g. L3.2-1B, G-7B)
-    --sample_size  Number of BBQ examples per category (default: 128)
-    --seed         Random seed (default: 42)
+Usage:
+    # Proof of Concept (Quick Test)
+    python experiments/bbq_bias_poc.py --model L3.1-8B --sample_size 32 --strengths 0 50 100 --global-only
+    
+    # Full Evaluation (All Strengths/Placements)
+    python experiments/bbq_bias_poc.py --model L3.1-8B --sample_size 128
+    
+    # Resume interrupted run
+    python experiments/bbq_bias_poc.py --model L3.1-8B --sample_size 32 --resume
 """
 
 import os
@@ -28,6 +33,7 @@ import pandas as pd
 from datetime import datetime
 from tqdm import tqdm
 import argparse
+import matplotlib.pyplot as plt
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -37,10 +43,8 @@ from utils.models import load_model
 from utils.styles import apply_spacing, apply_punctuation, apply_letter_case, apply_politeness
 
 
-# Only Gender
-BBQ_CATEGORIES = [
-    "Gender_identity"
-]
+# Only Gender_identity for PoC
+BBQ_CATEGORIES = ["Gender_identity"]
 
 
 def load_config(config_path="config.yaml"):
@@ -60,7 +64,7 @@ def get_style_function(style_name):
     return style_map.get(style_name)
 
 
-def load_all_bbq_data(categories, sample_size=128, seed=42):
+def load_all_bbq_data(categories, sample_size=32, seed=42):
     """Load BBQ data for specified categories (ambiguous only)."""
     print("="*80)
     print("LOADING BBQ DATA")
@@ -74,7 +78,7 @@ def load_all_bbq_data(categories, sample_size=128, seed=42):
                 sample_size=sample_size * 4,  # Load extra to ensure enough after filtering
                 category=category,
                 seed=seed,
-                split='test'  # BBQ uses 'test' split for main data
+                split='test'
             )
             
             # Filter for ambiguous context only
@@ -93,16 +97,18 @@ def load_all_bbq_data(categories, sample_size=128, seed=42):
     return all_data
 
 
-def create_experiment_configs(config, model_alias):
+def create_experiment_configs(config, model_alias, strength_subset=None, global_only=False):
     """
     Generate experiment configurations for a SINGLE MODEL.
     
     Args:
         config: Full config dict
-        model_alias: Model alias to run (e.g., 'L3.2-1B')
+        model_alias: Model alias to run (e.g., 'L3.1-8B')
+        strength_subset: List of strengths to test (e.g., [0, 50, 100])
+        global_only: If True, only test 'global' placement
     
     Returns:
-        list: Experiment configs for this model only
+        list: Experiment configs
     """
     experiments = []
     
@@ -116,7 +122,16 @@ def create_experiment_configs(config, model_alias):
     # For each style
     for style_name in ['spacing', 'punctuation', 'letter_case', 'politeness']:
         strengths = style_levels.get(style_name, [0])
+        
+        # Filter strengths if subset provided
+        if strength_subset is not None:
+            strengths = [s for s in strengths if s in strength_subset]
+        
         placements = style_positions.get(style_name, ['global'])
+        
+        # Filter to global only if requested
+        if global_only:
+            placements = ['global']
         
         # For each strength
         for strength in strengths:
@@ -213,13 +228,153 @@ def check_existing_experiments(results_csv):
         return set()
 
 
+def plot_bias_results(results_csv, out_dir):
+    """Generate bias score plots."""
+    df = pd.read_csv(results_csv)
+    
+    plots_dir = os.path.join(out_dir, "plots")
+    os.makedirs(plots_dir, exist_ok=True)
+    
+    # Apply clean style
+    plt.rcParams.update({
+        "figure.facecolor": "white",
+        "axes.facecolor": "white",
+        "font.size": 11,
+        "axes.titlesize": 13,
+        "axes.labelsize": 12,
+        "xtick.labelsize": 10,
+        "ytick.labelsize": 10,
+        "legend.fontsize": 10,
+        "lines.linewidth": 2,
+        "lines.markersize": 6,
+        "axes.grid": True,
+        "grid.alpha": 0.3,
+    })
+    
+    # Plot 1: Bias score by style
+    fig, ax = plt.subplots(figsize=(10, 6))
+    
+    styles = sorted(df['style'].unique())
+    colors = plt.cm.tab10(range(len(styles)))
+    
+    for i, style in enumerate(styles):
+        subset = df[df['style'] == style].sort_values('strength')
+        if len(subset) > 0:
+            ax.plot(subset['strength'], subset['bias_score'], 
+                    marker='o', label=style, linewidth=2.5, 
+                    markersize=8, color=colors[i])
+    
+    ax.set_xlabel('Style Strength', fontsize=13, fontweight='bold')
+    ax.set_ylabel('Bias Score', fontsize=13, fontweight='bold')
+    ax.set_title('BBQ Bias Score vs Style Strength (Gender Identity)', 
+                 fontsize=14, fontweight='bold')
+    ax.legend(loc='best', framealpha=0.9)
+    ax.grid(True, alpha=0.3)
+    ax.axhline(y=0, color='black', linestyle='--', linewidth=1, alpha=0.5)
+    
+    plt.tight_layout()
+    plt.savefig(os.path.join(plots_dir, 'bias_by_style.png'), dpi=300, bbox_inches='tight')
+    plt.close()
+    
+    # Plot 2: Bias score by placement (if multiple placements)
+    if len(df['placement'].unique()) > 1:
+        fig, ax = plt.subplots(figsize=(10, 6))
+        
+        placements = sorted(df['placement'].unique())
+        colors = plt.cm.Set2(range(len(placements)))
+        
+        for i, placement in enumerate(placements):
+            subset = df[df['placement'] == placement].groupby('strength')['bias_score'].mean()
+            if len(subset) > 0:
+                ax.plot(subset.index, subset.values, 
+                        marker='o', label=placement, linewidth=2.5, 
+                        markersize=8, color=colors[i])
+        
+        ax.set_xlabel('Style Strength', fontsize=13, fontweight='bold')
+        ax.set_ylabel('Average Bias Score', fontsize=13, fontweight='bold')
+        ax.set_title('BBQ Bias Score by Placement (Averaged Across Styles)', 
+                     fontsize=14, fontweight='bold')
+        ax.legend(loc='best', framealpha=0.9)
+        ax.grid(True, alpha=0.3)
+        ax.axhline(y=0, color='black', linestyle='--', linewidth=1, alpha=0.5)
+        
+        plt.tight_layout()
+        plt.savefig(os.path.join(plots_dir, 'bias_by_placement.png'), dpi=300, bbox_inches='tight')
+        plt.close()
+    
+    # Plot 3: Heatmap (style x strength)
+    pivot = df.groupby(['style', 'strength'])['bias_score'].mean().unstack()
+    
+    if not pivot.empty:
+        fig, ax = plt.subplots(figsize=(10, 6))
+        im = ax.imshow(pivot.values, cmap='RdYlGn_r', aspect='auto')
+        
+        ax.set_xticks(range(len(pivot.columns)))
+        ax.set_xticklabels(pivot.columns)
+        ax.set_yticks(range(len(pivot.index)))
+        ax.set_yticklabels(pivot.index)
+        
+        ax.set_xlabel('Strength', fontsize=12, fontweight='bold')
+        ax.set_ylabel('Style', fontsize=12, fontweight='bold')
+        ax.set_title('BBQ Bias Score Heatmap', fontsize=14, fontweight='bold')
+        
+        cbar = plt.colorbar(im, ax=ax)
+        cbar.set_label('Bias Score', fontsize=11)
+        
+        plt.tight_layout()
+        plt.savefig(os.path.join(plots_dir, 'bias_heatmap.png'), dpi=300, bbox_inches='tight')
+        plt.close()
+    
+    print(f"\n✓ Plots saved to {plots_dir}/")
+
+
+def print_summary_statistics(results_csv):
+    """Print summary statistics."""
+    df = pd.read_csv(results_csv)
+    
+    print("\n" + "="*80)
+    print("SUMMARY STATISTICS")
+    print("="*80)
+    
+    print(f"\nTotal experiments: {len(df)}")
+    print(f"Categories: {df['category'].unique().tolist()}")
+    print(f"Styles: {df['style'].unique().tolist()}")
+    print(f"Strengths: {sorted(df['strength'].unique().tolist())}")
+    print(f"Placements: {df['placement'].unique().tolist()}")
+    
+    print("\n" + "-"*80)
+    print("Bias Score by Style:")
+    print("-"*80)
+    style_summary = df.groupby('style')['bias_score'].agg(['mean', 'std', 'min', 'max'])
+    print(style_summary.to_string())
+    
+    print("\n" + "-"*80)
+    print("Bias Score by Strength:")
+    print("-"*80)
+    strength_summary = df.groupby('strength')['bias_score'].agg(['mean', 'std', 'min', 'max'])
+    print(strength_summary.to_string())
+    
+    if len(df['placement'].unique()) > 1:
+        print("\n" + "-"*80)
+        print("Bias Score by Placement:")
+        print("-"*80)
+        placement_summary = df.groupby('placement')['bias_score'].agg(['mean', 'std', 'min', 'max'])
+        print(placement_summary.to_string())
+
+
 def main():
-    parser = argparse.ArgumentParser(description="BBQ bias evaluation for single model")
+    parser = argparse.ArgumentParser(description="BBQ bias evaluation - Proof of Concept")
     parser.add_argument('--model', type=str, required=True, 
-                        help='Model alias from config (e.g., L3.2-1B, G-2B)')
+                        help='Model alias from config (e.g., L3.1-8B)')
     parser.add_argument('--config', type=str, default='config.yaml')
-    parser.add_argument('--resume', action='store_true', help='Resume from existing results')
-    parser.add_argument('--sample_size', type=int, default=128, help='Samples per category')
+    parser.add_argument('--resume', action='store_true', 
+                        help='Resume from existing results')
+    parser.add_argument('--sample_size', type=int, default=32, 
+                        help='Samples per category (default: 32 for PoC)')
+    parser.add_argument('--strengths', nargs='+', type=int, default=None,
+                        help='Subset of strengths to test (e.g., --strengths 0 50 100)')
+    parser.add_argument('--global-only', action='store_true',
+                        help='Only test global placement (skip prefix/suffix)')
     args = parser.parse_args()
     
     # Load config
@@ -235,38 +390,39 @@ def main():
     
     # Setup results directory
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    results_dir = f"results/bbq_bias_age_gender/{args.model}_{timestamp}"
+    poc_suffix = "_poc" if args.sample_size <= 64 else ""
+    results_dir = f"results/bbq_bias_gender/{args.model}{poc_suffix}_{timestamp}"
     os.makedirs(results_dir, exist_ok=True)
     
     results_csv = os.path.join(results_dir, "bias_scores.csv")
     
     print("\n" + "="*80)
     print(f"BBQ BIAS EVALUATION - {args.model}")
+    if args.sample_size <= 64:
+        print("(PROOF OF CONCEPT MODE)")
     print("="*80)
     print(f"Model: {args.model} ({model_path})")
-    print(f"Categories: Age, Gender_identity")
-    print(f"Sample size: {args.sample_size} per category")
+    print(f"Category: Gender_identity")
+    print(f"Sample size: {args.sample_size}")
+    if args.strengths:
+        print(f"Strengths: {args.strengths}")
+    if args.global_only:
+        print(f"Placement: global only")
     print(f"Results: {results_dir}")
     
     # Load BBQ data once
     bbq_data = load_all_bbq_data(BBQ_CATEGORIES, sample_size=args.sample_size, seed=42)
     
-    # Generate experiment configurations for this model only
-    experiments = create_experiment_configs(config, args.model)
+    # Generate experiment configurations
+    experiments = create_experiment_configs(
+        config, 
+        args.model, 
+        strength_subset=args.strengths,
+        global_only=args.global_only
+    )
     total_experiments = len(experiments)
     
     print(f"\nTotal experiments for {args.model}: {total_experiments}")
-    
-    # Calculate expected counts
-    num_styles = 4
-    num_strengths = sum(len(config['style_levels'][s]) for s in ['spacing', 'punctuation', 'letter_case', 'politeness'])
-    num_placements = 3
-    num_categories = len(BBQ_CATEGORIES)
-    
-    print(f"  Styles: {num_styles}")
-    print(f"  Total strength levels across all styles: {num_strengths}")
-    print(f"  Placements: {num_placements}")
-    print(f"  Categories: {num_categories}")
     
     # Check for existing results
     completed = check_existing_experiments(results_csv) if args.resume else set()
@@ -318,22 +474,18 @@ def main():
             max_new_tokens=config['defaults']['max_new_tokens']
         )
     
+    # Generate plots and summary
+    if os.path.exists(results_csv):
+        plot_bias_results(results_csv, results_dir)
+        print_summary_statistics(results_csv)
+    
     # Final summary
     print("\n" + "="*80)
     print("✓ EXPERIMENT COMPLETE")
     print("="*80)
     print(f"Model: {args.model}")
     print(f"Results: {results_csv}")
-    
-    # Print summary statistics
-    if os.path.exists(results_csv):
-        df = pd.read_csv(results_csv)
-        print(f"\nTotal experiments completed: {len(df)}")
-        print(f"Categories tested: {df['category'].unique().tolist()}")
-        print(f"Styles tested: {df['style'].unique().tolist()}")
-        
-        print("\nBias score summary:")
-        print(df.groupby('style')['bias_score'].describe()[['mean', 'std', 'min', 'max']])
+    print(f"Plots: {results_dir}/plots/")
 
 
 if __name__ == "__main__":
