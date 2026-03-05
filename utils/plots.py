@@ -1460,6 +1460,25 @@ def metric_display_name(metric: str) -> str:
     return METRIC_DISPLAY.get(metric, metric)
 
 
+# Strength value to exclude from radar averages, keyed by style name.
+# For these styles the "identity" / baseline is not strength=0 or 1 but a
+# specific numeric value that should not bias the aggregate.
+STYLE_BASELINE_STRENGTH: Dict[str, float] = {
+    "politeness":     0.0,
+    "spacing":        0.0,
+    "letter_case":    0.0,
+    "punctuation":    0.0,
+    "length_variation": 1.0,
+}
+
+
+def _style_suffix(style_name: Optional[str]) -> str:
+    """Return ' — Style Name' for use in plot titles, or '' if not given."""
+    if not style_name:
+        return ""
+    return " — " + style_name.replace("_", " ").title()
+
+
 _DATASET_CANON = {
     "truthfulqa": "TruthfulQA",
     "truthful_qa": "TruthfulQA",
@@ -1701,6 +1720,7 @@ def aggregate_plot_metric_lines(
         places: Optional[List[str]] = None,
         save_pdf: bool = False,
         dataset_name: Optional[str] = None,
+        style_name: Optional[str] = None,
 ):
     """Line plot TYPE 1: all models + all places (aggregate variant)."""
     apply_style()
@@ -1755,10 +1775,11 @@ def aggregate_plot_metric_lines(
     ax.set_ylabel(metric_display_name(metric))
     ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
 
+    sty = _style_suffix(style_name)
     if single_model_mode:
-        ax.set_title(f"{metric_display_name(metric)} vs. Style Strength{ds_suffix} (All Places)")
+        ax.set_title(f"{metric_display_name(metric)} vs. Style Strength{ds_suffix}{sty} (All Places)")
     else:
-        ax.set_title(f"{metric_display_name(metric)} vs. Style Strength{ds_suffix} (All Models and Places)")
+        ax.set_title(f"{metric_display_name(metric)} vs. Style Strength{ds_suffix}{sty} (All Models and Places)")
 
     ymin = float(d[metric].min())
     ymax = float(d[metric].max())
@@ -1808,6 +1829,7 @@ def plot_metric_lines_per_model(
         places: Optional[List[str]] = None,
         save_pdf: bool = False,
         dataset_name: Optional[str] = None,
+        style_name: Optional[str] = None,
 ):
     """Line plot TYPE 2: per-model (combine all places). One figure per model."""
     apply_style()
@@ -1859,7 +1881,7 @@ def plot_metric_lines_per_model(
         ax.set_xlabel("Style Strength")
         ax.set_ylabel(metric_display_name(metric))
         ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
-        ax.set_title(f"{metric_display_name(metric)} vs. Style Strength{ds_suffix} ({model})")
+        ax.set_title(f"{metric_display_name(metric)} vs. Style Strength{ds_suffix}{_style_suffix(style_name)} ({model})")
 
         ymin = float(d[d["model"] == model][metric].min())
         ymax = float(d[d["model"] == model][metric].max())
@@ -1889,6 +1911,7 @@ def plot_metric_lines_per_place(
         places: Optional[List[str]] = None,
         save_pdf: bool = False,
         dataset_name: Optional[str] = None,
+        style_name: Optional[str] = None,
 ):
     """Line plot TYPE 3: per-place (combine all models). One figure per place."""
     apply_style()
@@ -1940,7 +1963,7 @@ def plot_metric_lines_per_place(
         ax.set_xlabel("Style Strength")
         ax.set_ylabel(metric_display_name(metric))
         ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
-        ax.set_title(f"{metric_display_name(metric)} vs. Style Strength{ds_suffix} ({place})")
+        ax.set_title(f"{metric_display_name(metric)} vs. Style Strength{ds_suffix}{_style_suffix(style_name)} ({place})")
 
         ymin = float(d[d["place"] == place][metric].min())
         ymax = float(d[d["place"] == place][metric].max())
@@ -1982,9 +2005,14 @@ def _radar_setup(ax, labels: List[str], title: Optional[str] = None):
     return angles
 
 
-def _aggregate_for_radar(df: pd.DataFrame, metric: str) -> pd.DataFrame:
+def _aggregate_for_radar(df: pd.DataFrame, metric: str,
+                         style_name: Optional[str] = None) -> pd.DataFrame:
     d = df.copy()
     d[metric] = pd.to_numeric(d[metric], errors="coerce")
+    if style_name is not None and "strength" in d.columns:
+        baseline = STYLE_BASELINE_STRENGTH.get(style_name.lower())
+        if baseline is not None:
+            d = d[pd.to_numeric(d["strength"], errors="coerce") != baseline]
     agg = d.groupby(["model", "place"], dropna=False)[metric].mean().reset_index()
     return agg
 
@@ -2016,13 +2044,15 @@ def _normalize_table(values: pd.DataFrame, cols: List[str], mode: str) -> pd.Dat
     return out
 
 
-def _set_rgrid(ax, data_max: float):
-    if not np.isfinite(data_max) or data_max <= 0:
-        data_max = 1.0
-    rings = np.linspace(0, data_max, 6)[1:]
-    ax.set_yticks(rings)
-    ax.set_yticklabels([f"{r:.2f}" for r in rings], fontsize=10)
-    ax.set_ylim(0, data_max)
+def _set_rgrid(ax, data_min: float, data_max: float):
+    span = data_max - data_min
+    if not np.isfinite(span) or span <= 0:
+        span = 1.0
+        data_min = 0.0
+    rings_shifted = np.linspace(0, span, 6)[1:]
+    ax.set_yticks(rings_shifted)
+    ax.set_yticklabels([f"{r:.2f}" for r in rings_shifted + data_min], fontsize=10)
+    ax.set_ylim(0, span)
 
 
 def plot_radar_places_axes(df: pd.DataFrame, metric: str, out_path: str,
@@ -2030,7 +2060,8 @@ def plot_radar_places_axes(df: pd.DataFrame, metric: str, out_path: str,
                            places: Optional[List[str]] = None,
                            radar_norm: str = "none",
                            save_pdf: bool = False,
-                           dataset_name: Optional[str] = None):
+                           dataset_name: Optional[str] = None,
+                           style_name: Optional[str] = None):
     """Radar Type A: axes=places, colors=models."""
     apply_style()
 
@@ -2042,7 +2073,7 @@ def plot_radar_places_axes(df: pd.DataFrame, metric: str, out_path: str,
 
     ds_suffix = metric_dataset_suffix(metric, df_f, dataset_name=dataset_name)
 
-    agg = _aggregate_for_radar(df_f, metric)
+    agg = _aggregate_for_radar(df_f, metric, style_name=style_name)
     if agg.empty:
         return
 
@@ -2056,28 +2087,30 @@ def plot_radar_places_axes(df: pd.DataFrame, metric: str, out_path: str,
         models_u = [keep_model]
 
     tab = agg.pivot(index="model", columns="place", values=metric).reindex(index=models_u, columns=places_u)
-    tab = _normalize_table(tab, cols=places_u, mode=radar_norm)
+    # Always use actual metric values for ring labels (no normalization for A/B).
+    arr = tab.to_numpy(dtype=float)
+    finite_vals = arr[np.isfinite(arr)]
+    vmin = float(finite_vals.min()) if finite_vals.size > 0 else 0.0
+    vmax = float(finite_vals.max()) if finite_vals.size > 0 else 1.0
 
     fig, ax = plt.subplots(figsize=(6.2, 6.2), subplot_kw=dict(polar=True))
 
+    sty = _style_suffix(style_name)
     if single_model_mode:
-        title = f"{metric_display_name(metric)} by Place{ds_suffix} (Avg. over Style Strength)"
+        title = f"{metric_display_name(metric)} by Place{ds_suffix}{sty} (Avg. over Style Strength)"
     else:
-        title = f"{metric_display_name(metric)} by Place and Model{ds_suffix} (Avg. over Style Strength)"
+        title = f"{metric_display_name(metric)} by Place and Model{ds_suffix}{sty} (Avg. over Style Strength)"
     angles = _radar_setup(ax, places_u, title=title)
 
     model_colors = build_model_color_map(models_u)
 
-    vmax = np.nanmax(tab.to_numpy(dtype=float))
-    if radar_norm != "none":
-        vmax = 1.0
-    _set_rgrid(ax, float(vmax) if np.isfinite(vmax) else 1.0)
+    _set_rgrid(ax, vmin, vmax)
 
     for m in models_u:
         row = tab.loc[m].to_numpy(dtype=float)
         if np.all(np.isnan(row)):
             continue
-        vals = row.tolist()
+        vals = (row - vmin).tolist()
         vals += vals[:1]
         ax.plot(angles, vals, color=model_colors[m], label=m, linewidth=2.6)
         ax.fill(angles, vals, color=model_colors[m], alpha=0.12)
@@ -2096,7 +2129,8 @@ def plot_radar_models_axes(df: pd.DataFrame, metric: str, out_path: str,
                            places: Optional[List[str]] = None,
                            radar_norm: str = "none",
                            save_pdf: bool = False,
-                           dataset_name: Optional[str] = None):
+                           dataset_name: Optional[str] = None,
+                           style_name: Optional[str] = None):
     """Radar Type B: axes=models, colors=places."""
     apply_style()
 
@@ -2108,7 +2142,7 @@ def plot_radar_models_axes(df: pd.DataFrame, metric: str, out_path: str,
 
     ds_suffix = metric_dataset_suffix(metric, df_f, dataset_name=dataset_name)
 
-    agg = _aggregate_for_radar(df_f, metric)
+    agg = _aggregate_for_radar(df_f, metric, style_name=style_name)
     if agg.empty:
         return
 
@@ -2119,25 +2153,26 @@ def plot_radar_models_axes(df: pd.DataFrame, metric: str, out_path: str,
         return
 
     tab = agg.pivot(index="place", columns="model", values=metric).reindex(index=places_u, columns=models_u)
-    tab = _normalize_table(tab, cols=models_u, mode=radar_norm)
+    # Always use actual metric values for ring labels (no normalization for A/B).
+    arr = tab.to_numpy(dtype=float)
+    finite_vals = arr[np.isfinite(arr)]
+    vmin = float(finite_vals.min()) if finite_vals.size > 0 else 0.0
+    vmax = float(finite_vals.max()) if finite_vals.size > 0 else 1.0
 
     fig, ax = plt.subplots(figsize=(6.6, 6.6), subplot_kw=dict(polar=True))
 
-    title = f"{metric_display_name(metric)} by Model and Place{ds_suffix} (Avg. over Style Strength)"
+    title = f"{metric_display_name(metric)} by Model and Place{ds_suffix}{_style_suffix(style_name)} (Avg. over Style Strength)"
     angles = _radar_setup(ax, models_u, title=title)
 
     place_colors = build_place_color_map(places_u)
 
-    vmax = np.nanmax(tab.to_numpy(dtype=float))
-    if radar_norm != "none":
-        vmax = 1.0
-    _set_rgrid(ax, float(vmax) if np.isfinite(vmax) else 1.0)
+    _set_rgrid(ax, vmin, vmax)
 
     for p in places_u:
         row = tab.loc[p].to_numpy(dtype=float)
         if np.all(np.isnan(row)):
             continue
-        vals = row.tolist()
+        vals = (row - vmin).tolist()
         vals += vals[:1]
         ax.plot(angles, vals, color=place_colors[p], label=p, linewidth=2.6)
         ax.fill(angles, vals, color=place_colors[p], alpha=0.10)
@@ -2156,7 +2191,8 @@ def plot_radar_metrics_axes(df: pd.DataFrame, metrics: List[str], out_path: str,
                             places: Optional[List[str]] = None,
                             radar_norm: str = "minmax",
                             save_pdf: bool = False,
-                            dataset_name: Optional[str] = None):
+                            dataset_name: Optional[str] = None,
+                            style_name: Optional[str] = None):
     """Radar Type C: axes=metrics, color=model, linestyle=place."""
     apply_style()
 
@@ -2170,10 +2206,15 @@ def plot_radar_metrics_axes(df: pd.DataFrame, metrics: List[str], out_path: str,
     if not keep_metrics:
         return
 
+    # Exclude baseline strength for this style before averaging.
+    baseline = STYLE_BASELINE_STRENGTH.get((style_name or "").lower())
+
     rows = []
     for m in keep_metrics:
         tmp = d[["model", "place", "strength", m]].copy()
         tmp[m] = pd.to_numeric(tmp[m], errors="coerce")
+        if baseline is not None and "strength" in tmp.columns:
+            tmp = tmp[pd.to_numeric(tmp["strength"], errors="coerce") != baseline]
         agg = tmp.groupby(["model", "place"], dropna=False)[m].mean().reset_index()
         agg["metric"] = m
         agg = agg.rename(columns={m: "value"})
@@ -2195,23 +2236,23 @@ def plot_radar_metrics_axes(df: pd.DataFrame, metrics: List[str], out_path: str,
 
     fig, ax = plt.subplots(figsize=(7.0, 7.0), subplot_kw=dict(polar=True))
     title = (
-        f"Metric Profile by Model and Place{ds_suffix}\n"
+        f"Metric Profile by Model and Place{ds_suffix}{_style_suffix(style_name)}\n"
         f"(Normalized, Avg. over Style Strength)"
     )
     angles = _radar_setup(ax, metric_labels, title=title)
 
     model_colors = build_model_color_map(models_u)
 
-    vmax = np.nanmax(tab.to_numpy(dtype=float))
-    if radar_norm != "none":
-        vmax = 1.0
-    _set_rgrid(ax, float(vmax) if np.isfinite(vmax) else 1.0)
+    arr = tab.to_numpy(dtype=float)
+    vmin = 0.0 if radar_norm != "none" else float(np.nanmin(arr)) if np.any(np.isfinite(arr)) else 0.0
+    vmax = 1.0 if radar_norm != "none" else float(np.nanmax(arr)) if np.any(np.isfinite(arr)) else 1.0
+    _set_rgrid(ax, vmin, vmax)
 
     for (model, place), row in tab.iterrows():
         vals = row.to_numpy(dtype=float)
         if np.all(np.isnan(vals)):
             continue
-        vals = vals.tolist()
+        vals = (vals - vmin).tolist()
         vals += vals[:1]
         ax.plot(
             angles,
@@ -2267,6 +2308,7 @@ def plot_metric_ridge(
         save_pdf: bool = False,
         max_strengths: int = 30,
         dataset_name: Optional[str] = None,
+        style_name: Optional[str] = None,
 ):
     """
     Ridge plot: for each strength, show the distribution of metric values across (model,place).
@@ -2334,7 +2376,7 @@ def plot_metric_ridge(
     models_u = sorted(d["model"].unique().tolist()) if "model" in d.columns else []
     places_u = sorted(d["place"].unique().tolist()) if "place" in d.columns else []
     ax.set_title(
-        f"{metric_display_name(metric)} Distribution over Style Strength{ds_suffix}\n"
+        f"{metric_display_name(metric)} Distribution over Style Strength{ds_suffix}{_style_suffix(style_name)}\n"
         f"Each ridge = strength; density over {len(models_u)} model(s) × {len(places_u)} place(s)"
     )
 
