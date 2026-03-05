@@ -5,7 +5,7 @@ Usage:
   python utils/run_plots.py \
       --runs results/politeness/run_*/plots_metrics/combined_means_by_model_place_strength.csv \
       --out_dir results/combined_plots/polite \
-      --dataset_name "TruthfulQA"
+      --dataset_name "TruthfulQA"  --style_name "politeness"
 
   python utils/run_plots.py \
       --runs results/combined_plots/safety_polite/combined_means_by_model_place_strength.csv \
