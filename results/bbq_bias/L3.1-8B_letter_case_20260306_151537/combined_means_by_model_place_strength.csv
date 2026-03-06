@@ -1,0 +1,5 @@
+model,place,strength,style,bias_score,accuracy,raw_bias,neg_target,neg_non_target,nonneg_target,nonneg_non_target,total_non_unknown,unknown
+L3.1-8B,global,0,letter_case,-23.42171717171717,0.5625,-53.535353535353536,8,42,15,34,99,29
+L3.1-8B,global,25,letter_case,-19.176136363636363,0.578125,-45.45454545454546,11,38,16,34,99,29
+L3.1-8B,global,50,letter_case,-21.654040404040405,0.5625,-49.494949494949495,11,40,14,34,99,29
+L3.1-8B,global,100,letter_case,-15.441176470588236,0.671875,-47.05882352941176,12,39,15,36,102,26
