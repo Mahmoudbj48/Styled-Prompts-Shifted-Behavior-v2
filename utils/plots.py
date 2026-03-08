@@ -991,14 +991,34 @@ def plot_metric_lines(
     else:
         x_positions = [float(s) for s in strengths_sorted]
 
-    for model in sorted(df["model"].unique().tolist()):
+    if metric == "bertscore_prompt":
         for place in sorted(df["place"].unique().tolist()):
-            sub = df[(df["model"] == model) & (df["place"] == place)].copy()
+            sub = df[df["place"] == place].copy()
             if sub.empty:
                 continue
+            sub = sub.drop_duplicates(subset=["strength", "place"])
             sub = sub.set_index("strength").reindex(strengths_sorted)
             y = sub[metric].values
-            ax.plot(x_positions, y, marker="o", label=f"{model}/{place}")
+            ax.plot(x_positions, y, marker="o", label=f"{place}")
+    else:
+        for model in sorted(df["model"].unique().tolist()):
+            for place in sorted(df["place"].unique().tolist()):
+                sub = df[(df["model"] == model) & (df["place"] == place)].copy()
+                if sub.empty:
+                    continue
+                sub = sub.set_index("strength").reindex(strengths_sorted)
+                y = sub[metric].values
+                ax.plot(x_positions, y, marker="o", label=f"{model}/{place}")
+
+    if metric == "bertscore_prompt":
+        ax.axhline(
+            y=0.85,
+            color="black",
+            linestyle="--",
+            linewidth=1.5,
+            alpha=0.8,
+            label="Threshold (0.85)",
+        )
 
     if is_categorical:
         ax.set_xticks(x_positions)
