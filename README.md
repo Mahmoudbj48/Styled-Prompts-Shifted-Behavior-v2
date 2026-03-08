@@ -237,3 +237,10 @@ python experiments/bbq_bias_full.py --model L3.1-8B --sample_size 128
 
 ---
 
+## Generating Plots
+
+The plots for the experiments' results can be generated using the `plots.py` file that's located in the `utils` directory.
+
+```bash
+python utils/plots.py --style_family structured --style_name length_variation --runs "results/length_variation/run_multi_natural_questions_20260304_024838" --out_dir "results/combined_plots/length_variation_NQ" --dataset_name "Natural Questions"
+```
