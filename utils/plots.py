@@ -5,7 +5,7 @@ Unified plotting utilities for all styled-prompt experiments.
 Inputs:
     - Per-example CSV files or run directories produced by experiment scripts.
     - Metric columns: activation_similarity, bleu, bertscore_response/prompt,
-      delta_log_prob, entropy_shift, jsd_drift, mirroring_rate, silhouette, asr.
+      delta_log_prob, entropy_shift, mirroring_rate, silhouette, asr.
 
 Outputs:
     - Line plots (metric vs. style strength, grouped by model or placement).
@@ -159,7 +159,6 @@ PLOT_METRICS_DEFAULT_POLITENESS = [
     "bertscore_response",
     "delta_log_prob",
     "entropy_shift",
-    "jsd_drift",
     "activation_similarity",
     "mirroring_rate",
 ]
@@ -185,7 +184,6 @@ def build_means_from_rows_politeness(df_rows: pd.DataFrame) -> pd.DataFrame:
         "bertscore_response",
         "delta_log_prob",
         "entropy_shift",
-        "jsd_drift",
         "activation_similarity",
         "mirroring_rate_batch",
     ] if c in df_rows.columns]
@@ -645,9 +643,8 @@ PLOT_METRICS_DEFAULT_SURFACE = [
     "bertscore_response",
     "delta_log_prob",
     "entropy_shift",
-    "jsd_drift",
     "activation_similarity",
-    # "mirroring_rate",
+    "mirroring_rate"
 ]
 
 
@@ -671,7 +668,6 @@ def build_means_from_rows_surface(df_rows: pd.DataFrame) -> pd.DataFrame:
         "bertscore_response",
         "delta_log_prob",
         "entropy_shift",
-        "jsd_drift",
         "activation_similarity",
         "mirroring_rate_batch",
     ] if c in df_rows.columns]
@@ -845,7 +841,6 @@ PLOT_METRICS_DEFAULT_STRUCTUREDNESS = [
     "bertscore_response",
     "delta_log_prob",
     "entropy_shift",
-    "jsd_drift",
     "activation_similarity",
     "mirroring_rate",
 ]
@@ -883,7 +878,6 @@ def build_means_from_rows_structuredness(df_rows: pd.DataFrame) -> pd.DataFrame:
         "bertscore_response",
         "delta_log_prob",
         "entropy_shift",
-        "jsd_drift",
         "activation_similarity",
         "mirroring_rate_batch",
     ] if c in df_rows.columns]
@@ -1424,7 +1418,6 @@ ALLOWED_METRICS = [
     "entropy_shift",
     "activation_similarity",
     "mirroring_rate",
-
     "asr",
     "silhouette",
 ]
