@@ -31,6 +31,7 @@ import pandas as pd
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.colors import to_rgb
+from matplotlib.lines import Line2D
 
 
 # ============================================================
@@ -1097,19 +1098,20 @@ def make_all_structuredness_metric_plots(
 
 
 def plot_length_ratio_boxplot(
-        df: pd.DataFrame,
-        out_path: str,
-        *,
-        dataset_name: str = "",
-        models_filter: Optional[List[str]] = None,
-        include_title: bool = False,
-        save_pdf: bool = False,
+    df: pd.DataFrame,
+    out_path: str,
+    *,
+    dataset_name: str = "",
+    models_filter: Optional[List[str]] = None,
+    include_title: bool = False,
+    save_pdf: bool = False,
 ) -> None:
     """
     NeurIPS-friendly boxplot: for each length multiplier, show the
     distribution of actual word-count ratio (styled / original).
 
     Red × markers show the requested (ideal) multiplier for reference.
+    Black-outlined white diamonds show the mean actual ratio.
     """
     apply_neurips_style()
 
@@ -1128,6 +1130,10 @@ def plot_length_ratio_boxplot(
     if d.empty:
         return
 
+    # De-duplicate first: styled prompts are identical across models.
+    dedup_cols = ["prompt_orig", "prompt_pert", "strength"]
+    d = d.drop_duplicates(subset=dedup_cols)
+
     d["orig_words"] = d["prompt_orig"].apply(lambda s: len(str(s).split()))
     d["styled_words"] = d["prompt_pert"].apply(lambda s: len(str(s).split()))
     d["length_ratio"] = d["styled_words"] / d["orig_words"].clip(lower=1)
@@ -1140,7 +1146,6 @@ def plot_length_ratio_boxplot(
     labels = [str(m) for m in multipliers_sorted]
 
     fig, ax = plt.subplots(figsize=(6.8, 2.8))
-
     lw = 0.8  # match axes.linewidth from NeurIPS style
 
     bp = ax.boxplot(
@@ -1150,8 +1155,10 @@ def plot_length_ratio_boxplot(
         patch_artist=True,
         showmeans=True,
         meanprops=dict(
-            marker="D", markerfacecolor="white",
-            markeredgecolor="black", markersize=4,
+            marker="D",
+            markerfacecolor="white",
+            markeredgecolor="black",
+            markersize=4,
         ),
         boxprops=dict(linewidth=lw),
         whiskerprops=dict(linewidth=lw),
@@ -1159,6 +1166,7 @@ def plot_length_ratio_boxplot(
         medianprops=dict(linewidth=lw, color="black"),
         flierprops=dict(marker=".", markersize=3, alpha=0.5),
     )
+
     for patch in bp["boxes"]:
         patch.set_facecolor("#1f77b4")
         patch.set_alpha(0.35)
@@ -1166,8 +1174,11 @@ def plot_length_ratio_boxplot(
     ax.scatter(
         list(range(len(multipliers_sorted))),
         multipliers_sorted,
-        marker="x", color="#d62728", s=40, linewidths=1.0, zorder=5,
-        label="Requested multiplier",
+        marker="x",
+        color="#d62728",
+        s=40,
+        linewidths=1.0,
+        zorder=5,
     )
 
     ax.set_xticks(list(range(len(multipliers_sorted))))
@@ -1179,66 +1190,43 @@ def plot_length_ratio_boxplot(
         if dataset_name:
             title_str += f" ({dataset_name})"
 
-    ax.set_xlabel("Requested Length Multiplier")
-    ax.set_ylabel("Actual Length Ratio (styled / original)")
+    ax.set_xlabel("Requested Multiplier")
+    ax.set_ylabel("Actual Ratio")
     if title_str:
         ax.set_title(title_str)
+
     ax.set_axisbelow(True)
 
-    ax.legend(loc="upper left", frameon=False)
+    # Manual legend handles so each item appears only once.
+    mean_handle = Line2D(
+        [0], [0],
+        marker="D",
+        markerfacecolor="white",
+        markeredgecolor="black",
+        linestyle="None",
+        markersize=4,
+        label="Mean",
+    )
+
+    requested_handle = Line2D(
+        [0], [0],
+        marker="x",
+        color="#d62728",
+        linestyle="None",
+        markersize=6,
+        label="Requested multiplier",
+    )
+
+    ax.legend(
+        handles=[mean_handle, requested_handle],
+        loc="upper left",
+        frameon=False,
+    )
 
     fig.tight_layout()
     _save_figure(fig, out_path, save_pdf=save_pdf)
     plt.close(fig)
     print(f"✓ Length ratio boxplot saved: {out_path}")
-
-
-def plot_length_ratio_boxplot_per_model(
-        df: pd.DataFrame,
-        out_dir: str,
-        *,
-        dataset_name: str = "",
-        models_filter: Optional[List[str]] = None,
-        include_title: bool = False,
-        save_pdf: bool = False,
-) -> None:
-    """
-    One boxplot per model, so you can compare how well the rewrite LLM
-    preserved the target length across different tested models' prompts.
-
-    Also generates a combined plot with all models side-by-side.
-    """
-    apply_neurips_style()
-
-    d = df.copy()
-    if models_filter and "model" in d.columns:
-        d = d[d["model"].isin(models_filter)]
-
-    if "model" not in d.columns:
-        plot_length_ratio_boxplot(
-            d, os.path.join(out_dir, "length_ratio_boxplot.png"),
-            dataset_name=dataset_name, include_title=include_title,
-            save_pdf=save_pdf,
-        )
-        return
-
-    models = sorted(d["model"].unique().tolist())
-
-    for model_name in models:
-        dm = d[d["model"] == model_name]
-        out_path = os.path.join(out_dir, f"length_ratio_boxplot_{model_name}.png")
-        plot_length_ratio_boxplot(
-            dm, out_path,
-            dataset_name=f"{dataset_name}, {model_name}" if dataset_name else model_name,
-            include_title=include_title,
-            save_pdf=save_pdf,
-        )
-
-    plot_length_ratio_boxplot(
-        d, os.path.join(out_dir, "length_ratio_boxplot_all.png"),
-        dataset_name=dataset_name, include_title=include_title,
-        save_pdf=save_pdf,
-    )
 
 
 def make_structuredness_plots(
@@ -1257,10 +1245,11 @@ def make_structuredness_plots(
     Currently produces length-ratio boxplots (only meaningful for
     length_variation; silently skipped for inter_vs_imper).
     """
+    apply_neurips_style()
     os.makedirs(out_dir, exist_ok=True)
 
-    plot_length_ratio_boxplot_per_model(
-        df, out_dir,
+    plot_length_ratio_boxplot(
+        df, os.path.join(out_dir, "length_ratio_boxplot.png"),
         dataset_name=dataset_name,
         models_filter=models_filter,
         include_title=include_title,
@@ -2474,3 +2463,133 @@ def plot_bertscore_prompt_lines(
     if save_pdf:
         plt.savefig(os.path.splitext(out_path_png)[0] + ".pdf", bbox_inches="tight")
     plt.close()
+
+
+# ============================================================
+# CLI entry point
+# ============================================================
+
+def main():
+    """
+    Standalone plotting CLI.
+
+    Examples
+    --------
+    # Structuredness (length_variation) — from a run dir:
+    python utils/plots.py --style_family structured --style_name length_variation \
+        --runs results/length_variation/run_multi_truthful_qa_20260304_055338 \
+        --out_dir results/combined_plots/length_variation \
+        --dataset_name TruthfulQA --save_pdf
+
+    # Surface (punctuation) — from a means CSV:
+    python utils/plots.py --style_family surface --style_name punctuation \
+        --runs results/punctuation/run_.../plots_metrics/combined_means_by_model_place_strength.csv \
+        --out_dir results/combined_plots/punctuation
+
+    # Politeness:
+    python utils/plots.py --style_family politeness \
+        --runs results/politeness/run_multi_truthful_qa_20260223_120916 \
+        --out_dir results/combined_plots/politeness \
+        --dataset_name TruthfulQA
+
+    # CoT:
+    python utils/plots.py --style_family cot --style_name length_variation \
+        --runs results/cot_responses/run_gsm8k_length_variation_... \
+        --out_dir results/combined_plots/cot_length_variation
+    """
+    parser = argparse.ArgumentParser(
+        description="Generate metric plots from experiment results (all style families)."
+    )
+
+    parser.add_argument(
+        "--style_family", type=str, required=True,
+        choices=["surface", "politeness", "structured", "cot"],
+        help="Which style family the runs belong to.",
+    )
+    parser.add_argument(
+        "--style_name", type=str, default=None,
+        help="Style name within the family (e.g. length_variation, inter_vs_imper, "
+             "punctuation, spacing, letter_case). Used in plot titles.",
+    )
+    parser.add_argument(
+        "--runs", nargs="+", required=True,
+        help="Run directories or CSV file paths to load results from.",
+    )
+    parser.add_argument("--out_dir", type=str, required=True,
+                        help="Directory to save plots into.")
+
+    parser.add_argument("--dataset_name", type=str, default="",
+                        help="Dataset name for plot titles (e.g. TruthfulQA).")
+    parser.add_argument("--models", nargs="+", default=None,
+                        help="Filter to these models only.")
+    parser.add_argument("--places", nargs="+", default=None,
+                        help="Filter to these places only.")
+    parser.add_argument("--strengths", nargs="+", type=float, default=None,
+                        help="Filter to these strength values only.")
+    parser.add_argument("--save_pdf", action="store_true",
+                        help="Also save PDF versions of each plot.")
+    parser.add_argument("--include_title", action="store_true",
+                        help="Include titles on plots (off by default for NeurIPS).")
+    parser.add_argument("--legend_outside", action="store_true", default=True,
+                        help="Place legend outside the plot area (default: True).")
+
+    args = parser.parse_args()
+
+    os.makedirs(args.out_dir, exist_ok=True)
+    style_name = args.style_name or args.style_family
+
+    strengths_int = [int(s) for s in args.strengths] if args.strengths else None
+
+    common = dict(
+        plot_inputs=args.runs,
+        out_dir=args.out_dir,
+        strengths=strengths_int,
+        places_filter=args.places,
+        models_filter=args.models,
+        dataset_name=args.dataset_name,
+        save_pdf=args.save_pdf,
+        include_title=args.include_title,
+        legend_outside=args.legend_outside,
+    )
+
+    if args.style_family == "politeness":
+        df_rows, df_mean = make_all_plots_from_csvs_politeness(**common)
+
+    elif args.style_family == "surface":
+        df_rows, df_mean = make_all_plots_from_csvs_surface(
+            **common, style_name=style_name,
+        )
+
+    elif args.style_family == "structured":
+        df_rows, df_mean = make_all_structuredness_metric_plots(
+            **common, style_name=style_name,
+        )
+        # Length-ratio boxplots only make sense for length_variation
+        if style_name == "length_variation":
+            try:
+                struct_dir = os.path.join(args.out_dir, "plots_structuredness")
+                make_structuredness_plots(
+                    df_rows, struct_dir,
+                    dataset_name=args.dataset_name,
+                    models_filter=args.models,
+                    include_title=args.include_title,
+                    save_pdf=args.save_pdf,
+                )
+                print(f"✓ Generated structuredness-specific plots: {struct_dir}")
+            except Exception as e:
+                print(f"⚠️  Structuredness-specific plots failed: {e}")
+
+    elif args.style_family == "cot":
+        df_rows, df_mean = make_all_plots_from_csvs_cot(
+            **common, style_name=style_name,
+        )
+
+    else:
+        raise SystemExit(f"Unknown style_family: {args.style_family}")
+
+    print(f"\n✓ Done. Plots saved to: {args.out_dir}")
+
+
+if __name__ == "__main__":
+    main()
+
