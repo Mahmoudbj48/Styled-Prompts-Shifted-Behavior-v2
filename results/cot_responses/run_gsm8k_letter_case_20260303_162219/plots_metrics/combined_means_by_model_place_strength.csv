@@ -1,0 +1,5 @@
+model,place,strength,style,cot_steps,cot_correctness,run_source
+Q2.5-7B,global,0,letter_case,3.7890625,86.07594936708861,cot_reasoning
+Q2.5-7B,global,25,letter_case,3.8203125,88.23529411764706,cot_reasoning
+Q2.5-7B,global,50,letter_case,3.9296875,86.8421052631579,cot_reasoning
+Q2.5-7B,global,100,letter_case,3.515625,85.13513513513513,cot_reasoning

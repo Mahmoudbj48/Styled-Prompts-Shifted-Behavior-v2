@@ -518,11 +518,7 @@ def run_for_one_model(
                 elif strength == 0:
                     batch_styled_prompts_cot = batch_orig_prompts_cot
                 else:
-                    if style_name == "politeness":
-                        style_fn = lambda p, s=strength: style_fn_base(p, s)
-                    else:
-                        style_fn = lambda p, s=strength, pl=place: style_fn_base(p, s, place=pl)
-                    
+                    style_fn = lambda p, s=strength, pl=place: style_fn_base(p, s, place=pl)   
                     batch_styled_prompts_cot = [style_fn(p) for p in batch_orig_prompts_cot]
                 
                 # Generate styled responses
