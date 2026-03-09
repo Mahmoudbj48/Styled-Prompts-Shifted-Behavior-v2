@@ -1620,9 +1620,11 @@ def load_all_runs(run_dirs: List[str]) -> pd.DataFrame:
 
     out = pd.concat(dfs, ignore_index=True)
 
-    for c in ["strength"]:
-        if c in out.columns:
-            out[c] = pd.to_numeric(out[c], errors="coerce")
+    if "strength" in out.columns and _strength_is_numeric_series(out["strength"]):
+        out["strength"] = pd.to_numeric(out["strength"], errors="coerce")
+    else:
+        out["strength"] = out["strength"].astype(str)
+        out.loc[out["strength"].isin(["nan", "None"]), "strength"] = np.nan
     return out
 
 
@@ -1714,6 +1716,36 @@ def _filter_df(df: pd.DataFrame, models: Optional[List[str]], places: Optional[L
     return d
 
 
+def _strength_is_numeric_series(s: pd.Series) -> bool:
+    vals = [x for x in s.dropna().tolist()]
+    return len(vals) > 0 and all(_is_numeric(x) for x in vals)
+
+
+def _sorted_strength_values(values: Sequence[Any]) -> List[Any]:
+    vals = [x for x in values if pd.notna(x)]
+    if not vals:
+        return []
+    if all(_is_numeric(x) for x in vals):
+        return sorted(vals, key=lambda x: float(x))
+    return sorted(vals, key=lambda x: (0, str(x).lower()) if str(x).lower() == "original" else (1, str(x).lower()))
+
+
+def _prepare_strength_axis(d: pd.DataFrame) -> Tuple[pd.DataFrame, List[Any], List[Any], bool]:
+    d = d.copy()
+    strengths_sorted = _sorted_strength_values(d["strength"].unique().tolist())
+    is_categorical = not _strength_is_numeric_series(d["strength"])
+    if is_categorical:
+        pos_map = {s: i for i, s in enumerate(strengths_sorted)}
+        d["_strength_pos"] = d["strength"].map(pos_map)
+        x_values = list(range(len(strengths_sorted)))
+    else:
+        d["strength"] = pd.to_numeric(d["strength"], errors="coerce")
+        strengths_sorted = _sorted_strength_values(d["strength"].dropna().unique().tolist())
+        d["_strength_pos"] = d["strength"]
+        x_values = [float(s) for s in strengths_sorted]
+    return d, strengths_sorted, x_values, is_categorical
+
+
 def aggregate_plot_metric_lines(
         df: pd.DataFrame,
         metric: str,
@@ -1737,6 +1769,8 @@ def aggregate_plot_metric_lines(
     if d.empty:
         return
 
+    d, strengths_sorted, x_values, is_categorical = _prepare_strength_axis(d)
+
     ds_suffix = metric_dataset_suffix(metric, d, dataset_name=dataset_name)
 
     models_u = sorted(d["model"].unique().tolist())
@@ -1755,14 +1789,15 @@ def aggregate_plot_metric_lines(
     for model in models_u:
         base = model_colors[model]
         for place in places_u:
-            sub = d[(d["model"] == model) & (d["place"] == place)].sort_values("strength")
+            sub = d[(d["model"] == model) & (d["place"] == place)].copy()
             if sub.empty:
                 continue
+            sub = sub.drop_duplicates(subset=["strength"]).set_index("strength").reindex(strengths_sorted).reset_index()
 
             series_label = f"{place}" if single_model_mode else f"{model} · {place}"
 
             ax.plot(
-                sub["strength"].values,
+                x_values,
                 sub[metric].values,
                 marker="o",
                 markersize=4,
@@ -1773,9 +1808,13 @@ def aggregate_plot_metric_lines(
                 label=series_label,
             )
 
-    ax.set_xlabel("Style Strength")
+    ax.set_xlabel("Style Strength" if not is_categorical else "Style Mode")
     ax.set_ylabel(metric_display_name(metric))
-    ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
+    if is_categorical:
+        ax.set_xticks(x_values)
+        ax.set_xticklabels([str(s) for s in strengths_sorted])
+    else:
+        ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
 
     sty = _style_suffix(style_name)
     if single_model_mode:
@@ -1845,6 +1884,8 @@ def plot_metric_lines_per_model(
     if d.empty:
         return
 
+    d, strengths_sorted, x_values, is_categorical = _prepare_strength_axis(d)
+
     ds_suffix = metric_dataset_suffix(metric, d, dataset_name=dataset_name)
 
     models_u = sorted(d["model"].unique().tolist())
@@ -1864,12 +1905,13 @@ def plot_metric_lines_per_model(
         base = model_colors[model]
 
         for place in places_u:
-            sub = d[(d["model"] == model) & (d["place"] == place)].sort_values("strength")
+            sub = d[(d["model"] == model) & (d["place"] == place)].copy()
             if sub.empty:
                 continue
+            sub = sub.drop_duplicates(subset=["strength"]).set_index("strength").reindex(strengths_sorted).reset_index()
 
             ax.plot(
-                sub["strength"].values,
+                x_values,
                 sub[metric].values,
                 marker="o",
                 markersize=4,
@@ -1880,9 +1922,13 @@ def plot_metric_lines_per_model(
                 label=str(place),
             )
 
-        ax.set_xlabel("Style Strength")
+        ax.set_xlabel("Style Strength" if not is_categorical else "Style Mode")
         ax.set_ylabel(metric_display_name(metric))
-        ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
+        if is_categorical:
+            ax.set_xticks(x_values)
+            ax.set_xticklabels([str(s) for s in strengths_sorted])
+        else:
+            ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
         ax.set_title(f"{metric_display_name(metric)} vs. Style Strength{ds_suffix}{_style_suffix(style_name)} ({model})")
 
         ymin = float(d[d["model"] == model][metric].min())
@@ -1927,6 +1973,8 @@ def plot_metric_lines_per_place(
     if d.empty:
         return
 
+    d, strengths_sorted, x_values, is_categorical = _prepare_strength_axis(d)
+
     ds_suffix = metric_dataset_suffix(metric, d, dataset_name=dataset_name)
 
     models_u = sorted(d["model"].unique().tolist())
@@ -1946,12 +1994,13 @@ def plot_metric_lines_per_place(
         fig, ax = plt.subplots(figsize=(7.6, 4.4))
 
         for model in models_u:
-            sub = d[(d["model"] == model) & (d["place"] == place)].sort_values("strength")
+            sub = d[(d["model"] == model) & (d["place"] == place)].copy()
             if sub.empty:
                 continue
+            sub = sub.drop_duplicates(subset=["strength"]).set_index("strength").reindex(strengths_sorted).reset_index()
 
             ax.plot(
-                sub["strength"].values,
+                x_values,
                 sub[metric].values,
                 marker="o",
                 markersize=4,
@@ -1962,9 +2011,13 @@ def plot_metric_lines_per_place(
                 label=str(model),
             )
 
-        ax.set_xlabel("Style Strength")
+        ax.set_xlabel("Style Strength" if not is_categorical else "Style Mode")
         ax.set_ylabel(metric_display_name(metric))
-        ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
+        if is_categorical:
+            ax.set_xticks(x_values)
+            ax.set_xticklabels([str(s) for s in strengths_sorted])
+        else:
+            ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
         ax.set_title(f"{metric_display_name(metric)} vs. Style Strength{ds_suffix}{_style_suffix(style_name)} ({place})")
 
         ymin = float(d[d["place"] == place][metric].min())
@@ -2329,7 +2382,7 @@ def plot_metric_ridge(
 
     ds_suffix = metric_dataset_suffix(metric, d, dataset_name=dataset_name)
 
-    strengths = sorted(d["strength"].dropna().unique().tolist())
+    strengths = _sorted_strength_values(d["strength"].dropna().unique().tolist())
     if not strengths:
         return
 
