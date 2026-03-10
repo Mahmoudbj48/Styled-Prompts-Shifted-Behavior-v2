@@ -1159,7 +1159,7 @@ def plot_length_ratio_boxplot(
     data = [d[d["strength"] == m]["length_ratio"].values for m in multipliers_sorted]
     labels = [str(m) for m in multipliers_sorted]
 
-    fig, ax = plt.subplots(figsize=(6.8, 2.8))
+    fig, ax = plt.subplots(figsize=(6.8, 3.2))
     lw = 0.8  # match axes.linewidth from NeurIPS style
 
     bp = ax.boxplot(
@@ -1240,7 +1240,7 @@ def plot_length_ratio_boxplot(
     fig.tight_layout()
     _save_figure(fig, out_path, save_pdf=save_pdf)
     plt.close(fig)
-    print(f"✓ Length ratio boxplot saved: {out_path}")
+    print(f"[PLOT] Length ratio")
 
 
 def make_structuredness_plots(

@@ -1,15 +1,22 @@
 """
-
-
 Usage:
   python utils/run_plots.py \
-      --runs results/politeness/run_*/plots_metrics/combined_means_by_model_place_strength.csv \
+      --runs results/politeness/run_*/summary.csv \
       --out_dir results/combined_plots/polite \
-      --dataset_name "TruthfulQA"  --style_name "politeness"
+      --dataset_name "TruthfulQA" \
+      --style_name "politeness"
 
   python utils/run_plots.py \
       --runs results/combined_plots/safety_polite/combined_means_by_model_place_strength.csv \
       --out_dir results/combined_plots/safety_polite
+
+  # length_variation with extra structuredness plot:
+  python utils/run_plots.py \
+      --runs results/length_variation/run_a/summary.csv results/length_variation/run_b/summary.csv \
+      --row_runs results/length_variation/run_a/full_results_all_models.csv results/length_variation/run_b/full_results_all_models.csv \
+      --out_dir results/combined_plots/length_variation \
+      --dataset_name "TruthfulQA" \
+      --style_name "length_variation"
 
 Plots produced per metric:
   - Line TYPE 1 : all models + places together     (<metric>_line.png)
@@ -19,6 +26,12 @@ Plots produced per metric:
   - Radar B     : axes=models,  colors=places      (radar/<metric>_radar_axes_models.png)
   - Radar C     : axes=metrics, all model×place    (radar/all_metrics_radar_axes_metrics.png)
   - Ridge       : distribution per strength        (ridge_plots/<metric>_ridge.png)
+
+Extra behavior:
+  - When --style_name length_variation is used, this script also tries to
+    generate the structuredness-specific plots from utils.plots under
+    <out_dir>/plots_structuredness.
+  - Those extra plots use --row_runs if provided; otherwise they fall back to --runs.
 """
 
 import argparse
@@ -28,10 +41,80 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
+def _maybe_generate_structuredness_plots(args) -> None:
+    """
+    For length_variation runs, also generate plots_structuredness/
+    length_ratio_boxplot.png when row-level CSVs are available.
+    """
+    if args.style_name != "length_variation":
+        return
+
+    from utils.plots import load_results_csvs, make_structuredness_plots
+
+    row_inputs = args.row_runs if args.row_runs else args.runs
+
+    try:
+        df_rows = load_results_csvs(row_inputs)
+    except Exception as e:
+        print(f"[WARN] Could not load row-level inputs for structuredness plots: {e}")
+        return
+
+    if args.models is not None and "model" in df_rows.columns:
+        df_rows = df_rows[df_rows["model"].isin(args.models)]
+    if args.places is not None and "place" in df_rows.columns:
+        df_rows = df_rows[df_rows["place"].isin(args.places)]
+
+    required = {"strength", "prompt_orig", "prompt_pert"}
+    missing = [c for c in sorted(required) if c not in df_rows.columns]
+    if missing:
+        print(
+            "[WARN] Skipping plots_structuredness: row-level inputs are missing "
+            f"required columns {missing}. "
+            "Pass --row_runs with full_results_all_models.csv files."
+        )
+        return
+
+    struct_dir = os.path.join(args.out_dir, "plots_structuredness")
+    os.makedirs(struct_dir, exist_ok=True)
+
+    try:
+        make_structuredness_plots(
+            df_rows,
+            struct_dir,
+            dataset_name=args.dataset_name or "",
+            models_filter=args.models,
+            include_title=True,
+            save_pdf=args.save_pdf,
+        )
+        print(f"[DONE] Structuredness-specific plots saved to: {struct_dir}")
+    except Exception as e:
+        print(f"[WARN] Structuredness-specific plots failed: {e}")
+
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--runs", nargs="+", required=True,
-                        help="Paths to combined_means_by_model_place_strength CSV files.")
+
+    parser.add_argument(
+        "--runs",
+        nargs="+",
+        required=True,
+        help=(
+            "Inputs for aggregate plots. Typically summary.csv files, "
+            "combined_means_by_model_place_strength.csv files, or run directories "
+            "that load_all_runs(...) can resolve."
+        ),
+    )
+    parser.add_argument(
+        "--row_runs",
+        nargs="+",
+        default=None,
+        help=(
+            "Optional row-level inputs used only for structuredness-specific plots "
+            "when --style_name length_variation. Typically full_results_all_models.csv "
+            "files or run directories containing them."
+        ),
+    )
+
     parser.add_argument("--out_dir", required=True,
                         help="Directory to save all plots.")
     parser.add_argument("--models", nargs="+", default=None,
@@ -88,7 +171,6 @@ def main():
     for metric in metrics:
         print(f"[PLOT] {metric}")
 
-        # TYPE 1: all models + all places
         aggregate_plot_metric_lines(
             df, metric,
             out_path=os.path.join(args.out_dir, f"{metric}_line.png"),
@@ -99,7 +181,6 @@ def main():
             style_name=args.style_name,
         )
 
-        # TYPE 2: per model (one figure per model, lines = places)
         plot_metric_lines_per_model(
             df, metric,
             out_dir=os.path.join(args.out_dir, "line_per_model"),
@@ -110,7 +191,6 @@ def main():
             style_name=args.style_name,
         )
 
-        # TYPE 3: per place (one figure per place, lines = models)
         plot_metric_lines_per_place(
             df, metric,
             out_dir=os.path.join(args.out_dir, "line_per_place"),
@@ -126,7 +206,6 @@ def main():
     os.makedirs(radar_dir, exist_ok=True)
 
     for metric in metrics:
-        # Radar A: axes=places, colors=models
         plot_radar_places_axes(
             df, metric,
             out_path=os.path.join(radar_dir, f"{metric}_radar_axes_places.png"),
@@ -137,7 +216,7 @@ def main():
             dataset_name=args.dataset_name,
             style_name=args.style_name,
         )
-        # Radar B: axes=models, colors=places
+
         plot_radar_models_axes(
             df, metric,
             out_path=os.path.join(radar_dir, f"{metric}_radar_axes_models.png"),
@@ -149,7 +228,6 @@ def main():
             style_name=args.style_name,
         )
 
-    # Radar C: axes=metrics, one line per (model, place)
     metrics_for_radar_c = [m for m in metrics if m in ALLOWED_METRICS]
     plot_radar_metrics_axes(
         df,
@@ -177,6 +255,8 @@ def main():
             dataset_name=args.dataset_name,
             style_name=args.style_name,
         )
+
+    _maybe_generate_structuredness_plots(args)
 
     print(f"\n[DONE] All plots saved to: {args.out_dir}")
 
