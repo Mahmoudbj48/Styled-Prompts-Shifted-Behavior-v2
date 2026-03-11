@@ -2460,10 +2460,19 @@ def plot_bertscore_prompt_lines(
         *,
         threshold: float = 0.85,
         save_pdf: bool = False,
+        style_name: Optional[str] = None,
 ) -> None:
     """
     Line plot of BERTScore(prompt) vs style strength across all datasets and places.
-    Used by experiments/polite_prompt_check.py.
+    Used by experiments/prompt_check.py and utils/run_plots.py --prompt_check.
+
+    Args:
+        df:            DataFrame with columns dataset, place, strength, bertscore_prompt.
+        out_path_png:  Output PNG path.
+        threshold:     Semantic-preservation threshold line drawn on the plot.
+        save_pdf:      Also save a .pdf alongside the .png.
+        style_name:    Human-readable style label (e.g. "politeness", "spacing") added
+                       to the plot title.  Pass None to omit.
     """
     apply_style()
 
@@ -2506,7 +2515,11 @@ def plot_bertscore_prompt_lines(
     ax.set_xlabel("Style Strength")
     ax.set_ylabel("BERTScore (Prompt)")
     ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True))
-    ax.set_title("BERTScore (Prompt) vs. Style Strength (All Datasets and Places)")
+
+    style_suffix = _style_suffix(style_name)
+    ax.set_title(
+        f"BERTScore (Prompt) vs. Style Strength (All Datasets and Places){style_suffix}"
+    )
 
     ax.axhline(
         y=float(threshold),
@@ -2524,9 +2537,179 @@ def plot_bertscore_prompt_lines(
 
     ax.legend(bbox_to_anchor=(1.02, 1.0), loc="upper left", frameon=False, ncol=1)
     plt.tight_layout()
-    os.makedirs(os.path.dirname(out_path_png), exist_ok=True)
+    os.makedirs(os.path.dirname(out_path_png) or ".", exist_ok=True)
     plt.savefig(out_path_png, dpi=300, bbox_inches="tight")
     if save_pdf:
         plt.savefig(os.path.splitext(out_path_png)[0] + ".pdf", bbox_inches="tight")
     plt.close()
+
+
+# ============================================================
+# Section 8: Multi-style subplot BERTScore prompt preservation
+# For spacing/letter_case/punctuation (3 subplots) and
+# length_variation/inter_vs_imper (2 subplots)
+# ============================================================
+
+def plot_bertscore_prompt_subplots(
+        dfs: List[pd.DataFrame],
+        style_titles: List[str],
+        out_path_png: str,
+        *,
+        threshold: float = 0.85,
+        save_pdf: bool = False,
+        suptitle: str = "",
+) -> None:
+    """
+    One figure with N subplots (one per style), all sharing the same visual theme
+    as plot_bertscore_prompt_lines.  Each subplot is a line plot of
+    BERTScore(prompt) vs style strength, with lines per dataset × place.
+
+    Used for:
+      - 3 subplots: spacing | letter_case | punctuation
+      - 2 subplots: length_variation | inter_vs_imper
+
+    Args:
+        dfs:           List of DataFrames, one per style.  Each must have columns
+                       dataset, place, strength, bertscore_prompt.
+        style_titles:  Human-readable title for each subplot (same length as dfs).
+        out_path_png:  Output PNG path.
+        threshold:     Horizontal dashed threshold line drawn on every subplot.
+        save_pdf:      Also save a .pdf alongside the .png.
+        suptitle:      Optional overall figure title (suptitle).
+    """
+    apply_style()
+
+    n = len(dfs)
+    if n == 0:
+        return
+
+    # Gather a unified dataset/place set for a consistent legend across all subplots
+    all_datasets: List[str] = []
+    all_places: List[str] = []
+    for df in dfs:
+        for ds in df["dataset"].dropna().unique():
+            if ds not in all_datasets:
+                all_datasets.append(ds)
+        for pl in df["place"].dropna().unique():
+            if pl not in all_places:
+                all_places.append(pl)
+    all_datasets = sorted(all_datasets)
+    all_places = sorted(all_places)
+    color_map = build_dataset_color_map(all_datasets)
+
+    # Unified y-limits across all subplots
+    global_ymin = min(
+        float(df["bertscore_prompt"].min()) for df in dfs
+        if not df.empty and "bertscore_prompt" in df.columns
+    )
+    global_ymax = max(
+        float(df["bertscore_prompt"].max()) for df in dfs
+        if not df.empty and "bertscore_prompt" in df.columns
+    )
+    ylo = min(global_ymin, threshold) - 0.03
+    yhi = max(global_ymax, threshold) + 0.03
+
+    fig_w = max(5.5 * n, 9.0)
+    fig, axes = plt.subplots(1, n, figsize=(fig_w, 4.6), sharey=True)
+    if n == 1:
+        axes = [axes]
+
+    for ax, df, title in zip(axes, dfs, style_titles):
+        d = df.copy()
+        d["bertscore_prompt"] = pd.to_numeric(d["bertscore_prompt"], errors="coerce")
+        d = d.dropna(subset=["bertscore_prompt"])
+
+        # Determine whether strength is numeric or categorical (inter_vs_imper)
+        strength_vals = d["strength"].dropna().unique().tolist()
+        numeric_strength = all(
+            isinstance(v, (int, float)) or (isinstance(v, str) and _is_numeric(v))
+            for v in strength_vals
+        )
+
+        if numeric_strength:
+            d["strength"] = pd.to_numeric(d["strength"], errors="coerce")
+            d = d.dropna(subset=["strength"])
+            x_key = "strength"
+        else:
+            # Categorical (e.g. "interrogative", "imperative") — map to positions
+            cats = sorted(d["strength"].unique().tolist())
+            cat_pos = {c: i for i, c in enumerate(cats)}
+            d = d.copy()
+            d["_x"] = d["strength"].map(cat_pos)
+            x_key = "_x"
+
+        for dataset in all_datasets:
+            base = color_map[dataset]
+            for place in all_places:
+                sub = d[(d["dataset"] == dataset) & (d["place"] == place)].sort_values(x_key)
+                if sub.empty:
+                    continue
+                ax.plot(
+                    sub[x_key].values,
+                    sub["bertscore_prompt"].values,
+                    marker="o",
+                    markersize=4,
+                    linewidth=1.7,
+                    color=shade_for_place(base, place, all_places),
+                    linestyle=PLACE_LINESTYLE.get(place, "-"),
+                    alpha=0.95,
+                    label=f"{dataset} · {place}",
+                )
+
+        ax.axhline(
+            y=float(threshold),
+            color="black",
+            linestyle="--",
+            linewidth=1.4,
+            alpha=0.85,
+            label=f"Threshold ({threshold:.2f})",
+            zorder=3,
+        )
+
+        ax.set_title(title, fontsize=11, pad=6)
+        ax.set_xlabel("Style Strength")
+        ax.set_ylim(ylo, yhi)
+
+        if not numeric_strength:
+            cats = sorted(d["strength"].unique().tolist())
+            cat_pos_final = {c: i for i, c in enumerate(cats)}
+            ax.set_xticks(list(cat_pos_final.values()))
+            ax.set_xticklabels(list(cat_pos_final.keys()), rotation=15, ha="right")
+        else:
+            ax.xaxis.set_major_locator(plt.MaxNLocator(integer=True, nbins=6))
+
+    # Y label only on the leftmost subplot
+    axes[0].set_ylabel("BERTScore (Prompt)")
+
+    # Shared legend: collect handles/labels from the first subplot, deduplicated
+    handles, labels = axes[0].get_legend_handles_labels()
+    seen: Dict[str, Any] = {}
+    for h, l in zip(handles, labels):
+        if l not in seen:
+            seen[l] = h
+    for ax in axes[1:]:
+        h2, l2 = ax.get_legend_handles_labels()
+        for h, l in zip(h2, l2):
+            if l not in seen:
+                seen[l] = h
+    fig.legend(
+        list(seen.values()),
+        list(seen.keys()),
+        bbox_to_anchor=(1.01, 0.98),
+        loc="upper left",
+        frameon=False,
+        ncol=1,
+        fontsize=9,
+    )
+
+    if suptitle:
+        fig.suptitle(suptitle, fontsize=12, y=1.02)
+
+    plt.tight_layout()
+    os.makedirs(os.path.dirname(out_path_png) or ".", exist_ok=True)
+    plt.savefig(out_path_png, dpi=300, bbox_inches="tight")
+    if save_pdf:
+        plt.savefig(os.path.splitext(out_path_png)[0] + ".pdf", bbox_inches="tight")
+    plt.close()
+
 
