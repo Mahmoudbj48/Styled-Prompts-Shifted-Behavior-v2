@@ -1,0 +1,7 @@
+model,place,strength,cot_steps_mean,cot_steps_std,n_prompts,cot_correct_mean,cot_correct_std
+L3.1-8B,global,0.25,3.72,1.23,36,0.1667,0.378
+L3.1-8B,global,0.5,3.98,1.39,106,0.5755,0.4966
+L3.1-8B,global,1.0,4.23,1.55,116,0.7931,0.4068
+L3.1-8B,global,1.5,4.13,1.32,115,0.7826,0.4143
+L3.1-8B,global,2.0,3.97,1.33,115,0.8348,0.373
+L3.1-8B,global,3.0,4.1,1.3,107,0.8131,0.3917

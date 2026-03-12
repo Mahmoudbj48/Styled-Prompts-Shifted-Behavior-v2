@@ -1,0 +1,5 @@
+model,place,strength,cot_steps_mean,cot_steps_std,n_prompts,cot_correct_mean,cot_correct_std
+Q2.5-7B,global,0,3.7,1.16,80,0.875,0.3328
+Q2.5-7B,global,3,3.82,1.29,73,0.8767,0.331
+Q2.5-7B,global,10,3.85,1.16,62,0.8065,0.3983
+Q2.5-7B,global,20,3.92,1.17,61,0.6885,0.4669
