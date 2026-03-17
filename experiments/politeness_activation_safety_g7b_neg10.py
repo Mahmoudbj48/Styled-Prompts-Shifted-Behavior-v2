@@ -35,7 +35,7 @@ DEFAULT_PLACES = ["prefix", "suffix", "global"]
 DEFAULT_ALPACA_SIZE = 128
 DEFAULT_HARMBENCH_SIZE = 128
 DEFAULT_HARMBENCH_CONFIG = "standard"
-DEFAULT_BATCH_SIZE = 16
+DEFAULT_BATCH_SIZE = 2
 DEFAULT_SEED = 42
 
 
@@ -180,6 +180,21 @@ def plot_baseline_vs_negative_politeness(
     plt.close(fig)
 
 
+def _get_activations_chunked(
+    model, tokenizer, prompts: List[str], batch_size: int
+) -> np.ndarray:
+    """Run forward passes in mini-batches and return CPU numpy array."""
+    parts = []
+    for i in range(0, len(prompts), batch_size):
+        chunk = prompts[i : i + batch_size]
+        with torch.inference_mode():
+            acts = get_layer_activations_batch(model, tokenizer, chunk, layer_idx=-1)
+        parts.append(acts.detach().cpu().numpy())
+        del acts
+        _cuda_cleanup()
+    return np.concatenate(parts, axis=0)
+
+
 def compute_group_activations(
     *,
     model,
@@ -188,21 +203,21 @@ def compute_group_activations(
     harmless_prompts: List[str],
     place: str,
     strength: int,
+    batch_size: int,
 ) -> Dict[str, np.ndarray]:
     harmless_neg = [apply_politeness(p, strength, place=place) for p in harmless_prompts]
-    harmful_neg = [apply_politeness(p, strength, place=place) for p in harmful_prompts]
+    harmful_neg  = [apply_politeness(p, strength, place=place) for p in harmful_prompts]
 
-    with torch.inference_mode():
-        acts_harmless_base = get_layer_activations_batch(model, tokenizer, harmless_prompts, layer_idx=-1)
-        acts_harmful_base = get_layer_activations_batch(model, tokenizer, harmful_prompts, layer_idx=-1)
-        acts_harmless_neg = get_layer_activations_batch(model, tokenizer, harmless_neg, layer_idx=-1)
-        acts_harmful_neg = get_layer_activations_batch(model, tokenizer, harmful_neg, layer_idx=-1)
+    acts_harmless_base = _get_activations_chunked(model, tokenizer, harmless_prompts, batch_size)
+    acts_harmful_base  = _get_activations_chunked(model, tokenizer, harmful_prompts,  batch_size)
+    acts_harmless_neg  = _get_activations_chunked(model, tokenizer, harmless_neg,     batch_size)
+    acts_harmful_neg   = _get_activations_chunked(model, tokenizer, harmful_neg,      batch_size)
 
     return {
-        "harmless_baseline": acts_harmless_base.detach().cpu().numpy(),
-        "harmful_baseline": acts_harmful_base.detach().cpu().numpy(),
-        "harmless_neg10": acts_harmless_neg.detach().cpu().numpy(),
-        "harmful_neg10": acts_harmful_neg.detach().cpu().numpy(),
+        "harmless_baseline": acts_harmless_base,
+        "harmful_baseline":  acts_harmful_base,
+        "harmless_neg10":    acts_harmless_neg,
+        "harmful_neg10":     acts_harmful_neg,
     }
 
 
@@ -263,6 +278,7 @@ def run_experiment(
             harmless_prompts=harmless_prompts,
             place=place,
             strength=strength,
+            batch_size=batch_size,
         )
 
         X_baseline = np.concatenate([acts["harmless_baseline"], acts["harmful_baseline"]], axis=0)
