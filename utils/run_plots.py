@@ -23,6 +23,18 @@ Usage:
       --prompt_check \
       --out_dir results/prompt_bertscore_check
 
+  # Multi-style radar plots (Type A + Type B, 3 subplots each):
+  python utils/run_plots.py \
+      --multi_style_radar \
+      --out_dir results/combined_plots/radar_multi_style \
+      --style_data \
+          "politeness:results/politeness/run_a/summary.csv,results/politeness/run_b/summary.csv" \
+          "spacing:results/spacing/run_x/summary.csv" \
+          "letter_case:results/letter_case/run_y/summary.csv" \
+          "punctuation:results/punctuation/run_z/summary.csv" \
+          "length_variation:results/length_variation/run_lv/summary.csv" \
+          "inter_vs_imper:results/inter_vs_imper/run_iv/summary.csv"
+
 Plots produced in --prompt_check mode (strengths & datasets from config.yaml):
   - bertscore_prompt_politeness.png        : line plot, all datasets × places
   - bertscore_prompt_spacing_case_punct.png: 3 subplots (spacing|letter_case|punctuation)
@@ -368,6 +380,55 @@ def _run_prompt_check(args) -> None:
     print(f"\n[DONE] All prompt-check plots saved to: {args.out_dir}")
 
 
+def _run_multi_style_radar(args) -> None:
+    """
+    Generate multi-style radar plots (Type A and Type B) using radar_plots.py.
+
+    Expects args.style_data entries like:
+        politeness:results/politeness/run_a/summary.csv,results/politeness/run_b/summary.csv
+        spacing:results/spacing/run_x/summary.csv
+    """
+    from utils.radar_plots import make_multi_style_radar_plots
+
+    if not args.style_data:
+        raise SystemExit("[ERROR] --style_data is required in --multi_style_radar mode.")
+
+    def _parse_style_entries(entries):
+        result = {}
+        if not entries:
+            return result
+        for entry in entries:
+            if ":" not in entry:
+                raise SystemExit(
+                    f"[ERROR] entries must be 'STYLE:path1,path2,...'. Got: {entry!r}"
+                )
+            style_key, paths_str = entry.split(":", 1)
+            paths = [p.strip() for p in paths_str.split(",") if p.strip()]
+            if paths:
+                result[style_key.strip()] = paths
+        return result
+
+    style_csvs            = _parse_style_entries(args.style_data)
+    cot_style_dirs        = _parse_style_entries(getattr(args, "cot_data", None))
+    asr_style_csvs        = _parse_style_entries(getattr(args, "asr_data", None))
+    silhouette_style_csvs = _parse_style_entries(getattr(args, "silhouette_data", None))
+
+    os.makedirs(args.out_dir, exist_ok=True)
+
+    make_multi_style_radar_plots(
+        style_csvs=style_csvs,
+        out_dir=args.out_dir,
+        cot_style_dirs=cot_style_dirs or None,
+        asr_style_csvs=asr_style_csvs or None,
+        silhouette_style_csvs=silhouette_style_csvs or None,
+        models=args.models,
+        places=args.places,
+        save_pdf=args.save_pdf,
+    )
+
+    print(f"\n[DONE] Multi-style radar plots saved to: {args.out_dir}")
+
+
 def main():
     parser = argparse.ArgumentParser()
 
@@ -416,6 +477,57 @@ def main():
     parser.add_argument("--save_pdf", action="store_true",
                         help="Also save each plot as PDF.")
 
+    # ── Multi-style radar plot mode ───────────────────────────────────────────
+    parser.add_argument(
+        "--multi_style_radar",
+        action="store_true",
+        help=(
+            "Generate multi-style radar plots (Type A: metrics on spokes; "
+            "Type B: styles on spokes). Requires --style_data."
+        ),
+    )
+    parser.add_argument(
+        "--style_data",
+        nargs="+",
+        default=None,
+        help=(
+            "[multi_style_radar] One entry per style in the format "
+            "'STYLE:path1,path2,...'. E.g.: "
+            "politeness:results/pol/run_a/summary.csv,results/pol/run_b/summary.csv "
+            "spacing:results/spacing/run_x/summary.csv"
+        ),
+    )
+    parser.add_argument(
+        "--cot_data",
+        nargs="+",
+        default=None,
+        help=(
+            "[multi_style_radar] Per-style CoT run directories or CSV paths "
+            "with cot_correct/cot_steps columns. Format: 'STYLE:dir1,dir2,...'. "
+            "Directories are searched for results_cleaned.csv automatically."
+        ),
+    )
+    parser.add_argument(
+        "--asr_data",
+        nargs="+",
+        default=None,
+        help=(
+            "[multi_style_radar] Per-style ASR CSV paths or directories "
+            "(combined_means_by_model_place_strength.csv / summary.csv) with "
+            "unsafe_score/asr columns. Format: 'STYLE:csv1,csv2,...'."
+        ),
+    )
+    parser.add_argument(
+        "--silhouette_data",
+        nargs="+",
+        default=None,
+        help=(
+            "[multi_style_radar] Per-style silhouette CSV paths or directories "
+            "(summary.csv files) with silhouette column. "
+            "Format: 'STYLE:csv1,csv2,...'."
+        ),
+    )
+
     # ── BERTScore prompt-preservation check mode ─────────────────────────────
     parser.add_argument(
         "--prompt_check",
@@ -451,6 +563,11 @@ def main():
     )
 
     args = parser.parse_args()
+
+    # ── Multi-style radar plot mode ───────────────────────────────────────────
+    if args.multi_style_radar:
+        _run_multi_style_radar(args)
+        return
 
     # ── BERTScore prompt-preservation check mode ─────────────────────────────
     if args.prompt_check:
