@@ -96,8 +96,16 @@ STYLE_COLORS: Dict[str, str] = {
 }
 
 METRIC_COLORS = [
-    "#17becf", "#bcbd22", "#e377c2", "#8c564b",
-    "#7f7f7f", "#aec7e8", "#ffbb78", "#c5b0d5", "#98df8a",
+    "#e6194b",  # vivid red
+    "#4363d8",  # vivid blue
+    "#3cb44b",  # vivid green
+    "#ffe119",  # vivid yellow
+    "#911eb4",  # vivid purple
+    "#42d4f4",  # vivid cyan
+    "#f032e6",  # vivid magenta
+    "#f58231",  # vivid orange
+    "#469990",  # dark teal
+    "#9a6324",  # dark gold
 ]
 
 # Styles that only apply to global placement (no prefix/suffix variant)
