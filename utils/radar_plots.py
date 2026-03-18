@@ -321,14 +321,14 @@ def _draw_radar(ax, spoke_labels, polygons, title=""):
     ax.set_theta_offset(np.pi / 2)
     ax.set_theta_direction(-1)
     ax.set_xticks(angles)
-    ax.set_xticklabels(spoke_labels, size=16)
+    ax.set_xticklabels(spoke_labels, size=12)
     ax.set_ylim(0, 1)
     ax.set_yticks([0.25, 0.5, 0.75, 1.0])
-    ax.set_yticklabels(["0.25", "0.50", "0.75", "1.00"], size=13, color="grey")
+    ax.set_yticklabels(["0.25", "0.50", "0.75", "1.00"], size=12, color="grey")
     ax.set_rlabel_position(30)
     ax.grid(color="grey", linestyle="--", linewidth=0.4, alpha=0.5)
     if title:
-        ax.set_title(title, pad=14, fontsize=15, fontweight="bold")
+        ax.set_title(title, pad=14, fontsize=13, fontweight="bold")
 
     for vals, color, ls, lw, alpha in polygons:
         v_c = list(vals) + [vals[0]]
@@ -365,7 +365,7 @@ def _make_figure(
     )
     fig.suptitle(
         f"{type_desc}  |  {model}  |  {place_tag}",
-        fontsize=18, fontweight="bold", y=1.01,
+        fontsize=15, fontweight="bold", y=1.01,
     )
 
     legend_items: List[Tuple] = []
@@ -434,7 +434,7 @@ def _make_figure(
     fig.legend(
         handles=handles, title=leg_title,
         loc="center right", bbox_to_anchor=(1.12, 0.5),
-        fontsize=15, title_fontsize=16, framealpha=0.9,
+        fontsize=21, title_fontsize=22, framealpha=0.9,
     )
 
     plt.tight_layout()
@@ -483,7 +483,7 @@ def _make_figure_by_place(
     )
     fig.suptitle(
         f"{type_desc}  |  {model}",
-        fontsize=18, fontweight="bold", y=1.01,
+        fontsize=15, fontweight="bold", y=1.01,
     )
 
     legend_items: List[Tuple] = []
@@ -542,7 +542,7 @@ def _make_figure_by_place(
     fig.legend(
         handles=handles, title=leg_title,
         loc="center right", bbox_to_anchor=(1.12, 0.5),
-        fontsize=15, title_fontsize=16, framealpha=0.9,
+        fontsize=21, title_fontsize=22, framealpha=0.9,
     )
 
     plt.tight_layout()

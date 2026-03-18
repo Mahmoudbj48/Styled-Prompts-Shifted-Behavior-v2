@@ -221,11 +221,26 @@ def _last_nonpad_indices(attention_mask: torch.Tensor) -> torch.Tensor:
     """
     Given attention_mask [B, L] with 1 for tokens and 0 for pads,
     return last non-pad token indices [B] (each in [0, L-1]).
+
+    Handles both padding sides:
+      - Left-padded  (padding_side='left'):  all sequences end at position L-1,
+        so the last real token is always at L-1 for every row.
+      - Right-padded (padding_side='right'): last real token is at sum(mask)-1.
+
+    Detection: if the final column of the mask is all 1s, the sequences are
+    left-padded (or unpaded), so we use L-1.  Otherwise right-padded → sum-1.
     """
-    # sum gives length (count of 1s) per row; last index = length - 1
-    lengths = attention_mask.sum(dim=1)  # [B]
-    last_idx = torch.clamp(lengths - 1, min=0).long()
-    return last_idx
+    L = attention_mask.shape[1]
+    if attention_mask[:, -1].all():
+        # Left-padded or no padding: last real token is the absolute last position
+        return torch.full(
+            (attention_mask.shape[0],), L - 1,
+            dtype=torch.long, device=attention_mask.device,
+        )
+    else:
+        # Right-padded: count real tokens then step back one
+        lengths = attention_mask.sum(dim=1)
+        return torch.clamp(lengths - 1, min=0).long()
 
 
 # =============================================================================

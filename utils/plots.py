@@ -50,12 +50,12 @@ def apply_neurips_style() -> None:
         "axes.facecolor": "white",
         "savefig.facecolor": "white",
 
-        "font.size": 10,
-        "axes.titlesize": 10,
-        "axes.labelsize": 10,
-        "xtick.labelsize": 9,
-        "ytick.labelsize": 9,
-        "legend.fontsize": 8,
+        "font.size": 22,
+        "axes.titlesize": 20,
+        "axes.labelsize": 20,
+        "xtick.labelsize": 24,
+        "ytick.labelsize": 24,
+        "legend.fontsize": 22,
 
         "lines.linewidth": 1.5,
         "lines.markersize": 4,
@@ -501,7 +501,7 @@ def plot_2d_scatter_two_clusters(
                        edgecolor="black", linewidth=1.6, clip_on=False)
     ax.add_patch(border)
 
-    ax.legend(frameon=False, loc="upper right", fontsize=9)
+    ax.legend(frameon=False, loc="upper right", fontsize=22)
 
     if title:
         ax.set_title(title, pad=12)
@@ -1577,12 +1577,12 @@ def apply_style():
         "axes.facecolor": "white",
         "savefig.facecolor": "white",
 
-        "font.size": 12,
-        "axes.titlesize": 14,
-        "axes.labelsize": 13,
-        "xtick.labelsize": 11,
-        "ytick.labelsize": 11,
-        "legend.fontsize": 10,
+        "font.size": 16,
+        "axes.titlesize": 16,
+        "axes.labelsize": 16,
+        "xtick.labelsize": 17,
+        "ytick.labelsize": 17,
+        "legend.fontsize": 16,
 
         "axes.spines.top": False,
         "axes.spines.right": False,
@@ -2049,13 +2049,13 @@ def _radar_setup(ax, labels: List[str], title: Optional[str] = None):
     ax.set_theta_direction(-1)
 
     ax.set_xticks(angles[:-1])
-    ax.set_xticklabels(labels, fontsize=12)
+    ax.set_xticklabels(labels, fontsize=28)
 
     ax.set_rlabel_position(0)
     ax.grid(True, alpha=0.45, linewidth=0.9)
 
     if title:
-        ax.set_title(title, pad=18, fontsize=14)
+        ax.set_title(title, pad=18, fontsize=22)
 
     return angles
 
@@ -2106,7 +2106,7 @@ def _set_rgrid(ax, data_min: float, data_max: float):
         data_min = 0.0
     rings_shifted = np.linspace(0, span, 6)[1:]
     ax.set_yticks(rings_shifted)
-    ax.set_yticklabels([f"{r:.2f}" for r in rings_shifted + data_min], fontsize=10)
+    ax.set_yticklabels([f"{r:.2f}" for r in rings_shifted + data_min], fontsize=26)
     ax.set_ylim(0, span)
 
 
@@ -2666,7 +2666,7 @@ def plot_bertscore_prompt_subplots(
             zorder=3,
         )
 
-        ax.set_title(title, fontsize=11, pad=6)
+        ax.set_title(title, fontsize=20, pad=6)
         ax.set_xlabel("Style Strength")
         ax.set_ylim(ylo, yhi)
 
@@ -2699,11 +2699,11 @@ def plot_bertscore_prompt_subplots(
         loc="upper left",
         frameon=False,
         ncol=1,
-        fontsize=9,
+        fontsize=22,
     )
 
     if suptitle:
-        fig.suptitle(suptitle, fontsize=12, y=1.02)
+        fig.suptitle(suptitle, fontsize=20, y=1.02)
 
     plt.tight_layout()
     os.makedirs(os.path.dirname(out_path_png) or ".", exist_ok=True)

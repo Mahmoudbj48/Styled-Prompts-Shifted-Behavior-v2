@@ -265,13 +265,13 @@ def plot_harmful_politeness_drift(
     ax.legend(
         handles=_scatter_handles + _region_handles,
         frameon=False,
-        loc="upper right",
-        fontsize=8,
+        loc="lower left",
+        fontsize=13,
     )
     _title = "2D Representation of Harmful Prompts under Politeness Variation"
     if model_name:
         _title += f"  [{model_name}]"
-    ax.set_title(_title, fontsize=9, pad=8)
+    ax.set_title(_title, fontsize=13, pad=10)
     ax.set_xlim(x_min, x_max)
     ax.set_ylim(y_min, y_max)
     ax.set_xticks([])
