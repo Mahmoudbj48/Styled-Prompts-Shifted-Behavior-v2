@@ -33,7 +33,7 @@ from utils.metrics import get_layer_activations_batch, compute_silhouette_score,
 from utils.plots import apply_neurips_style
 
 
-DEFAULT_MODEL           = "G-7B"
+DEFAULT_MODEL           = "L3.2-3B"
 DEFAULT_PLACE           = "global"
 DEFAULT_STRENGTHS       = [0, -10,10]
 DEFAULT_ALPACA_SIZE     = 128
@@ -130,85 +130,49 @@ def plot_harmful_politeness_drift(
         coords_harmless_base: np.ndarray,
         coords_harmful_base:  np.ndarray,
         coords_by_strength:   Dict[int, np.ndarray],
+        acts_harmful_base:    np.ndarray,
+        acts_by_strength:     Dict[int, np.ndarray],
         strengths:            List[int],
         out_path_png:         str,
         method:               str,
         place:                str,
         model_name:           str = "",
+        seed:                 int = 42,
 ) -> None:
     """
-    Background: decision regions of a logistic-regression classifier trained
-    on projected baseline (harmless vs harmful) activations.
-      - Blue region  → compliance subspace
-      - Pink region  → refusal subspace
+    Axes:
+      x = SVM decision score from a LinearSVC trained on 2D-projected baseline
+          activations (harmless vs harmful).
+      y = first principal component (1D PCA) of the high-dim activation vectors,
+          fitted on harmful baseline activations only.
 
-    Foreground points (harmful prompts only, one colour per strength from
-    a plasma colormap):
-      - strengths[0]  labelled "Prompt (baseline)" if s==0, else "Prompt + polite (s=…)"
-      - strengths[1…] labelled "Prompt + polite (s=…)"
+    Background: smooth gradient from royalblue (x < 0, harmless region) to
+    lightcoral (x > 0, harmful region) via tanh(x * 0.5), with a dashed
+    vertical boundary at x = 0.
 
-    Arrows connect consecutive centroids in the order strengths are given.
-    Works for any number of strengths ≥ 2.
+    Foreground: harmful prompts at each strength, s=0 in red, others from a
+    palette that avoids blue and red.  Arrows radiate from the s=0 centroid.
     """
-    from sklearn.linear_model import LogisticRegression
+    from sklearn.svm import LinearSVC
+    from sklearn.decomposition import PCA as PCA1D
 
     apply_neurips_style()
 
-    # ── Train boundary classifier in 2-D projected space ──────────────────
+    # ── Train LinearSVC on 2D projected baseline (harmless vs harmful) ──────
     X_cls = np.vstack([coords_harmless_base, coords_harmful_base])
     y_cls = np.array(
         [0] * len(coords_harmless_base) + [1] * len(coords_harmful_base)
     )
-    clf = LogisticRegression(max_iter=2000, C=1.0)
+    clf = LinearSVC(max_iter=5000, C=1.0)
     clf.fit(X_cls, y_cls)
 
-    # ── Meshgrid covering all projected points ─────────────────────────────
-    all_pts = np.vstack(
-        [X_cls] + [coords_by_strength[s] for s in strengths]
-    )
-    margin = (all_pts.max(axis=0) - all_pts.min(axis=0)) * 0.15 + 0.5
-    x_min, x_max = all_pts[:, 0].min() - margin[0], all_pts[:, 0].max() + margin[0]
-    y_min, y_max = all_pts[:, 1].min() - margin[1], all_pts[:, 1].max() + margin[1]
+    # ── Fit 1D PCA on standardised high-dim harmful baseline activations ────
+    mu_hd = acts_harmful_base.mean(axis=0, keepdims=True)
+    sd_hd = acts_harmful_base.std(axis=0, keepdims=True) + 1e-8
+    pca1d = PCA1D(n_components=1, random_state=seed)
+    pca1d.fit((acts_harmful_base - mu_hd) / sd_hd)
 
-    grid_res = 400
-    xx, yy = np.meshgrid(
-        np.linspace(x_min, x_max, grid_res),
-        np.linspace(y_min, y_max, grid_res),
-    )
-    Z_prob = clf.predict_proba(np.c_[xx.ravel(), yy.ravel()])[:, 1].reshape(xx.shape)
-
-    # ── Figure ─────────────────────────────────────────────────────────────
-    fig, ax = plt.subplots(figsize=(6.5, 5.5))
-
-    # Soft coloured background: blue (compliance) ↔ pink (refusal)
-    compliance_color = np.array(mcolors.to_rgb("royalblue"))
-    refusal_color    = np.array(mcolors.to_rgb("lightcoral"))
-    rgb_bg = (
-            Z_prob[..., None] * refusal_color
-            + (1 - Z_prob[..., None]) * compliance_color
-    )
-    ax.imshow(
-        rgb_bg,
-        extent=[x_min, x_max, y_min, y_max],
-        origin="lower",
-        aspect="auto",
-        alpha=0.30,
-        zorder=0,
-    )
-
-    # Decision boundary contour
-    ax.contour(
-        xx, yy, Z_prob,
-        levels=[0.5],
-        colors=["black"],
-        linewidths=[1.2],
-        linestyles=["--"],
-        zorder=1,
-    )
-
-    # ── Scatter points — baseline in red, others avoid blue/red ────────────
-    # Palette skips blue (conflicts with compliance background) and red
-    # (reserved for baseline).
+    # ── Palette — baseline red; others skip blue/red ─────────────────────
     _OTHER_COLORS = [
         "#ff7f0e",  # orange
         "#2ca02c",  # green
@@ -221,31 +185,64 @@ def plot_harmful_politeness_drift(
     ]
     _non_baseline = [_s for _s in strengths if _s != 0]
     point_styles = {
-        0: ("red", "Harmful Prompt (baseline, s=0)", 60, 0.85)
+        0: ("red", "Harmful", 60, 0.85)
     }
     for _i, _s in enumerate(_non_baseline):
-        _color = _OTHER_COLORS[_i % len(_OTHER_COLORS)]
-        _label = f"Harmful Prompt + polite (s={_s})"
-        point_styles[_s] = (_color, _label, 60, 0.85)
+        if _s > 0:
+            _label = f"Harmful + Polite"
+        else:
+            _label = f"Harmful + Rude"
+        point_styles[_s] = (
+            _OTHER_COLORS[_i % len(_OTHER_COLORS)],
+            _label,
+            60, 0.85,
+        )
+
+    # ── Compute (x, y) per strength ──────────────────────────────────────
+    xy_by_strength: Dict[int, tuple] = {}
+    for s in strengths:
+        x_s = clf.decision_function(coords_by_strength[s])
+        acts_std = (acts_by_strength[s] - mu_hd) / sd_hd
+        y_s = pca1d.transform(acts_std)[:, 0]
+        xy_by_strength[s] = (x_s, y_s)
+
+    # ── Axis extents ──────────────────────────────────────────────────────
+    all_x = np.concatenate([xy_by_strength[s][0] for s in strengths])
+    all_y = np.concatenate([xy_by_strength[s][1] for s in strengths])
+    x_margin = (all_x.max() - all_x.min()) * 0.35 + 1.2
+    y_margin = (all_y.max() - all_y.min()) * 0.35 + 1.2
+    x_min, x_max = float(all_x.min() - x_margin), float(all_x.max() + x_margin)
+    y_min, y_max = float(all_y.min() - y_margin), float(all_y.max() + y_margin)
+
+    # ── Figure ────────────────────────────────────────────────────────────
+    fig, ax = plt.subplots(figsize=(11, 7))
+
+    # Flat background: lavender left of x=0, salmon/pink right of x=0
+    ax.axvspan(x_min, 0,     alpha=0.45, color="#7b9fd4",  zorder=0)   # deeper steel blue / lavender
+    ax.axvspan(0,     x_max, alpha=0.45, color="#f07070",  zorder=0)   # deeper pink / salmon
+
+    # Dashed boundary at decision score = 0
+    ax.axvline(x=0, color="#333333", linewidth=2.0, linestyle="--", zorder=2)
+
+    # ── Scatter points ────────────────────────────────────────────────────
     centroids = {}
     for s in strengths:
-        coords  = coords_by_strength[s]
+        x_s, y_s = xy_by_strength[s]
         color, label, size, alpha = point_styles[s]
         ax.scatter(
-            coords[:, 0], coords[:, 1],
+            x_s, y_s,
             s=size, c=color, alpha=alpha,
             edgecolors="none", label=label,
             rasterized=True, zorder=3,
         )
-        centroids[s] = _centroid(coords)
+        centroids[s] = np.array([float(x_s.mean()), float(y_s.mean())])
 
-    # ── Arrows: s=0 baseline centroid → each other strength's centroid ──────
-    arrow_pairs = [(0, s) for s in strengths if s != 0]
-    for s_from, s_to in arrow_pairs:
+    # ── Arrows: s=0 centroid → each other strength's centroid ────────────
+    for s_to in [_s for _s in strengths if _s != 0]:
         ax.annotate(
             "",
             xy=centroids[s_to],
-            xytext=centroids[s_from],
+            xytext=centroids[0],
             arrowprops=dict(
                 arrowstyle="-|>",
                 lw=2.0,
@@ -255,19 +252,23 @@ def plot_harmful_politeness_drift(
             zorder=5,
         )
 
-    # ── Legend — scatter handles + subspace region entries ─────────────────
+    # ── Legend ────────────────────────────────────────────────────────────
     from matplotlib.patches import Patch
     _scatter_handles, _ = ax.get_legend_handles_labels()
     _region_handles = [
-        Patch(facecolor="royalblue", alpha=0.45, label="Harmless Region"),
-        Patch(facecolor="lightcoral", alpha=0.45, label="Harmful Region"),
+        Patch(facecolor="#b0c4de", alpha=0.65, label="Compliance Subspace"),
+        Patch(facecolor="#ffb6b6", alpha=0.65, label="Refusal Subspace"),
     ]
-    ax.legend(
+    leg = ax.legend(
         handles=_scatter_handles + _region_handles,
-        frameon=False,
-        loc="lower left",
-        fontsize=13,
+        frameon=True,
+        loc="upper right",
+        fontsize=12,
     )
+    leg.get_frame().set_facecolor("white")
+    leg.get_frame().set_alpha(0.85)
+    leg.get_frame().set_edgecolor("none")
+
     _title = "2D Representation of Harmful Prompts under Politeness Variation"
     if model_name:
         _title += f"  [{model_name}]"
@@ -279,7 +280,9 @@ def plot_harmful_politeness_drift(
     ax.set_xlabel("")
     ax.set_ylabel("")
     for spine in ax.spines.values():
-        spine.set_visible(False)
+        spine.set_visible(True)
+        spine.set_edgecolor("black")
+        spine.set_linewidth(1.5)
     fig.tight_layout()
 
     os.makedirs(os.path.dirname(out_path_png), exist_ok=True)
@@ -407,11 +410,14 @@ def run_experiment(
         coords_harmless_base=coords_harmless_base,
         coords_harmful_base=coords_harmful_base,
         coords_by_strength=coords_by_strength,
+        acts_harmful_base=acts_harmful_base,
+        acts_by_strength=acts_harmful_by_strength,
         strengths=strengths,
         out_path_png=out_png,
         method=method,
         place=place,
         model_name=model_name,
+        seed=seed,
     )
 
     # ── Silhouette summary ─────────────────────────────────────────────────

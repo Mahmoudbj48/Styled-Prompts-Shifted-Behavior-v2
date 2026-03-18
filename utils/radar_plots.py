@@ -37,17 +37,23 @@ from matplotlib.lines import Line2D
 
 # (candidate_columns, display_label, direction)
 RADAR_METRICS: List[Tuple[List[str], str, str]] = [
-    (["activation_similarity"],                                "Cos.Sim",    "inv"),
-    (["bleu"],                                                 "BLEU",       "inv"),
-    (["bertscore_response", "bertscore_prompt"],               "BERTScore",  "inv"),
-    (["delta_log_prob"],                                       "ΔLogProb",   "abs"),
-    (["entropy_shift"],                                        "Entropy",    "abs"),
-    (["mirroring", "mirroring_verdict", "mirroring_rate_batch"], "MR",       "fwd"),
-    (["cot_correct"],                                          "CoT Acc.",   "abs"),
-    (["cot_steps"],                                            "CoT Steps",  "abs"),
-    (["unsafe_score", "asr"],                                  "ASR",        "fwd"),
-    (["silhouette"],                                           "Silhouette", "fwd"),
+    (["activation_similarity"],                                  "Cos.Sim",    "inv"),
+    (["bleu"],                                                   "BLEU",       "inv"),
+    (["delta_log_prob"],                                         "ΔLogProb",   "abs"),
+    (["mirroring", "mirroring_verdict", "mirroring_rate_batch"], "MR",         "fwd"),
+    (["cot_steps"],                                              "CoT Steps",  "abs"),
+    (["unsafe_score", "asr"],                                    "ASR",        "fwd"),
 ]
+
+# Maps metric display_label → axis/category name shown in the legend
+METRIC_AXIS_NAME: Dict[str, str] = {
+    "Cos.Sim":   "Activation Geometry",
+    "BLEU":      "Generation Quality",
+    "ΔLogProb":  "Confidence",
+    "MR":        "Style Mirroring",
+    "CoT Steps": "CoT",
+    "ASR":       "Safety and Refusal",
+}
 
 # Known constant baseline values — only for metrics that are definitionally
 # zero at baseline (differences/deltas).  Everything else is data-derived
@@ -434,7 +440,7 @@ def _make_figure(
     fig.legend(
         handles=handles, title=leg_title,
         loc="center right", bbox_to_anchor=(1.12, 0.5),
-        fontsize=21, title_fontsize=22, framealpha=0.9,
+        fontsize=11, title_fontsize=12, framealpha=0.9,
     )
 
     plt.tight_layout()
@@ -523,7 +529,8 @@ def _make_figure_by_place(
                 ])
                 polygons.append((vals, color, "-", 2.0, 0.10))
                 if place == all_places[0]:
-                    legend_items.append((metric, color, "-", 2.0))
+                    axis_name = METRIC_AXIS_NAME.get(metric, metric)
+                    legend_items.append((f"{axis_name} ({metric})", color, "-", 2.0))
 
         if plot_type == "C":
             spoke_labels = metric_labels
@@ -531,18 +538,18 @@ def _make_figure_by_place(
             spoke_labels = [STYLE_DISPLAY.get(s, s) for s in all_styles]
         else:
             spoke_labels = active_style_labels
-        place_titles = {"global": "Global", "prefix": "Prefix Injection", "suffix": "Suffix Injection"}
+        place_titles = {"global": "Global Placement", "prefix": "Prefix Injection", "suffix": "Suffix Injection"}
         _draw_radar(ax, spoke_labels, polygons, title=place_titles.get(place, place.capitalize()))
 
     handles = [
         Line2D([0], [0], color=c, linestyle=ls, linewidth=lw, label=lbl)
         for lbl, c, ls, lw in legend_items
     ]
-    leg_title = "Style" if plot_type == "C" else "Metric"
+    leg_title = "Style" if plot_type == "C" else "Axes"
     fig.legend(
         handles=handles, title=leg_title,
-        loc="center right", bbox_to_anchor=(1.12, 0.5),
-        fontsize=21, title_fontsize=22, framealpha=0.9,
+        loc="center right", bbox_to_anchor=(1.28, 0.5),
+        fontsize=11, title_fontsize=12, framealpha=0.9,
     )
 
     plt.tight_layout()
@@ -664,24 +671,12 @@ def make_multi_style_radar_plots(
     for model in all_models:
         mdf = dev_df[dev_df["model"] == model]
 
-        # Types A & B — subplots = (baseline, median, max), places as line styles
-        for places_subset in place_variants:
-            for ptype in ("A", "B"):
-                _make_figure(
-                    model=model, dev_df=mdf,
-                    all_styles=all_styles, all_places=places_subset,
-                    metric_labels=metric_labels,
-                    out_dir=out_dir, plot_type=ptype, save_pdf=save_pdf,
-                )
-
-        # Types C & D — subplots = places, max strength only
-        if len(all_places) > 0:
-            for ptype in ("C", "D"):
-                _make_figure_by_place(
-                    model=model, dev_df=mdf,
-                    all_styles=all_styles, all_places=all_places,
-                    metric_labels=metric_labels,
-                    out_dir=out_dir, plot_type=ptype, save_pdf=save_pdf,
-                )
+        # Single global radar — Type D, global placement only
+        _make_figure_by_place(
+            model=model, dev_df=mdf,
+            all_styles=all_styles, all_places=["global"],
+            metric_labels=metric_labels,
+            out_dir=out_dir, plot_type="D", save_pdf=save_pdf,
+        )
 
     print(f"[DONE] Radar plots saved to: {out_dir}")
