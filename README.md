@@ -74,30 +74,36 @@ Each dataset is evaluated on a subset of approximately 128 prompts.
 
 ```
 experiments/
-├── politeness.py                  # Politeness / social tone — all behavioral axes
-├── spacing.py                     # Surface noise: spacing irregularities
-├── punctuation.py                 # Surface noise: punctuation variation
-├── letter_case.py                 # Surface noise: letter case variation
-├── length_variation.py            # Structured rewriting: length expansion/compression
-├── interrogative_vs_imperative.py # Structured rewriting: interrogative vs imperative
-├── safety_full.py                 # Safety analysis (activations + ASR) — all styles
-├── cot_reasoning_generate.py      # Generate chain-of-thought responses under style
-└── cot_reasoning.py               # Analyze CoT reasoning structure and step count
-
+├── politeness.py                    # Politeness / social tone — all behavioral axes
+├── spacing.py                       # Surface noise: spacing irregularities
+├── punctuation.py                   # Surface noise: punctuation variation
+├── letter_case.py                   # Surface noise: letter case variation
+├── length_variation.py              # Structured rewriting: length expansion/compression
+├── interrogative_vs_imperative.py   # Structured rewriting: interrogative vs imperative
+├── safety_full.py                   # Safety analysis (activations + ASR) — all styles
+├── cot_reasoning_generate.py        # Generate chain-of-thought responses under style
+├── compute_cot_analysis.py          # Evaluate CoT step count and answer correctness
+├── compute_correctness.py           # Evaluate TruthfulQA factual correctness (LLM judge)
+└── compute_mirroring.py             # Detect style mirroring in surface noise responses
 
 plots/
-├── plots.py                       # All plotting utilities (line, ridge, radar plots)
-├── radar_plots.py                 # Multi-style radar plot generator (Types A–D)
-├── run_plots.py                   # CLI runner: aggregate plots, radar, prompt check
-├── plot_2d_activation_safety.py   # 2D activation scatter (safety vs politeness)
-└── plot_individual_figures.py     # Individual publication-ready figure scripts
+├── plots.py                         # All plotting utilities (line, ridge, radar plots)
+├── radar_plots.py                   # Multi-style radar plot generator (Types A–D)
+├── run_plots.py                     # CLI runner: aggregate plots, radar, prompt check
+├── plot_2d_activation_safety_politeness.py  # 2D activation scatter (politeness safety)
+└── plot_individual_figures.py       # Individual publication-ready figure scripts
 
 utils/
-├── data.py                        # Dataset loading utilities
-├── models.py                      # Model loading and generation
-├── styles.py                      # Style transformation functions
-├── metrics.py                     # Metric computation (activations, ASR, BERTScore, …)
-└── llm_style_cache.py             # LLM-rewrite cache for structured styles
+├── data.py                          # Dataset loading utilities
+├── models.py                        # Model loading and generation
+├── styles.py                        # Style transformation functions
+├── metrics.py                       # Metric computation (activations, ASR, BERTScore, …)
+├── llm_style_cache.py               # LLM-rewrite cache for structured styles
+├── surface_mirroring_detector.py    # Rule-based style mirroring detection
+├── correctness_judge.py             # LLM-as-judge for TruthfulQA correctness
+├── cot_judge.py                     # LLM-as-judge for CoT step counting and correctness
+└── significance_test.py             # Pairwise and baseline-vs-perturbed significance tests
+
 
 config.yaml         # Model paths, style levels, and dataset configuration
 ```
@@ -186,11 +192,12 @@ python experiments/cot_reasoning_generate.py \
     --style politeness \
     --batch_size 32
 
-# Step 2: analyze CoT structure and step count
-python experiments/cot_reasoning.py \
-    --models L3.1-8B \
-    --dataset gsm8k \
-    --style politeness
+# Step 2: evaluate CoT step count and answer correctness (LLM judge)
+python experiments/compute_cot_analysis.py \
+    --run_dir results/cot_reasoning/run_<timestamp> \
+    --sample_size 128 \
+    --judge_provider openai \
+    --judge_model gpt-4o-mini
 ```
 
 ---
@@ -229,12 +236,23 @@ python experiments/safety_full.py \
 
 ### 🪞 Style Mirroring
 
+Style mirroring for politeness is computed within the main politeness experiment (`--experiments mirroring`). For surface noise styles, use the dedicated post-processing script:
+
 ```bash
-python experiments/mirroring.py \
-    --models L3.1-8B \
-    --dataset truthful_qa \
-    --style politeness \
-    --places prefix suffix global
+# Detect mirroring in surface noise responses (spacing, punctuation, letter_case)
+python experiments/compute_mirroring.py \
+    --input results/spacing/run_<timestamp>/full_results_all_models.csv \
+    --style spacing
+```
+
+Factual correctness for TruthfulQA responses can be evaluated with:
+
+```bash
+python experiments/compute_correctness.py \
+    --run_dir results/politeness/run_<timestamp> \
+    --sample_size 128 \
+    --judge_provider openai \
+    --judge_model gpt-4o-mini
 ```
 
 ---
