@@ -621,7 +621,7 @@ def run_experiment(
 
     # --- Generate plots ---
     try:
-        from utils.plots import make_all_structuredness_metric_plots
+        from plots.plots import make_all_structuredness_metric_plots
 
         plot_dir = os.path.join(run_dir, "plots_metrics")
         os.makedirs(plot_dir, exist_ok=True)

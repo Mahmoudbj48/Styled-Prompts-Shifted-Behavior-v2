@@ -646,7 +646,7 @@ def run_experiment(
 
     # --- Generate plots ---
     try:
-        from utils.plots import make_all_structuredness_metric_plots
+        from plots.plots import make_all_structuredness_metric_plots
 
         plot_dir = os.path.join(run_dir, "plots_metrics")
         os.makedirs(plot_dir, exist_ok=True)
@@ -671,7 +671,7 @@ def run_experiment(
 
     # --- Structuredness-specific plots (length ratio boxplots) ---
     try:
-        from utils.plots import make_structuredness_plots
+        from plots.plots import make_structuredness_plots
 
         struct_plot_dir = os.path.join(run_dir, "plots_structuredness")
         make_structuredness_plots(

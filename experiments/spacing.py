@@ -765,7 +765,7 @@ def run_experiment(
     
     # Generate plots automatically
     try:
-        from utils.plots import make_all_plots_from_csvs_surface as make_all_plots_from_csvs
+        from plots.plots import make_all_plots_from_csvs_surface as make_all_plots_from_csvs
         
         plot_dir = os.path.join(run_dir, "plots_metrics")
         os.makedirs(plot_dir, exist_ok=True)

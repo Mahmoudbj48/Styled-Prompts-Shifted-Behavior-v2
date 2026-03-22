@@ -43,6 +43,7 @@ from utils.data import load_bbq_hf
 from utils.models import load_model, generate_response
 from utils.styles import apply_spacing, apply_punctuation, apply_letter_case, apply_politeness
 from utils.metrics import compute_bias_score_bbq
+from plots.plots import apply_neurips_style
 
 try:
     from openai import OpenAI
@@ -478,17 +479,9 @@ def plot_results(combined_csv: str, run_dir: str):
     plots_dir = os.path.join(run_dir, "plots")
     os.makedirs(plots_dir, exist_ok=True)
     
-    plt.rcParams.update({
-        "figure.facecolor": "white",
-        "axes.facecolor": "white",
-        "font.size": 10,
-        "axes.grid": True,
-        "axes.spines.top": False,
-        "axes.spines.right": False,
-    })
-    
+    apply_neurips_style()
     strengths = sorted(df['strength'].unique())
-    
+
     fig, ax = plt.subplots(figsize=(6.8, 2.8))
     
     for _, group in df.groupby(['model', 'place', 'style']):

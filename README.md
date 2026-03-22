@@ -52,8 +52,7 @@ We evaluate stylistic effects across several behavioral dimensions:
 | **Confidence** | Δ log-prob | Shift in token-level predictive confidence |
 | **Uncertainty** | Entropy shift | Change in output distribution sharpness |
 | **Style Mirroring** | LLM judge | Whether model responses mirror the prompt's style |
-| **Bias** | Demographic bias benchmarks | Sensitivity of bias behavior to stylistic changes |
-| **Reasoning Structure** | Structural analysis | Effects on explanation and reasoning chains |
+| **Reasoning Structure** | CoT analysis | Effects on chain-of-thought explanation and step count |
 
 ---
 
@@ -68,7 +67,6 @@ Each dataset is evaluated on a subset of approximately 128 prompts.
 | **GSM8K** | Chain-of-thought reasoning structure analysis |
 | **HarmBench** | Harmful prompts for safety analysis |
 | **Alpaca** | Harmless prompts paired with HarmBench for silhouette separation |
-| **BBQ** | Demographic bias sensitivity measurement |
 
 ---
 
@@ -84,18 +82,24 @@ experiments/
 ├── interrogative_vs_imperative.py # Structured rewriting: interrogative vs imperative
 ├── safety_full.py                 # Safety analysis (activations + ASR) — all styles
 ├── mirroring.py                   # Style mirroring evaluation (LLM judge)
-├── bbq_bias_full.py               # Demographic bias analysis (BBQ benchmark)
-├── cot_reasoning_generate.py      # Generate chain-of-thought responses
-├── cot_reasoning.py               # Analyze CoT reasoning structure
+├── cot_reasoning_generate.py      # Generate chain-of-thought responses under style
+├── cot_reasoning.py               # Analyze CoT reasoning structure and step count
 └── polite_prompt_check.py         # BERTScore prompt preservation check (all datasets)
 
+plots/
+├── plots.py                       # All plotting utilities (line, ridge, radar plots)
+├── radar_plots.py                 # Multi-style radar plot generator (Types A–D)
+├── run_plots.py                   # CLI runner: aggregate plots, radar, prompt check
+├── plot_2d_activation_safety.py   # 2D activation scatter (safety vs politeness)
+└── plot_individual_figures.py     # Individual publication-ready figure scripts
+
 utils/
-├── plots.py                       # All plotting utilities (politeness, surface noise, structuredness, CoT, and aggregate line/radar/ridge plots)
-├── latex_plots.py                 # LaTeX figure string generation for the paper
 ├── data.py                        # Dataset loading utilities
 ├── models.py                      # Model loading and generation
 ├── styles.py                      # Style transformation functions
 ├── metrics.py                     # Metric computation (activations, ASR, BERTScore, …)
+├── latex_plots.py                 # LaTeX figure string generation for the paper
+├── latex_plots_surface.py         # LaTeX figures for surface noise results
 └── llm_style_cache.py             # LLM-rewrite cache for structured styles
 
 data/               # Cached styled prompts and model outputs
@@ -121,10 +125,11 @@ pip install -r requirements.txt
 
 All scripts are run from the repository root. Results are saved under `results/` in timestamped subdirectories.
 
+---
+
 ### Politeness / Social Tone
 
 ```bash
-# Run all behavioral axes on one or more models
 python experiments/politeness.py \
     --models L3.1-8B \
     --dataset truthful_qa \
@@ -139,7 +144,7 @@ Key flags: `--experiments` accepts any subset of `prompt response activation con
 
 ### Surface Noise
 
-Each surface noise style has its own script. They share the same interface.
+Each surface noise style has its own script with the same interface.
 
 ```bash
 # Spacing
@@ -156,7 +161,7 @@ python experiments/letter_case.py --models L3.1-8B --dataset truthful_qa --exper
 
 ### Structured Rewriting
 
-Structured styles rewrite prompts via an LLM API. Set your API in .env key before running.
+Structured styles rewrite prompts via an LLM API. Set your API key in `.env` before running.
 
 ```bash
 # Length variation
@@ -175,17 +180,18 @@ python experiments/interrogative_vs_imperative.py \
 ```
 
 ---
+
 ### Chain-of-Thought Reasoning
 
 ```bash
-# Generate CoT responses
+# Step 1: generate CoT responses under style
 python experiments/cot_reasoning_generate.py \
     --models L3.1-8B \
     --dataset gsm8k \
     --style politeness \
     --batch_size 32
 
-# Analyze CoT structure
+# Step 2: analyze CoT structure and step count
 python experiments/cot_reasoning.py \
     --models L3.1-8B \
     --dataset gsm8k \
@@ -193,8 +199,6 @@ python experiments/cot_reasoning.py \
 ```
 
 ---
-
-
 
 ### Safety Analysis
 
@@ -228,19 +232,73 @@ python experiments/safety_full.py \
 
 ---
 
-### Bias (BBQ)
+### Style Mirroring
 
 ```bash
-python experiments/bbq_bias_full.py --model L3.1-8B --sample_size 128
+python experiments/mirroring.py \
+    --models L3.1-8B \
+    --dataset truthful_qa \
+    --style politeness \
+    --places prefix suffix global
 ```
-
 
 ---
 
 ## Generating Plots
 
-The plots for the experiments' results can be generated using the `plots.py` file that's located in the `utils` directory.
+All plotting is driven by `plots/run_plots.py`, which has three modes.
+
+### Aggregate Line / Ridge / Radar Plots
 
 ```bash
-python utils/plots.py --style_family structured --style_name length_variation --runs "results/length_variation/run_multi_natural_questions_20260304_024838" --out_dir "results/combined_plots/length_variation_NQ" --dataset_name "Natural Questions"
+python plots/run_plots.py \
+    --runs results/politeness/run_<timestamp>/summary.csv \
+    --out_dir results/combined_plots/politeness \
+    --style_name politeness \
+    --dataset_name TruthfulQA \
+    --save_pdf
+```
+
+For surface noise styles (e.g. spacing):
+
+```bash
+python plots/run_plots.py \
+    --runs results/spacing/run_<timestamp>/combined_means_by_model_place_strength.csv \
+    --out_dir results/combined_plots/spacing \
+    --style_name spacing \
+    --dataset_name TruthfulQA
+```
+
+---
+
+### Multi-Style Radar Plots
+
+Generates Type D radar plots comparing all styles and behavioral axes across models.
+
+```bash
+python plots/run_plots.py \
+    --multi_style_radar \
+    --out_dir results/combined_plots/radar \
+    --style_data \
+        politeness:results/politeness/run_a/summary.csv \
+        spacing:results/spacing/run_x/summary.csv \
+        letter_case:results/letter_case/run_y/summary.csv \
+    --asr_data \
+        politeness:results/safety/run_pol/summary.csv \
+    --cot_data \
+        politeness:results/cot/run_pol/ \
+    --save_pdf
+```
+
+---
+
+### BERTScore Prompt-Preservation Check
+
+Evaluates how much each style changes the semantic content of prompts.
+
+```bash
+python plots/run_plots.py \
+    --prompt_check \
+    --out_dir results/prompt_check \
+    --save_pdf
 ```

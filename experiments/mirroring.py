@@ -83,6 +83,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.data import load_dataset_by_name
 from utils.models import load_model, generate_response
 from utils.styles import apply_politeness
+from plots.plots import apply_neurips_style
 
 from utils.metrics import (
     clean_chatty_generation,
@@ -384,6 +385,7 @@ def plot_rate_lines(df_summary: pd.DataFrame, *, model_name: str, out_path: str,
 
     strengths_sorted = sorted(df_summary["strength"].unique().tolist())
 
+    apply_neurips_style()
     fig, ax = plt.subplots(figsize=(10, 5))
 
     for place in sorted(df_summary["place"].unique().tolist()):

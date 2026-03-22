@@ -6,7 +6,7 @@ Provides:
   - models:           model loading and batched text generation via HuggingFace
   - styles:           prompt style transformation functions (politeness, spacing, punctuation, etc.)
   - metrics:          evaluation metrics (similarity, confidence, activations, safety, bias)
-  - plots:            NeurIPS-style visualisation utilities
+  - plots:            NeurIPS-style visualisation utilities (moved to Plots/)
   - latex_plots:      LaTeX figure string generation for paper publication
   - llm_style_cache:  caching layer for LLM-generated prompt rewrites
 """
