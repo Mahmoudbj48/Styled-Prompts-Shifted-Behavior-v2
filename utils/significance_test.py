@@ -441,6 +441,12 @@ def run(
         models: Optional[List[str]],
         places: Optional[List[str]],
 ):
+    """
+    Orchestrate the model/placement comparison pipeline.
+
+    Loads CSVs, runs pairwise t-tests for each metric, and saves four output CSVs:
+    model_comparisons, place_comparisons, model_ranking, place_sensitivity.
+    """
     os.makedirs(out_dir, exist_ok=True)
 
     print("[LOAD] Reading input files …")
@@ -1448,6 +1454,7 @@ def run_prompt_level(
 # ============================================================
 
 def main():
+    """Parse CLI arguments and dispatch to the appropriate significance-test pipeline."""
     parser = argparse.ArgumentParser(
         description="Pairwise significance tests for styled-prompt experiment results."
     )

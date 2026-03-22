@@ -44,6 +44,7 @@ from utils.correctness_judge import judge_correctness, hash_response
 # =============================================================================
 
 def load_config() -> Dict:
+    """Load the project-level config.yaml from the repository root."""
     config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.yaml")
     with open(config_path, "r") as f:
         return yaml.safe_load(f)
@@ -571,6 +572,7 @@ def plot_correctness_from_combined_csv(combined_csv_path: str, run_dir: str):
 # =============================================================================
 
 def main():
+    """Parse CLI arguments and run the TruthfulQA correctness evaluation and/or plotting pipeline."""
     parser = argparse.ArgumentParser(description="Compute correctness analysis (TruthfulQA)")
     parser.add_argument("--run_dir", type=str, required=True,
                         help="Path to TruthfulQA experiment run directory")

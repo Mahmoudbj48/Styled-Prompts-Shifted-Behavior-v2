@@ -97,6 +97,7 @@ from utils.metrics import (
 
 @dataclass
 class ExampleRecord:
+    """Stores one (original, styled) example pair and its mirroring verdict."""
     prompt_orig: str
     output_orig: str
     prompt_styled: str
@@ -111,12 +112,14 @@ class ExampleRecord:
 # =============================================================================
 
 def load_config() -> Dict[str, Any]:
+    """Load the project-level config.yaml from the repository root."""
     config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.yaml")
     with open(config_path, "r") as f:
         return yaml.safe_load(f)
 
 
 def _normalize_models(models: List[str], config: Dict[str, Any]) -> List[str]:
+    """Validate and expand model keys against config; 'all' returns every available model."""
     available = list(config.get("models", {}).keys())
     if not available:
         raise ValueError("No models found in config.yaml under 'models'.")
@@ -132,12 +135,14 @@ def _normalize_models(models: List[str], config: Dict[str, Any]) -> List[str]:
 
 
 def apply_style(prompt: str, style: str, strength: int, place: str) -> str:
+    """Apply the named style to a prompt. Currently only 'politeness' is supported."""
     if style == "politeness":
         return apply_politeness(prompt, strength, place=place)
     raise ValueError(f"Unknown style: {style}")
 
 
 def _get_prompt_text(item: Dict[str, Any]) -> str:
+    """Extract the prompt string from a dataset item dict, trying 'question' then 'prompt'."""
     if "question" in item and item["question"]:
         return str(item["question"])
     if "prompt" in item and item["prompt"]:

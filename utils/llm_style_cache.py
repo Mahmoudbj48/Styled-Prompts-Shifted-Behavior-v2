@@ -37,6 +37,7 @@ def safe_name(x: Any) -> str:
 
 
 def write_jsonl(path: str, rows: List[dict]) -> None:
+    """Write a list of dicts to a JSONL file, creating parent directories as needed."""
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         for r in rows:
@@ -44,6 +45,7 @@ def write_jsonl(path: str, rows: List[dict]) -> None:
 
 
 def read_jsonl(path: str) -> List[dict]:
+    """Read a JSONL file and return a list of dicts, skipping blank lines."""
     out: List[dict] = []
     with open(path, "r", encoding="utf-8") as f:
         for line in f:

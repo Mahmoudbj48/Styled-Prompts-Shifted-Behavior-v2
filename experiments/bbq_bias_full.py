@@ -57,11 +57,13 @@ except ImportError:
 # =============================================================================
 
 def load_config(config_path="config.yaml") -> Dict:
+    """Load a YAML config file and return its contents as a dict."""
     with open(config_path, 'r') as f:
         return yaml.safe_load(f)
 
 
 def get_style_function(style_name: str):
+    """Return the apply-function for the given style name, or None if not found."""
     style_map = {
         'spacing': apply_spacing,
         'punctuation': apply_punctuation,
@@ -76,6 +78,7 @@ def get_style_function(style_name: str):
 # =============================================================================
 
 def load_bbq_data(sample_size: int = 32, seed: int = 42) -> List[Dict]:
+    """Load ambiguous Gender_identity examples from the BBQ dataset."""
     print("\n" + "="*80)
     print("LOADING BBQ DATA")
     print("="*80)
@@ -174,6 +177,12 @@ def generate_responses_batched(
     model, tokenizer, examples: List[Dict], style_fn,
     batch_size: int = 8, max_new_tokens: int = 100
 ) -> List[Dict]:
+    """
+    Apply style_fn to each example's question and generate model responses in batches.
+
+    Returns a list of result dicts containing the original prompt, styled prompt,
+    model response, and extracted BBQ metadata for each example.
+    """
     print(f"\n{'='*80}")
     print("GENERATING MODEL RESPONSES")
     print(f"{'='*80}")
@@ -228,6 +237,7 @@ def generate_responses_batched(
 # =============================================================================
 
 def hash_response(response: str) -> str:
+    """Return a SHA-256 hash of a whitespace-normalised response string (for deduplication)."""
     normalized = ' '.join(response.strip().split())
     return hashlib.sha256(normalized.encode('utf-8')).hexdigest()
 
@@ -256,6 +266,7 @@ Respond with JSON:
 
 
 def call_openai_judge(question: str, response: str, model: str, api_key: str) -> Tuple[Optional[Dict], str]:
+    """Call the OpenAI API to extract the BBQ answer choice (a/b/c) from a model response."""
     if not OPENAI_AVAILABLE:
         raise ImportError("openai not installed")
     
@@ -291,6 +302,12 @@ def judge_with_deduplication(
     results: List[Dict], judge_provider: str, judge_model: str,
     api_key: str, max_retries: int = 3
 ) -> List[Dict]:
+    """
+    Run LLM-as-judge answer extraction with response deduplication.
+
+    Identical responses (by hash) are only judged once; the extracted answer is
+    then propagated to all duplicate rows, saving API calls.
+    """
     print(f"\n{'='*80}")
     print("EXTRACTING ANSWERS (LLM-AS-JUDGE)")
     print(f"{'='*80}")
@@ -475,6 +492,7 @@ def save_results(all_results: List[Dict], run_dir: str):
 
 
 def plot_results(combined_csv: str, run_dir: str):
+    """Plot bias_score vs. strength for all (model, style, place) groups and save to plots/."""
     df = pd.read_csv(combined_csv)
     plots_dir = os.path.join(run_dir, "plots")
     os.makedirs(plots_dir, exist_ok=True)
@@ -576,6 +594,7 @@ def recompute_mode(csv_path: str):
 # =============================================================================
 
 def main():
+    """Parse CLI arguments and run the BBQ bias evaluation or recompute pipeline."""
     parser = argparse.ArgumentParser()
     parser.add_argument('--recompute', type=str,
                        help='Path to detailed_results.csv')

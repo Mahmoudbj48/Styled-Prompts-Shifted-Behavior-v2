@@ -74,18 +74,21 @@ from plots.plots import (
 # ============================================================
 
 def load_config():
+    """Load the project-level config.yaml from the repository root."""
     config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.yaml")
     with open(config_path, "r") as f:
         return yaml.safe_load(f)
 
 
 def _cuda_cleanup():
+    """Free GPU memory cache and release inter-process CUDA resources."""
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
         torch.cuda.ipc_collect()
 
 
 def _get_prompt_text(item):
+    """Extract the raw prompt string from a dataset item dict."""
     for k in ("question", "prompt", "instruction", "text"):
         if k in item and item[k]:
             return str(item[k])
@@ -93,12 +96,14 @@ def _get_prompt_text(item):
 
 
 def _asr_outputs_dir(run_dir: str, model_name: str) -> str:
+    """Return (and create) the per-model directory for ASR stage-1 response CSVs."""
     d = os.path.join(run_dir, "asr_outputs", model_name)
     os.makedirs(d, exist_ok=True)
     return d
 
 
 def _asr_outputs_path(run_dir: str, model_name: str, place: str, strength: int) -> str:
+    """Return the CSV file path for stage-1 ASR outputs for a given (model, place, strength)."""
     return os.path.join(_asr_outputs_dir(run_dir, model_name), f"harmbench_outputs_{place}_s{int(strength)}.csv")
 
 
@@ -122,6 +127,15 @@ def run_for_one_model(
         gen_max_new_tokens: int,
         asr_stage: str,   # "stage1" | "stage2" | "both"
 ):
+    """
+    Run the full safety evaluation for one model across all (place, strength) buckets.
+
+    Depending on flags, computes:
+      - Silhouette scores from last-layer activations (harmless vs. harmful separation)
+      - Stage-1 response generation for HarmBench harmful prompts
+      - Stage-2 LlamaGuard-3 ASR scoring on stage-1 outputs
+    Results are appended to summary_all_models.csv in run_dir.
+    """
 
     apply_neurips_style()
 

@@ -89,6 +89,7 @@ def _get_bertscorer_cached(
         lang: str = "en",
         device: str = "cpu",
 ) -> BERTScorer:
+    """Return a cached BERTScorer instance, loading it only on first call per (model, lang, device)."""
     key = (model_type, lang, device)
     if key in _BERTSCORER_CACHE:
         return _BERTSCORER_CACHE[key]
@@ -139,12 +140,14 @@ VALID_EXPERIMENTS = {"prompt", "response", "activation", "confidence", "mirrorin
 # Config + CLI helpers
 # --------------------------
 def load_config() -> Dict[str, any]:
+    """Load the project-level config.yaml from the repository root."""
     config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.yaml")
     with open(config_path, "r") as f:
         return yaml.safe_load(f)
 
 
 def _normalize_experiments(experiments: Optional[List[str]]) -> Set[str]:
+    """Validate and expand experiment axis names; 'all' returns every valid experiment."""
     if experiments is None:
         return set(VALID_EXPERIMENTS)
 
@@ -159,6 +162,7 @@ def _normalize_experiments(experiments: Optional[List[str]]) -> Set[str]:
 
 
 def _normalize_models(models: List[str], config: dict) -> List[str]:
+    """Validate model keys against config; 'all' returns every available model."""
     available = list(config.get("models", {}).keys())
     if not available:
         raise ValueError("No models found in config.yaml under 'models'.")
@@ -175,6 +179,7 @@ def _normalize_models(models: List[str], config: dict) -> List[str]:
 
 
 def _get_places(config: dict) -> List[str]:
+    """Read politeness style positions from config, excluding 'middle'."""
     places = [p for p in config.get("style_positions", {}).get("politeness", []) if p != "middle"]
     if not places:
         places = ["prefix", "suffix", "global"]
@@ -185,6 +190,7 @@ def _get_places(config: dict) -> List[str]:
 
 
 def _num_batches(n: int, bs: int) -> int:
+    """Return the number of batches needed to cover n items with batch size bs."""
     return (n + bs - 1) // bs
 
 
@@ -222,6 +228,7 @@ def _select_strengths(
 
 
 def _get_prompt_text(item: dict) -> str:
+    """Extract the prompt string from a dataset item dict, trying 'question' then 'prompt'."""
     if "question" in item and item["question"]:
         return str(item["question"])
     if "prompt" in item and item["prompt"]:
@@ -233,6 +240,7 @@ def _get_prompt_text(item: dict) -> str:
 # Data cache helpers
 # --------------------------
 def _safe_name(x: Optional[str]) -> str:
+    """Sanitise a value for use in file or directory names."""
     if x is None:
         return "none"
     x = str(x)
@@ -248,6 +256,7 @@ def _sample_cache_dir(
         seed: int,
         sample_size: int,
 ) -> str:
+    """Return the directory path for the cached dataset sample."""
     return os.path.join(
         data_dir,
         "samples",
@@ -260,14 +269,17 @@ def _sample_cache_dir(
 
 
 def _sample_cache_path(sample_dir: str) -> str:
+    """Return the path for the sample JSONL file within its cache directory."""
     return os.path.join(sample_dir, "sample.jsonl")
 
 
 def _meta_path(sample_dir: str) -> str:
+    """Return the path for the sample metadata YAML file within its cache directory."""
     return os.path.join(sample_dir, "meta.yaml")
 
 
 def _write_jsonl(path: str, rows: List[dict]) -> None:
+    """Write a list of dicts to a JSONL file, creating parent directories as needed."""
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         for r in rows:
@@ -275,6 +287,7 @@ def _write_jsonl(path: str, rows: List[dict]) -> None:
 
 
 def _read_jsonl(path: str) -> List[dict]:
+    """Read a JSONL file and return a list of dicts, skipping blank lines."""
     out = []
     with open(path, "r", encoding="utf-8") as f:
         for line in f:
@@ -286,6 +299,7 @@ def _read_jsonl(path: str) -> List[dict]:
 
 
 def _write_yaml(path: str, obj: dict) -> None:
+    """Write a dict to a YAML file, creating parent directories as needed."""
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         yaml.safe_dump(obj, f, sort_keys=False)

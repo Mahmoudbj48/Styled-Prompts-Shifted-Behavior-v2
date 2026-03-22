@@ -86,12 +86,14 @@ def load_config():
 
 
 def _cuda_cleanup():
+    """Free GPU memory cache and release inter-process CUDA resources."""
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
         torch.cuda.ipc_collect()
 
 
 def _get_prompt_text(item):
+    """Extract the prompt string from a dataset item dict, trying common field names."""
     for k in ("question", "prompt", "instruction", "text"):
         if k in item and item[k]:
             return str(item[k])
@@ -99,12 +101,14 @@ def _get_prompt_text(item):
 
 
 def _asr_outputs_dir(run_dir: str, model_name: str) -> str:
+    """Return (and create) the per-model directory for ASR stage-1 response CSVs."""
     d = os.path.join(run_dir, "asr_outputs", model_name)
     os.makedirs(d, exist_ok=True)
     return d
 
 
 def _asr_outputs_path(run_dir: str, model_name: str, place: str, strength: Any) -> str:
+    """Return the path for the stage-1 response CSV for a given (model, place, strength) bucket."""
     return os.path.join(_asr_outputs_dir(run_dir, model_name), f"harmbench_outputs_{place}_s{strength}.csv")
 
 
@@ -250,6 +254,16 @@ def run_for_one_model(
         rewrite_api_key_env: str = "GEMINI_API_KEY",
         overwrite_style_cache: bool = False,
 ):
+    """
+    Run safety evaluation for a single model across all (place, strength) buckets.
+
+    Depending on flags, this function:
+      - Loads the generation model (skipped for stage2-only ASR)
+      - Optionally computes silhouette scores from last-layer activations
+      - Stage 1: generates model responses to styled harmful prompts and saves them to CSV
+      - Stage 2: scores saved responses with LlamaGuard-3 and computes ASR
+      - Generates 2D activation scatter plots (PCA/t-SNE/UMAP) for each bucket
+    """
 
     apply_neurips_style()
 

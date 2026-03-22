@@ -66,12 +66,14 @@ VALID_STYLES = {"spacing", "punctuation", "letter_case", "politeness", "length_v
 # =============================================================================
 
 def load_config() -> Dict[str, any]:
+    """Load the project-level config.yaml from the repository root."""
     config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.yaml")
     with open(config_path, "r") as f:
         return yaml.safe_load(f)
 
 
 def _normalize_models(models: List[str], config: dict) -> List[str]:
+    """Validate model keys against config; 'all' expands to every available model."""
     available = list(config.get("models", {}).keys())
     if not available:
         raise ValueError("No models found in config.yaml")
@@ -87,6 +89,7 @@ def _normalize_models(models: List[str], config: dict) -> List[str]:
 
 
 def _get_places(config: dict, style: str) -> List[str]:
+    """Return valid injection positions for the given style from config (excluding 'middle')."""
     places = config.get("style_positions", {}).get(style, ["global"])
     places = [p for p in places if p != "middle"]
     places = [p for p in places if p in {"prefix", "suffix", "global"}]
@@ -96,12 +99,20 @@ def _get_places(config: dict, style: str) -> List[str]:
 
 
 def _num_batches(n: int, bs: int) -> int:
+    """Return the number of batches needed to cover n items at batch size bs."""
     return (n + bs - 1) // bs
 
 
 def _select_strengths(
         *, config_strengths, explicit_strengths, strength_range, strength_step,
         as_float=False, as_string=False) -> list:
+    """
+    Resolve the list of strength values to use.
+
+    Priority: explicit CLI --strengths > --strength_range > config defaults.
+    Use as_string=True for string-valued styles (e.g. inter_vs_imper).
+    Use as_float=True for float-valued styles (e.g. length_variation).
+    """
     # String modes (e.g. inter_vs_imper) — no numeric conversion
     if as_string:
         if explicit_strengths:
@@ -131,6 +142,7 @@ def _select_strengths(
 
 
 def _get_prompt_text(item: dict) -> str:
+    """Extract the raw prompt string from a dataset item dict."""
     if "question" in item and item["question"]:
         return str(item["question"])
     if "prompt" in item and item["prompt"]:
@@ -139,6 +151,7 @@ def _get_prompt_text(item: dict) -> str:
 
 
 def _get_style_function(style_name: str):
+    """Return the inline apply-function for the given style, or None for LLM-based styles."""
     style_map = {
         "spacing": apply_spacing,
         "punctuation": apply_punctuation,
@@ -157,6 +170,7 @@ def _get_style_function(style_name: str):
 # =============================================================================
 
 def _safe_name(x: Optional[str]) -> str:
+    """Sanitise a value for use in file/directory names."""
     if x is None:
         return "none"
     x = str(x)
@@ -164,6 +178,7 @@ def _safe_name(x: Optional[str]) -> str:
 
 
 def _sample_cache_dir(*, data_dir, dataset, config_name, split, seed, sample_size):
+    """Return the directory path for a cached dataset sample."""
     return os.path.join(
         data_dir, "samples", _safe_name(dataset),
         f"config_{_safe_name(config_name)}",
@@ -173,6 +188,7 @@ def _sample_cache_dir(*, data_dir, dataset, config_name, split, seed, sample_siz
 
 
 def _write_jsonl(path: str, rows: List[dict]):
+    """Write a list of dicts to a plain JSONL file, creating parent dirs as needed."""
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         for r in rows:
@@ -180,6 +196,7 @@ def _write_jsonl(path: str, rows: List[dict]):
 
 
 def _read_jsonl(path: str) -> List[dict]:
+    """Read a plain JSONL file and return a list of dicts, skipping blank lines."""
     out = []
     with open(path, "r", encoding="utf-8") as f:
         for line in f:
@@ -191,6 +208,7 @@ def _read_jsonl(path: str) -> List[dict]:
 
 
 def _write_yaml(path: str, obj: dict):
+    """Write a dict as YAML to the given path, creating parent dirs as needed."""
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         yaml.safe_dump(obj, f, sort_keys=False)
@@ -198,6 +216,7 @@ def _write_yaml(path: str, obj: dict):
 
 def _load_or_create_sample(
         *, data_dir, dataset, config_name, split, seed, sample_size, overwrite_sample_cache):
+    """Load a cached dataset sample or create and cache it from the source dataset."""
     sdir = _sample_cache_dir(
         data_dir=data_dir, dataset=dataset, config_name=config_name,
         split=split, seed=seed, sample_size=sample_size
@@ -250,6 +269,7 @@ def _styled_cache_path(*, data_dir, dataset, config_name, split, seed, sample_si
 
 
 def _read_jsonl_gz(path: str) -> List[dict]:
+    """Read a gzip-compressed JSONL file and return a list of dicts."""
     out = []
     with gzip.open(path, "rt", encoding="utf-8") as f:
         for line in f:
@@ -261,6 +281,7 @@ def _read_jsonl_gz(path: str) -> List[dict]:
 
 
 def _write_jsonl_gz(path: str, rows: List[dict]):
+    """Write a list of dicts to a gzip-compressed JSONL file, creating parent dirs as needed."""
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with gzip.open(path, "wt", encoding="utf-8") as f:
         for r in rows:

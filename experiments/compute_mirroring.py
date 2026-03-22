@@ -209,6 +209,7 @@ def plot_mirroring_rates(
 
 
 def main():
+    """Parse CLI arguments and run the mirroring detection and plotting pipeline."""
     parser = argparse.ArgumentParser(description="Compute mirroring rates for surface noise experiments")
     parser.add_argument("--input", type=str, required=True,
                         help="Path to CSV file (e.g., full_results_all_models.csv)")

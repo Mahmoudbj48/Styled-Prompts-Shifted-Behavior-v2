@@ -51,6 +51,7 @@ from utils.cot_judge import judge_cot_response, hash_response
 # =============================================================================
 
 def load_config() -> Dict:
+    """Load the project-level config.yaml from the repository root."""
     config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.yaml")
     with open(config_path, "r") as f:
         return yaml.safe_load(f)
@@ -594,6 +595,7 @@ def plot_cot_from_combined_csv(combined_csv_path: str, run_dir: str):
 # =============================================================================
 
 def main():
+    """Parse CLI arguments and run the CoT evaluation and/or plotting pipeline."""
     parser = argparse.ArgumentParser(description="Compute CoT analysis (styled responses only)")
     parser.add_argument("--run_dir", type=str, required=True,
                         help="Path to CoT experiment run directory")
