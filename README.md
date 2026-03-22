@@ -81,10 +81,9 @@ experiments/
 ├── length_variation.py            # Structured rewriting: length expansion/compression
 ├── interrogative_vs_imperative.py # Structured rewriting: interrogative vs imperative
 ├── safety_full.py                 # Safety analysis (activations + ASR) — all styles
-├── mirroring.py                   # Style mirroring evaluation (LLM judge)
 ├── cot_reasoning_generate.py      # Generate chain-of-thought responses under style
-├── cot_reasoning.py               # Analyze CoT reasoning structure and step count
-└── polite_prompt_check.py         # BERTScore prompt preservation check (all datasets)
+└── cot_reasoning.py               # Analyze CoT reasoning structure and step count
+
 
 plots/
 ├── plots.py                       # All plotting utilities (line, ridge, radar plots)
@@ -100,8 +99,6 @@ utils/
 ├── metrics.py                     # Metric computation (activations, ASR, BERTScore, …)
 └── llm_style_cache.py             # LLM-rewrite cache for structured styles
 
-data/               # Cached styled prompts and model outputs
-results/            # Experiment outputs, plots, and summary CSVs
 config.yaml         # Model paths, style levels, and dataset configuration
 ```
 
