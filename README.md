@@ -98,8 +98,6 @@ utils/
 ├── models.py                      # Model loading and generation
 ├── styles.py                      # Style transformation functions
 ├── metrics.py                     # Metric computation (activations, ASR, BERTScore, …)
-├── latex_plots.py                 # LaTeX figure string generation for the paper
-├── latex_plots_surface.py         # LaTeX figures for surface noise results
 └── llm_style_cache.py             # LLM-rewrite cache for structured styles
 
 data/               # Cached styled prompts and model outputs
