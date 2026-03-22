@@ -1,4 +1,4 @@
-# Styled Prompts, Shifted Behavior
+# 🎨 Styled Prompts, Shifted Behavior
 
 This project studies how natural human writing styles in prompts affect the behavior of instruction-tuned large language models (LLMs).
 
@@ -8,7 +8,7 @@ Our work systematically evaluates **stylistic prompt variation as a structured r
 
 ---
 
-## Writing Styles
+## ✍️ Writing Styles
 
 We analyze three families of realistic prompt styles, each applied with a controlled **strength parameter** (ranging from minimal to strong stylistic modification) and inserted at different **prompt positions**:
 
@@ -18,18 +18,18 @@ We analyze three families of realistic prompt styles, each applied with a contro
 | Prefix | Style applied to the beginning |
 | Suffix | Style applied to the end |
 
-### Politeness / Social Tone
+### 🤝 Politeness / Social Tone
 Greetings, politeness markers ("please", "thank you"), and conversational phrasing.
 
-### Surface Noise / Informal Variation
+### 🔡 Surface Noise / Informal Variation
 Typos, misspellings, spacing irregularities, and informal abbreviations.
 
-### Structured Rewriting
+### 🔄 Structured Rewriting
 Reformulating prompts while preserving semantic intent.
 
 ---
 
-## Models Evaluated
+## 🤖 Models Evaluated
 
 We evaluate three open-source instruction-tuned model families at two parameter scales each, enabling comparison across architectures and model sizes.
 
@@ -41,7 +41,7 @@ We evaluate three open-source instruction-tuned model families at two parameter 
 
 ---
 
-## Behavioral Axes
+## 📊 Behavioral Axes
 
 We evaluate stylistic effects across several behavioral dimensions:
 
@@ -56,7 +56,7 @@ We evaluate stylistic effects across several behavioral dimensions:
 
 ---
 
-## Datasets
+## 📚 Datasets
 
 Each dataset is evaluated on a subset of approximately 128 prompts.
 
@@ -70,7 +70,7 @@ Each dataset is evaluated on a subset of approximately 128 prompts.
 
 ---
 
-## Repository Structure
+## 🗂️ Repository Structure
 
 ```
 experiments/
@@ -107,15 +107,15 @@ config.yaml         # Model paths, style levels, and dataset configuration
 
 ---
 
-## Configuration
+## ⚙️ Configuration
 
 Model paths, style strength levels, and dataset settings are defined in `config.yaml`. Style positions and levels for surface noise and structured rewriting styles are also read from this file and do not need to be passed via CLI.
 
 ---
 
-## Running Experiments
+## 🚀 Running Experiments
 
-### Install Dependencies
+### 📦 Install Dependencies
 
 ```bash
 pip install -r requirements.txt
@@ -125,7 +125,7 @@ All scripts are run from the repository root. Results are saved under `results/`
 
 ---
 
-### Politeness / Social Tone
+### 🤝 Politeness / Social Tone
 
 ```bash
 python experiments/politeness.py \
@@ -140,7 +140,7 @@ Key flags: `--experiments` accepts any subset of `prompt response activation con
 
 ---
 
-### Surface Noise
+### 🔡 Surface Noise
 
 Each surface noise style has its own script with the same interface.
 
@@ -157,7 +157,7 @@ python experiments/letter_case.py --models L3.1-8B --dataset truthful_qa --exper
 
 ---
 
-### Structured Rewriting
+### 🔄 Structured Rewriting
 
 Structured styles rewrite prompts via an LLM API. Set your API key in `.env` before running.
 
@@ -179,7 +179,7 @@ python experiments/interrogative_vs_imperative.py \
 
 ---
 
-### Chain-of-Thought Reasoning
+### 🧠 Chain-of-Thought Reasoning
 
 ```bash
 # Step 1: generate CoT responses under style
@@ -198,7 +198,7 @@ python experiments/cot_reasoning.py \
 
 ---
 
-### Safety Analysis
+### 🛡️ Safety Analysis
 
 `safety_full.py` supports politeness, surface noise, and structured styles in a single script.
 
@@ -230,7 +230,7 @@ python experiments/safety_full.py \
 
 ---
 
-### Style Mirroring
+### 🪞 Style Mirroring
 
 ```bash
 python experiments/mirroring.py \
@@ -242,11 +242,11 @@ python experiments/mirroring.py \
 
 ---
 
-## Generating Plots
+## 📈 Generating Plots
 
 All plotting is driven by `plots/run_plots.py`, which has three modes.
 
-### Aggregate Line / Ridge / Radar Plots
+### 📉 Aggregate Line / Ridge / Radar Plots
 
 ```bash
 python plots/run_plots.py \
@@ -269,7 +269,7 @@ python plots/run_plots.py \
 
 ---
 
-### Multi-Style Radar Plots
+### 🕸️ Multi-Style Radar Plots
 
 Generates Type D radar plots comparing all styles and behavioral axes across models.
 
@@ -290,7 +290,7 @@ python plots/run_plots.py \
 
 ---
 
-### BERTScore Prompt-Preservation Check
+### 🔍 BERTScore Prompt-Preservation Check
 
 Evaluates how much each style changes the semantic content of prompts.
 
