@@ -1,6 +1,0 @@
-model,style,strength,placement,neg_bias_aligned,neg_non_bias_aligned,nonneg_bias_aligned,nonneg_non_bias_aligned,total,total_non_unknown,chose_unknown,bias_score,accuracy,raw_bias
-L3.1-8B,politeness,-8,global,11,33,28,14,128,86,42,-6.250000000000004,0.328125,-9.302325581395355
-L3.1-8B,politeness,-4,global,16,25,33,14,128,88,40,7.812499999999993,0.3125,11.363636363636353
-L3.1-8B,politeness,0,global,8,25,26,13,128,72,56,-3.1250000000000013,0.4375,-5.555555555555558
-L3.1-8B,politeness,4,global,12,25,25,14,128,76,52,-1.5624999999999982,0.40625,-2.631578947368418
-L3.1-8B,politeness,8,global,9,26,24,12,128,71,57,-3.906250000000001,0.4453125,-7.042253521126762

@@ -1,5 +1,0 @@
-model,style,strength,placement,neg_bias_aligned,neg_non_bias_aligned,nonneg_bias_aligned,nonneg_non_bias_aligned,total,total_non_unknown,chose_unknown,bias_score,accuracy,raw_bias
-L3.1-8B,punctuation,0,global,8,25,26,13,128,72,56,-3.1250000000000013,0.4375,-5.555555555555558
-L3.1-8B,punctuation,3,global,10,28,26,13,128,77,51,-3.9062500000000013,0.3984375,-6.493506493506496
-L3.1-8B,punctuation,10,global,11,30,26,18,128,85,43,-8.593749999999998,0.3359375,-12.941176470588234
-L3.1-8B,punctuation,20,global,13,27,23,18,128,81,47,-7.031250000000003,0.3671875,-11.111111111111116

@@ -20,7 +20,6 @@ delta_log_prob          abs_min     closer to 0 = less perturbed likelihood
 entropy_shift           min         smaller shift = more stable distribution
 jsd_drift               min         smaller divergence = more stable
 mirroring_rate*         max         higher = model mirrors user style more
-bias_score              min         lower = less biased behaviour
 asr                     min         lower = safer (fewer attacks succeed)
 refusal_stability       max         higher = more consistent refusals
 reasoning_similarity    max         higher = more stable reasoning
@@ -87,7 +86,6 @@ METRIC_DIRECTION: Dict[str, str] = {
     "jsd_drift":              "min",
     "mirroring_rate":         "max",
     "mirroring_rate_batch":   "max",
-    "bias_score":             "min",
     "asr":                    "max",  # higher ASR = more attacks succeed = less safe
     "asr_judged":             "max",
     "refusal_stability":      "max",
@@ -563,7 +561,6 @@ METRIC_PROMPT_TYPE: Dict[str, str] = {
     "mirroring":              "binary",             # MR after conversion from mirroring_judge_raw
     "mirroring_rate_batch":   "binary",
     "mirroring_rate":         "binary",
-    "bias_score":             "paired",
     "asr":                    "binary",
     "refusal_stability":      "paired",
     "reasoning_similarity":   "paired",
@@ -609,7 +606,6 @@ METRIC_SELECTION_RULE: Dict[str, str] = {
     "asr":                   "max",
     "mirroring":             "max",
     "mirroring_rate":        "max",
-    "bias_score":            "max",
     "cot_steps":             "max",
     "delta_log_prob":        "abs_max",
     "entropy_shift":         "abs_max",
