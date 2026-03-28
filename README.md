@@ -31,13 +31,13 @@ Reformulating prompts while preserving semantic intent.
 
 ## 🤖 Models Evaluated
 
-We evaluate three open-source instruction-tuned model families at two parameter scales each, enabling comparison across architectures and model sizes.
+We evaluate six instruction-tuned LLMs spanning three families at two scales each, representing distinct architectural implementations, pretraining corpora, and alignment pipelines. Evaluating both smaller (1.5–3B) and medium-scale (7–8B) variants per family allows us to disentangle robustness effects attributable to architectural lineage from those attributable to scale. All models are evaluated under identical deterministic decoding settings.
 
 | Family | Models |
 |--------|--------|
-| **Llama** | Llama-3.2-3B-Instruct, Llama-3.1-8B-Instruct |
-| **Gemma** | Gemma-2B-it, Gemma-7B-it |
-| **Qwen2.5** | Qwen2.5-1.5B-Instruct, Qwen2.5-7B-Instruct |
+| **Llama** | Llama-3.2-3B-Instruct (L-3B), Llama-3.1-8B-Instruct (L-8B) |
+| **Gemma** | Gemma-2B-IT (G-2B), Gemma-7B-IT (G-7B) |
+| **Qwen2.5** | Qwen2.5-1.5B-Instruct (Q-1.5B), Qwen2.5-7B-Instruct (Q-7B) |
 
 ---
 
@@ -47,12 +47,12 @@ We evaluate stylistic effects across several behavioral dimensions:
 
 | Axis | Metric | Description |
 |------|--------|-------------|
-| **Activation Geometry** | Cosine similarity | Measures representational drift in hidden states |
-| **Safety Separation** | Silhouette score | Separation between harmful and harmless prompt representations |
-| **Confidence** | Δ log-prob | Shift in token-level predictive confidence |
-| **Uncertainty** | Entropy shift | Change in output distribution sharpness |
-| **Style Mirroring** | LLM judge | Whether model responses mirror the prompt's style |
-| **Reasoning Structure** | CoT analysis | Effects on chain-of-thought explanation and step count |
+| **Activation Geometry** | Cosine similarity, Silhouette score | Representational drift in hidden states and safety-relevant separability between harmful/harmless prompts |
+| **Generation Quality** | BLEU, BERTScore-F1 | Lexical overlap and semantic similarity between baseline and styled outputs |
+| **Confidence & Uncertainty** | Δ log-prob, Entropy shift | Shift in token-level predictive confidence and output distribution sharpness |
+| **Style Mirroring** | LLM judge, rule-based heuristics, length check | Whether model responses mirror the prompt's style (Mirroring Rate) |
+| **CoT Reasoning** | Step count, Exact-match accuracy | Effects on reasoning trace length and answer correctness |
+| **Safety & Refusal** | Attack success rate (ASR) | Fraction of harmful prompts producing unsafe completions |
 
 ---
 
@@ -62,11 +62,11 @@ Each dataset is evaluated on a subset of approximately 128 prompts.
 
 | Dataset | Use |
 |---------|-----|
-| **TruthfulQA** | Activation similarity, confidence, and uncertainty analysis |
-| **Natural Questions** | Validation of activation and confidence patterns on real queries |
-| **GSM8K** | Chain-of-thought reasoning structure analysis |
-| **HarmBench** | Harmful prompts for safety analysis |
-| **Alpaca** | Harmless prompts paired with HarmBench for silhouette separation |
+| **TruthfulQA** | Activation geometry, generation quality, confidence and uncertainty, style mirroring |
+| **Natural Questions** | Robustness check replicating TruthfulQA axes on naturally occurring user queries (larger models only) |
+| **GSM8K** | CoT reasoning (trace length and answer correctness) |
+| **HarmBench** | Safety and refusal (ASR), activation geometry (harmful prompts) |
+| **Alpaca** | Activation geometry (harmless prompts paired with HarmBench for silhouette separation) |
 
 ---
 
