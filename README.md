@@ -22,7 +22,7 @@ We analyze three families of realistic prompt styles, each applied with a contro
 Greetings, politeness markers ("please", "thank you"), and conversational phrasing.
 
 ### 🔡 Surface Noise / Informal Variation
-Typos, misspellings, spacing irregularities, and informal abbreviations.
+Casing, spacing irregularities, and punctuation marks.
 
 ### 🔄 Structured Rewriting
 Reformulating prompts while preserving semantic intent.
