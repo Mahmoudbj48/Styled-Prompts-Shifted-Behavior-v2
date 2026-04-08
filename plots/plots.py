@@ -1540,11 +1540,23 @@ STYLE_BASELINE_STRENGTH: Dict[str, float] = {
 }
 
 
+STYLE_DISPLAY_NAMES: Dict[str, str] = {
+    "politeness": "Social-Tone",
+}
+
+
+def _style_display_name(style_name: Optional[str]) -> str:
+    """Return the display name for a style, with overrides for renamed styles."""
+    if not style_name:
+        return "Style"
+    return STYLE_DISPLAY_NAMES.get(style_name, style_name.replace("_", " ").title())
+
+
 def _style_suffix(style_name: Optional[str]) -> str:
     """Return ' — Style Name' for use in plot titles, or '' if not given."""
     if not style_name:
         return ""
-    return " — " + style_name.replace("_", " ").title()
+    return " — " + _style_display_name(style_name)
 
 
 _DATASET_CANON = {
@@ -1889,7 +1901,7 @@ def aggregate_plot_metric_lines(
         ax.set_xticklabels([str(s) for s in strengths_sorted], fontsize=24)
     ax.tick_params(axis="y", labelsize=24)
 
-    _sn = (style_name or "Style").title()
+    _sn = _style_display_name(style_name)
     _ds = dataset_name or ""
     _scope = f"{_ds} — All Models & Places" if _ds else "All Models & Places"
     ax.set_title(f"{metric_display_name(metric)} vs. {_sn} Strength\n{_scope}", fontsize=26)
@@ -1991,7 +2003,7 @@ def plot_metric_lines_per_model(
         ax.set_xticks(x_values)
         ax.set_xticklabels([str(s) for s in strengths_sorted], fontsize=24)
         ax.tick_params(axis="y", labelsize=24)
-        _sn = (style_name or "Style").title()
+        _sn = _style_display_name(style_name)
         _ds = dataset_name or ""
         _scope = f"{_ds} — {model}" if _ds else model
         ax.set_title(f"{metric_display_name(metric)} vs. {_sn} Strength\n{_scope}", fontsize=26)
@@ -2089,7 +2101,7 @@ def plot_metric_lines_per_place(
             ax.set_xticks(x_values)
             ax.set_xticklabels([str(s) for s in strengths_sorted], fontsize=24)
         ax.tick_params(axis="y", labelsize=24)
-        _sn = (style_name or "Style").title()
+        _sn = _style_display_name(style_name)
         _ds = dataset_name or ""
         #upper case placement for better title formatting, e.g. "Prefix" instead of "prefix"
         _place= place.title() if isinstance(place, str) else str(place)
@@ -2238,7 +2250,7 @@ def plot_radar_places_axes(df: pd.DataFrame, metric: str, out_path: str,
     fig, ax = plt.subplots(figsize=(10, 10), subplot_kw=dict(polar=True))
     ax.set_position([0.0, 0.0, 0.80, 0.95])
 
-    _sn = (style_name or "Style").title()
+    _sn = _style_display_name(style_name)
     _ds = dataset_name or ""
     _ds_part = f" — {_ds}" if _ds else ""
     title = f"{metric_display_name(metric)} by Model and Place{_ds_part}\n{_sn} (Avg. over Style Strength)"
@@ -2303,7 +2315,7 @@ def plot_radar_models_axes(df: pd.DataFrame, metric: str, out_path: str,
     fig, ax = plt.subplots(figsize=(10, 10), subplot_kw=dict(polar=True))
     ax.set_position([0.0, 0.0, 0.80, 0.95])
 
-    _sn = (style_name or "Style").title()
+    _sn = _style_display_name(style_name)
     _ds = dataset_name or ""
     _ds_part = f" — {_ds}" if _ds else ""
     title = f"{metric_display_name(metric)} by Model and Place{_ds_part}\n{_sn} (Avg. over Style Strength)"
@@ -2380,7 +2392,7 @@ def plot_radar_metrics_axes(df: pd.DataFrame, metrics: List[str], out_path: str,
 
     fig, ax = plt.subplots(figsize=(10, 10), subplot_kw=dict(polar=True))
     ax.set_position([0.0, 0.0, 0.80, 0.95])
-    _sn = (style_name or "Style").title()
+    _sn = _style_display_name(style_name)
     _ds = dataset_name or ""
     _ds_part = f" — {_ds}" if _ds else ""
     title = f"Metric Profile by Model and Place{_ds_part}\n{_sn} (Avg. over Style Strength)"
@@ -2520,7 +2532,7 @@ def plot_metric_ridge(
 
     models_u = sorted(d["model"].unique().tolist()) if "model" in d.columns else []
     places_u = sorted(d["place"].unique().tolist()) if "place" in d.columns else []
-    _sn = (style_name or "Style").title()
+    _sn = _style_display_name(style_name)
     _ds = dataset_name or ""
     _ds_part = f" — {_ds}" if _ds else ""
     ax.set_title(
