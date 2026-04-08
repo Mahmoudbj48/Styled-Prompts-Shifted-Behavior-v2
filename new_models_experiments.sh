@@ -41,12 +41,6 @@ python experiments/safety_full.py --models G4-E4B   --style_family politeness --
 python experiments/cot_reasoning_generate.py --models Q3.5-9B Q3.5-27B G4-26B G4-E4B --dataset gsm8k --sample_size 128 --style politeness --places global --strengths -8 -4 0 4 8 --max_new_tokens 300
 COT_RUN_DIR=$(ls -td results/cot_responses/run_gsm8k_politeness_*/ | head -1)
 
-# --- CoT analysis ---
-python experiments/compute_cot_analysis.py --run_dir "$COT_RUN_DIR" --sample_size 128 --judge_provider openai --judge_model gpt-4o-mini
-
-# --- correctness analysis ---
-python experiments/compute_correctness.py --run_dir "$COT_RUN_DIR" --sample_size 128 --judge_provider openai --judge_model gpt-4o-mini
-
 # ============================================================
 # LENGTH VARIATION
 # ============================================================
@@ -86,12 +80,6 @@ python experiments/safety_full.py --models G4-E4B   --style_family structured --
 # --- generate CoT responses (gsm8k) ---
 python experiments/cot_reasoning_generate.py --models Q3.5-9B Q3.5-27B G4-26B G4-E4B --dataset gsm8k --sample_size 128 --style length_variation --max_new_tokens 300
 COT_RUN_DIR=$(ls -td results/cot_responses/run_gsm8k_length_variation_*/ | head -1)
-
-# --- CoT analysis ---
-python experiments/compute_cot_analysis.py --run_dir "$COT_RUN_DIR" --sample_size 128 --judge_provider openai --judge_model gpt-4o-mini
-
-# --- correctness analysis ---
-python experiments/compute_correctness.py --run_dir "$COT_RUN_DIR" --sample_size 128 --judge_provider openai --judge_model gpt-4o-mini
 
 # ============================================================
 # LETTER CASE
@@ -137,12 +125,6 @@ python experiments/safety_full.py --models G4-E4B   --style_family surface_noise
 python experiments/cot_reasoning_generate.py --models Q3.5-9B Q3.5-27B G4-26B G4-E4B --dataset gsm8k --sample_size 128 --style letter_case --places global --strengths 0 25 50 100 --max_new_tokens 300
 COT_RUN_DIR=$(ls -td results/cot_responses/run_gsm8k_letter_case_*/ | head -1)
 
-# --- CoT analysis ---
-python experiments/compute_cot_analysis.py --run_dir "$COT_RUN_DIR" --sample_size 128 --judge_provider openai --judge_model gpt-4o-mini
-
-# --- correctness analysis ---
-python experiments/compute_correctness.py --run_dir "$COT_RUN_DIR" --sample_size 128 --judge_provider openai --judge_model gpt-4o-mini
-
 # ============================================================
 # PUNCTUATION
 # ============================================================
@@ -186,12 +168,6 @@ python experiments/safety_full.py --models G4-E4B   --style_family surface_noise
 # --- generate CoT responses (gsm8k) ---
 python experiments/cot_reasoning_generate.py --models Q3.5-9B Q3.5-27B G4-26B G4-E4B --dataset gsm8k --sample_size 128 --style punctuation --places global --strengths 0 3 10 20 --max_new_tokens 300
 COT_RUN_DIR=$(ls -td results/cot_responses/run_gsm8k_punctuation_*/ | head -1)
-
-# --- CoT analysis ---
-python experiments/compute_cot_analysis.py --run_dir "$COT_RUN_DIR" --sample_size 128 --judge_provider openai --judge_model gpt-4o-mini
-
-# --- correctness analysis ---
-python experiments/compute_correctness.py --run_dir "$COT_RUN_DIR" --sample_size 128 --judge_provider openai --judge_model gpt-4o-mini
 
 # ============================================================
 # SPACING
@@ -237,12 +213,6 @@ python experiments/safety_full.py --models G4-E4B   --style_family surface_noise
 python experiments/cot_reasoning_generate.py --models Q3.5-9B Q3.5-27B G4-26B G4-E4B --dataset gsm8k --sample_size 128 --style spacing --places global --strengths 0 20 50 100 --max_new_tokens 300
 COT_RUN_DIR=$(ls -td results/cot_responses/run_gsm8k_spacing_*/ | head -1)
 
-# --- CoT analysis ---
-python experiments/compute_cot_analysis.py --run_dir "$COT_RUN_DIR" --sample_size 128 --judge_provider openai --judge_model gpt-4o-mini
-
-# --- correctness analysis ---
-python experiments/compute_correctness.py --run_dir "$COT_RUN_DIR" --sample_size 128 --judge_provider openai --judge_model gpt-4o-mini
-
 # ============================================================
 # INTERROGATIVE VS IMPERATIVE
 # ============================================================
@@ -282,9 +252,3 @@ python experiments/safety_full.py --models G4-E4B   --style_family structured --
 # --- generate CoT responses (gsm8k) ---
 python experiments/cot_reasoning_generate.py --models Q3.5-9B Q3.5-27B G4-26B G4-E4B --dataset gsm8k --sample_size 128 --style inter_vs_imper --max_new_tokens 300
 COT_RUN_DIR=$(ls -td results/cot_responses/run_gsm8k_inter_vs_imper_*/ | head -1)
-
-# --- CoT analysis ---
-python experiments/compute_cot_analysis.py --run_dir "$COT_RUN_DIR" --sample_size 128 --judge_provider openai --judge_model gpt-4o-mini
-
-# --- correctness analysis ---
-python experiments/compute_correctness.py --run_dir "$COT_RUN_DIR" --sample_size 128 --judge_provider openai --judge_model gpt-4o-mini
