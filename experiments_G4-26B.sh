@@ -16,10 +16,10 @@ python experiments/politeness.py --models G4-26B --dataset truthful_qa --sample_
 # ============================================================
 
 # --- activations ---
-python experiments/safety_full.py --models G4-26B --style_family politeness --places prefix suffix global --harmbench_size 128 --alpaca_size 128 --compute_asr False --run_dir results/safety/politeness_activations
+python experiments/safety_full.py --model G4-26B --style_family politeness --places prefix suffix global --harmbench_sample_size 128 --alpaca_sample_size 128 --compute_activations --run_dir results/safety/politeness_activations
 
 # --- ASR (stage1 + stage2) ---
-python experiments/safety_full.py --models G4-26B --style_family politeness --places prefix suffix global --harmbench_size 128 --asr_stage both --compute_activations False --run_dir results/safety/politeness_asr
+python experiments/safety_full.py --model G4-26B --style_family politeness --places prefix suffix global --harmbench_sample_size 128 --asr_stage both --compute_asr --run_dir results/safety/politeness_asr
 
 # ============================================================
 # COT - POLITENESS
@@ -42,10 +42,10 @@ python experiments/length_variation.py --models G4-26B --dataset truthful_qa --s
 # ============================================================
 
 # --- activations ---
-python experiments/safety_full.py --models G4-26B --style_family structured --style_name length_variation --harmbench_size 128 --alpaca_size 128 --compute_asr False --run_dir results/safety/length_variation_activations
+python experiments/safety_full.py --model G4-26B --style_family structured --style_name length_variation --harmbench_sample_size 128 --alpaca_sample_size 128 --compute_activations --run_dir results/safety/length_variation_activations
 
 # --- ASR (stage1 + stage2) ---
-python experiments/safety_full.py --models G4-26B --style_family structured --style_name length_variation --harmbench_size 128 --asr_stage both --compute_activations False --run_dir results/safety/length_variation_asr
+python experiments/safety_full.py --model G4-26B --style_family structured --style_name length_variation --harmbench_sample_size 128 --asr_stage both --compute_asr --run_dir results/safety/length_variation_asr
 
 # ============================================================
 # COT - LENGTH VARIATION
@@ -68,10 +68,10 @@ python experiments/letter_case.py --models G4-26B --dataset truthful_qa --sample
 # ============================================================
 
 # --- activations ---
-python experiments/safety_full.py --models G4-26B --style_family surface_noise --style_name letter_case --places prefix suffix global --harmbench_size 128 --alpaca_size 128 --compute_asr False --run_dir results/safety/letter_case_activations
+python experiments/safety_full.py --model G4-26B --style_family surface_noise --style_name letter_case --places prefix suffix global --harmbench_sample_size 128 --alpaca_sample_size 128 --compute_activations --run_dir results/safety/letter_case_activations
 
 # --- ASR (stage1 + stage2) ---
-python experiments/safety_full.py --models G4-26B --style_family surface_noise --style_name letter_case --places prefix suffix global --harmbench_size 128 --asr_stage both --compute_activations False --run_dir results/safety/letter_case_asr
+python experiments/safety_full.py --model G4-26B --style_family surface_noise --style_name letter_case --places prefix suffix global --harmbench_sample_size 128 --asr_stage both --compute_asr --run_dir results/safety/letter_case_asr
 
 # ============================================================
 # COT - LETTER CASE
@@ -94,10 +94,10 @@ python experiments/punctuation.py --models G4-26B --dataset truthful_qa --sample
 # ============================================================
 
 # --- activations ---
-python experiments/safety_full.py --models G4-26B --style_family surface_noise --style_name punctuation --places prefix suffix global --harmbench_size 128 --alpaca_size 128 --compute_asr False --run_dir results/safety/punctuation_activations
+python experiments/safety_full.py --model G4-26B --style_family surface_noise --style_name punctuation --places prefix suffix global --harmbench_sample_size 128 --alpaca_sample_size 128 --compute_activations --run_dir results/safety/punctuation_activations
 
 # --- ASR (stage1 + stage2) ---
-python experiments/safety_full.py --models G4-26B --style_family surface_noise --style_name punctuation --places prefix suffix global --harmbench_size 128 --asr_stage both --compute_activations False --run_dir results/safety/punctuation_asr
+python experiments/safety_full.py --model G4-26B --style_family surface_noise --style_name punctuation --places prefix suffix global --harmbench_sample_size 128 --asr_stage both --compute_asr --run_dir results/safety/punctuation_asr
 
 # ============================================================
 # COT - PUNCTUATION
@@ -120,10 +120,10 @@ python experiments/spacing.py --models G4-26B --dataset truthful_qa --sample_siz
 # ============================================================
 
 # --- activations ---
-python experiments/safety_full.py --models G4-26B --style_family surface_noise --style_name spacing --places prefix suffix global --harmbench_size 128 --alpaca_size 128 --compute_asr False --run_dir results/safety/spacing_activations
+python experiments/safety_full.py --model G4-26B --style_family surface_noise --style_name spacing --places prefix suffix global --harmbench_sample_size 128 --alpaca_sample_size 128 --compute_activations --run_dir results/safety/spacing_activations
 
 # --- ASR (stage1 + stage2) ---
-python experiments/safety_full.py --models G4-26B --style_family surface_noise --style_name spacing --places prefix suffix global --harmbench_size 128 --asr_stage both --compute_activations False --run_dir results/safety/spacing_asr
+python experiments/safety_full.py --model G4-26B --style_family surface_noise --style_name spacing --places prefix suffix global --harmbench_sample_size 128 --asr_stage both --compute_asr --run_dir results/safety/spacing_asr
 
 # ============================================================
 # COT - SPACING
@@ -146,10 +146,10 @@ python experiments/interrogative_vs_imperative.py --models G4-26B --dataset trut
 # ============================================================
 
 # --- activations ---
-python experiments/safety_full.py --models G4-26B --style_family structured --style_name inter_vs_imper --harmbench_size 128 --alpaca_size 128 --compute_asr False --run_dir results/safety/inter_vs_imper_activations
+python experiments/safety_full.py --model G4-26B --style_family structured --style_name inter_vs_imper --harmbench_sample_size 128 --alpaca_sample_size 128 --compute_activations --run_dir results/safety/inter_vs_imper_activations
 
 # --- ASR (stage1 + stage2) ---
-python experiments/safety_full.py --models G4-26B --style_family structured --style_name inter_vs_imper --harmbench_size 128 --asr_stage both --compute_activations False --run_dir results/safety/inter_vs_imper_asr
+python experiments/safety_full.py --model G4-26B --style_family structured --style_name inter_vs_imper --harmbench_sample_size 128 --asr_stage both --compute_asr --run_dir results/safety/inter_vs_imper_asr
 
 # ============================================================
 # COT - INTERROGATIVE VS IMPERATIVE
