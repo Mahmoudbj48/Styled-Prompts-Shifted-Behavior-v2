@@ -267,7 +267,7 @@ def load_dataset_by_name(dataset_name, **kwargs):
         "truthful_qa": load_truthfulqa,
         "mmlu": load_mmlu,
         "alpaca": load_alpaca_hf,
-        "bbq": load_bbq_hf,
+
         "harmbench": load_harmbench_hf,
         "gsm8k": load_gsm8k,
         "natural_questions": load_natural_questions,
