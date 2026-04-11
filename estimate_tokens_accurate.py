@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 """
-ACCURATE Token Usage Estimation - See script for full details
+Token Usage Analysis - Fill Excel Template
+Computes exact token counts per dataset and style combination
 """
+
 import sys
 from pathlib import Path
 from collections import defaultdict
 import yaml
+import openpyxl
 
+# Add repo to path
 repo_root = Path(__file__).parent
 sys.path.insert(0, str(repo_root))
 
@@ -16,186 +20,453 @@ from utils.styles import (
 )
 
 def count_tokens(text):
+    """Estimate tokens (0.75 tokens per word)"""
     if not text:
         return 0
     return int(len(text.split()) * 0.75)
 
 def load_config():
+    """Load config.yaml"""
     with open(repo_root / "config.yaml") as f:
         return yaml.safe_load(f)
 
-def load_datasets(config):
+def load_datasets():
+    """Load real datasets (128 prompts each)"""
     from datasets import load_dataset
+    
     datasets_dict = {}
     
     print("\n" + "="*80)
-    print("LOADING DATASETS")
+    print("LOADING DATASETS (Black-box measurements only)")
     print("="*80)
     
-    print("\n[1/4] TruthfulQA...")
+    # TruthfulQA
+    print("\n[1/3] TruthfulQA...")
     tqa = load_dataset("truthful_qa", "generation", split="validation")
-    datasets_dict['truthful_qa'] = [item['question'] for item in tqa.select(range(128))]
-    print(f"✓ {len(datasets_dict['truthful_qa'])} questions")
+    datasets_dict['truthfulqa'] = [item['question'] for item in tqa.select(range(128))]
+    print(f"✓ {len(datasets_dict['truthfulqa'])} questions")
     
-    print("\n[2/4] GSM8K...")
+    # GSM8K
+    print("\n[2/3] GSM8K...")
     gsm8k = load_dataset("gsm8k", "main", split="test")
-    datasets_dict['gsm8k'] = [item['question'] for item in gsm8k.select(range(128))]
-    print(f"✓ {len(datasets_dict['gsm8k'])} problems")
+    datasets_dict['gsmk8'] = [item['question'] for item in gsm8k.select(range(128))]
+    print(f"✓ {len(datasets_dict['gsmk8'])} problems")
     
-    print("\n[3/4] HarmBench...")
+    # HarmBench
+    print("\n[3/3] HarmBench...")
     try:
         hb = load_dataset("mantas-m/HarmBench", split="val")
         std = [i for i in hb if i.get('semantic_category')=='standard'][:128]
         datasets_dict['harmbench'] = [i['behavior'] for i in std]
     except:
-        datasets_dict['harmbench'] = ["Harmful prompt"] * 128
+        print("  ⚠ Using fallback prompts")
+        datasets_dict['harmbench'] = ["Harmful prompt example"] * 128
     print(f"✓ {len(datasets_dict['harmbench'])} prompts")
-    
-    print("\n[4/4] Alpaca...")
-    try:
-        alp = load_dataset("tatsu-lab/alpaca", split="train")
-        datasets_dict['alpaca'] = [i['instruction'] for i in alp.select(range(128))]
-    except:
-        datasets_dict['alpaca'] = ["Harmless prompt"] * 128
-    print(f"✓ {len(datasets_dict['alpaca'])} instructions")
     
     return datasets_dict
 
-def compute_usage(datasets, config):
+def compute_per_dataset_style(datasets, config):
+    """
+    Compute exact token usage per dataset-style combination
+    Returns dict: {(dataset, style): {'input': X, 'output': Y}}
+    """
+    
     print("\n" + "="*80)
-    print("COMPUTING EXACT TOKEN USAGE")
+    print("COMPUTING TOKENS PER DATASET-STYLE COMBINATION")
     print("="*80)
     
-    # Dataset stats
-    stats = {}
-    for name, prompts in datasets.items():
-        tokens = [count_tokens(p) for p in prompts]
-        stats[name] = {'avg': sum(tokens)/len(tokens), 'total': sum(tokens)}
-        print(f"\n{name}: avg={stats[name]['avg']:.1f} tokens/prompt")
+    results = {}
     
-    usage = defaultdict(lambda: {'input': 0, 'output': 0, 'exp': 0})
+    # Output token limits
+    MAX_OUT_GENERAL = 100
+    MAX_OUT_GSMK8 = 500
     
-    max_out = config['defaults']['max_new_tokens']
-    max_cot = config['defaults']['max_new_tokens_cot']
-    cot_inst = "\n\nLet's think step by step."
+    # CoT instruction for GSM8K
+    cot_instruction = "\n\nLet's think step by step."
     
-    # Helper
-    def process(key, style_key, prompts, apply_fn, strengths, positions, out_tokens, add_cot=False):
-        prompt_list = [p + cot_inst for p in prompts] if add_cot else prompts
-        for s in strengths:
-            for pos in positions:
-                styled = [apply_fn(p, s, pos) for p in prompt_list]
-                in_tok = sum(count_tokens(sp) for sp in styled)
-                usage[style_key]['input'] += in_tok
-                usage[style_key]['output'] += 128 * out_tokens
-                usage[style_key]['exp'] += 1
-                usage[key]['input'] += in_tok
-                usage[key]['output'] += 128 * out_tokens
-                usage[key]['exp'] += 1
+    # ============================================================
+    # SPACING
+    # ============================================================
     
-    print("\n[1/6] Politeness...")
-    pol_s = config['style_levels']['politeness']
-    pol_p = config['style_positions']['politeness']
-    process('pol_tqa', 'politeness', datasets['truthful_qa'], apply_politeness, pol_s, pol_p, max_out)
-    process('pol_harm', 'politeness', datasets['harmbench'], apply_politeness, pol_s, pol_p, max_out)
-    process('pol_alp', 'politeness', datasets['alpaca'], apply_politeness, pol_s, pol_p, max_out)
-    process('pol_cot', 'politeness', datasets['gsm8k'], apply_politeness, [-8,-4,0,4,8], ['global','prefix','suffix'], max_cot, True)
+    print("\n[1/6] Computing SPACING tokens...")
     
-    print("[2/6] Spacing...")
-    spa_s = config['style_levels']['spacing']
-    spa_p = config['style_positions']['spacing']
-    process('spa_tqa', 'spacing', datasets['truthful_qa'], apply_spacing, spa_s, spa_p, max_out)
-    process('spa_harm', 'spacing', datasets['harmbench'], apply_spacing, spa_s, spa_p, max_out)
-    process('spa_alp', 'spacing', datasets['alpaca'], apply_spacing, spa_s, spa_p, max_out)
-    process('spa_cot', 'spacing', datasets['gsm8k'], apply_spacing, [0,20,50,100], ['global'], max_cot, True)
+    spacing_strengths = config['style_levels']['spacing']  # [0, 1, 5, 20, 50, 100]
+    spacing_positions = config['style_positions']['spacing']  # ['prefix', 'suffix', 'global']
     
-    print("[3/6] Punctuation...")
-    pun_s = config['style_levels']['punctuation']
-    pun_p = config['style_positions']['punctuation']
-    process('pun_tqa', 'punctuation', datasets['truthful_qa'], apply_punctuation, pun_s, pun_p, max_out)
-    process('pun_harm', 'punctuation', datasets['harmbench'], apply_punctuation, pun_s, pun_p, max_out)
-    process('pun_alp', 'punctuation', datasets['alpaca'], apply_punctuation, pun_s, pun_p, max_out)
-    process('pun_cot', 'punctuation', datasets['gsm8k'], apply_punctuation, [0,3,10,20], ['global'], max_cot, True)
+    for dataset_name in ['truthfulqa', 'gsmk8', 'harmbench']:
+        prompts = datasets[dataset_name]
+        
+        # Add CoT instruction for GSM8K
+        if dataset_name == 'gsmk8':
+            prompts_to_style = [p + cot_instruction for p in prompts]
+            max_output = MAX_OUT_GSMK8
+        else:
+            prompts_to_style = prompts
+            max_output = MAX_OUT_GENERAL
+        
+        total_input = 0
+        total_output = 0
+        num_experiments = 0
+        
+        # All permutations: 3 positions × 6 strengths × 128 prompts
+        for strength in spacing_strengths:
+            for position in spacing_positions:
+                # Apply style to all 128 prompts
+                styled_prompts = [
+                    apply_spacing(prompt, strength, position)
+                    for prompt in prompts_to_style
+                ]
+                
+                # Count input tokens
+                input_tokens = sum(count_tokens(p) for p in styled_prompts)
+                total_input += input_tokens
+                
+                # Count output tokens (128 prompts × max_output)
+                output_tokens = len(prompts) * max_output
+                total_output += output_tokens
+                
+                num_experiments += 1
+        
+        results[(dataset_name, 'spacing')] = {
+            'input': total_input,
+            'output': total_output,
+            'experiments': num_experiments
+        }
+        
+        print(f"  {dataset_name}: {num_experiments} experiments, "
+              f"Input={total_input:,}, Output={total_output:,}")
     
-    print("[4/6] Letter Case...")
-    cas_s = config['style_levels']['letter_case']
-    cas_p = config['style_positions']['letter_case']
-    process('cas_tqa', 'letter_case', datasets['truthful_qa'], apply_letter_case, cas_s, cas_p, max_out)
-    process('cas_harm', 'letter_case', datasets['harmbench'], apply_letter_case, cas_s, cas_p, max_out)
-    process('cas_alp', 'letter_case', datasets['alpaca'], apply_letter_case, cas_s, cas_p, max_out)
-    process('cas_cot', 'letter_case', datasets['gsm8k'], apply_letter_case, [0,25,50,100], ['global'], max_cot, True)
+    # ============================================================
+    # PUNCTUATION
+    # ============================================================
     
-    print("[5/6] Length Variation...")
-    len_m = config['style_levels']['length_variation']
-    for m in len_m:
-        for name, key, prompts, out in [
-            ('truthful_qa', 'len_tqa', datasets['truthful_qa'], max_out),
-            ('harmbench', 'len_harm', datasets['harmbench'], max_out),
-            ('alpaca', 'len_alp', datasets['alpaca'], max_out),
-            ('gsm8k', 'len_cot', datasets['gsm8k'], max_cot)
-        ]:
-            est = int(stats[name]['avg'] * m * 128)
-            usage['length']['input'] += est
-            usage['length']['output'] += 128 * out
-            usage['length']['exp'] += 1
-            usage[key]['input'] += est
-            usage[key]['output'] += 128 * out
-            usage[key]['exp'] += 1
+    print("\n[2/6] Computing PUNCTUATION tokens...")
     
-    print("[6/6] Inter vs Imper...")
-    for v in config['style_levels']['inter_vs_imper']:
-        for name, key, prompts, out in [
-            ('truthful_qa', 'for_tqa', datasets['truthful_qa'], max_out),
-            ('harmbench', 'for_harm', datasets['harmbench'], max_out),
-            ('alpaca', 'for_alp', datasets['alpaca'], max_out),
-            ('gsm8k', 'for_cot', datasets['gsm8k'], max_cot)
-        ]:
-            est = int((stats[name]['avg'] + 5) * 128)
-            usage['form']['input'] += est
-            usage['form']['output'] += 128 * out
-            usage['form']['exp'] += 1
-            usage[key]['input'] += est
-            usage[key]['output'] += 128 * out
-            usage[key]['exp'] += 1
+    punct_strengths = config['style_levels']['punctuation']  # [0, 1, 3, 5, 10, 20]
+    punct_positions = config['style_positions']['punctuation']  # ['prefix', 'suffix', 'global']
     
-    return usage
+    for dataset_name in ['truthfulqa', 'gsmk8', 'harmbench']:
+        prompts = datasets[dataset_name]
+        
+        if dataset_name == 'gsmk8':
+            prompts_to_style = [p + cot_instruction for p in prompts]
+            max_output = MAX_OUT_GSMK8
+        else:
+            prompts_to_style = prompts
+            max_output = MAX_OUT_GENERAL
+        
+        total_input = 0
+        total_output = 0
+        num_experiments = 0
+        
+        for strength in punct_strengths:
+            for position in punct_positions:
+                styled_prompts = [
+                    apply_punctuation(prompt, strength, position)
+                    for prompt in prompts_to_style
+                ]
+                
+                input_tokens = sum(count_tokens(p) for p in styled_prompts)
+                total_input += input_tokens
+                
+                output_tokens = len(prompts) * max_output
+                total_output += output_tokens
+                
+                num_experiments += 1
+        
+        results[(dataset_name, 'punctuation')] = {
+            'input': total_input,
+            'output': total_output,
+            'experiments': num_experiments
+        }
+        
+        print(f"  {dataset_name}: {num_experiments} experiments, "
+              f"Input={total_input:,}, Output={total_output:,}")
+    
+    # ============================================================
+    # LETTER CASE
+    # ============================================================
+    
+    print("\n[3/6] Computing LETTER_CASE tokens...")
+    
+    case_strengths = config['style_levels']['letter_case']  # [0, 10, 25, 50, 75, 100]
+    case_positions = config['style_positions']['letter_case']  # ['prefix', 'suffix', 'global']
+    
+    for dataset_name in ['truthfulqa', 'gsmk8', 'harmbench']:
+        prompts = datasets[dataset_name]
+        
+        if dataset_name == 'gsmk8':
+            prompts_to_style = [p + cot_instruction for p in prompts]
+            max_output = MAX_OUT_GSMK8
+        else:
+            prompts_to_style = prompts
+            max_output = MAX_OUT_GENERAL
+        
+        total_input = 0
+        total_output = 0
+        num_experiments = 0
+        
+        for strength in case_strengths:
+            for position in case_positions:
+                styled_prompts = [
+                    apply_letter_case(prompt, strength, position)
+                    for prompt in prompts_to_style
+                ]
+                
+                input_tokens = sum(count_tokens(p) for p in styled_prompts)
+                total_input += input_tokens
+                
+                output_tokens = len(prompts) * max_output
+                total_output += output_tokens
+                
+                num_experiments += 1
+        
+        results[(dataset_name, 'letter_case')] = {
+            'input': total_input,
+            'output': total_output,
+            'experiments': num_experiments
+        }
+        
+        print(f"  {dataset_name}: {num_experiments} experiments, "
+              f"Input={total_input:,}, Output={total_output:,}")
+    
+    # ============================================================
+    # POLITENESS
+    # ============================================================
+    
+    print("\n[4/6] Computing POLITENESS tokens...")
+    
+    pol_strengths = config['style_levels']['politeness']  # [-10, -8, -6, -4, -2, 0, 2, 4, 6, 8, 10]
+    pol_positions = config['style_positions']['politeness']  # ['prefix', 'suffix', 'global']
+    
+    for dataset_name in ['truthfulqa', 'gsmk8', 'harmbench']:
+        prompts = datasets[dataset_name]
+        
+        if dataset_name == 'gsmk8':
+            prompts_to_style = [p + cot_instruction for p in prompts]
+            max_output = MAX_OUT_GSMK8
+        else:
+            prompts_to_style = prompts
+            max_output = MAX_OUT_GENERAL
+        
+        total_input = 0
+        total_output = 0
+        num_experiments = 0
+        
+        for strength in pol_strengths:
+            for position in pol_positions:
+                styled_prompts = [
+                    apply_politeness(prompt, strength, position)
+                    for prompt in prompts_to_style
+                ]
+                
+                input_tokens = sum(count_tokens(p) for p in styled_prompts)
+                total_input += input_tokens
+                
+                output_tokens = len(prompts) * max_output
+                # Add mirroring overhead for polite prompts
+                if strength > 0:
+                    output_tokens += len(prompts) * 5
+                total_output += output_tokens
+                
+                num_experiments += 1
+        
+        results[(dataset_name, 'politeness')] = {
+            'input': total_input,
+            'output': total_output,
+            'experiments': num_experiments
+        }
+        
+        print(f"  {dataset_name}: {num_experiments} experiments, "
+              f"Input={total_input:,}, Output={total_output:,}")
+    
+    # ============================================================
+    # LENGTH VARIATION
+    # ============================================================
+    
+    print("\n[5/6] Computing LENGTH VARIATION tokens...")
+    
+    length_multipliers = config['style_levels']['length_variation']  # [0.25, 0.5, 1.0, 1.5, 2.0, 3.0]
+    # Length variation is global-only, so 1 position
+    
+    for dataset_name in ['truthfulqa', 'gsmk8', 'harmbench']:
+        prompts = datasets[dataset_name]
+        
+        if dataset_name == 'gsmk8':
+            base_prompts = [p + cot_instruction for p in prompts]
+            max_output = MAX_OUT_GSMK8
+        else:
+            base_prompts = prompts
+            max_output = MAX_OUT_GENERAL
+        
+        # Calculate average base tokens
+        avg_base_tokens = sum(count_tokens(p) for p in base_prompts) / len(base_prompts)
+        
+        total_input = 0
+        total_output = 0
+        num_experiments = 0
+        
+        # 6 multipliers × 128 prompts (1 position: global)
+        for multiplier in length_multipliers:
+            # Estimate tokens after length variation
+            estimated_tokens_per_prompt = int(avg_base_tokens * multiplier)
+            input_tokens = estimated_tokens_per_prompt * len(prompts)
+            total_input += input_tokens
+            
+            output_tokens = len(prompts) * max_output
+            total_output += output_tokens
+            
+            num_experiments += 1
+        
+        results[(dataset_name, 'length variation')] = {
+            'input': total_input,
+            'output': total_output,
+            'experiments': num_experiments
+        }
+        
+        print(f"  {dataset_name}: {num_experiments} experiments, "
+              f"Input={total_input:,}, Output={total_output:,}")
+    
+    # ============================================================
+    # INTERROGATIVE VS IMPERATIVE
+    # ============================================================
+    
+    print("\n[6/6] Computing INTER VS IMPER tokens...")
+    
+    form_variants = config['style_levels']['inter_vs_imper']  # ['interrogative', 'imperative']
+    # Inter vs imper is global-only, so 1 position
+    
+    for dataset_name in ['truthfulqa', 'gsmk8', 'harmbench']:
+        prompts = datasets[dataset_name]
+        
+        if dataset_name == 'gsmk8':
+            base_prompts = [p + cot_instruction for p in prompts]
+            max_output = MAX_OUT_GSMK8
+        else:
+            base_prompts = prompts
+            max_output = MAX_OUT_GENERAL
+        
+        # Calculate average base tokens
+        avg_base_tokens = sum(count_tokens(p) for p in base_prompts) / len(base_prompts)
+        
+        total_input = 0
+        total_output = 0
+        num_experiments = 0
+        
+        # 2 variants × 128 prompts (1 position: global)
+        for variant in form_variants:
+            # Estimate: base tokens + small overhead for rephrasing
+            estimated_tokens_per_prompt = int(avg_base_tokens + 5)
+            input_tokens = estimated_tokens_per_prompt * len(prompts)
+            total_input += input_tokens
+            
+            output_tokens = len(prompts) * max_output
+            total_output += output_tokens
+            
+            num_experiments += 1
+        
+        results[(dataset_name, 'inter')] = {
+            'input': total_input,
+            'output': total_output,
+            'experiments': num_experiments
+        }
+        
+        print(f"  {dataset_name}: {num_experiments} experiments, "
+              f"Input={total_input:,}, Output={total_output:,}")
+    
+    return results
 
-def print_summary(usage):
-    styles = ['politeness', 'spacing', 'punctuation', 'letter_case', 'length', 'form']
-    total_in = sum(usage[s]['input'] for s in styles)
-    total_out = sum(usage[s]['output'] for s in styles)
-    total = total_in + total_out
+def fill_excel_template(results, output_file):
+    """Fill the Excel template with computed results"""
     
     print("\n" + "="*80)
-    print("TOTAL TOKEN USAGE")
+    print("FILLING EXCEL TEMPLATE")
     print("="*80)
-    print(f"\nInput:  {total_in:,} ({total_in/total*100:.1f}%)")
-    print(f"Output: {total_out:,} ({total_out/total*100:.1f}%)")
-    print(f"TOTAL:  {total:,}")
     
-    print("\n" + "="*80)
-    print("COSTS")
-    print("="*80)
-    for model, (inp, outp) in [('GPT-4', (30,60)), ('Claude Sonnet', (3,15)), ('GPT-4o-mini', (0.15,0.6))]:
-        cost = (total_in/1e6)*inp + (total_out/1e6)*outp
-        print(f"\n{model}: ${cost:,.2f}")
+    # Create new workbook
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Token Analysis"
     
+    # Write headers
+    ws['A1'] = 'dataset'
+    ws['B1'] = 'style'
+    ws['C1'] = 'input'
+    ws['D1'] = 'output'
+    
+    # Define the order as in the template
+    datasets_order = ['truthfulqa', 'gsmk8', 'harmbench']
+    styles_order = ['spacing', 'punctuation', 'letter_case', 'inter', 'length variation', 'politeness']
+    
+    row = 2
+    for dataset in datasets_order:
+        for style in styles_order:
+            ws[f'A{row}'] = dataset
+            ws[f'B{row}'] = style
+            
+            key = (dataset, style)
+            if key in results:
+                ws[f'C{row}'] = results[key]['input']
+                ws[f'D{row}'] = results[key]['output']
+            else:
+                ws[f'C{row}'] = 0
+                ws[f'D{row}'] = 0
+            
+            row += 1
+    
+    # Save workbook
+    wb.save(output_file)
+    print(f"\n✓ Excel file saved to: {output_file}")
+    
+    # Print summary
     print("\n" + "="*80)
-    print("BY STYLE")
+    print("SUMMARY")
     print("="*80)
-    for s in styles:
-        st = usage[s]['input'] + usage[s]['output']
-        print(f"\n{s.upper()}: {st:,} ({st/total*100:.1f}%)")
+    
+    total_input = sum(r['input'] for r in results.values())
+    total_output = sum(r['output'] for r in results.values())
+    total_tokens = total_input + total_output
+    
+    print(f"\nTotal Input:  {total_input:,} tokens ({total_input/total_tokens*100:.1f}%)")
+    print(f"Total Output: {total_output:,} tokens ({total_output/total_tokens*100:.1f}%)")
+    print(f"TOTAL:        {total_tokens:,} tokens")
+    
+    # Cost estimates
+    print("\n" + "-"*80)
+    print("ESTIMATED COSTS")
+    print("-"*80)
+    
+    for model, (in_price, out_price) in [
+        ('GPT-4', (30, 60)),
+        ('Claude Sonnet', (3, 15)),
+        ('GPT-4o-mini', (0.15, 0.6))
+    ]:
+        cost = (total_input/1e6)*in_price + (total_output/1e6)*out_price
+        print(f"{model:20s} ${cost:,.2f}")
 
 def main():
     print("="*80)
-    print("ACCURATE TOKEN ESTIMATION")
+    print("TOKEN ANALYSIS - FILL EXCEL TEMPLATE")
+    print("Per Dataset-Style Combination")
     print("="*80)
-    config = load_config()
-    datasets = load_datasets(config)
-    usage = compute_usage(datasets, config)
-    print_summary(usage)
-    print("\n✓ Complete")
+    
+    try:
+        config = load_config()
+        datasets = load_datasets()
+        results = compute_per_dataset_style(datasets, config)
+        
+        output_file = repo_root / "token_analysis_filled.xlsx"
+        fill_excel_template(results, output_file)
+        
+        print("\n" + "="*80)
+        print("✓ COMPLETE")
+        print("="*80)
+        
+    except Exception as e:
+        print(f"\n✗ Error: {e}")
+        import traceback
+        traceback.print_exc()
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
