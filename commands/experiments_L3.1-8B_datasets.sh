@@ -6,7 +6,7 @@
 #
 # Usage: bash commands/experiments_L3.1-8B_datasets.sh [BATCH_SIZE]
 
-BATCH_SIZE=${1:-16}
+BATCH_SIZE=${1:-40}
 
 # ============================================================
 # ALPACA

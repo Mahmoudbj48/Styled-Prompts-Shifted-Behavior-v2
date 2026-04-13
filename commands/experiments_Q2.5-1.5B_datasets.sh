@@ -5,7 +5,7 @@
 #
 # Usage: bash commands/experiments_Q2.5-1.5B_datasets.sh [BATCH_SIZE]
 
-BATCH_SIZE=${1:-16}
+BATCH_SIZE=${1:-40}
 
 # ============================================================
 # NATURAL QUESTIONS
