@@ -40,6 +40,7 @@ import torch.nn.functional as F
 # ---------------------------------------------------------------------------
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from utils.compute_delta_metrics import add_delta_columns
 from utils.data import load_dataset_by_name
 from utils.models import load_model, generate_response
 from utils.metrics import (
@@ -474,6 +475,7 @@ def run_for_one_model(
         row_pbar.close()
 
     df = pd.DataFrame(rows)
+    df = add_delta_columns(df, style=STYLE_NAME)
     out_csv = os.path.join(run_dir, f"{model_name}_results.csv")
     df.to_csv(out_csv, index=False)
     print(f"✓ Saved per-example results: {out_csv}")
@@ -614,6 +616,7 @@ def run_experiment(
         return run_dir
 
     df_all = pd.concat(all_dfs, ignore_index=True)
+    df_all = add_delta_columns(df_all, style=STYLE_NAME)
 
     full_path = os.path.join(run_dir, "full_results_all_models.csv")
     df_all.to_csv(full_path, index=False)
