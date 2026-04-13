@@ -1,0 +1,1454 @@
+#!/usr/bin/env python3
+"""
+Sensitivity analysis: how many prompts do we need for stable results?
+
+Method
+------
+All styles are loaded together. For each model and sample size N ∈ {4, 8, 16,
+32, 64, 128} we bootstrap 500 random subsets of N prompt-IDs and compute each
+metric's mean over the sampled styled rows.
+
+Y-axis: Metric value. One line per model with P10–P90 bootstrap band.
+A vertical dashed line marks the recommended N (smallest N within 15% of the
+full N=128 estimate for all models).
+
+Usage
+-----
+  python plots/sensitivity_analysis.py
+  python plots/sensitivity_analysis.py --out_dir results/sensitivity_analysis --n_bootstrap 500
+  python plots/sensitivity_analysis.py --styles spacing punctuation letter_case
+"""
+
+import argparse
+import sys
+from pathlib import Path
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+# ── TruthfulQA CSV paths ───────────────────────────────────────────────────────
+STYLE_CSV_PATHS: dict[str, list[str]] = {
+    "spacing": [
+        "results/spacing/run_multi_truthful_qa_20260223_221345/results_with_mirroring.csv",
+        "results/spacing/run_multi_truthful_qa_20260224_154406/results_with_mirroring.csv",
+        "results/spacing/run_multi_truthful_qa_20260224_160542/results_with_mirroring.csv",
+        "results/spacing/run_multi_truthful_qa_20260224_164304/results_with_mirroring.csv",
+        "results/spacing/run_multi_truthful_qa_20260224_173202/results_with_mirroring.csv",
+        "results/spacing/run_multi_truthful_qa_20260224_181508/results_with_mirroring.csv",
+        # G4-E4B, Q3.5-9B
+        "results/spacing/run_multi_truthful_qa_20260409_163159/full_results_all_models.csv",
+        "results/spacing/run_multi_truthful_qa_20260410_094504/full_results_all_models.csv",
+    ],
+    "punctuation": [
+        "results/punctuation/run_multi_truthful_qa_20260222_215846/results_with_mirroring.csv",
+        "results/punctuation/run_multi_truthful_qa_20260223_215814/results_with_mirroring.csv",
+        "results/punctuation/run_multi_truthful_qa_20260224_162341/results_with_mirroring.csv",
+        "results/punctuation/run_multi_truthful_qa_20260224_185252/results_with_mirroring.csv",
+        "results/punctuation/run_multi_truthful_qa_20260224_193108/results_with_mirroring.csv",
+        "results/punctuation/run_multi_truthful_qa_20260224_195351/results_with_mirroring.csv",
+        # G4-E4B, Q3.5-9B
+        "results/punctuation/run_multi_truthful_qa_20260409_143341/full_results_all_models.csv",
+        "results/punctuation/run_multi_truthful_qa_20260410_042041/full_results_all_models.csv",
+    ],
+    "letter_case": [
+        "results/letter_case/run_multi_truthful_qa_20260223_143708/results_with_mirroring.csv",
+        "results/letter_case/run_multi_truthful_qa_20260223_152205/results_with_mirroring.csv",
+        "results/letter_case/run_multi_truthful_qa_20260223_214923/results_with_mirroring.csv",
+        "results/letter_case/run_multi_truthful_qa_20260224_213628/results_with_mirroring.csv",
+        "results/letter_case/run_multi_truthful_qa_20260225_005805/results_with_mirroring.csv",
+        "results/letter_case/run_multi_truthful_qa_20260225_032721/results_with_mirroring.csv",
+        # G4-E4B, Q3.5-9B
+        "results/letter_case/run_multi_truthful_qa_20260409_121907/full_results_all_models.csv",
+        "results/letter_case/run_multi_truthful_qa_20260409_222404/full_results_all_models.csv",
+    ],
+    "politeness": [
+        "results/politeness/run_multi_truthful_qa_20260221_112112/full_results_all_models.csv",
+        "results/politeness/run_multi_truthful_qa_20260221_145354/full_results_all_models.csv",
+        "results/politeness/run_multi_truthful_qa_20260222_113341/full_results_all_models.csv",
+        "results/politeness/run_multi_truthful_qa_20260222_132615/full_results_all_models.csv",
+        "results/politeness/run_multi_truthful_qa_20260222_150512/full_results_all_models.csv",
+        "results/politeness/run_multi_truthful_qa_20260223_120916/full_results_all_models.csv",
+        # G4-E4B, Q3.5-9B
+        "results/politeness/run_multi_truthful_qa_20260409_021222/full_results_all_models.csv",
+        "results/politeness/run_multi_truthful_qa_20260409_021310/full_results_all_models.csv",
+    ],
+    "length_variation": [
+        "results/length_variation/run_multi_truthful_qa_20260304_055338/full_results_all_models.csv",
+        # G4-E4B, Q3.5-9B
+        "results/length_variation/run_multi_truthful_qa_20260409_100412/full_results_all_models.csv",
+        "results/length_variation/run_multi_truthful_qa_20260409_164416/full_results_all_models.csv",
+    ],
+    "inter_vs_imper": [
+        "results/inter_vs_imper/run_multi_truthful_qa_20260304_165515/full_results_all_models.csv",
+        # G4-E4B, Q3.5-9B
+        "results/inter_vs_imper/run_multi_truthful_qa_20260409_183536/full_results_all_models.csv",
+        "results/inter_vs_imper/run_multi_truthful_qa_20260410_151032/full_results_all_models.csv",
+    ],
+}
+
+# ── CoT run directories (results_with_cot_analysis.csv inside each) ───────────
+COT_RUN_DIRS: dict[str, list[str]] = {
+    "spacing": [
+        "results/cot_responses/run_gsm8k_spacing_20260302_190013",
+        "results/cot_responses/run_gsm8k_spacing_20260302_195511",
+        "results/cot_responses/run_gsm8k_spacing_20260303_133116",
+        "results/cot_responses/run_gsm8k_spacing_20260303_192826",
+        "results/cot_responses/run_gsm8k_spacing_20260303_210133",
+        "results/cot_responses/run_gsm8k_spacing_20260304_015204",
+        # G4-E4B, Q3.5-9B
+        "results/cot_responses/run_gsm8k_spacing_20260409_172544",
+        "results/cot_responses/run_gsm8k_spacing_20260410_123434",
+    ],
+    "punctuation": [
+        "results/cot_responses/run_gsm8k_punctuation_20260302_211146",
+        "results/cot_responses/run_gsm8k_punctuation_20260302_214900",
+        "results/cot_responses/run_gsm8k_punctuation_20260303_150618",
+        "results/cot_responses/run_gsm8k_punctuation_20260303_195401",
+        "results/cot_responses/run_gsm8k_punctuation_20260303_221211",
+        "results/cot_responses/run_gsm8k_punctuation_20260304_020806",
+        # G4-E4B, Q3.5-9B
+        "results/cot_responses/run_gsm8k_punctuation_20260409_152737",
+        "results/cot_responses/run_gsm8k_punctuation_20260410_071913",
+    ],
+    "letter_case": [
+        "results/cot_responses/run_gsm8k_letter_case_20260302_230112",
+        "results/cot_responses/run_gsm8k_letter_case_20260302_235054",
+        "results/cot_responses/run_gsm8k_letter_case_20260303_162219",
+        "results/cot_responses/run_gsm8k_letter_case_20260303_201341",
+        "results/cot_responses/run_gsm8k_letter_case_20260303_231807",
+        "results/cot_responses/run_gsm8k_letter_case_20260304_021959",
+        # G4-E4B, Q3.5-9B
+        "results/cot_responses/run_gsm8k_letter_case_20260409_131705",
+        "results/cot_responses/run_gsm8k_letter_case_20260410_012919",
+    ],
+    "politeness": [
+        "results/cot_responses/run_gsm8k_politeness_20260303_011403",
+        "results/cot_responses/run_gsm8k_politeness_20260303_020840",
+        "results/cot_responses/run_gsm8k_politeness_20260303_175041",
+        "results/cot_responses/run_gsm8k_politeness_20260303_203615",
+        "results/cot_responses/run_gsm8k_politeness_20260304_003300",
+        "results/cot_responses/run_gsm8k_politeness_20260304_023434",
+        # G4-E4B, Q3.5-9B
+        "results/cot_responses/run_gsm8k_politeness_20260409_082038",
+        "results/cot_responses/run_gsm8k_politeness_20260409_125547",
+    ],
+    "length_variation": [
+        "results/cot_responses/run_gsm8k_length_variation_20260304_075450",
+        "results/cot_responses/run_gsm8k_length_variation_20260304_103343",
+        "results/cot_responses/run_gsm8k_length_variation_20260304_113317",
+        "results/cot_responses/run_gsm8k_length_variation_20260304_132144",
+        "results/cot_responses/run_gsm8k_length_variation_20260304_134359",
+        "results/cot_responses/run_gsm8k_length_variation_20260304_154646",
+        # G4-E4B, Q3.5-9B
+        "results/cot_responses/run_gsm8k_length_variation_20260409_103642",
+        "results/cot_responses/run_gsm8k_length_variation_20260409_183337",
+    ],
+    "inter_vs_imper": [
+        "results/cot_responses/run_gsm8k_inter_vs_imper_20260304_193938",
+        # G4-E4B, Q3.5-9B
+        "results/cot_responses/run_gsm8k_inter_vs_imper_20260409_184944",
+        "results/cot_responses/run_gsm8k_inter_vs_imper_20260410_160103",
+    ],
+}
+
+# ── Silhouette CSV paths (pre-aggregated per model/place/strength) ─────────────
+# Old models: results/safety/{style}/{model}/combined_means_by_model_place_strength.csv
+# New models: results/safety/{style}_activations/summary.csv
+SILHOUETTE_CSV_PATHS: dict[str, list[str]] = {
+    "spacing": [
+        "results/safety/spacing/G-2B/combined_means_by_model_place_strength.csv",
+        "results/safety/spacing/G-7B/combined_means_by_model_place_strength.csv",
+        "results/safety/spacing/L3.1-8B/combined_means_by_model_place_strength.csv",
+        "results/safety/spacing/L3.2-3B/combined_means_by_model_place_strength.csv",
+        "results/safety/spacing/Q2.5-1.5B/combined_means_by_model_place_strength.csv",
+        "results/safety/spacing/Q2.5-7B/combined_means_by_model_place_strength.csv",
+        # G4-E4B (Q3.5-9B not yet computed)
+        "results/safety/spacing_activations/summary.csv",
+    ],
+    "punctuation": [
+        "results/safety/punctuation/G-2B/combined_means_by_model_place_strength.csv",
+        "results/safety/punctuation/G-7B/combined_means_by_model_place_strength.csv",
+        "results/safety/punctuation/L3.1-8B/combined_means_by_model_place_strength.csv",
+        "results/safety/punctuation/L3.2-3B/combined_means_by_model_place_strength.csv",
+        "results/safety/punctuation/Q2.5-1.5B/combined_means_by_model_place_strength.csv",
+        "results/safety/punctuation/Q2.5-7B/combined_means_by_model_place_strength.csv",
+        "results/safety/punctuation_activations/summary.csv",
+    ],
+    "letter_case": [
+        "results/safety/letter_case/G-2B/combined_means_by_model_place_strength.csv",
+        "results/safety/letter_case/G-7B/combined_means_by_model_place_strength.csv",
+        "results/safety/letter_case/L3.1-8B/combined_means_by_model_place_strength.csv",
+        "results/safety/letter_case/L3.2-3B/combined_means_by_model_place_strength.csv",
+        "results/safety/letter_case/Q2.5-1.5B/combined_means_by_model_place_strength.csv",
+        "results/safety/letter_case/Q2.5-7B/combined_means_by_model_place_strength.csv",
+        "results/safety/letter_case_activations/summary.csv",
+    ],
+    "politeness": [
+        "results/politeness_safety/run_20260226_130811/summary.csv",
+        "results/politeness_safety/run_20260226_153724/summary.csv",
+        "results/politeness_safety/run_20260226_175026/summary.csv",
+        "results/politeness_safety/run_20260226_153336/summary.csv",
+        "results/politeness_safety/run_20260226_174657/summary.csv",
+        "results/politeness_safety/run_20260226_193617/summary.csv",
+        "results/safety/politeness_activations/summary.csv",
+    ],
+    "length_variation": [
+        "results/safety/run_20260304_222347/summary.csv",
+        "results/safety/run_20260304_221732/summary.csv",
+        "results/safety/run_20260304_215712/summary.csv",
+        "results/safety/run_20260304_200957/summary.csv",
+        "results/safety/run_20260304_192633/summary.csv",
+        "results/safety/run_20260304_185144/summary.csv",
+        "results/safety/run_20260304_184908/summary.csv",
+        "results/safety/run_20260304_184813/summary.csv",
+        "results/safety/run_20260304_184735/summary.csv",
+        "results/safety/run_20260304_184644/summary.csv",
+        "results/safety/run_20260304_184601/summary.csv",
+        "results/safety/run_20260304_184504/summary.csv",
+        "results/safety/length_variation_activations/summary.csv",
+    ],
+    "inter_vs_imper": [
+        "results/safety/run_20260304_184455/summary.csv",
+        "results/safety/run_20260304_185337/summary.csv",
+        "results/safety/run_20260304_185933/summary.csv",
+        "results/safety/run_20260304_190008/summary.csv",
+        "results/safety/run_20260304_191158/summary.csv",
+        "results/safety/run_20260304_191226/summary.csv",
+        "results/safety/run_20260304_191522/summary.csv",
+        "results/safety/run_20260304_191556/summary.csv",
+        "results/safety/run_20260304_192547/summary.csv",
+        "results/safety/run_20260304_192616/summary.csv",
+        "results/safety/run_20260304_192902/summary.csv",
+        "results/safety/run_20260304_192936/summary.csv",
+        "results/safety/inter_vs_imper_activations/summary.csv",
+    ],
+}
+
+# ── New-style safety ASR dirs (results/safety/{style}_asr/asr_outputs/{model}/) ─
+# harmbench_judged_{place}_s{strength}.csv files inside each model subdir
+SAFETY_ASR_STYLE_DIRS: dict[str, str] = {
+    "spacing":         "results/safety/spacing_asr/asr_outputs",
+    "punctuation":     "results/safety/punctuation_asr/asr_outputs",
+    "letter_case":     "results/safety/letter_case_asr/asr_outputs",
+    "politeness":      "results/safety/politeness_asr/asr_outputs",
+    "length_variation":"results/safety/length_variation_asr/asr_outputs",
+    "inter_vs_imper":  "results/safety/inter_vs_imper_asr/asr_outputs",
+}
+
+# ── Safety run directories (asr_outputs/*/harmbench_judged_*.csv inside each) ─
+# Only styles that have per-prompt data (not pre-aggregated)
+SAFETY_RUN_DIRS: dict[str, list[str]] = {
+    "politeness": [
+        "results/politeness_safety/run_20260226_130811",
+        "results/politeness_safety/run_20260226_153724",
+        "results/politeness_safety/run_20260226_175026",
+        "results/politeness_safety/run_20260226_153336",
+        "results/politeness_safety/run_20260226_174657",
+        "results/politeness_safety/run_20260226_193617",
+    ],
+    "length_variation": [
+        "results/safety/run_20260304_222347",
+        "results/safety/run_20260304_221732",
+        "results/safety/run_20260304_215712",
+        "results/safety/run_20260304_200957",
+        "results/safety/run_20260304_192633",
+        "results/safety/run_20260304_185144",
+        "results/safety/run_20260304_184908",
+        "results/safety/run_20260304_184813",
+        "results/safety/run_20260304_184735",
+        "results/safety/run_20260304_184644",
+        "results/safety/run_20260304_184601",
+        "results/safety/run_20260304_184504",
+    ],
+    "inter_vs_imper": [
+        "results/safety/run_20260304_184455",
+        "results/safety/run_20260304_185337",
+        "results/safety/run_20260304_185933",
+        "results/safety/run_20260304_190008",
+        "results/safety/run_20260304_191158",
+        "results/safety/run_20260304_191226",
+        "results/safety/run_20260304_191522",
+        "results/safety/run_20260304_191556",
+        "results/safety/run_20260304_192547",
+        "results/safety/run_20260304_192616",
+        "results/safety/run_20260304_192902",
+        "results/safety/run_20260304_192936",
+    ],
+}
+
+# ── Metric label maps ──────────────────────────────────────────────────────────
+CONTINUOUS_METRICS: dict[str, str] = {
+    "delta_bertscore_response":    "Δ BERTScore (Response)",
+    "delta_bleu":                  "Δ BLEU",
+    "delta_activation_similarity": "Δ Cos. Sim (Activation)",
+    "delta_log_prob":              "Δ Log-Prob",
+    "entropy_shift":               "Δ Entropy",
+}
+
+COT_METRICS: dict[str, str] = {
+    "cot_correct_num": "CoT Accuracy",
+    "cot_steps":       "CoT Steps",
+}
+
+SAFETY_METRICS: dict[str, str] = {
+    "unsafe_score": "ASR",
+}
+
+ALL_METRIC_LABELS: dict[str, str] = {
+    **CONTINUOUS_METRICS,
+    **COT_METRICS,
+    **SAFETY_METRICS,
+    "delta_mirroring_rate": "Δ Mirroring Rate",
+    "silhouette":     "Silhouette Score",
+}
+
+MODEL_COLORS: dict[str, str] = {
+    "G-2B":      "#1f77b4",
+    "G-7B":      "#ff7f0e",
+    "L3.2-3B":   "#2ca02c",
+    "L3.1-8B":   "#d62728",
+    "Q2.5-1.5B": "#9467bd",
+    "Q2.5-7B":   "#8c564b",
+    "G4-E4B":    "#17becf",
+    "Q3.5-9B":   "#bcbd22",
+}
+
+SUBSET_SIZES = [4, 8, 16, 32, 64, 128]
+N_BOOTSTRAP  = 500
+RANDOM_SEED  = 42
+
+
+# ── Data loading ───────────────────────────────────────────────────────────────
+
+def _to_numeric(df: pd.DataFrame, cols: list[str]) -> pd.DataFrame:
+    for c in cols:
+        if c in df.columns:
+            df[c] = pd.to_numeric(df[c], errors="coerce")
+    return df
+
+
+def load_all_styles(
+    style_paths: dict[str, list[str]],
+    styles: list[str],
+) -> pd.DataFrame:
+    """
+    Load every requested style, tag each row with its style name, and return
+    a single deduplicated DataFrame with columns:
+        model, style, prompt_id, place, strength, <metrics>...
+    """
+    dfs = []
+    for style in styles:
+        for rel in style_paths.get(style, []):
+            p = PROJECT_ROOT / rel
+            if not p.exists():
+                continue
+            try:
+                df = pd.read_csv(p)
+                df["style"] = style
+                dfs.append(df)
+            except Exception as exc:
+                print(f"  [warn] cannot read {p}: {exc}", file=sys.stderr)
+
+    if not dfs:
+        return pd.DataFrame()
+
+    combined = pd.concat(dfs, ignore_index=True)
+    combined = _to_numeric(combined, list(CONTINUOUS_METRICS))
+
+    # Add numeric mirroring rate
+    if "mirroring_verdict" in combined.columns and "mirroring_rate" not in combined.columns:
+        combined["mirroring_rate"] = (
+            combined["mirroring_verdict"].astype(str).str.strip().str.upper() == "YES"
+        ).astype(float)
+
+    # Compute delta_mirroring_rate per (model, prompt_id, place) relative to baseline strength
+    if "mirroring_rate" in combined.columns and "delta_mirroring_rate" not in combined.columns:
+        from utils.compute_delta_metrics import BASELINE_STRENGTH
+        id_col = "prompt_id" if "prompt_id" in combined.columns else "problem_id"
+        group_keys = [k for k in ["model", id_col, "place"] if k in combined.columns]
+        parts = []
+        for style_name, sdf in combined.groupby("style"):
+            sdf = sdf.copy()
+            baseline_s = BASELINE_STRENGTH.get(style_name, 0)
+            base = sdf[sdf["strength"] == baseline_s].set_index(group_keys)
+            if not base.empty:
+                idx = pd.MultiIndex.from_arrays([sdf[k] for k in group_keys])
+                sdf["delta_mirroring_rate"] = (
+                    sdf["mirroring_rate"].values - base["mirroring_rate"].reindex(idx).values
+                )
+            parts.append(sdf)
+        combined = pd.concat(parts, ignore_index=True)
+
+    before = len(combined)
+    combined = combined.drop_duplicates(
+        subset=["model", "style", "prompt_id", "place", "strength"]
+    )
+    print(
+        f"\nLoaded {len(combined)} rows ({before - len(combined)} dupes dropped)\n"
+        f"  styles  : {sorted(combined['style'].unique().tolist())}\n"
+        f"  models  : {sorted(combined['model'].unique().tolist())}\n"
+        f"  prompts : {combined['prompt_id'].nunique()} unique prompt_ids"
+    )
+    return combined
+
+
+def load_cot_df(styles: list[str]) -> pd.DataFrame:
+    """
+    Load per-problem CoT analysis data from results_with_cot_analysis.csv files.
+    Returns a DataFrame with columns:
+        model, style, prompt_id, place, strength, cot_steps, cot_correct_num
+    """
+    dfs = []
+    for style in styles:
+        for run_dir in COT_RUN_DIRS.get(style, []):
+            p = PROJECT_ROOT / run_dir / "results_with_cot_analysis.csv"
+            if not p.exists():
+                continue
+            try:
+                df = pd.read_csv(p)
+                df["style"] = style
+                dfs.append(df)
+            except Exception as exc:
+                print(f"  [warn] {p}: {exc}", file=sys.stderr)
+
+    if not dfs:
+        return pd.DataFrame()
+
+    combined = pd.concat(dfs, ignore_index=True)
+
+    # Rename problem_id → prompt_id for consistency
+    if "problem_id" in combined.columns and "prompt_id" not in combined.columns:
+        combined = combined.rename(columns={"problem_id": "prompt_id"})
+
+    # cot_correct: "1" → 1.0, "0" → 0.0, anything else → NaN
+    combined["cot_correct_num"] = combined["cot_correct"].apply(
+        lambda x: 1.0 if str(x).strip() == "1" else (0.0 if str(x).strip() == "0" else np.nan)
+    )
+    combined["cot_steps"] = pd.to_numeric(combined["cot_steps"], errors="coerce")
+    # Remove clearly invalid step counts
+    combined.loc[combined["cot_steps"] < 0, "cot_steps"] = np.nan
+
+    before = len(combined)
+    combined = combined.drop_duplicates(
+        subset=["model", "style", "prompt_id", "place", "strength"]
+    )
+    print(
+        f"\n[CoT] {len(combined)} rows ({before - len(combined)} dupes dropped)\n"
+        f"  styles  : {sorted(combined['style'].unique().tolist())}\n"
+        f"  models  : {sorted(combined['model'].unique().tolist())}\n"
+        f"  prompts : {combined['prompt_id'].nunique()} unique prompt_ids"
+    )
+    return combined
+
+
+def load_safety_asr_df(styles: list[str]) -> pd.DataFrame:
+    """
+    Load per-prompt safety data from asr_outputs/*/harmbench_judged_*.csv files.
+    Only available for styles in SAFETY_RUN_DIRS.
+    Returns a DataFrame with columns:
+        model, style, prompt_id, place, strength, unsafe_score
+    """
+    dfs = []
+    for style in styles:
+        for run_dir in SAFETY_RUN_DIRS.get(style, []):
+            asr_dir = PROJECT_ROOT / run_dir / "asr_outputs"
+            if not asr_dir.exists():
+                continue
+            for judged_file in sorted(asr_dir.glob("*/harmbench_judged_*.csv")):
+                try:
+                    df = pd.read_csv(judged_file)
+                    df["style"] = style
+                    dfs.append(df)
+                except Exception as exc:
+                    print(f"  [warn] {judged_file}: {exc}", file=sys.stderr)
+
+    if not dfs:
+        return pd.DataFrame()
+
+    combined = pd.concat(dfs, ignore_index=True)
+
+    # Ensure unsafe_score is numeric 0/1
+    if "unsafe_score" in combined.columns:
+        combined["unsafe_score"] = pd.to_numeric(combined["unsafe_score"], errors="coerce")
+    elif "judge_raw" in combined.columns:
+        combined["unsafe_score"] = (
+            combined["judge_raw"].astype(str).str.strip().str.lower() != "safe"
+        ).astype(float)
+
+    before = len(combined)
+    combined = combined.drop_duplicates(
+        subset=["model", "style", "prompt_id", "place", "strength"]
+    )
+    print(
+        f"\n[Safety] {len(combined)} rows ({before - len(combined)} dupes dropped)\n"
+        f"  styles  : {sorted(combined['style'].unique().tolist())}\n"
+        f"  models  : {sorted(combined['model'].unique().tolist())}\n"
+        f"  prompts : {combined['prompt_id'].nunique()} unique prompt_ids"
+    )
+    return combined
+
+
+def load_safety_asr_new_df(styles: list[str]) -> pd.DataFrame:
+    """
+    Load per-prompt safety ASR data from the new-style flat directories:
+        results/safety/{style}_asr/asr_outputs/{model}/harmbench_judged_*.csv
+    Returns a DataFrame with columns:
+        model, style, prompt_id, place, strength, unsafe_score
+    """
+    dfs = []
+    for style in styles:
+        asr_dir = PROJECT_ROOT / SAFETY_ASR_STYLE_DIRS.get(style, "")
+        if not asr_dir.exists():
+            continue
+        for judged_file in sorted(asr_dir.glob("*/harmbench_judged_*.csv")):
+            try:
+                df = pd.read_csv(judged_file)
+                df["style"] = style
+                dfs.append(df)
+            except Exception as exc:
+                print(f"  [warn] {judged_file}: {exc}", file=sys.stderr)
+
+    if not dfs:
+        return pd.DataFrame()
+
+    combined = pd.concat(dfs, ignore_index=True)
+    if "unsafe_score" in combined.columns:
+        combined["unsafe_score"] = pd.to_numeric(combined["unsafe_score"], errors="coerce")
+
+    before = len(combined)
+    combined = combined.drop_duplicates(
+        subset=["model", "style", "prompt_id", "place", "strength"]
+    )
+    print(
+        f"\n[Safety-new] {len(combined)} rows ({before - len(combined)} dupes dropped)\n"
+        f"  styles  : {sorted(combined['style'].unique().tolist())}\n"
+        f"  models  : {sorted(combined['model'].unique().tolist())}\n"
+        f"  prompts : {combined['prompt_id'].nunique()} unique prompt_ids"
+    )
+    return combined
+
+
+def load_silhouette_df(styles: list[str]) -> pd.DataFrame:
+    """
+    Load pre-aggregated silhouette scores from results/safety/{style}_activations/summary.csv.
+
+    Returns a DataFrame with columns:
+        model, style, place, strength, silhouette
+
+    NOTE: silhouette is already one value per (model, style, place, strength) group —
+    there is no per-prompt silhouette. Bootstrap sensitivity will operate over conditions
+    (style × place × strength) rather than prompt_ids.
+    """
+    dfs = []
+    for style in styles:
+        for rel in SILHOUETTE_CSV_PATHS.get(style, []):
+            p = PROJECT_ROOT / rel
+            if not p.exists():
+                continue
+            try:
+                df = pd.read_csv(p)
+                df["style"] = style
+                dfs.append(df)
+            except Exception as exc:
+                print(f"  [warn] {p}: {exc}", file=sys.stderr)
+
+    if not dfs:
+        return pd.DataFrame()
+
+    combined = pd.concat(dfs, ignore_index=True)
+    combined["silhouette"] = pd.to_numeric(combined["silhouette"], errors="coerce")
+    combined = combined.dropna(subset=["silhouette"])
+
+    before = len(combined)
+    combined = combined.drop_duplicates(subset=["model", "style", "place", "strength"])
+    print(
+        f"\n[Silhouette] {len(combined)} rows ({before - len(combined)} dupes dropped)\n"
+        f"  styles  : {sorted(combined['style'].unique().tolist())}\n"
+        f"  models  : {sorted(combined['model'].unique().tolist())}"
+    )
+    return combined
+
+
+# ── Bootstrap sensitivity ──────────────────────────────────────────────────────
+
+def bootstrap_variance_per_model(
+    df: pd.DataFrame,
+    metric: str,
+    subset_sizes: list[int],
+    n_bootstrap: int,
+    rng: np.random.Generator,
+) -> dict[str, dict[int, float]]:
+    """
+    Condition-spread check: how much do results vary across (style × place × strength)?
+
+    For each model and subset size N:
+      1. Draw n_bootstrap random subsets of N prompt-IDs (with replacement).
+      2. For each subset, compute mean(metric) per (style × place × strength) group.
+      3. Compute the std of those group means within this bootstrap → condition spread.
+      4. Average that std across all bootstraps → Y.
+
+    Interpretation:
+      High Y → metric varies strongly across style/place/strength conditions
+               → the style manipulation has a large measurable effect.
+      Low Y  → conditions all produce similar metric values
+               → little variation detected at this N (may be noise or true flat effect).
+      Stable curve → N is sufficient to detect the real condition spread.
+
+    Returns {model: {N: mean_across_bootstrap_condition_std}}
+    """
+    df_clean = df.dropna(subset=[metric])
+    model_results: dict[str, dict[int, float]] = {}
+
+    for model, df_m in df_clean.groupby("model"):
+        all_ids = df_m["prompt_id"].unique()
+        df_styled = df_m[df_m["strength"] != 0]
+        size_results: dict[int, float] = {}
+        for n in subset_sizes:
+            per_bootstrap_stds: list[float] = []
+            for _ in range(n_bootstrap):
+                sampled = rng.choice(all_ids, size=n, replace=True)
+                sub_agg = (
+                    df_styled[df_styled["prompt_id"].isin(sampled)]
+                    .groupby(["style", "place", "strength"])[metric]
+                    .mean()
+                )
+                # std across conditions for this bootstrap sample
+                s = sub_agg.std()
+                if not np.isnan(s):
+                    per_bootstrap_stds.append(s)
+
+            size_results[n] = float(np.nanmean(per_bootstrap_stds)) if per_bootstrap_stds else np.nan
+
+        model_results[str(model)] = size_results
+
+    return model_results
+
+
+def bootstrap_metric_per_model(
+    df: pd.DataFrame,
+    metric: str,
+    subset_sizes: list[int],
+    n_bootstrap: int,
+    rng: np.random.Generator,
+) -> dict[str, dict[int, list[float]]]:
+    """
+    For each model and N, bootstrap N prompt-IDs and compute the mean metric
+    across all styled rows (strength != 0) in the sampled subset.
+
+    Returns {model: {N: [mean_1, mean_2, ...]}}
+    """
+    df_clean = df.dropna(subset=[metric])
+    model_results: dict[str, dict[int, list[float]]] = {}
+
+    for model, df_m in df_clean.groupby("model"):
+        all_ids = df_m["prompt_id"].unique()
+        df_styled = df_m[df_m["strength"] != 0]
+        size_results: dict[int, list[float]] = {}
+
+        for n in subset_sizes:
+            n_sample = min(n, len(all_ids))
+            means: list[float] = []
+            for _ in range(n_bootstrap):
+                sampled = rng.choice(all_ids, size=n_sample, replace=False)
+                val = df_styled[df_styled["prompt_id"].isin(sampled)][metric].mean()
+                if not np.isnan(val):
+                    means.append(float(val))
+            size_results[n] = means if means else [np.nan]
+
+        model_results[str(model)] = size_results
+
+    return model_results
+
+
+# ── Plotting helpers ───────────────────────────────────────────────────────────
+
+def _band(corr_dict: dict, sizes: list[int]):
+    means, lo, hi = [], [], []
+    for n in sizes:
+        v = corr_dict.get(n, [np.nan])
+        if isinstance(v, tuple):          # pre-computed (mean, p10, p90) from CSV
+            means.append(v[0]); lo.append(v[1]); hi.append(v[2])
+        else:
+            v = np.array(v, dtype=float)
+            means.append(np.nanmean(v))
+            lo.append(np.nanpercentile(v, 10))
+            hi.append(np.nanpercentile(v, 90))
+    return np.array(means), np.array(lo), np.array(hi)
+
+
+def _add_recommendation_text(fig, lines: list[str]) -> None:
+    """Add a small text block below the legend summarising chosen values."""
+    text = "\n".join(lines)
+    fig.text(1.01, 0.02, text, transform=fig.transFigure,
+             fontsize=7, va="bottom", ha="left",
+             bbox=dict(boxstyle="round,pad=0.3", fc="lightyellow", ec="gray", alpha=0.8))
+
+
+def _label_points(ax, xs, ys, color="black", fontsize=5.5, dy=3):
+    """Annotate each non-NaN (x, y) with its value as small text above the point."""
+    for x, y in zip(xs, ys):
+        if not np.isnan(float(y)):
+            ax.annotate(f"{y:.3g}", xy=(x, y),
+                        xytext=(0, dy), textcoords="offset points",
+                        fontsize=fontsize, ha="center", va="bottom",
+                        color=color)
+
+
+# ── Plot helpers for variance ─────────────────────────────────────────────────
+
+def _axis_style_var(ax, subset_sizes: list[int], ylabel: str = "Std of Group Means (Condition Spread)"):
+    ax.set_xscale("log", base=2)
+    ax.set_xticks(subset_sizes)
+    ax.set_xticklabels([str(n) for n in subset_sizes])
+    ax.set_xlabel("Number of Prompts (N)", fontsize=10)
+    ax.set_ylabel(ylabel, fontsize=10)
+    ax.set_ylim(bottom=0)
+    ax.grid(True, alpha=0.2, linestyle="--")
+
+
+# ── Plot 2: variance per-metric — one panel per metric, one line per model ─────
+
+def plot_variance_per_metric(
+    all_var_results: dict[str, dict[str, dict[int, float]]],
+    subset_sizes: list[int],
+    out_path: Path,
+):
+    metrics = sorted(all_var_results.keys())
+
+    ncols = 3
+    nrows = max(1, (len(metrics) + ncols - 1) // ncols)
+    fig, axes = plt.subplots(nrows, ncols,
+                              figsize=(4.5 * ncols, 3.2 * nrows),
+                              squeeze=False)
+
+    chosen_ns: list[int] = []
+    for i, metric in enumerate(metrics):
+        ax = axes[i // ncols][i % ncols]
+        for model in sorted(all_var_results[metric]):
+            vals = np.array(
+                [all_var_results[metric][model].get(n, np.nan) for n in subset_sizes]
+            )
+            color = MODEL_COLORS.get(model, "gray")
+            ax.plot(subset_sizes, vals, label=model, color=color,
+                    marker="o", linewidth=1.6, markersize=3.5)
+            _label_points(ax, subset_sizes, vals, color=color)
+
+        # Best N per panel: max across models
+        best_ns = [
+            _find_best_n(
+                {n: [all_var_results[metric][m].get(n, np.nan)] for n in subset_sizes},
+                subset_sizes,
+            )
+            for m in all_var_results[metric]
+        ]
+        best_n = max(best_ns) if best_ns else max(subset_sizes)
+        chosen_ns.append(best_n)
+        ax.axvline(best_n, color="black", lw=1.0, ls="--", alpha=0.75, zorder=5)
+        ylims = ax.get_ylim()
+        ax.text(best_n * 1.06, ylims[0] + 0.04 * (ylims[1] - ylims[0]),
+                f"N={best_n}", fontsize=6.5, color="black", va="bottom")
+
+        _axis_style_var(ax, subset_sizes, ylabel="Condition Spread (Std)")
+        ax.set_title(ALL_METRIC_LABELS.get(metric, metric), fontsize=9)
+
+    for j in range(len(metrics), nrows * ncols):
+        axes[j // ncols][j % ncols].set_visible(False)
+
+    handles, labels = axes[0][0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc="center left", bbox_to_anchor=(1.01, 0.5),
+               fontsize=7.5, framealpha=0.85)
+    rec_n = max(chosen_ns) if chosen_ns else max(subset_sizes)
+    _add_recommendation_text(fig, [f"Recommended N: {rec_n}"])
+    fig.suptitle(
+        "Per-Metric Condition Spread: Std of (style × place × strength) Group Means\n"
+        "(High = strong condition effect;  Stable curve = N sufficient to detect it)",
+        fontsize=11, y=1.01,
+    )
+    plt.tight_layout()
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_path, dpi=150, bbox_inches="tight")
+    plt.close()
+    print(f"  Saved → {out_path}")
+
+    # CSV
+    rows = [{"metric": m, "best_n": n, "recommended_n": rec_n}
+            for m, n in zip(metrics, chosen_ns)]
+    rows.append({"metric": "OVERALL", "best_n": rec_n, "recommended_n": rec_n})
+    csv_path = out_path.with_suffix(".csv")
+    pd.DataFrame(rows).to_csv(csv_path, index=False)
+    print(f"  Saved → {csv_path}")
+
+
+def _find_best_n(
+    metric_per_n: dict,
+    subset_sizes: list,
+    tolerance: float = 0.15,
+):
+    """
+    Return the smallest N/value where the mean is within `tolerance` of the
+    max-key reference.  When values are equal (including all-zero), always
+    returns the smallest candidate — never falls back to max early.
+    """
+    full_n = max(subset_sizes)
+    full_mean = np.nanmean(metric_per_n.get(full_n, [np.nan]))
+    if np.isnan(full_mean):
+        return full_n
+    # Use max(|full_mean|, tiny) so zero-valued metrics still get a finite threshold
+    ref = max(abs(full_mean), 1e-9)
+    for n in sorted(subset_sizes):          # explicit sort guarantees smallest-first
+        mean = np.nanmean(metric_per_n.get(n, [np.nan]))
+        if not np.isnan(mean) and abs(mean - full_mean) <= tolerance * ref:
+            return n
+    return full_n
+
+
+# ── Plot: per-metric metric value — one panel per metric, one line per model ───
+
+def plot_metric_per_model(
+    all_metric_results: dict[str, dict[str, dict[int, list[float]]]],
+    # metric → model → {n: [values]}
+    subset_sizes: list[int],
+    out_path: Path,
+    tolerance: float = 0.15,
+):
+    """
+    One panel per metric. Y-axis = actual metric value. X-axis = N (log2).
+    One line per model with P10–P90 bootstrap band.
+    A vertical dashed line marks the 'best N' — the smallest N where every
+    model's mean estimate is within `tolerance` of the N=128 reference.
+    """
+    metrics = sorted(all_metric_results.keys())
+    ncols = 3
+    nrows = max(1, (len(metrics) + ncols - 1) // ncols)
+    fig, axes = plt.subplots(nrows, ncols,
+                              figsize=(4.5 * ncols, 3.2 * nrows),
+                              squeeze=False)
+
+    chosen_ns: list[int] = []
+
+    for i, metric in enumerate(metrics):
+        ax = axes[i // ncols][i % ncols]
+        model_data = all_metric_results[metric]
+
+        # Best N = smallest N sufficient for all models
+        best_ns = [
+            _find_best_n(size_dict, subset_sizes, tolerance=tolerance)
+            for size_dict in model_data.values()
+        ]
+        best_n = max(best_ns) if best_ns else max(subset_sizes)
+        chosen_ns.append(best_n)
+
+        for model in sorted(model_data):
+            means, lo, hi = _band(model_data[model], subset_sizes)
+            color = MODEL_COLORS.get(model, "gray")
+            ax.plot(subset_sizes, means, label=model, color=color,
+                    marker="o", linewidth=1.6, markersize=3.5)
+            ax.fill_between(subset_sizes, lo, hi, alpha=0.09, color=color)
+            _label_points(ax, subset_sizes, means, color=color)
+
+        # Vertical line at best N
+        ax.axvline(best_n, color="black", lw=1.2, ls="--", alpha=0.75,
+                   zorder=5, label=f"Best N={best_n}")
+        ylims = ax.get_ylim()
+        ax.text(best_n * 1.06, ylims[0] + 0.04 * (ylims[1] - ylims[0]),
+                f"N={best_n}", fontsize=7, color="black", va="bottom")
+
+        ax.set_xscale("log", base=2)
+        ax.set_xticks(subset_sizes)
+        ax.set_xticklabels([str(n) for n in subset_sizes])
+        ax.set_xlabel("Number of Prompts (N)", fontsize=9)
+        ax.set_ylabel(ALL_METRIC_LABELS.get(metric, metric), fontsize=9)
+        ax.set_title(ALL_METRIC_LABELS.get(metric, metric), fontsize=9)
+        ax.grid(True, alpha=0.2, linestyle="--")
+
+    for j in range(len(metrics), nrows * ncols):
+        axes[j // ncols][j % ncols].set_visible(False)
+
+    handles, labels = axes[0][0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc="center left", bbox_to_anchor=(1.01, 0.5),
+               fontsize=7.5, framealpha=0.85)
+    rec_n = max(chosen_ns) if chosen_ns else max(subset_sizes)
+    _add_recommendation_text(fig, [f"Recommended N: {rec_n}"])
+    fig.suptitle(
+        "Sample Size Ablation: Metric Value vs. Number of Prompts\n"
+        "(Bands = P10–P90 bootstrap;  dashed line = recommended N per metric)",
+        fontsize=11, y=1.01,
+    )
+    plt.tight_layout()
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_path, dpi=150, bbox_inches="tight")
+    plt.close()
+    print(f"  Saved → {out_path}")
+
+    # CSV
+    rows = [{"metric": m, "best_n": n, "recommended_n": rec_n}
+            for m, n in zip(metrics, chosen_ns)]
+    rows.append({"metric": "OVERALL", "best_n": rec_n, "recommended_n": rec_n})
+    csv_path = out_path.with_suffix(".csv")
+    pd.DataFrame(rows).to_csv(csv_path, index=False)
+    print(f"  Saved → {csv_path}")
+
+
+# ── Place ablation ────────────────────────────────────────────────────────────
+
+def compute_place_stats(
+    df: pd.DataFrame,
+    metric: str,
+) -> tuple[dict, dict]:
+    """
+    Returns (means, variances):
+      means     = {model: {place: mean_metric}}   (styled rows only, strength != 0)
+      variances = {model: {place: std_of_per_strength_group_means}}
+    """
+    df_c = df[df["strength"] != 0].dropna(subset=[metric])
+    means: dict = {}
+    variances: dict = {}
+    for model, grp_m in df_c.groupby("model"):
+        means[str(model)] = {}
+        variances[str(model)] = {}
+        for place, grp_p in grp_m.groupby("place"):
+            means[str(model)][str(place)] = float(grp_p[metric].mean())
+            per_s = grp_p.groupby("strength")[metric].mean()
+            variances[str(model)][str(place)] = float(per_s.std()) if len(per_s) > 1 else np.nan
+    return means, variances
+
+
+def _select_representative(
+    model_means: dict,
+    candidates: list,
+    tolerance: float = 0.15,
+    always_include: list | None = None,
+) -> list:
+    """
+    Return the minimal subset of candidates that covers the full effect range,
+    always including any items listed in `always_include`.
+
+    Greedy interval cover (sorted by mean effect across models): a candidate
+    is added only if its mean effect is more than `tolerance * span` away from
+    every already-selected candidate.  This guarantees every unselected point
+    is within one threshold-width of a selected one.
+
+    When all values are equal the smallest candidate is returned alone.
+    """
+    forced = [k for k in (always_include or []) if k in candidates]
+    avg = {k: np.nanmean([model_means[m].get(k, np.nan) for m in model_means])
+           for k in candidates}
+    valid = [k for k in candidates if not np.isnan(avg[k])]
+    if not valid:
+        return forced or list(candidates)
+
+    lo, hi = min(avg[k] for k in valid), max(avg[k] for k in valid)
+    span = hi - lo
+    if span < 1e-9:                          # all equal → forced + smallest
+        base = [valid[0]]
+        return sorted(set(forced + base), key=lambda k: candidates.index(k))
+
+    thresh = tolerance * span
+    selected: list = list(forced)            # seed with forced items
+    for k in sorted(valid, key=lambda k: avg[k]):
+        if k in selected:
+            continue
+        if not selected or all(abs(avg[k] - avg[s]) > thresh for s in selected):
+            selected.append(k)
+    # return in original candidate order
+    return sorted(selected, key=lambda k: candidates.index(k))
+
+
+def _make_place_panels(
+    all_results: dict,
+    ylabel: str,
+    suptitle: str,
+    out_path: Path,
+) -> None:
+    PLACE_ORDER = ["global", "prefix", "suffix"]
+    metrics = sorted(all_results.keys())
+    ncols = 3
+    nrows = max(1, (len(metrics) + ncols - 1) // ncols)
+    fig, axes = plt.subplots(nrows, ncols,
+                              figsize=(4.5 * ncols, 3.2 * nrows),
+                              squeeze=False)
+
+    all_selected_places: set = set()
+    per_metric_places: dict = {}
+
+    for i, metric in enumerate(metrics):
+        ax = axes[i // ncols][i % ncols]
+        model_data = all_results[metric]
+
+        places = sorted(
+            {p for md in model_data.values() for p in md},
+            key=lambda p: PLACE_ORDER.index(p) if p in PLACE_ORDER else 99,
+        )
+        x_pos = list(range(len(places)))
+        selected = _select_representative(model_data, places, always_include=["global"])
+        all_selected_places.update(selected)
+        per_metric_places[metric] = selected
+
+        for model in sorted(model_data):
+            vals = [model_data[model].get(p, np.nan) for p in places]
+            color = MODEL_COLORS.get(model, "gray")
+            ax.plot(x_pos, vals, label=model, color=color,
+                    marker="o", linewidth=1.6, markersize=4)
+            _label_points(ax, x_pos, vals, color=color)
+
+        ylims = ax.get_ylim()
+        y_range = ylims[1] - ylims[0]
+        for idx, sel in enumerate(selected):
+            sel_x = places.index(sel)
+            ax.axvline(sel_x, color="black", lw=1.0, ls="--", alpha=0.75, zorder=5)
+            y_label = ylims[0] + (0.04 + 0.10 * (idx % 3)) * y_range
+            ax.text(sel_x + 0.08, y_label, sel,
+                    fontsize=7, color="black", va="bottom")
+
+        ax.set_xticks(x_pos)
+        ax.set_xticklabels(places, fontsize=8)
+        ax.set_xlabel("Placement", fontsize=9)
+        ax.set_ylabel(
+            ALL_METRIC_LABELS.get(metric, metric) if ylabel == "metric" else ylabel,
+            fontsize=9,
+        )
+        ax.set_title(ALL_METRIC_LABELS.get(metric, metric), fontsize=9)
+        ax.grid(True, alpha=0.2, linestyle="--", axis="y")
+
+    for j in range(len(metrics), nrows * ncols):
+        axes[j // ncols][j % ncols].set_visible(False)
+
+    handles, labels = axes[0][0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc="center left", bbox_to_anchor=(1.01, 0.5),
+               fontsize=7.5, framealpha=0.85)
+    rec_places = sorted(all_selected_places,
+                        key=lambda p: PLACE_ORDER.index(p) if p in PLACE_ORDER else 99)
+    _add_recommendation_text(fig, [f"Recommended places: {', '.join(rec_places)}"])
+    fig.suptitle(suptitle, fontsize=11, y=1.01)
+    plt.tight_layout()
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_path, dpi=150, bbox_inches="tight")
+    plt.close()
+    print(f"  Saved → {out_path}")
+
+    # CSV
+    rec_places_str = ", ".join(rec_places)
+    rows = [{"metric": m, "selected_places": ", ".join(per_metric_places.get(m, [])),
+             "recommended_places": rec_places_str}
+            for m in metrics]
+    rows.append({"metric": "OVERALL", "selected_places": rec_places_str,
+                 "recommended_places": rec_places_str})
+    csv_path = out_path.with_suffix(".csv")
+    pd.DataFrame(rows).to_csv(csv_path, index=False)
+    print(f"  Saved → {csv_path}")
+
+
+def plot_place_metric(all_means: dict, out_path: Path) -> None:
+    _make_place_panels(
+        all_means, ylabel="metric",
+        suptitle=(
+            "Place Ablation: Mean Metric Value by Prompt Placement\n"
+            "(dashed = placement with strongest effect across models)"
+        ),
+        out_path=out_path,
+    )
+
+
+def plot_place_variance(all_variances: dict, out_path: Path) -> None:
+    _make_place_panels(
+        all_variances, ylabel="Condition Spread (Std)",
+        suptitle=(
+            "Place Ablation: Condition Spread by Prompt Placement\n"
+            "(dashed = placement with highest variance across models)"
+        ),
+        out_path=out_path,
+    )
+
+
+# ── Strength ablation ─────────────────────────────────────────────────────────
+
+def compute_strength_stats(
+    df: pd.DataFrame,
+    metric: str,
+) -> tuple[dict, dict, list]:
+    """
+    Returns (means, variances, sorted_strengths):
+      means     = {model: {strength: mean_metric}}   (numeric non-zero strengths only)
+      variances = {model: {strength: std_of_per_place_group_means}}
+    Non-numeric strength values (e.g. 'imperative') are skipped.
+    """
+    df_c = df.dropna(subset=[metric]).copy()
+    df_c["_s"] = pd.to_numeric(df_c["strength"], errors="coerce")
+    df_c = df_c.dropna(subset=["_s"])
+
+    means: dict = {}
+    variances: dict = {}
+    for model, grp_m in df_c.groupby("model"):
+        means[str(model)] = {}
+        variances[str(model)] = {}
+        for s, grp_s in grp_m.groupby("_s"):
+            means[str(model)][float(s)] = float(grp_s[metric].mean())
+            per_p = grp_s.groupby("place")[metric].mean()
+            if len(per_p) > 1:
+                variances[str(model)][float(s)] = float(per_p.std())
+            else:
+                # Single place (e.g. length_variation) — fall back to prompt-level std
+                variances[str(model)][float(s)] = float(grp_s[metric].std()) if len(grp_s) > 1 else np.nan
+
+    all_s = sorted({s for md in means.values() for s in md})
+    return means, variances, all_s
+
+
+def _make_strength_panels(
+    all_results: dict,
+    sorted_strengths: list,
+    ylabel: str,
+    suptitle: str,
+    out_path: Path,
+    style: str = "",
+) -> None:
+    metrics = sorted(all_results.keys())
+    ncols = 3
+    nrows = max(1, (len(metrics) + ncols - 1) // ncols)
+    fig, axes = plt.subplots(nrows, ncols,
+                              figsize=(4.5 * ncols, 3.2 * nrows),
+                              squeeze=False)
+
+    forced_s = [0.0]
+    if style == "length_variation" and 1.0 in sorted_strengths:
+        forced_s.append(1.0)
+
+    all_selected_strengths: set = set()
+    per_metric_strengths: dict = {}
+
+    for i, metric in enumerate(metrics):
+        ax = axes[i // ncols][i % ncols]
+        model_data = all_results[metric]
+        selected = _select_representative(model_data, sorted_strengths,
+                                          always_include=forced_s)
+        all_selected_strengths.update(selected)
+        per_metric_strengths[metric] = selected
+
+        for model in sorted(model_data):
+            vals = [model_data[model].get(s, np.nan) for s in sorted_strengths]
+            color = MODEL_COLORS.get(model, "gray")
+            ax.plot(sorted_strengths, vals, label=model, color=color,
+                    marker="o", linewidth=1.6, markersize=3.5)
+            _label_points(ax, sorted_strengths, vals, color=color)
+
+        ylims = ax.get_ylim()
+        y_range = ylims[1] - ylims[0]
+        span = sorted_strengths[-1] - sorted_strengths[0] if len(sorted_strengths) > 1 else 1
+        for idx, sel in enumerate(selected):
+            ax.axvline(sel, color="black", lw=1.0, ls="--", alpha=0.75, zorder=5)
+            y_label = ylims[0] + (0.04 + 0.10 * (idx % 3)) * y_range
+            ax.text(sel + 0.02 * span, y_label,
+                    f"s={sel:g}", fontsize=7, color="black", va="bottom")
+
+        ax.set_xlabel("Strength", fontsize=9)
+        ax.set_ylabel(
+            ALL_METRIC_LABELS.get(metric, metric) if ylabel == "metric" else ylabel,
+            fontsize=9,
+        )
+        ax.set_title(ALL_METRIC_LABELS.get(metric, metric), fontsize=9)
+        ax.grid(True, alpha=0.2, linestyle="--")
+
+    for j in range(len(metrics), nrows * ncols):
+        axes[j // ncols][j % ncols].set_visible(False)
+
+    handles, labels = axes[0][0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc="center left", bbox_to_anchor=(1.01, 0.5),
+               fontsize=7.5, framealpha=0.85)
+    rec_strengths = sorted(all_selected_strengths)
+    _add_recommendation_text(fig, [f"Recommended strengths: {', '.join(f'{s:g}' for s in rec_strengths)}"])
+    fig.suptitle(suptitle, fontsize=11, y=1.01)
+    plt.tight_layout()
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_path, dpi=150, bbox_inches="tight")
+    plt.close()
+    print(f"  Saved → {out_path}")
+
+    # CSV
+    rec_str = ", ".join(f"{s:g}" for s in rec_strengths)
+    rows = [{"metric": m,
+             "selected_strengths": ", ".join(f"{s:g}" for s in per_metric_strengths.get(m, [])),
+             "recommended_strengths": rec_str}
+            for m in metrics]
+    rows.append({"metric": "OVERALL", "selected_strengths": rec_str,
+                 "recommended_strengths": rec_str})
+    csv_path = out_path.with_suffix(".csv")
+    pd.DataFrame(rows).to_csv(csv_path, index=False)
+    print(f"  Saved → {csv_path}")
+
+
+def plot_strength_metric(all_means: dict, sorted_strengths: list, out_path: Path,
+                         style: str = "") -> None:
+    _make_strength_panels(
+        all_means, sorted_strengths, ylabel="metric",
+        suptitle=(
+            "Strength Ablation: Mean Metric Value by Style Strength\n"
+            "(dashed = representative strengths)"
+        ),
+        out_path=out_path, style=style,
+    )
+
+
+def plot_strength_variance(all_variances: dict, sorted_strengths: list, out_path: Path,
+                           style: str = "") -> None:
+    _make_strength_panels(
+        all_variances, sorted_strengths, ylabel="Condition Spread (Std)",
+        suptitle=(
+            "Strength Ablation: Condition Spread by Style Strength\n"
+            "(dashed = representative strengths)"
+        ),
+        out_path=out_path, style=style,
+    )
+
+
+# ── Main ───────────────────────────────────────────────────────────────────────
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__,
+                                     formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--out_dir",     default="results/sensitivity_analysis")
+    parser.add_argument("--n_bootstrap", type=int, default=N_BOOTSTRAP)
+    parser.add_argument("--seed",        type=int, default=RANDOM_SEED)
+    parser.add_argument("--styles",      nargs="*", default=None,
+                        help="Subset of styles to analyse (default: all)")
+    parser.add_argument("--metrics",     nargs="*", default=None,
+                        help="Only compute these metrics, e.g. --metrics silhouette unsafe_score")
+    parser.add_argument("--models",      nargs="*", default=None,
+                        help="Only compute for these models, e.g. --models G4-E4B Q3.5-9B")
+    args = parser.parse_args()
+
+    out_dir = PROJECT_ROOT / args.out_dir
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    rng    = np.random.default_rng(args.seed)
+    styles = args.styles or list(STYLE_CSV_PATHS.keys())
+
+    metrics_filter = set(args.metrics) if args.metrics else None
+    models_filter  = set(args.models)  if args.models  else None
+
+    def _want_metric(m: str) -> bool:
+        return metrics_filter is None or m in metrics_filter
+
+    def _filter_models(df: pd.DataFrame) -> pd.DataFrame:
+        if models_filter and "model" in df.columns:
+            return df[df["model"].isin(models_filter)]
+        return df
+
+    # ── Load all data domains ─────────────────────────────────────────────────
+    domain_specs = []
+
+    if metrics_filter is None or metrics_filter & (set(CONTINUOUS_METRICS) | {"delta_mirroring_rate"}):
+        print("\n=== Loading TruthfulQA data ===")
+        df_tqa = _filter_models(load_all_styles(STYLE_CSV_PATHS, styles))
+        if not df_tqa.empty:
+            tqa_metrics = [
+                m for m in list(CONTINUOUS_METRICS) + ["delta_mirroring_rate"]
+                if _want_metric(m) and m in df_tqa.columns and not df_tqa[m].isna().all()
+            ]
+            if tqa_metrics:
+                domain_specs.append((df_tqa, tqa_metrics, "TruthfulQA"))
+
+    # if metrics_filter is None or metrics_filter & set(COT_METRICS):
+    #     print("\n=== Loading CoT (GSM8K) data ===")
+    #     df_cot = _filter_models(load_cot_df(styles))
+    #     if not df_cot.empty:
+    #         cot_metrics = [
+    #             m for m in COT_METRICS
+    #             if _want_metric(m) and m in df_cot.columns and not df_cot[m].isna().all()
+    #         ]
+    #         if cot_metrics:
+    #             domain_specs.append((df_cot, cot_metrics, "CoT/GSM8K"))
+
+    # if metrics_filter is None or "unsafe_score" in (metrics_filter or set()):
+    #     print("\n=== Loading Safety ASR (old runs) ===")
+    #     df_asr_old = _filter_models(load_safety_asr_df(styles))
+    #     print("\n=== Loading Safety ASR (new runs) ===")
+    #     df_asr_new = _filter_models(load_safety_asr_new_df(styles))
+    #     df_asr = pd.concat([df_asr_old, df_asr_new], ignore_index=True) if not df_asr_old.empty or not df_asr_new.empty else pd.DataFrame()
+    #     if not df_asr.empty:
+    #         df_asr = df_asr.drop_duplicates(subset=["model", "style", "prompt_id", "place", "strength"])
+    #         if _want_metric("unsafe_score") and "unsafe_score" in df_asr.columns:
+    #             domain_specs.append((df_asr, ["unsafe_score"], "Safety/ASR"))
+
+    # ── Silhouette: pre-aggregated, condition-level bootstrap ─────────────────
+    sil_results: dict[str, dict[str, float]] = {}   # model → {place_strength_style: value}
+    if _want_metric("silhouette"):
+        print("\n=== Loading Silhouette data ===")
+        df_sil = _filter_models(load_silhouette_df(styles))
+        if not df_sil.empty:
+            # Compute condition spread (std across groups) per model — no N dimension
+            for model, grp in df_sil.groupby("model"):
+                vals = grp["silhouette"].dropna()
+                sil_results[str(model)] = float(vals.std()) if len(vals) > 1 else np.nan
+
+            print("\n  Silhouette condition spread (std across style×place×strength):")
+            for m, v in sorted(sil_results.items()):
+                print(f"    {m}: {v:.4f}")
+
+    if not domain_specs and not sil_results:
+        print("No data loaded in any domain — nothing to plot.", file=sys.stderr)
+        sys.exit(1)
+
+    # all_metric_results : metric → model → {n: [corrs]}
+    # all_var_results    : metric → model → {n: scalar spread}
+    all_metric_results: dict = {}
+    all_var_results:    dict = {}
+
+    for df_domain, metrics, domain_name in domain_specs:
+        print(f"\n{'='*50}\n  Domain: {domain_name}")
+        for metric in metrics:
+            print(f"\n  ── metric: {metric}")
+            model_vals = bootstrap_metric_per_model(
+                df_domain, metric, SUBSET_SIZES,
+                n_bootstrap=args.n_bootstrap, rng=rng,
+            )
+            all_metric_results[metric] = model_vals
+
+            model_vars = bootstrap_variance_per_model(
+                df_domain, metric, SUBSET_SIZES,
+                n_bootstrap=args.n_bootstrap, rng=rng,
+            )
+            all_var_results[metric] = model_vars
+
+            for model in sorted(model_vals):
+                val_row = "  ".join(
+                    f"N={n}: "
+                    f"mean={np.nanmean(model_vals[model].get(n, [float('nan')])):.4f} "
+                    f"bstd={model_vars[model].get(n, float('nan')):.4f}"
+                    for n in SUBSET_SIZES
+                )
+                print(f"    [{model}] {val_row}")
+
+    # ── Place ablation ────────────────────────────────────────────────────────
+    print("\n=== Computing place ablation ===")
+    all_place_means: dict = {}
+    all_place_vars: dict = {}
+    for df_domain, metrics, _ in domain_specs:
+        for metric in metrics:
+            pm, pv = compute_place_stats(df_domain, metric)
+            if pm:
+                all_place_means[metric] = pm
+                all_place_vars[metric] = pv
+
+    # ── Strength ablation (per style, since strength scales differ) ────────────
+    print("\n=== Computing strength ablation ===")
+    # strength_results[style] = (means_by_metric, vars_by_metric, sorted_strengths)
+    strength_results: dict = {}
+    for style in styles:
+        sm_by_metric: dict = {}
+        sv_by_metric: dict = {}
+        all_s: list = []
+        for df_domain, metrics, _ in domain_specs:
+            if "style" not in df_domain.columns:
+                continue
+            df_style = df_domain[df_domain["style"] == style]
+            if df_style.empty:
+                continue
+            for metric in metrics:
+                sm, sv, s_vals = compute_strength_stats(df_style, metric)
+                if sm:
+                    sm_by_metric[metric] = sm
+                    sv_by_metric[metric] = sv
+                    all_s = sorted(set(all_s) | set(s_vals))
+        if sm_by_metric and all_s:
+            strength_results[style] = (sm_by_metric, sv_by_metric, all_s)
+            print(f"  {style}: strengths = {all_s}")
+
+    # ── Summary CSV ───────────────────────────────────────────────────────────
+    rows = []
+    for metric, model_vals in all_metric_results.items():
+        for model, size_dict in model_vals.items():
+            for n in SUBSET_SIZES:
+                v = np.array(size_dict.get(n, [float("nan")]), dtype=float)
+                rows.append(dict(
+                    metric=metric, model=model, n=n,
+                    mean_rho=np.nanmean(v),
+                    p10_rho=np.nanpercentile(v, 10),
+                    p90_rho=np.nanpercentile(v, 90),
+                    std_rho=np.nanstd(v),
+                    bootstrap_std=all_var_results.get(metric, {}).get(model, {}).get(n, np.nan),
+                ))
+    # Silhouette: add as N=all (no per-prompt bootstrap possible)
+    for model, spread in sil_results.items():
+        rows.append(dict(
+            metric="silhouette", model=model, n="all",
+            mean_rho=np.nan, p10_rho=np.nan, p90_rho=np.nan, std_rho=np.nan,
+            bootstrap_std=spread,
+        ))
+
+    df_summary = pd.DataFrame(rows)
+    csv_out = out_dir / "sensitivity_summary.csv"
+    # Append to existing if filtering (don't overwrite other metrics)
+    if (metrics_filter or models_filter) and csv_out.exists():
+        df_existing = pd.read_csv(csv_out, dtype={"n": str})
+        df_summary["n"] = df_summary["n"].astype(str)
+        # Drop rows that will be replaced
+        mask = df_existing["metric"].isin(df_summary["metric"].unique())
+        if models_filter:
+            mask &= df_existing["model"].isin(models_filter)
+        df_existing = df_existing[~mask]
+        df_summary = pd.concat([df_existing, df_summary], ignore_index=True)
+    df_summary.to_csv(csv_out, index=False)
+    print(f"\nSaved summary table → {csv_out}")
+
+    # ── Plots — always rebuild from full CSV so all models appear ─────────────
+    df_plot = pd.read_csv(csv_out, dtype={"n": str})
+    df_plot_num = df_plot[df_plot["n"] != "all"].copy()
+    df_plot_num["n"] = pd.to_numeric(df_plot_num["n"])
+
+    # Reconstruct plot_metric_results and plot_var_results from the full CSV.
+    # Store pre-computed (mean, lo, hi) tuples so _band can use them directly.
+    plot_metric_results: dict = {}
+    plot_var_results:    dict = {}
+    for metric, grp_m in df_plot_num.groupby("metric"):
+        plot_metric_results[metric] = {}
+        plot_var_results[metric]    = {}
+        for model, grp_mod in grp_m.groupby("model"):
+            # Value is a 3-tuple (mean, p10, p90) — _band handles both list and tuple
+            plot_metric_results[metric][model] = {
+                int(row["n"]): (row["mean_rho"], row["p10_rho"], row["p90_rho"])
+                for _, row in grp_mod.iterrows()
+            }
+            plot_var_results[metric][model] = {
+                int(row["n"]): row["bootstrap_std"]
+                for _, row in grp_mod.iterrows()
+            }
+
+    if plot_metric_results:
+        print("\nGenerating N-ablation plots …")
+        plot_metric_per_model(plot_metric_results, SUBSET_SIZES, out_dir / "metric_ablation.png")
+        plot_variance_per_metric(plot_var_results, SUBSET_SIZES, out_dir / "variance_per_metric.png")
+
+    if all_place_means:
+        print("\nGenerating place-ablation plots …")
+        plot_place_metric(all_place_means,  out_dir / "place_ablation_metric.png")
+        plot_place_variance(all_place_vars, out_dir / "place_ablation_variance.png")
+
+    if strength_results:
+        print("\nGenerating strength-ablation plots …")
+        for style, (sm, sv, all_s) in strength_results.items():
+            plot_strength_metric(sm,  all_s, out_dir / f"strength_ablation_metric_{style}.png",  style=style)
+            plot_strength_variance(sv, all_s, out_dir / f"strength_ablation_variance_{style}.png", style=style)
+
+    # ── Decision table: best N per metric ────────────────────────────────────
+    df_numeric = df_summary[df_summary["n"] != "all"]
+    if not df_numeric.empty:
+        df_numeric = df_numeric.copy()
+        df_numeric["n"] = pd.to_numeric(df_numeric["n"])
+        print("\n── Best N per metric (smallest N within 15% of N=128 for all models) ──")
+        for metric in sorted(df_numeric["metric"].unique()):
+            sub_m = df_numeric[df_numeric["metric"] == metric]
+            best_ns_per_model = {}
+            for model, sub_mod in sub_m.groupby("model"):
+                size_dict = {int(row["n"]): [row["mean_rho"]] for _, row in sub_mod.iterrows()}
+                best_ns_per_model[model] = _find_best_n(size_dict, SUBSET_SIZES)
+            best_n = max(best_ns_per_model.values())
+            models_str = ", ".join(f"{m}={n}" for m, n in sorted(best_ns_per_model.items()))
+            print(f"  {metric:30s}: recommended N={best_n}  ({models_str})")
+    print("\nDone.")
+
+
+if __name__ == "__main__":
+    main()
