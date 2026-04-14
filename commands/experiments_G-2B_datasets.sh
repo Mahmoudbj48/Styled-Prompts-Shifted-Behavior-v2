@@ -5,7 +5,7 @@
 #
 # Usage: bash commands/experiments_G-2B_datasets.sh [BATCH_SIZE]
 
-BATCH_SIZE=${1:-40}
+BATCH_SIZE=${1:-16}
 
 # ============================================================
 # NATURAL QUESTIONS
