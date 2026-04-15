@@ -118,6 +118,7 @@ def load_alpaca_hf(
         seed: int = 42,
         *,
         repo_id: str = "tatsu-lab/alpaca",
+        config_name: str = "default",
         split: Optional[str] = None,
 ) -> List[Dict[str, Any]]:
     """
@@ -253,6 +254,7 @@ def load_simpleqa_verified(
         seed: int = 42,
         *,
         repo_id: str = "google/simpleqa-verified",
+        config_name: str = "default",
         split: str = "test",
 ) -> List[Dict[str, Any]]:
     """
