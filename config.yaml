@@ -20,17 +20,31 @@ datasets:
   truthful_qa:
     config_name: "generation"
     split: "validation"
-    sample_size: 128
+    sample_size: 16
 
   gsm8k:
     config_name: "main"
     split: "test"
-    sample_size: 128
+    sample_size: 16
 
   natural_questions:
     config_name: "default"
     split: "validation"
-    sample_size: 256
+    sample_size: 16
+
+  simpleqa_verified:
+    split: "test"
+    sample_size: 16
+
+  trivia_qa:
+    config_name: "rc"
+    split: "validation"
+    sample_size: 16
+
+  hotpot_qa:
+    config_name: "distractor"
+    split: "validation"
+    sample_size: 16
 
 defaults:
   max_new_tokens: 100
