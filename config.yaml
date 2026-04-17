@@ -39,7 +39,7 @@ datasets:
 
   simpleqa_verified:
     repo_id: "google/simpleqa-verified"
-    split: "test"
+    split: "eval"
     sample_size: 128
 
   trivia_qa:
