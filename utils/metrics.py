@@ -15,6 +15,8 @@ Functions:
 Also includes:
     - Style mirroring judge via Gemini (LLM-as-judge)
     - HarmBench safety ASR computation via LlamaGuard3 outputs
+    - compute_sgs: per-dataset Stylistic Generalization Score (SGS_{k,j})
+    - compute_sgs_combined: SGS per dataset + pooled combined score (SGS_k)
 """
 
 from __future__ import annotations
@@ -2515,5 +2517,198 @@ def evaluate_cot_reasoning_comparison(
         }
         
         results.append(result)
-    
+
     return results
+
+
+# =============================================================================
+# STYLISTIC GENERALIZATION SCORE (SGS)
+# =============================================================================
+
+# Standard delta columns produced by compute_delta_metrics.add_delta_columns
+SGS_DEFAULT_DELTA_COLS: list[str] = [
+    "delta_bleu",
+    "delta_bertscore_prompt",
+    "delta_bertscore_response",
+    "delta_activation_similarity",
+    "delta_log_prob",
+    "delta_jsd_drift",
+    "delta_mirroring_rate",
+]
+
+# Fallback ID column names tried in order
+_ID_COL_CANDIDATES = ("prompt_id", "problem_id", "question_id")
+
+
+def _resolve_id_col(df: pd.DataFrame, preferred: str = "prompt_id") -> str:
+    """Return the first available prompt-ID column."""
+    if preferred in df.columns:
+        return preferred
+    for alt in _ID_COL_CANDIDATES:
+        if alt in df.columns:
+            return alt
+    raise ValueError(
+        f"No prompt-ID column found. Tried: {_ID_COL_CANDIDATES}. "
+        f"Available columns: {list(df.columns)}"
+    )
+
+
+def compute_sgs(
+    df: pd.DataFrame,
+    delta_cols: list[str] | None = None,
+    *,
+    id_col: str = "prompt_id",
+) -> pd.DataFrame:
+    """Compute the per-dataset Stylistic Generalization Score (SGS_{k,j}).
+
+    For each prompt *i* and metric *k*, the per-prompt instability is the
+    sample standard deviation of its delta values across all variants:
+
+        per_prompt_std_k(i) = std_{v in V}[ delta_k(i, v) ]   (ddof=1)
+
+    The dataset score is then:
+
+        SGS_{k,j} = (1 / |D_j|) * sum_i  per_prompt_std_k(i)
+                  = mean_i[ per_prompt_std_k(i) ]
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        One row per (prompt, variant). Must contain ``id_col``, ``"model"``,
+        and the requested delta columns.  Variants are implicitly defined by
+        any combination of (style, place, strength) columns present.
+    delta_cols : list[str] | None
+        Delta columns to score. Defaults to ``SGS_DEFAULT_DELTA_COLS``.
+        Columns absent from *df* are silently skipped.
+    id_col : str
+        Column that uniquely identifies a prompt (resolved automatically if
+        the exact name is absent).
+
+    Returns
+    -------
+    pd.DataFrame
+        Columns: ``model``, ``metric``, ``sgs``, ``n_prompts``, ``n_variants``
+        One row per (model, metric).
+    """
+    if delta_cols is None:
+        delta_cols = SGS_DEFAULT_DELTA_COLS
+
+    id_col = _resolve_id_col(df, id_col)
+    available = [c for c in delta_cols if c in df.columns]
+    if not available:
+        raise ValueError(
+            f"None of the requested delta columns found in df. "
+            f"Requested: {delta_cols}. Available: {list(df.columns)}"
+        )
+
+    rows = []
+    for model, df_m in df.groupby("model"):
+        grouped = df_m.groupby(id_col)
+
+        # Per-prompt std across variants (one row per prompt, one col per metric)
+        per_prompt_std = grouped[available].std(ddof=1)  # shape: (n_prompts, n_metrics)
+        n_prompts = len(per_prompt_std)
+        # Median number of variants seen per prompt (robust to partial missing rows)
+        n_variants = int(grouped.size().median())
+
+        for col in available:
+            col_stds = per_prompt_std[col].dropna()
+            sgs = float(col_stds.mean()) if len(col_stds) > 0 else float("nan")
+            rows.append({
+                "model":      str(model),
+                "metric":     col,
+                "sgs":        sgs,
+                "n_prompts":  n_prompts,
+                "n_variants": n_variants,
+            })
+
+    return pd.DataFrame(rows, columns=["model", "metric", "sgs", "n_prompts", "n_variants"])
+
+
+def compute_sgs_combined(
+    dfs: list[pd.DataFrame],
+    delta_cols: list[str] | None = None,
+    *,
+    id_col: str = "prompt_id",
+    dataset_labels: list[str] | None = None,
+) -> pd.DataFrame:
+    """Compute SGS per dataset and combined across all datasets (SGS_k).
+
+    The combined score pools every prompt from every dataset with equal
+    weight (1/N each, where N = total number of prompts):
+
+        SGS_k = (1/N) * sum_{j} sum_{i in D_j}  per_prompt_std_k(i)
+              = mean over all prompts (pooled) of per-prompt std
+
+    Parameters
+    ----------
+    dfs : list[pd.DataFrame]
+        One DataFrame per dataset, each with the same schema as required by
+        ``compute_sgs``.
+    delta_cols : list[str] | None
+        Delta columns to score. Defaults to ``SGS_DEFAULT_DELTA_COLS``.
+    id_col : str
+        Prompt-ID column name (resolved automatically if absent).
+    dataset_labels : list[str] | None
+        Human-readable name for each dataset. Defaults to
+        ``["dataset_0", "dataset_1", ...]``.
+
+    Returns
+    -------
+    pd.DataFrame
+        Columns: ``model``, ``metric``, ``dataset``, ``sgs``,
+        ``n_prompts``, ``n_variants``.
+        One row per (model, metric, dataset), plus one additional row per
+        (model, metric) with ``dataset="combined"`` holding SGS_k.
+    """
+    if delta_cols is None:
+        delta_cols = SGS_DEFAULT_DELTA_COLS
+    if dataset_labels is None:
+        dataset_labels = [f"dataset_{i}" for i in range(len(dfs))]
+    if len(dataset_labels) != len(dfs):
+        raise ValueError("dataset_labels must have the same length as dfs")
+
+    all_rows: list[dict] = []
+    # Accumulate per-prompt stds across datasets, keyed by (model, metric)
+    pooled_stds: dict[tuple[str, str], list[float]] = {}
+
+    for label, df in zip(dataset_labels, dfs):
+        actual_id = _resolve_id_col(df, id_col)
+        available = [c for c in delta_cols if c in df.columns]
+        if not available:
+            continue
+
+        for model, df_m in df.groupby("model"):
+            grouped = df_m.groupby(actual_id)
+            per_prompt_std = grouped[available].std(ddof=1)
+            n_prompts = len(per_prompt_std)
+            n_variants = int(grouped.size().median())
+
+            for col in available:
+                col_stds = per_prompt_std[col].dropna().tolist()
+                sgs = float(np.mean(col_stds)) if col_stds else float("nan")
+                all_rows.append({
+                    "model":      str(model),
+                    "metric":     col,
+                    "dataset":    label,
+                    "sgs":        sgs,
+                    "n_prompts":  n_prompts,
+                    "n_variants": n_variants,
+                })
+                pooled_stds.setdefault((str(model), col), []).extend(col_stds)
+
+    # Combined row: SGS_k = mean of all pooled per-prompt stds
+    for (model, col), stds in pooled_stds.items():
+        all_rows.append({
+            "model":      model,
+            "metric":     col,
+            "dataset":    "combined",
+            "sgs":        float(np.mean(stds)) if stds else float("nan"),
+            "n_prompts":  len(stds),
+            "n_variants": None,
+        })
+
+    return pd.DataFrame(
+        all_rows,
+        columns=["model", "metric", "dataset", "sgs", "n_prompts", "n_variants"],
+    )
