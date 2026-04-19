@@ -20,31 +20,45 @@ datasets:
   truthful_qa:
     config_name: "generation"
     split: "validation"
-    sample_size: 16
+    sample_size: 128
 
   gsm8k:
     config_name: "main"
     split: "test"
-    sample_size: 16
+    sample_size: 128
 
   natural_questions:
     config_name: "default"
     split: "validation"
-    sample_size: 16
+    sample_size: 128
+
+  alpaca:
+    repo_id: "tatsu-lab/alpaca"
+    split: "train"
+    sample_size: 128
 
   simpleqa_verified:
-    split: "test"
-    sample_size: 16
+    repo_id: "google/simpleqa-verified"
+    split: "eval"
+    sample_size: 128
 
   trivia_qa:
+    repo_id: "mandarjoshi/trivia_qa"
     config_name: "rc"
     split: "validation"
-    sample_size: 16
+    sample_size: 128
 
   hotpot_qa:
+    repo_id: "hotpotqa/hotpot_qa"
     config_name: "distractor"
     split: "validation"
-    sample_size: 16
+    sample_size: 128
+
+  harmbench:
+    repo_id: "walledai/HarmBench"
+    config_name: "standard"
+    split: null  # Will auto-select
+    sample_size: 128
 
 defaults:
   max_new_tokens: 100
