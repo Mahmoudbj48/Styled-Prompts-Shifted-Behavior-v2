@@ -95,7 +95,8 @@ def load_model(model_name: str, device_map: str = "auto", dtype: str = "float32"
     # Ensure pad token exists
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
-        model.config.pad_token_id = model.config.eos_token_id
+        eos = model.config.eos_token_id
+        model.config.pad_token_id = eos[0] if isinstance(eos, list) else eos
 
     model.eval()
     print(f"Model loaded successfully on {model.device}")
