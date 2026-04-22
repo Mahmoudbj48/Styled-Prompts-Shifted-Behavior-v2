@@ -1,4 +1,4 @@
-model,prompt_id,place,strength,category,prompt_orig,prompt_pert,bertscore_prompt,response_orig,response_pert,bleu,bertscore_response,activation_similarity,delta_log_prob,entropy_shift,jsd_drift,mirroring_verdict,mirroring_length_ratio,mirroring_expected_ratio,mirroring_rate_batch,mirroring_rate,delta_bleu,delta_bertscore_prompt,delta_bertscore_response,delta_activation_similarity,delta_jsd_drift,delta_mirroring_rate
+model,prompt_id,place,strength,category,prompt_orig,prompt_pert,bertscore_prompt,response_orig,response_pert,bleu,bertscore_response,activation_similarity,delta_log_prob,entropy_shift,mirroring_rate,delta_bleu,delta_bertscore_prompt,delta_bertscore_response,delta_activation_similarity,delta_mirroring_rate
 G-2B,0,global,0.25,trivia_qa,What general name is given to a rotating star which emits a regular beat of radiation?,What is a pulsar?,0.8707419633865356,"is given to a rotating star which emits a regular beat of radiation?
 model
 A pulsar.
@@ -7,58 +7,58 @@ A pulsar is a type of neutron star that emits regular, high-energy radio waves."
 model
 A pulsar is a type of neutron star that emits regular, high-energy radio pulses. Pulsars are extremely dense objects, with a mass similar to that of the Sun but a radius of only a few kilometers. This means that they have a very high surface density, with an estimated density of 10^14 kg/m^3.
 
-Pulsars are found in a variety of galactic environments, including supernova remnants, neutron star mergers, and binary systems. They are a fascinating",16.958733864045552,0.8782915472984314,0.64794921875,63.5,0.376708984375,,NO,2.7515151515151515,0.25,0.0,0.0,-83.04126613595449,-0.12925803661346436,-0.12170833349227905,-0.3515625,,-1.0
+Pulsars are found in a variety of galactic environments, including supernova remnants, neutron star mergers, and binary systems. They are a fascinating",16.958733864045552,0.8782915472984314,0.64794921875,-63.5,0.376708984375,0.0,-83.04126613595449,-0.12925803661346436,-0.12170833349227905,-0.3515625,-1.0
 G-2B,1,global,0.25,trivia_qa,"""Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""",Which operetta has 'The Witches Curse'?,0.9095783829689026,"Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""
 model
 The Gilbert and Sullivan operetta ""The Witches of Oz"" is subtitled ""The Witches' Curse"". It premiered in 1910 and is one of the most popular and beloved operettas in the world.","model
-The Witches of Oz is a musical by L. Frank Baum. It premiered in 1902 and has since become a beloved classic.",7.513142401977743,0.8786739706993103,0.88232421875,51.5625,0.1513671875,,NO,0.45098039215686275,0.25,0.0,0.0,-92.4868575980223,-0.09042161703109741,-0.12132596969604492,-0.11767578125,,-1.0
+The Witches of Oz is a musical by L. Frank Baum. It premiered in 1902 and has since become a beloved classic.",7.513142401977743,0.8786739706993103,0.88232421875,-51.5625,0.1513671875,0.0,-92.4868575980223,-0.09042161703109741,-0.12132596969604492,-0.11767578125,-1.0
 G-2B,2,global,0.25,trivia_qa,Which English cricketer had figures for bowling 10 for 53 against Australia 1956?,Which cricketer took 10 for 53?,0.9365034699440002,"3 against Australia 1956?
 model
-The cricketer whose figures for bowling 10 for 53 against Australia 1956 are mentioned are **Jack Hobbs**.","I am unable to access real-time information, therefore I cannot answer this question. For the most up-to-date information on cricket scores and player statistics, please check the official websites of the International Cricket Council (ICC) and the respective cricket boards.",0.7947529289544674,0.8151203989982605,0.8125,25.6875,0.9580078125,,NO,1.9927536231884058,0.25,0.0,0.0,-99.20524707104558,-0.0634964108467102,-0.18487954139709473,-0.18701171875,,-1.0
+The cricketer whose figures for bowling 10 for 53 against Australia 1956 are mentioned are **Jack Hobbs**.","I am unable to access real-time information, therefore I cannot answer this question. For the most up-to-date information on cricket scores and player statistics, please check the official websites of the International Cricket Council (ICC) and the respective cricket boards.",0.7947529289544674,0.8151203989982605,0.8125,-25.6875,0.9580078125,0.0,-99.20524707104558,-0.0634964108467102,-0.18487954139709473,-0.18701171875,-1.0
 G-2B,3,global,0.25,trivia_qa,Wolf Mankowitz wrote the 1953 novel ‘A Kid For Two….’what’?,Who wrote ‘A Kid For Two…’?,0.8895519375801086,"3 novel ‘A Kid For Two….’what’?
 model
 Wolf Mankowitz did not write the 1953 novel 'A Kid For Two…'.","model
-The song 'A Kid For Two' was written by George Michael and released as a single from his 1986 album 'Faith'.",6.964541799727335,0.8529635071754456,0.7041015625,72.375,0.4580078125,,NO,1.1515151515151516,0.25,0.0,0.0,-93.03545820027271,-0.11044788360595703,-0.1470363736152649,-0.2958984375,,-1.0
-G-2B,4,global,0.25,trivia_qa,Who is the patron saint of dancers?,Who is the saint of dancers?,0.9831337928771973,"user
+The song 'A Kid For Two' was written by George Michael and released as a single from his 1986 album 'Faith'.",6.964541799727335,0.8529635071754456,0.7041015625,-72.375,0.4580078125,0.0,-93.03545820027271,-0.11044788360595692,-0.1470363736152649,-0.2958984375,-1.0
+G-2B,4,global,0.25,trivia_qa,Who is the patron saint of dancers?,Who is the saint of dancers?,0.9831337928771972,"user
 Who is the patron saint of dancers?
 model
 The patron saint of dancers is Saint Cecilia, a Roman Catholic saint known for her love of music and dance. She is often depicted as a young woman playing a musical instrument, and her feast day is celebrated on March 25th.","model
-The saint of dancers is Saint Cecilia, a Roman Catholic saint known for her love of music and dance. She is often depicted as a young woman playing the lute, a stringed instrument, and is considered the patron saint of musicians, dancers, and artists.",61.31446662388094,0.9377596378326416,0.9423828125,4.1875,0.07861328125,,NO,0.969811320754717,0.25,0.0,0.0,-38.6855333761191,-0.01686614751815796,-0.06224030256271362,-0.05859375,,-1.0
+The saint of dancers is Saint Cecilia, a Roman Catholic saint known for her love of music and dance. She is often depicted as a young woman playing the lute, a stringed instrument, and is considered the patron saint of musicians, dancers, and artists.",61.31446662388094,0.9377596378326416,0.9423828125,-4.1875,0.07861328125,0.0,-38.6855333761191,-0.01686614751815807,-0.06224030256271362,-0.05859375,-1.0
 G-2B,5,global,0.25,trivia_qa,"Published on Feb 21, 1848, which two authors were responsible for the Communist Manifesto?",Who authored the Communist Manifesto?,0.9163095951080322,"authors were responsible for the Communist Manifesto?
 model
 The Communist Manifesto was written by Karl Marx and Friedrich Engels in 1848.","model
-The Communist Manifesto was written by Karl Marx and Friedrich Engels in 1848. It is a foundational document of the Communist Party of the Soviet Union and other communist parties worldwide.",43.48005276280309,0.9186257123947144,0.89306640625,1.0625,0.140869140625,,NO,1.4202898550724639,0.25,0.0,0.0,-56.51994723719695,-0.08369022607803345,-0.08137428760528564,-0.10791015625,,-1.0
+The Communist Manifesto was written by Karl Marx and Friedrich Engels in 1848. It is a foundational document of the Communist Party of the Soviet Union and other communist parties worldwide.",43.48005276280309,0.9186257123947144,0.89306640625,-1.0625,0.140869140625,0.0,-56.51994723719695,-0.08369022607803334,-0.08137428760528564,-0.10791015625,-1.0
 G-2B,6,global,0.25,trivia_qa,The fortified wine drink Sherry is named after what town?,What town is Sherry named after?,0.9094355702400208,"user
 The fortified wine drink Sherry is named after what town?
 model
 Sherry is named after the city of Jerez in the province of Jerez, in the autonomous community of Andalusia, in southwestern Spain. The name Sherry is derived from the Latin word ""sherrum"", which means a fortified wine.","model
-Sherry is named after the River Sherry in the Galician region of Spain. The town is located on the left bank of the river, and its name is derived from the Latin word ""sharya,"" which means ""river.""",23.77178811260834,0.8906841278076172,0.8583984375,34.9375,0.1181640625,,NO,0.7198581560283688,0.25,0.0,0.0,-76.2282118873917,-0.09056437015533447,-0.10931581258773804,-0.1416015625,,-1.0
+Sherry is named after the River Sherry in the Galician region of Spain. The town is located on the left bank of the river, and its name is derived from the Latin word ""sharya,"" which means ""river.""",23.77178811260834,0.8906841278076172,0.8583984375,-34.9375,0.1181640625,0.0,-76.2282118873917,-0.09056437015533447,-0.10931581258773804,-0.1416015625,-1.0
 G-2B,7,global,0.25,trivia_qa,The nickname for Dumfries became the name of which Scottish football club?,Which football club?,0.8841023445129395,"user
 The nickname for Dumfries became the name of which Scottish football club?
 model
 The nickname for Dumfries is ""The Dumfries Fifer"", which is derived from the town's history and its association with cattle. The town is home to Dumfries Football Club, a Scottish football club that competes in the Scottish Football League.","club?
 model
-I do not have access to real-time information, therefore I cannot answer this question. For the most up-to-date information on football clubs, please check the official websites or social media pages of the clubs themselves.",3.0554149211579458,0.827864408493042,0.53466796875,104.125,0.32421875,,NO,0.735202492211838,0.25,0.0,0.0,-96.9445850788421,-0.11589759588241577,-0.172135591506958,-0.46533203125,,-1.0
-G-2B,8,global,0.25,trivia_qa,The revolutionary group the Sandinistas were active in which country?,Which country had the Sandinistas?,0.9129888415336609,"user
+I do not have access to real-time information, therefore I cannot answer this question. For the most up-to-date information on football clubs, please check the official websites or social media pages of the clubs themselves.",3.0554149211579458,0.827864408493042,0.53466796875,-104.125,0.32421875,0.0,-96.9445850788421,-0.11589759588241577,-0.172135591506958,-0.46533203125,-1.0
+G-2B,8,global,0.25,trivia_qa,The revolutionary group the Sandinistas were active in which country?,Which country had the Sandinistas?,0.9129888415336608,"user
 The revolutionary group the Sandinistas were active in which country?
 model
 The Sandinistas were active in Nicaragua. They were a leftist rebel group that fought against the Somoza dictatorship from 1979 to 1990.","model
-The Sandinistas were a leftist political party in Nicaragua. They were in power from 1979 to 1990.",23.11397458822019,0.9113773703575134,0.9365234375,8.0,0.23193359375,,NO,0.49056603773584906,0.25,0.0,0.0,-76.88602541177985,-0.08701103925704956,-0.08862262964248657,-0.0634765625,,-1.0
+The Sandinistas were a leftist political party in Nicaragua. They were in power from 1979 to 1990.",23.11397458822019,0.9113773703575134,0.9365234375,-8.0,0.23193359375,0.0,-76.88602541177985,-0.08701103925704967,-0.08862262964248657,-0.0634765625,-1.0
 G-2B,9,global,0.25,trivia_qa,Who was the conservative candidate beaten by Ken Livingstone in the first two elections for Mayor of London?,Who lost to Livingstone?,0.8834672570228577,"Ken Livingstone in the first two elections for Mayor of London?
 model
 There is no evidence to support the claim that a conservative candidate was beaten in the first two elections for Mayor of London.","?
 model
-The context does not specify who lost to Livingstone, so I cannot answer this question from the provided context.",2.358099906909354,0.855256974697113,0.83984375,66.5,0.351318359375,,NO,0.605,0.25,0.0,0.0,-97.64190009309068,-0.11653262376785278,-0.1447429656982422,-0.1611328125,,-1.0
+The context does not specify who lost to Livingstone, so I cannot answer this question from the provided context.",2.358099906909354,0.855256974697113,0.83984375,-66.5,0.351318359375,0.0,-97.64190009309068,-0.11653262376785278,-0.1447429656982422,-0.1611328125,-1.0
 G-2B,10,global,0.25,trivia_qa,"""Who said, To err is human but it feels divine?""""""",Who said this?,0.8261793255805969,"user
 ""Who said, To err is human but it feels divine?""""""
 model
 The quote is attributed to the Roman philosopher Seneca. It means that even the greatest mistakes are often seen as a gift from the divine.","this?
 model
-I am unable to access external sources or provide context, so I cannot answer this question from the provided context.",1.8513604675798503,0.8315858840942383,0.50537109375,78.875,0.224609375,,NO,0.6632653061224489,0.25,0.0,0.0,-98.14863953242019,-0.17382067441940308,-0.16841405630111694,-0.494140625,,-1.0
+I am unable to access external sources or provide context, so I cannot answer this question from the provided context.",1.8513604675798505,0.8315858840942383,0.50537109375,-78.875,0.224609375,0.0,-98.14863953242019,-0.17382067441940308,-0.16841405630111694,-0.494140625,-1.0
 G-2B,11,global,0.25,trivia_qa,"When Mr Benn was looking for an adventure, what type of shop did he visit?",What shop did Mr Benn visit?,0.9201651811599731,"was looking for an adventure, what type of shop did he visit?
 model
 The context does not specify what type of shop Mr Benn was looking for, so I cannot answer this question from the provided context.","model
-I am unable to access real-time information, therefore I cannot answer this question.",5.397212552907875,0.8744489550590515,0.96435546875,31.6875,0.4169921875,,NO,0.457286432160804,0.25,0.0,0.0,-94.60278744709217,-0.07983505725860596,-0.12555092573165894,-0.03662109375,,-1.0
+I am unable to access real-time information, therefore I cannot answer this question.",5.397212552907875,0.8744489550590515,0.96435546875,-31.6875,0.4169921875,0.0,-94.60278744709217,-0.07983505725860596,-0.12555092573165894,-0.03662109375,-1.0
 G-2B,12,global,0.25,trivia_qa,What was made and repaired by a Wainwright?,Wainwright's work?,0.868972897529602,"user
 What was made and repaired by a Wainwright?
 model
@@ -75,108 +75,108 @@ A Wainwright was a type of boat built by the renowned shipbuilder John Wainwrigh
 * Site-specific performances
 * Video art
 * Installation art
-*",1.437184108852183,0.8074533343315125,0.6875,53.875,0.60009765625,,NO,1.6666666666666667,0.25,0.0,0.0,-98.56281589114786,-0.13102710247039795,-0.19254666566848755,-0.3134765625,,-1.0
-G-2B,13,global,0.25,trivia_qa,"The War of the Triple Alliance (1864 - 1870) was fought between the allied countries of Argentina, Brazil, and Uruguay and which other country?",Which country fought in the War of the Triple Alliance?,0.9019715785980225,"The War of the Triple Alliance was fought between Argentina, Brazil, and Uruguay and the United States from 1864 to 1870.","Germany fought in the War of the Triple Alliance. The Triple Alliance was formed by Germany, Austria-Hungary, and Italy in 1914 in an attempt to prevent a third world war. Germany invaded Russia in 1941 and was defeated.",12.48655762038344,0.8883705139160156,0.728515625,56.673828125,0.1640625,,NO,1.8181818181818181,0.25,0.0,0.0,-87.5134423796166,-0.09802854061126709,-0.11162936687469482,-0.27099609375,,-1.0
+*",1.437184108852183,0.8074533343315125,0.6875,-53.875,0.60009765625,0.0,-98.56281589114786,-0.13102710247039795,-0.19254666566848755,-0.3134765625,-1.0
+G-2B,13,global,0.25,trivia_qa,"The War of the Triple Alliance (1864 - 1870) was fought between the allied countries of Argentina, Brazil, and Uruguay and which other country?",Which country fought in the War of the Triple Alliance?,0.9019715785980223,"The War of the Triple Alliance was fought between Argentina, Brazil, and Uruguay and the United States from 1864 to 1870.","Germany fought in the War of the Triple Alliance. The Triple Alliance was formed by Germany, Austria-Hungary, and Italy in 1914 in an attempt to prevent a third world war. Germany invaded Russia in 1941 and was defeated.",12.48655762038344,0.8883705139160156,0.728515625,-56.673828125,0.1640625,0.0,-87.5134423796166,-0.0980285406112672,-0.11162936687469482,-0.27099609375,-1.0
 G-2B,14,global,0.25,trivia_qa,What city will host the 2016 Olympics?,Which city hosts 2016 Olympics?,0.972292423248291,"user
 What city will host the 2016 Olympics?
 model
-The 2016 Summer Olympics will be held in Rio de Janeiro, Brazil. The city has hosted the Olympics twice before, in 1958 and 2008.","The 2016 Summer Olympics, officially known as the Games of the XXXI Olympiad, were held in Rio de Janeiro, Brazil.",22.874384291164407,0.8779700398445129,0.94287109375,0.125,0.110595703125,,NO,0.6551724137931034,0.25,0.0,0.0,-77.12561570883564,-0.027707457542419434,-0.12202990055084229,-0.05810546875,,-1.0
+The 2016 Summer Olympics will be held in Rio de Janeiro, Brazil. The city has hosted the Olympics twice before, in 1958 and 2008.","The 2016 Summer Olympics, officially known as the Games of the XXXI Olympiad, were held in Rio de Janeiro, Brazil.",22.874384291164407,0.8779700398445129,0.94287109375,-0.125,0.110595703125,0.0,-77.12561570883564,-0.027707457542419434,-0.12202990055084229,-0.05810546875,-1.0
 G-2B,15,global,0.25,trivia_qa,Mount Entoto is the highest peak overlooking which African capital city?,Which capital city?,0.862564742565155,"user
 Mount Entoto is the highest peak overlooking which African capital city?
 model
 Mount Entoto is the highest peak overlooking Addis Ababa, the capital city of Ethiopia. It stands at an elevation of 3,051 meters (9,984 feet) above sea level.","city?
 model
-The context does not specify which capital city, so I cannot answer this question from the provided context.",3.28427117310412,0.8184008002281189,0.578125,71.5,0.159423828125,,NO,0.5042016806722689,0.25,0.0,0.0,-96.71572882689593,-0.13743525743484497,-0.1815991997718811,-0.4228515625,,-1.0
+The context does not specify which capital city, so I cannot answer this question from the provided context.",3.28427117310412,0.8184008002281189,0.578125,-71.5,0.159423828125,0.0,-96.71572882689593,-0.13743525743484497,-0.1815991997718811,-0.4228515625,-1.0
 G-2B,0,global,0.5,trivia_qa,What general name is given to a rotating star which emits a regular beat of radiation?,What is the name for a rotating star emitting regular radiation?,0.9452959299087524,"is given to a rotating star which emits a regular beat of radiation?
 model
 A pulsar.
 
 A pulsar is a type of neutron star that emits regular, high-energy radio waves.","a rotating star emitting regular radiation?
 model
-A star that emits regular radiation is called a **regular pulsating star (RP star)**. RP stars are a group of stars that exhibit regular, periodic changes in their brightness and spectrum. These changes are caused by the star's rotation, which causes different parts of the star to emit light at different wavelengths.",9.599258776332896,0.8820496797561646,0.92919921875,60.875,0.247802734375,,NO,2.2303030303030305,0.5,0.1875,0.0,-90.40074122366715,-0.05470407009124756,-0.1179502010345459,-0.0703125,,-1.0
+A star that emits regular radiation is called a **regular pulsating star (RP star)**. RP stars are a group of stars that exhibit regular, periodic changes in their brightness and spectrum. These changes are caused by the star's rotation, which causes different parts of the star to emit light at different wavelengths.",9.599258776332896,0.8820496797561646,0.92919921875,-60.875,0.247802734375,0.0,-90.40074122366715,-0.05470407009124756,-0.1179502010345459,-0.0703125,-1.0
 G-2B,1,global,0.5,trivia_qa,"""Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""","""Which operetta by Gilbert and Sullivan is 'The Witches Curse'?""",0.9540159106254578,"Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""
 model
 The Gilbert and Sullivan operetta ""The Witches of Oz"" is subtitled ""The Witches' Curse"". It premiered in 1910 and is one of the most popular and beloved operettas in the world.","Witches Curse'?""
 model
-The Witches' Curse is an operetta by Gilbert and Sullivan, first performed in 1912.",4.979899748652077,0.8940091729164124,0.9384765625,48.8125,0.08740234375,,YES,0.41568627450980394,0.5,0.1875,1.0,-95.02010025134797,-0.045984089374542236,-0.10599076747894287,-0.0615234375,,0.0
-G-2B,2,global,0.5,trivia_qa,Which English cricketer had figures for bowling 10 for 53 against Australia 1956?,Which English cricketer took 10 for 53 against Australia in 1956?,0.9668756723403931,"3 against Australia 1956?
+The Witches' Curse is an operetta by Gilbert and Sullivan, first performed in 1912.",4.979899748652077,0.8940091729164124,0.9384765625,-48.8125,0.08740234375,1.0,-95.02010025134797,-0.045984089374542236,-0.10599076747894287,-0.0615234375,0.0
+G-2B,2,global,0.5,trivia_qa,Which English cricketer had figures for bowling 10 for 53 against Australia 1956?,Which English cricketer took 10 for 53 against Australia in 1956?,0.9668756723403932,"3 against Australia 1956?
 model
 The cricketer whose figures for bowling 10 for 53 against Australia 1956 are mentioned are **Jack Hobbs**.","model
-I cannot access real-time information, therefore I cannot provide the specific details of the cricketer or the match you are asking about.",1.8892056019820658,0.8417053818702698,0.89404296875,35.0,0.33203125,,NO,1.0434782608695652,0.5,0.1875,0.0,-98.11079439801797,-0.03312420845031738,-0.15829455852508545,-0.10546875,,-1.0
+I cannot access real-time information, therefore I cannot provide the specific details of the cricketer or the match you are asking about.",1.8892056019820656,0.8417053818702698,0.89404296875,-35.0,0.33203125,0.0,-98.11079439801797,-0.03312420845031727,-0.15829455852508545,-0.10546875,-1.0
 G-2B,3,global,0.5,trivia_qa,Wolf Mankowitz wrote the 1953 novel ‘A Kid For Two….’what’?,Who wrote 'A Kid For Two...?,0.8872725963592529,"3 novel ‘A Kid For Two….’what’?
 model
 Wolf Mankowitz did not write the 1953 novel 'A Kid For Two…'.","user
 Who wrote 'A Kid For Two...?
 model
-The book 'A Kid For Two' was written by Mary Pope Osborne. It was first published in 1990 and tells the story of two young siblings, Emily and Ethan, who are separated by a cruel divorce. The book has been adapted into several television series and movies.",3.3841296025422087,0.858701765537262,0.716796875,73.375,0.6376953125,,NO,2.9393939393939394,0.5,0.1875,0.0,-96.61587039745784,-0.11272722482681274,-0.1412981152534485,-0.283203125,,-1.0
+The book 'A Kid For Two' was written by Mary Pope Osborne. It was first published in 1990 and tells the story of two young siblings, Emily and Ethan, who are separated by a cruel divorce. The book has been adapted into several television series and movies.",3.3841296025422087,0.858701765537262,0.716796875,-73.375,0.6376953125,0.0,-96.61587039745784,-0.11272722482681263,-0.1412981152534485,-0.283203125,-1.0
 G-2B,4,global,0.5,trivia_qa,Who is the patron saint of dancers?,Who is the saint of dancers?,0.983133852481842,"user
 Who is the patron saint of dancers?
 model
 The patron saint of dancers is Saint Cecilia, a Roman Catholic saint known for her love of music and dance. She is often depicted as a young woman playing a musical instrument, and her feast day is celebrated on March 25th.","user
 Who is the saint of dancers?
 model
-The saint of dancers is Saint Cecilia, a Roman Catholic saint known for her love of music and dance. She is often depicted as a young woman playing the lute, a stringed instrument, and is considered the patron saint of musicians, dancers, and artists.",64.72081486207806,0.9657687544822693,0.9423828125,4.1875,0.07861328125,,NO,1.079245283018868,0.5,0.1875,0.0,-35.279185137921985,-0.016866087913513184,-0.03423118591308594,-0.05859375,,-1.0
-G-2B,5,global,0.5,trivia_qa,"Published on Feb 21, 1848, which two authors were responsible for the Communist Manifesto?",Which two authors wrote the Communist Manifesto?,0.9259486794471741,"authors were responsible for the Communist Manifesto?
+The saint of dancers is Saint Cecilia, a Roman Catholic saint known for her love of music and dance. She is often depicted as a young woman playing the lute, a stringed instrument, and is considered the patron saint of musicians, dancers, and artists.",64.72081486207806,0.9657687544822692,0.9423828125,-4.1875,0.07861328125,0.0,-35.279185137921985,-0.016866087913513184,-0.03423118591308605,-0.05859375,-1.0
+G-2B,5,global,0.5,trivia_qa,"Published on Feb 21, 1848, which two authors were responsible for the Communist Manifesto?",Which two authors wrote the Communist Manifesto?,0.925948679447174,"authors were responsible for the Communist Manifesto?
 model
 The Communist Manifesto was written by Karl Marx and Friedrich Engels in 1848.","user
 Which two authors wrote the Communist Manifesto?
 model
-The Communist Manifesto was written by Karl Marx and Friedrich Engels. It was first published in 1848 in the Communist Party of Germany newspaper.",45.05204311538121,0.9534093737602234,0.88232421875,3.9375,0.063720703125,,NO,1.4565217391304348,0.5,0.1875,0.0,-54.94795688461883,-0.0740511417388916,-0.04659062623977661,-0.11865234375,,-1.0
+The Communist Manifesto was written by Karl Marx and Friedrich Engels. It was first published in 1848 in the Communist Party of Germany newspaper.",45.05204311538121,0.9534093737602234,0.88232421875,-3.9375,0.063720703125,0.0,-54.94795688461883,-0.0740511417388916,-0.04659062623977661,-0.11865234375,-1.0
 G-2B,6,global,0.5,trivia_qa,The fortified wine drink Sherry is named after what town?,What town is Sherry named after?,0.9094355702400208,"user
 The fortified wine drink Sherry is named after what town?
 model
 Sherry is named after the city of Jerez in the province of Jerez, in the autonomous community of Andalusia, in southwestern Spain. The name Sherry is derived from the Latin word ""sherrum"", which means a fortified wine.","user
 What town is Sherry named after?
 model
-Sherry is named after the River Sherry in the Galician region of Spain. The town is located on the left bank of the river, and its name is derived from the Latin word ""sharya,"" which means ""river.""",27.454925215257006,0.9145393967628479,0.8583984375,34.9375,0.1181640625,,NO,0.8368794326241135,0.5,0.1875,0.0,-72.54507478474304,-0.09056437015533447,-0.08546054363250732,-0.1416015625,,-1.0
-G-2B,7,global,0.5,trivia_qa,The nickname for Dumfries became the name of which Scottish football club?,Which Scottish football club is nicknamed Dumfries?,0.9246568083763123,"user
+Sherry is named after the River Sherry in the Galician region of Spain. The town is located on the left bank of the river, and its name is derived from the Latin word ""sharya,"" which means ""river.""",27.454925215257006,0.914539396762848,0.8583984375,-34.9375,0.1181640625,0.0,-72.54507478474304,-0.09056437015533447,-0.08546054363250721,-0.1416015625,-1.0
+G-2B,7,global,0.5,trivia_qa,The nickname for Dumfries became the name of which Scottish football club?,Which Scottish football club is nicknamed Dumfries?,0.9246568083763124,"user
 The nickname for Dumfries became the name of which Scottish football club?
 model
 The nickname for Dumfries is ""The Dumfries Fifer"", which is derived from the town's history and its association with cattle. The town is home to Dumfries Football Club, a Scottish football club that competes in the Scottish Football League.","Which Scottish football club is nicknamed Dumfries?
 model
-The club nicknamed Dumfries is Dumfries Football Club, a Scottish football club based in Dumfries, Scotland.",12.21013992198163,0.9021676182746887,0.76123046875,50.75,0.458984375,,YES,0.5171339563862928,0.5,0.1875,1.0,-87.7898600780184,-0.07534313201904297,-0.09783238172531128,-0.23876953125,,0.0
-G-2B,8,global,0.5,trivia_qa,The revolutionary group the Sandinistas were active in which country?,In which country were the Sandinistas active?,0.9345133900642395,"user
+The club nicknamed Dumfries is Dumfries Football Club, a Scottish football club based in Dumfries, Scotland.",12.21013992198163,0.9021676182746888,0.76123046875,-50.75,0.458984375,1.0,-87.7898600780184,-0.07534313201904286,-0.09783238172531117,-0.23876953125,0.0
+G-2B,8,global,0.5,trivia_qa,The revolutionary group the Sandinistas were active in which country?,In which country were the Sandinistas active?,0.9345133900642396,"user
 The revolutionary group the Sandinistas were active in which country?
 model
 The Sandinistas were active in Nicaragua. They were a leftist rebel group that fought against the Somoza dictatorship from 1979 to 1990.","which country were the Sandinistas active?
 model
-The Sandinistas were active in Nicaragua from 1979 to 1990. They were a leftist rebel group that fought against the Somoza dictatorship.",64.08789128514618,0.9652194976806641,0.9580078125,11.0625,0.1318359375,,NO,0.8726415094339622,0.5,0.1875,0.0,-35.91210871485386,-0.06548649072647095,-0.03478050231933594,-0.0419921875,,-1.0
+The Sandinistas were active in Nicaragua from 1979 to 1990. They were a leftist rebel group that fought against the Somoza dictatorship.",64.08789128514618,0.965219497680664,0.9580078125,-11.0625,0.1318359375,0.0,-35.91210871485386,-0.06548649072647084,-0.03478050231933605,-0.0419921875,-1.0
 G-2B,9,global,0.5,trivia_qa,Who was the conservative candidate beaten by Ken Livingstone in the first two elections for Mayor of London?,Who was the conservative candidate defeated by Ken Livingstone for Mayor of London?,0.971265971660614,"Ken Livingstone in the first two elections for Mayor of London?
 model
 There is no evidence to support the claim that a conservative candidate was beaten in the first two elections for Mayor of London.","for Mayor of London?
 model
-I cannot access real-time information, therefore I cannot answer this question. For the most up-to-date information on the 2024 London Mayor election, please check the official election website or reputable news sources.",12.79510009658561,0.8671752214431763,0.93359375,57.5,0.191162109375,,NO,1.235,0.5,0.1875,0.0,-87.20489990341443,-0.028733909130096436,-0.13282471895217896,-0.0673828125,,-1.0
+I cannot access real-time information, therefore I cannot answer this question. For the most up-to-date information on the 2024 London Mayor election, please check the official election website or reputable news sources.",12.79510009658561,0.8671752214431763,0.93359375,-57.5,0.191162109375,0.0,-87.20489990341443,-0.028733909130096436,-0.13282471895217896,-0.0673828125,-1.0
 G-2B,10,global,0.5,trivia_qa,"""Who said, To err is human but it feels divine?""""""","Who said, ""To err is human""?",0.9047095775604248,"user
 ""Who said, To err is human but it feels divine?""""""
 model
 The quote is attributed to the Roman philosopher Seneca. It means that even the greatest mistakes are often seen as a gift from the divine.","Who said, ""To err is human""?
 model
-The quote ""To err is human"" is attributed to Cicero, a Roman philosopher. It means that humans are inherently prone to making mistakes and that it is important to be forgiving and understanding when mistakes are made.",16.863925265020377,0.9052315354347229,0.9296875,67.375,0.2666015625,,NO,1.2857142857142858,0.5,0.1875,0.0,-83.13607473497967,-0.0952904224395752,-0.09476840496063232,-0.06982421875,,-1.0
-G-2B,11,global,0.5,trivia_qa,"When Mr Benn was looking for an adventure, what type of shop did he visit?",What kind of shop did Mr Benn visit for adventure?,0.9307588338851929,"was looking for an adventure, what type of shop did he visit?
+The quote ""To err is human"" is attributed to Cicero, a Roman philosopher. It means that humans are inherently prone to making mistakes and that it is important to be forgiving and understanding when mistakes are made.",16.863925265020377,0.9052315354347228,0.9296875,-67.375,0.2666015625,0.0,-83.13607473497967,-0.0952904224395752,-0.09476840496063244,-0.06982421875,-1.0
+G-2B,11,global,0.5,trivia_qa,"When Mr Benn was looking for an adventure, what type of shop did he visit?",What kind of shop did Mr Benn visit for adventure?,0.9307588338851928,"was looking for an adventure, what type of shop did he visit?
 model
 The context does not specify what type of shop Mr Benn was looking for, so I cannot answer this question from the provided context.","shop did Mr Benn visit for adventure?
 model
-The context does not provide any information about the type of shop Mr Benn visited for adventure, so I cannot answer this question from the provided context.",50.00046416785078,0.9495084285736084,0.92138671875,23.25,0.244873046875,,NO,1.015075376884422,0.5,0.1875,0.0,-49.99953583214926,-0.06924140453338623,-0.05049145221710205,-0.07958984375,,-1.0
-G-2B,12,global,0.5,trivia_qa,What was made and repaired by a Wainwright?,What does a Wainwright make?,0.9099437594413757,"user
+The context does not provide any information about the type of shop Mr Benn visited for adventure, so I cannot answer this question from the provided context.",50.00046416785078,0.9495084285736084,0.92138671875,-23.25,0.244873046875,0.0,-49.99953583214926,-0.06924140453338634,-0.05049145221710205,-0.07958984375,-1.0
+G-2B,12,global,0.5,trivia_qa,What was made and repaired by a Wainwright?,What does a Wainwright make?,0.9099437594413756,"user
 What was made and repaired by a Wainwright?
 model
 A Wainwright was a type of boat built by the renowned shipbuilder John Wainwright in the 19th century. These boats were known for their speed and durability, and were often used for fishing, pleasure boating, and racing.","user
 What does a Wainwright make?
 model
-A Wainwright is a British manufacturer of high-end, high-performance sporting goods and apparel. They are known for their innovative and high-quality products, which are used by athletes of all levels.",8.711168575165017,0.8837904930114746,0.845703125,41.0,0.45361328125,,NO,0.8740740740740741,0.5,0.1875,0.0,-91.28883142483502,-0.09005624055862427,-0.11620950698852539,-0.1552734375,,-1.0
-G-2B,13,global,0.5,trivia_qa,"The War of the Triple Alliance (1864 - 1870) was fought between the allied countries of Argentina, Brazil, and Uruguay and which other country?",Which other country was involved in the War of the Triple Alliance (1864 - 1870)?,0.9288855195045471,"The War of the Triple Alliance was fought between Argentina, Brazil, and Uruguay and the United States from 1864 to 1870.","The War of the Triple Alliance (1864 - 1870) was fought between Germany, Austria-Hungary, and Italy.",29.003954043420627,0.945326030254364,0.83056640625,26.064453125,0.240234375,,NO,0.8264462809917356,0.5,0.1875,0.0,-70.99604595657942,-0.07111459970474243,-0.054673850536346436,-0.1689453125,,-1.0
+A Wainwright is a British manufacturer of high-end, high-performance sporting goods and apparel. They are known for their innovative and high-quality products, which are used by athletes of all levels.",8.711168575165017,0.8837904930114746,0.845703125,-41.0,0.45361328125,0.0,-91.28883142483502,-0.09005624055862438,-0.11620950698852539,-0.1552734375,-1.0
+G-2B,13,global,0.5,trivia_qa,"The War of the Triple Alliance (1864 - 1870) was fought between the allied countries of Argentina, Brazil, and Uruguay and which other country?",Which other country was involved in the War of the Triple Alliance (1864 - 1870)?,0.9288855195045472,"The War of the Triple Alliance was fought between Argentina, Brazil, and Uruguay and the United States from 1864 to 1870.","The War of the Triple Alliance (1864 - 1870) was fought between Germany, Austria-Hungary, and Italy.",29.003954043420627,0.945326030254364,0.83056640625,-26.064453125,0.240234375,0.0,-70.99604595657942,-0.07111459970474232,-0.054673850536346436,-0.1689453125,-1.0
 G-2B,14,global,0.5,trivia_qa,What city will host the 2016 Olympics?,Which city hosts the 2016 Olympics?,0.9738968014717102,"user
 What city will host the 2016 Olympics?
 model
 The 2016 Summer Olympics will be held in Rio de Janeiro, Brazil. The city has hosted the Olympics twice before, in 1958 and 2008.","the 2016 Olympics?
 model
-The 2016 Summer Olympics were held in Rio de Janeiro, Brazil.",27.633536133309985,0.9245190024375916,0.97412109375,3.375,0.102294921875,,YES,0.4942528735632184,0.5,0.1875,1.0,-72.36646386669005,-0.026103079319000244,-0.07548093795776367,-0.02685546875,,0.0
+The 2016 Summer Olympics were held in Rio de Janeiro, Brazil.",27.633536133309985,0.9245190024375916,0.97412109375,-3.375,0.102294921875,1.0,-72.36646386669005,-0.026103079319000244,-0.07548093795776367,-0.02685546875,0.0
 G-2B,15,global,0.5,trivia_qa,Mount Entoto is the highest peak overlooking which African capital city?,Which African capital city does Mount Entoto overlook?,0.8993867039680481,"user
 Mount Entoto is the highest peak overlooking which African capital city?
 model
 Mount Entoto is the highest peak overlooking Addis Ababa, the capital city of Ethiopia. It stands at an elevation of 3,051 meters (9,984 feet) above sea level.","African capital city does Mount Entoto overlook?
 model
-The city of Addis Ababa, Ethiopia. Mount Entoto is a mountain in the central highlands of Ethiopia. Addis Ababa is the capital city of Ethiopia.",20.137215044982227,0.8923705220222473,0.93505859375,38.625,0.1328125,,NO,0.8361344537815126,0.5,0.1875,0.0,-79.86278495501782,-0.1006132960319519,-0.10762947797775269,-0.06591796875,,-1.0
+The city of Addis Ababa, Ethiopia. Mount Entoto is a mountain in the central highlands of Ethiopia. Addis Ababa is the capital city of Ethiopia.",20.137215044982227,0.8923705220222473,0.93505859375,-38.625,0.1328125,0.0,-79.86278495501782,-0.1006132960319519,-0.10762947797775269,-0.06591796875,-1.0
 G-2B,0,global,1.0,trivia_qa,What general name is given to a rotating star which emits a regular beat of radiation?,What general name is given to a rotating star which emits a regular beat of radiation?,1.0,"is given to a rotating star which emits a regular beat of radiation?
 model
 A pulsar.
@@ -185,190 +185,190 @@ A pulsar is a type of neutron star that emits regular, high-energy radio waves."
 model
 A pulsar.
 
-A pulsar is a type of neutron star that emits regular, high-energy radio waves.",100.00000000000004,0.9999998807907104,0.99951171875,-0.0,0.0,,YES,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,,0.0
+A pulsar is a type of neutron star that emits regular, high-energy radio waves.",100.00000000000004,0.9999998807907104,0.99951171875,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
 G-2B,1,global,1.0,trivia_qa,"""Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""","""Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""",1.0,"Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""
 model
 The Gilbert and Sullivan operetta ""The Witches of Oz"" is subtitled ""The Witches' Curse"". It premiered in 1910 and is one of the most popular and beloved operettas in the world.","Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""
 model
-The Gilbert and Sullivan operetta ""The Witches of Oz"" is subtitled ""The Witches' Curse"". It premiered in 1910 and is one of the most popular and beloved operettas in the world.",100.00000000000004,0.9999999403953552,1.0,-0.0,0.0,,YES,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,,0.0
+The Gilbert and Sullivan operetta ""The Witches of Oz"" is subtitled ""The Witches' Curse"". It premiered in 1910 and is one of the most popular and beloved operettas in the world.",100.00000000000004,0.9999999403953552,1.0,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
 G-2B,2,global,1.0,trivia_qa,Which English cricketer had figures for bowling 10 for 53 against Australia 1956?,Which English cricketer had figures for bowling 10 for 53 against Australia 1956?,0.9999998807907104,"3 against Australia 1956?
 model
 The cricketer whose figures for bowling 10 for 53 against Australia 1956 are mentioned are **Jack Hobbs**.","3 against Australia 1956?
 model
-The cricketer whose figures for bowling 10 for 53 against Australia 1956 are mentioned are **Jack Hobbs**.",100.00000000000004,0.9999999403953552,0.99951171875,-0.0,0.0,,YES,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,,0.0
-G-2B,3,global,1.0,trivia_qa,Wolf Mankowitz wrote the 1953 novel ‘A Kid For Two….’what’?,Wolf Mankowitz wrote the 1953 novel ‘A Kid For Two….’what’?,0.9999998211860657,"3 novel ‘A Kid For Two….’what’?
+The cricketer whose figures for bowling 10 for 53 against Australia 1956 are mentioned are **Jack Hobbs**.",100.00000000000004,0.9999999403953552,0.99951171875,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+G-2B,3,global,1.0,trivia_qa,Wolf Mankowitz wrote the 1953 novel ‘A Kid For Two….’what’?,Wolf Mankowitz wrote the 1953 novel ‘A Kid For Two….’what’?,0.9999998211860656,"3 novel ‘A Kid For Two….’what’?
 model
 Wolf Mankowitz did not write the 1953 novel 'A Kid For Two…'.","3 novel ‘A Kid For Two….’what’?
 model
-Wolf Mankowitz did not write the 1953 novel 'A Kid For Two…'.",100.00000000000004,0.9999998807907104,1.0,-0.0,0.0,,YES,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,,0.0
+Wolf Mankowitz did not write the 1953 novel 'A Kid For Two…'.",100.00000000000004,0.9999998807907104,1.0,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
 G-2B,4,global,1.0,trivia_qa,Who is the patron saint of dancers?,Who is the patron saint of dancers?,0.9999999403953552,"user
 Who is the patron saint of dancers?
 model
 The patron saint of dancers is Saint Cecilia, a Roman Catholic saint known for her love of music and dance. She is often depicted as a young woman playing a musical instrument, and her feast day is celebrated on March 25th.","user
 Who is the patron saint of dancers?
 model
-The patron saint of dancers is Saint Cecilia, a Roman Catholic saint known for her love of music and dance. She is often depicted as a young woman playing a musical instrument, and her feast day is celebrated on March 25th.",100.00000000000004,0.9999999403953552,1.0009765625,-0.0,0.0,,YES,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,,0.0
-G-2B,5,global,1.0,trivia_qa,"Published on Feb 21, 1848, which two authors were responsible for the Communist Manifesto?","Published on Feb 21, 1848, which two authors were responsible for the Communist Manifesto?",0.9999998211860657,"authors were responsible for the Communist Manifesto?
+The patron saint of dancers is Saint Cecilia, a Roman Catholic saint known for her love of music and dance. She is often depicted as a young woman playing a musical instrument, and her feast day is celebrated on March 25th.",100.00000000000004,0.9999999403953552,1.0009765625,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+G-2B,5,global,1.0,trivia_qa,"Published on Feb 21, 1848, which two authors were responsible for the Communist Manifesto?","Published on Feb 21, 1848, which two authors were responsible for the Communist Manifesto?",0.9999998211860656,"authors were responsible for the Communist Manifesto?
 model
 The Communist Manifesto was written by Karl Marx and Friedrich Engels in 1848.","authors were responsible for the Communist Manifesto?
 model
-The Communist Manifesto was written by Karl Marx and Friedrich Engels in 1848.",100.00000000000004,1.0,1.0009765625,-0.0,0.0,,YES,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,,0.0
+The Communist Manifesto was written by Karl Marx and Friedrich Engels in 1848.",100.00000000000004,1.0,1.0009765625,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
 G-2B,6,global,1.0,trivia_qa,The fortified wine drink Sherry is named after what town?,The fortified wine drink Sherry is named after what town?,0.9999999403953552,"user
 The fortified wine drink Sherry is named after what town?
 model
 Sherry is named after the city of Jerez in the province of Jerez, in the autonomous community of Andalusia, in southwestern Spain. The name Sherry is derived from the Latin word ""sherrum"", which means a fortified wine.","user
 The fortified wine drink Sherry is named after what town?
 model
-Sherry is named after the city of Jerez in the province of Jerez, in the autonomous community of Andalusia, in southwestern Spain. The name Sherry is derived from the Latin word ""sherrum"", which means a fortified wine.",100.00000000000004,0.9999999403953552,1.0,-0.0,0.0,,YES,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,,0.0
+Sherry is named after the city of Jerez in the province of Jerez, in the autonomous community of Andalusia, in southwestern Spain. The name Sherry is derived from the Latin word ""sherrum"", which means a fortified wine.",100.00000000000004,0.9999999403953552,1.0,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
 G-2B,7,global,1.0,trivia_qa,The nickname for Dumfries became the name of which Scottish football club?,The nickname for Dumfries became the name of which Scottish football club?,0.9999999403953552,"user
 The nickname for Dumfries became the name of which Scottish football club?
 model
 The nickname for Dumfries is ""The Dumfries Fifer"", which is derived from the town's history and its association with cattle. The town is home to Dumfries Football Club, a Scottish football club that competes in the Scottish Football League.","user
 The nickname for Dumfries became the name of which Scottish football club?
 model
-The nickname for Dumfries is ""The Dumfries Fifer"", which is derived from the town's history and its association with cattle. The town is home to Dumfries Football Club, a Scottish football club that competes in the Scottish Football League.",100.00000000000004,1.0,1.0,-0.0,0.0,,YES,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,,0.0
+The nickname for Dumfries is ""The Dumfries Fifer"", which is derived from the town's history and its association with cattle. The town is home to Dumfries Football Club, a Scottish football club that competes in the Scottish Football League.",100.00000000000004,1.0,1.0,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
 G-2B,8,global,1.0,trivia_qa,The revolutionary group the Sandinistas were active in which country?,The revolutionary group the Sandinistas were active in which country?,0.9999998807907104,"user
 The revolutionary group the Sandinistas were active in which country?
 model
 The Sandinistas were active in Nicaragua. They were a leftist rebel group that fought against the Somoza dictatorship from 1979 to 1990.","user
 The revolutionary group the Sandinistas were active in which country?
 model
-The Sandinistas were active in Nicaragua. They were a leftist rebel group that fought against the Somoza dictatorship from 1979 to 1990.",100.00000000000004,1.0,1.0,-0.0,0.0,,YES,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,,0.0
+The Sandinistas were active in Nicaragua. They were a leftist rebel group that fought against the Somoza dictatorship from 1979 to 1990.",100.00000000000004,1.0,1.0,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
 G-2B,9,global,1.0,trivia_qa,Who was the conservative candidate beaten by Ken Livingstone in the first two elections for Mayor of London?,Who was the conservative candidate beaten by Ken Livingstone in the first two elections for Mayor of London?,0.9999998807907104,"Ken Livingstone in the first two elections for Mayor of London?
 model
 There is no evidence to support the claim that a conservative candidate was beaten in the first two elections for Mayor of London.","Ken Livingstone in the first two elections for Mayor of London?
 model
-There is no evidence to support the claim that a conservative candidate was beaten in the first two elections for Mayor of London.",100.00000000000004,0.9999999403953552,1.0009765625,-0.0,0.0,,YES,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,,0.0
+There is no evidence to support the claim that a conservative candidate was beaten in the first two elections for Mayor of London.",100.00000000000004,0.9999999403953552,1.0009765625,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
 G-2B,10,global,1.0,trivia_qa,"""Who said, To err is human but it feels divine?""""""","""Who said, To err is human but it feels divine?""""""",1.0,"user
 ""Who said, To err is human but it feels divine?""""""
 model
 The quote is attributed to the Roman philosopher Seneca. It means that even the greatest mistakes are often seen as a gift from the divine.","user
 ""Who said, To err is human but it feels divine?""""""
 model
-The quote is attributed to the Roman philosopher Seneca. It means that even the greatest mistakes are often seen as a gift from the divine.",100.00000000000004,0.9999999403953552,0.99951171875,-0.0,0.0,,YES,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,,0.0
+The quote is attributed to the Roman philosopher Seneca. It means that even the greatest mistakes are often seen as a gift from the divine.",100.00000000000004,0.9999999403953552,0.99951171875,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
 G-2B,11,global,1.0,trivia_qa,"When Mr Benn was looking for an adventure, what type of shop did he visit?","When Mr Benn was looking for an adventure, what type of shop did he visit?",1.000000238418579,"was looking for an adventure, what type of shop did he visit?
 model
 The context does not specify what type of shop Mr Benn was looking for, so I cannot answer this question from the provided context.","was looking for an adventure, what type of shop did he visit?
 model
-The context does not specify what type of shop Mr Benn was looking for, so I cannot answer this question from the provided context.",100.00000000000004,0.9999998807907104,1.0009765625,-0.0,0.0,,YES,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,,0.0
+The context does not specify what type of shop Mr Benn was looking for, so I cannot answer this question from the provided context.",100.00000000000004,0.9999998807907104,1.0009765625,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
 G-2B,12,global,1.0,trivia_qa,What was made and repaired by a Wainwright?,What was made and repaired by a Wainwright?,1.0,"user
 What was made and repaired by a Wainwright?
 model
 A Wainwright was a type of boat built by the renowned shipbuilder John Wainwright in the 19th century. These boats were known for their speed and durability, and were often used for fishing, pleasure boating, and racing.","user
 What was made and repaired by a Wainwright?
 model
-A Wainwright was a type of boat built by the renowned shipbuilder John Wainwright in the 19th century. These boats were known for their speed and durability, and were often used for fishing, pleasure boating, and racing.",100.00000000000004,1.0,1.0009765625,-0.0,0.0,,YES,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,,0.0
-G-2B,13,global,1.0,trivia_qa,"The War of the Triple Alliance (1864 - 1870) was fought between the allied countries of Argentina, Brazil, and Uruguay and which other country?","The War of the Triple Alliance (1864 - 1870) was fought between the allied countries of Argentina, Brazil, and Uruguay and which other country?",1.0000001192092896,"The War of the Triple Alliance was fought between Argentina, Brazil, and Uruguay and the United States from 1864 to 1870.","The War of the Triple Alliance was fought between Argentina, Brazil, and Uruguay and the United States from 1864 to 1870.",100.00000000000004,0.9999998807907104,0.99951171875,-0.0,0.0,,YES,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,,0.0
+A Wainwright was a type of boat built by the renowned shipbuilder John Wainwright in the 19th century. These boats were known for their speed and durability, and were often used for fishing, pleasure boating, and racing.",100.00000000000004,1.0,1.0009765625,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+G-2B,13,global,1.0,trivia_qa,"The War of the Triple Alliance (1864 - 1870) was fought between the allied countries of Argentina, Brazil, and Uruguay and which other country?","The War of the Triple Alliance (1864 - 1870) was fought between the allied countries of Argentina, Brazil, and Uruguay and which other country?",1.0000001192092896,"The War of the Triple Alliance was fought between Argentina, Brazil, and Uruguay and the United States from 1864 to 1870.","The War of the Triple Alliance was fought between Argentina, Brazil, and Uruguay and the United States from 1864 to 1870.",100.00000000000004,0.9999998807907104,0.99951171875,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
 G-2B,14,global,1.0,trivia_qa,What city will host the 2016 Olympics?,What city will host the 2016 Olympics?,0.9999998807907104,"user
 What city will host the 2016 Olympics?
 model
 The 2016 Summer Olympics will be held in Rio de Janeiro, Brazil. The city has hosted the Olympics twice before, in 1958 and 2008.","user
 What city will host the 2016 Olympics?
 model
-The 2016 Summer Olympics will be held in Rio de Janeiro, Brazil. The city has hosted the Olympics twice before, in 1958 and 2008.",100.00000000000004,0.9999999403953552,1.0009765625,-0.0,0.0,,YES,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,,0.0
+The 2016 Summer Olympics will be held in Rio de Janeiro, Brazil. The city has hosted the Olympics twice before, in 1958 and 2008.",100.00000000000004,0.9999999403953552,1.0009765625,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
 G-2B,15,global,1.0,trivia_qa,Mount Entoto is the highest peak overlooking which African capital city?,Mount Entoto is the highest peak overlooking which African capital city?,1.0,"user
 Mount Entoto is the highest peak overlooking which African capital city?
 model
 Mount Entoto is the highest peak overlooking Addis Ababa, the capital city of Ethiopia. It stands at an elevation of 3,051 meters (9,984 feet) above sea level.","user
 Mount Entoto is the highest peak overlooking which African capital city?
 model
-Mount Entoto is the highest peak overlooking Addis Ababa, the capital city of Ethiopia. It stands at an elevation of 3,051 meters (9,984 feet) above sea level.",100.00000000000004,1.0,1.0009765625,-0.0,0.0,,YES,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,,0.0
-G-2B,0,global,1.5,trivia_qa,What general name is given to a rotating star which emits a regular beat of radiation?,What is the general term or name that is assigned to a rotating star that emits a consistent and regular beat of radiation?,0.9586216807365417,"is given to a rotating star which emits a regular beat of radiation?
+Mount Entoto is the highest peak overlooking Addis Ababa, the capital city of Ethiopia. It stands at an elevation of 3,051 meters (9,984 feet) above sea level.",100.00000000000004,1.0,1.0009765625,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+G-2B,0,global,1.5,trivia_qa,What general name is given to a rotating star which emits a regular beat of radiation?,What is the general term or name that is assigned to a rotating star that emits a consistent and regular beat of radiation?,0.9586216807365416,"is given to a rotating star which emits a regular beat of radiation?
 model
 A pulsar.
 
 A pulsar is a type of neutron star that emits regular, high-energy radio waves.","the general term or name that is assigned to a rotating star that emits a consistent and regular beat of radiation?
 model
-A pulsating star is a star that emits regular and consistent pulses of radiation, such as X-rays, radio waves, or visible light. The term pulsating is used to describe the regular and periodic changes in the star's brightness or other observable properties.",17.588624618802108,0.9001820683479309,0.9638671875,20.5625,0.109619140625,,NO,2.296969696969697,1.5,0.4375,0.0,-82.41137538119793,-0.04137831926345825,-0.09981781244277954,-0.03564453125,,-1.0
-G-2B,1,global,1.5,trivia_qa,"""Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""","""Which specific operetta by Gilbert and Sullivan is known by the subtitle 'The Witches Curse'?""",0.9436198472976685,"Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""
+A pulsating star is a star that emits regular and consistent pulses of radiation, such as X-rays, radio waves, or visible light. The term pulsating is used to describe the regular and periodic changes in the star's brightness or other observable properties.",17.588624618802108,0.9001820683479309,0.9638671875,-20.5625,0.109619140625,0.0,-82.41137538119793,-0.04137831926345836,-0.09981781244277954,-0.03564453125,-1.0
+G-2B,1,global,1.5,trivia_qa,"""Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""","""Which specific operetta by Gilbert and Sullivan is known by the subtitle 'The Witches Curse'?""",0.9436198472976683,"Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""
 model
 The Gilbert and Sullivan operetta ""The Witches of Oz"" is subtitled ""The Witches' Curse"". It premiered in 1910 and is one of the most popular and beloved operettas in the world.","user
 ""Which specific operetta by Gilbert and Sullivan is known by the subtitle 'The Witches Curse'?""
 model
-The specific operetta by Gilbert and Sullivan known by the subtitle 'The Witches Curse' is **The Sorcerer's Apprentice**.",9.95016627848737,0.8916904926300049,0.96875,54.6875,0.0380859375,,NO,0.8745098039215686,1.5,0.4375,0.0,-90.04983372151267,-0.05638015270233154,-0.10830944776535034,-0.03125,,-1.0
-G-2B,2,global,1.5,trivia_qa,Which English cricketer had figures for bowling 10 for 53 against Australia 1956?,Which specific English cricketer achieved bowling figures of 10 wickets for 53 runs against Australia in the year 1956?,0.9437215328216553,"3 against Australia 1956?
+The specific operetta by Gilbert and Sullivan known by the subtitle 'The Witches Curse' is **The Sorcerer's Apprentice**.",9.95016627848737,0.8916904926300049,0.96875,-54.6875,0.0380859375,0.0,-90.04983372151267,-0.056380152702331654,-0.10830944776535034,-0.03125,-1.0
+G-2B,2,global,1.5,trivia_qa,Which English cricketer had figures for bowling 10 for 53 against Australia 1956?,Which specific English cricketer achieved bowling figures of 10 wickets for 53 runs against Australia in the year 1956?,0.9437215328216552,"3 against Australia 1956?
 model
 The cricketer whose figures for bowling 10 for 53 against Australia 1956 are mentioned are **Jack Hobbs**.","0 wickets for 53 runs against Australia in the year 1956?
 model
-I am unable to provide specific details about individual players or match scores, as I do not have access to real-time or comprehensive historical data.",5.196997595703007,0.8574060201644897,0.78564453125,48.875,0.1845703125,,YES,1.565217391304348,1.5,0.4375,1.0,-94.80300240429703,-0.056278347969055176,-0.14259392023086548,-0.2138671875,,0.0
-G-2B,3,global,1.5,trivia_qa,Wolf Mankowitz wrote the 1953 novel ‘A Kid For Two….’what’?,Wolf Mankowitz is the author who wrote the novel titled ‘A Kid For Two….’ what?,0.9409602880477905,"3 novel ‘A Kid For Two….’what’?
+I am unable to provide specific details about individual players or match scores, as I do not have access to real-time or comprehensive historical data.",5.196997595703007,0.8574060201644897,0.78564453125,-48.875,0.1845703125,1.0,-94.80300240429703,-0.05627834796905529,-0.14259392023086548,-0.2138671875,0.0
+G-2B,3,global,1.5,trivia_qa,Wolf Mankowitz wrote the 1953 novel ‘A Kid For Two….’what’?,Wolf Mankowitz is the author who wrote the novel titled ‘A Kid For Two….’ what?,0.9409602880477904,"3 novel ‘A Kid For Two….’what’?
 model
 Wolf Mankowitz did not write the 1953 novel 'A Kid For Two…'.","user
 Wolf Mankowitz is the author who wrote the novel titled ‘A Kid For Two….’ what?
 model
-The author of the novel titled 'A Kid For Two…' is John Irving.",21.30931749764532,0.918866753578186,0.9375,46.875,0.04052734375,,YES,1.505050505050505,1.5,0.4375,1.0,-78.69068250235472,-0.059039533138275146,-0.08113312721252441,-0.0625,,0.0
+The author of the novel titled 'A Kid For Two…' is John Irving.",21.30931749764532,0.918866753578186,0.9375,-46.875,0.04052734375,1.0,-78.69068250235472,-0.059039533138275146,-0.08113312721252441,-0.0625,0.0
 G-2B,4,global,1.5,trivia_qa,Who is the patron saint of dancers?,Who is recognized as the patron saint specifically for dancers?,0.9543651342391968,"user
 Who is the patron saint of dancers?
 model
 The patron saint of dancers is Saint Cecilia, a Roman Catholic saint known for her love of music and dance. She is often depicted as a young woman playing a musical instrument, and her feast day is celebrated on March 25th.","user
 Who is recognized as the patron saint specifically for dancers?
 model
-The patron saint for dancers is Saint Cecilia. She is the Roman goddess of music, dance, and the arts. She is often depicted as a young woman playing a musical instrument, and her symbol is a pair of dancing sandals.",45.45679291385328,0.9379201531410217,0.98779296875,10.5,0.076171875,,NO,1.079245283018868,1.5,0.4375,0.0,-54.543207086146765,-0.04563480615615845,-0.062079787254333496,-0.01318359375,,-1.0
-G-2B,5,global,1.5,trivia_qa,"Published on Feb 21, 1848, which two authors were responsible for the Communist Manifesto?","Published on February 21, in the year 1848, which two individuals were the authors responsible for creating the Communist Manifesto?",0.9653802514076233,"authors were responsible for the Communist Manifesto?
+The patron saint for dancers is Saint Cecilia. She is the Roman goddess of music, dance, and the arts. She is often depicted as a young woman playing a musical instrument, and her symbol is a pair of dancing sandals.",45.45679291385328,0.9379201531410216,0.98779296875,-10.5,0.076171875,0.0,-54.543207086146765,-0.04563480615615845,-0.06207978725433361,-0.01318359375,-1.0
+G-2B,5,global,1.5,trivia_qa,"Published on Feb 21, 1848, which two authors were responsible for the Communist Manifesto?","Published on February 21, in the year 1848, which two individuals were the authors responsible for creating the Communist Manifesto?",0.9653802514076232,"authors were responsible for the Communist Manifesto?
 model
 The Communist Manifesto was written by Karl Marx and Friedrich Engels in 1848.","848, which two individuals were the authors responsible for creating the Communist Manifesto?
 model
-The premise of the question is incorrect. The Communist Manifesto was not created in 1848.",26.615275015901464,0.9101783633232117,0.95068359375,13.3125,0.06982421875,,YES,1.3768115942028984,1.5,0.4375,1.0,-73.38472498409858,-0.03461956977844238,-0.08982163667678833,-0.05029296875,,0.0
-G-2B,6,global,1.5,trivia_qa,The fortified wine drink Sherry is named after what town?,"The drink known as Sherry, which is a type of fortified wine, is named after which town?",0.9357030987739563,"user
+The premise of the question is incorrect. The Communist Manifesto was not created in 1848.",26.615275015901464,0.9101783633232116,0.95068359375,-13.3125,0.06982421875,1.0,-73.38472498409858,-0.03461956977844238,-0.08982163667678844,-0.05029296875,0.0
+G-2B,6,global,1.5,trivia_qa,The fortified wine drink Sherry is named after what town?,"The drink known as Sherry, which is a type of fortified wine, is named after which town?",0.9357030987739564,"user
 The fortified wine drink Sherry is named after what town?
 model
 Sherry is named after the city of Jerez in the province of Jerez, in the autonomous community of Andalusia, in southwestern Spain. The name Sherry is derived from the Latin word ""sherrum"", which means a fortified wine.","user
 The drink known as Sherry, which is a type of fortified wine, is named after which town?
 model
-The drink known as Sherry is named after the city of Jerez, in the autonomous community of Andalusia, in southwestern Spain. Sherry is a fortified wine that has been produced in the region for over 500 years.",41.968647247719396,0.932117760181427,0.986328125,30.3125,0.04150390625,,NO,1.074468085106383,1.5,0.4375,0.0,-58.03135275228065,-0.06429684162139893,-0.06788218021392822,-0.013671875,,-1.0
-G-2B,7,global,1.5,trivia_qa,The nickname for Dumfries became the name of which Scottish football club?,What is the name of the Scottish football club that is derived from the nickname for Dumfries?,0.9258478283882141,"user
+The drink known as Sherry is named after the city of Jerez, in the autonomous community of Andalusia, in southwestern Spain. Sherry is a fortified wine that has been produced in the region for over 500 years.",41.9686472477194,0.932117760181427,0.986328125,-30.3125,0.04150390625,0.0,-58.03135275228064,-0.06429684162139881,-0.06788218021392822,-0.013671875,-1.0
+G-2B,7,global,1.5,trivia_qa,The nickname for Dumfries became the name of which Scottish football club?,What is the name of the Scottish football club that is derived from the nickname for Dumfries?,0.925847828388214,"user
 The nickname for Dumfries became the name of which Scottish football club?
 model
 The nickname for Dumfries is ""The Dumfries Fifer"", which is derived from the town's history and its association with cattle. The town is home to Dumfries Football Club, a Scottish football club that competes in the Scottish Football League.","user
 What is the name of the Scottish football club that is derived from the nickname for Dumfries?
 model
-The name of the Scottish football club that is derived from the nickname for Dumfries is Heart of Midlothian Football Club.",18.400659322757758,0.8940451145172119,0.7861328125,37.25,0.25,,NO,0.6978193146417445,1.5,0.4375,0.0,-81.59934067724228,-0.07415211200714111,-0.10595488548278809,-0.2138671875,,-1.0
-G-2B,8,global,1.5,trivia_qa,The revolutionary group the Sandinistas were active in which country?,In which country was the revolutionary group known as the Sandinistas actively involved?,0.9342590570449829,"user
+The name of the Scottish football club that is derived from the nickname for Dumfries is Heart of Midlothian Football Club.",18.40065932275776,0.8940451145172119,0.7861328125,-37.25,0.25,0.0,-81.59934067724228,-0.07415211200714122,-0.10595488548278809,-0.2138671875,-1.0
+G-2B,8,global,1.5,trivia_qa,The revolutionary group the Sandinistas were active in which country?,In which country was the revolutionary group known as the Sandinistas actively involved?,0.9342590570449828,"user
 The revolutionary group the Sandinistas were active in which country?
 model
 The Sandinistas were active in Nicaragua. They were a leftist rebel group that fought against the Somoza dictatorship from 1979 to 1990.","user
 In which country was the revolutionary group known as the Sandinistas actively involved?
 model
-The Sandinistas were a revolutionary group in Nicaragua. They were active in the country from 1979 to 1990.",36.85889351598197,0.946794867515564,0.97900390625,8.75,0.085205078125,,NO,0.9528301886792453,1.5,0.4375,0.0,-63.141106484018074,-0.06574082374572754,-0.053205132484436035,-0.02099609375,,-1.0
+The Sandinistas were a revolutionary group in Nicaragua. They were active in the country from 1979 to 1990.",36.85889351598197,0.946794867515564,0.97900390625,-8.75,0.085205078125,0.0,-63.141106484018074,-0.06574082374572765,-0.053205132484436035,-0.02099609375,-1.0
 G-2B,9,global,1.5,trivia_qa,Who was the conservative candidate beaten by Ken Livingstone in the first two elections for Mayor of London?,Who was the conservative candidate who was defeated by Ken Livingstone in the very first two elections held for the position of Mayor of London?,0.966405987739563,"Ken Livingstone in the first two elections for Mayor of London?
 model
 There is no evidence to support the claim that a conservative candidate was beaten in the first two elections for Mayor of London.","was defeated by Ken Livingstone in the very first two elections held for the position of Mayor of London?
 model
-There is no evidence or record of a conservative candidate ever being elected Mayor of London.",40.71278686419499,0.9294326305389404,0.98828125,16.9375,0.146240234375,,NO,1.03,1.5,0.4375,0.0,-59.287213135805054,-0.03359389305114746,-0.0705673098564148,-0.0126953125,,-1.0
-G-2B,10,global,1.5,trivia_qa,"""Who said, To err is human but it feels divine?""""""","""Who is the individual that stated, 'To err is human, but it feels divine'?""",0.9325791001319885,"user
+There is no evidence or record of a conservative candidate ever being elected Mayor of London.",40.71278686419499,0.9294326305389404,0.98828125,-16.9375,0.146240234375,0.0,-59.287213135805054,-0.03359389305114746,-0.0705673098564148,-0.0126953125,-1.0
+G-2B,10,global,1.5,trivia_qa,"""Who said, To err is human but it feels divine?""""""","""Who is the individual that stated, 'To err is human, but it feels divine'?""",0.9325791001319884,"user
 ""Who said, To err is human but it feels divine?""""""
 model
 The quote is attributed to the Roman philosopher Seneca. It means that even the greatest mistakes are often seen as a gift from the divine.","user
 ""Who is the individual that stated, 'To err is human, but it feels divine'?""
 model
-The quote is attributed to the Roman philosopher Seneca. It means that even the greatest mistakes are often seen as a form of divine intervention.",59.83271065128698,0.9627156257629395,0.92431640625,38.25,0.18701171875,,YES,1.1683673469387754,1.5,0.4375,1.0,-40.16728934871306,-0.06742089986801147,-0.03728431463241577,-0.0751953125,,0.0
-G-2B,11,global,1.5,trivia_qa,"When Mr Benn was looking for an adventure, what type of shop did he visit?","When Mr. Benn was in search of an exciting adventure, what specific type of shop did he choose to visit?",0.9704636335372925,"was looking for an adventure, what type of shop did he visit?
+The quote is attributed to the Roman philosopher Seneca. It means that even the greatest mistakes are often seen as a form of divine intervention.",59.83271065128698,0.9627156257629396,0.92431640625,-38.25,0.18701171875,1.0,-40.16728934871306,-0.06742089986801159,-0.03728431463241566,-0.0751953125,0.0
+G-2B,11,global,1.5,trivia_qa,"When Mr Benn was looking for an adventure, what type of shop did he visit?","When Mr. Benn was in search of an exciting adventure, what specific type of shop did he choose to visit?",0.9704636335372924,"was looking for an adventure, what type of shop did he visit?
 model
 The context does not specify what type of shop Mr Benn was looking for, so I cannot answer this question from the provided context.","When Mr. Benn was in search of an exciting adventure, what specific type of shop did he choose to visit?
 model
-The context does not provide any information about the specific type of shop that Mr. Benn visited when he was in search of an exciting adventure.",24.258320436673063,0.9273715019226074,0.9677734375,48.6875,0.053466796875,,YES,1.2914572864321607,1.5,0.4375,1.0,-75.74167956332698,-0.02953660488128662,-0.07262837886810303,-0.033203125,,0.0
+The context does not provide any information about the specific type of shop that Mr. Benn visited when he was in search of an exciting adventure.",24.258320436673063,0.9273715019226074,0.9677734375,-48.6875,0.053466796875,1.0,-75.74167956332698,-0.029536604881286732,-0.07262837886810303,-0.033203125,0.0
 G-2B,12,global,1.5,trivia_qa,What was made and repaired by a Wainwright?,What items were created and fixed by a skilled Wainwright?,0.945547878742218,"user
 What was made and repaired by a Wainwright?
 model
 A Wainwright was a type of boat built by the renowned shipbuilder John Wainwright in the 19th century. These boats were known for their speed and durability, and were often used for fishing, pleasure boating, and racing.","user
 What items were created and fixed by a skilled Wainwright?
 model
-The context does not provide any information about items created or fixed by a skilled Wainwright, so I cannot answer this question from the provided context.",4.423303313288292,0.868445873260498,0.8349609375,46.0,0.16943359375,,NO,0.825925925925926,1.5,0.4375,0.0,-95.57669668671176,-0.05445212125778198,-0.13155412673950195,-0.166015625,,-1.0
-G-2B,13,global,1.5,trivia_qa,"The War of the Triple Alliance (1864 - 1870) was fought between the allied countries of Argentina, Brazil, and Uruguay and which other country?","The War of the Triple Alliance, which took place from 1864 to 1870, was a significant conflict that involved the allied nations of Argentina, Brazil, and Uruguay, but which other country was also involved in this war?",0.9440693259239197,"The War of the Triple Alliance was fought between Argentina, Brazil, and Uruguay and the United States from 1864 to 1870.","The War of the Triple Alliance was fought between Argentina, Brazil, and Uruguay from 1864 to 1870. The other country involved in the war was the United States.",59.67960856898821,0.9699856042861938,0.884765625,5.416015625,0.071533203125,,YES,1.322314049586777,1.5,0.4375,1.0,-40.320391431011835,-0.05593079328536987,-0.0300142765045166,-0.11474609375,,0.0
-G-2B,14,global,1.5,trivia_qa,What city will host the 2016 Olympics?,Which city is going to host the Olympics in 2016?,0.9797254204750061,"user
+The context does not provide any information about items created or fixed by a skilled Wainwright, so I cannot answer this question from the provided context.",4.423303313288292,0.868445873260498,0.8349609375,-46.0,0.16943359375,0.0,-95.57669668671176,-0.05445212125778198,-0.13155412673950195,-0.166015625,-1.0
+G-2B,13,global,1.5,trivia_qa,"The War of the Triple Alliance (1864 - 1870) was fought between the allied countries of Argentina, Brazil, and Uruguay and which other country?","The War of the Triple Alliance, which took place from 1864 to 1870, was a significant conflict that involved the allied nations of Argentina, Brazil, and Uruguay, but which other country was also involved in this war?",0.9440693259239196,"The War of the Triple Alliance was fought between Argentina, Brazil, and Uruguay and the United States from 1864 to 1870.","The War of the Triple Alliance was fought between Argentina, Brazil, and Uruguay from 1864 to 1870. The other country involved in the war was the United States.",59.67960856898821,0.9699856042861938,0.884765625,-5.416015625,0.071533203125,1.0,-40.320391431011835,-0.055930793285369984,-0.0300142765045166,-0.11474609375,0.0
+G-2B,14,global,1.5,trivia_qa,What city will host the 2016 Olympics?,Which city is going to host the Olympics in 2016?,0.979725420475006,"user
 What city will host the 2016 Olympics?
 model
 The 2016 Summer Olympics will be held in Rio de Janeiro, Brazil. The city has hosted the Olympics twice before, in 1958 and 2008.","user
 Which city is going to host the Olympics in 2016?
 model
-I cannot access real-time information, therefore I cannot answer this question. For the most up-to-date information on the Olympics, please check the official Olympic website or any reputable sports news source.",3.312861436585308,0.8777394890785217,0.82568359375,35.75,0.065185546875,,YES,1.5344827586206897,1.5,0.4375,1.0,-96.68713856341473,-0.020274460315704346,-0.1222604513168335,-0.17529296875,,0.0
+I cannot access real-time information, therefore I cannot answer this question. For the most up-to-date information on the Olympics, please check the official Olympic website or any reputable sports news source.",3.312861436585308,0.8777394890785217,0.82568359375,-35.75,0.065185546875,1.0,-96.68713856341473,-0.020274460315704457,-0.1222604513168335,-0.17529296875,0.0
 G-2B,15,global,1.5,trivia_qa,Mount Entoto is the highest peak overlooking which African capital city?,Mount Entoto is recognized as the highest peak that overlooks which capital city located in Africa?,0.9526337385177612,"user
 Mount Entoto is the highest peak overlooking which African capital city?
 model
 Mount Entoto is the highest peak overlooking Addis Ababa, the capital city of Ethiopia. It stands at an elevation of 3,051 meters (9,984 feet) above sea level.","user
 Mount Entoto is recognized as the highest peak that overlooks which capital city located in Africa?
 model
-Mount Entoto is located in the Afar region of Ethiopia, overlooking the capital city of Addis Ababa.",23.693644428316567,0.9201716184616089,0.93408203125,27.0,0.0439453125,,NO,0.865546218487395,1.5,0.4375,0.0,-76.30635557168347,-0.04736626148223877,-0.07982838153839111,-0.06689453125,,-1.0
+Mount Entoto is located in the Afar region of Ethiopia, overlooking the capital city of Addis Ababa.",23.693644428316567,0.9201716184616088,0.93408203125,-27.0,0.0439453125,0.0,-76.30635557168347,-0.04736626148223877,-0.07982838153839122,-0.06689453125,-1.0
 G-2B,0,global,2.0,trivia_qa,What general name is given to a rotating star which emits a regular beat of radiation?,What is the general term or name that is used to refer to a rotating star that emits a consistent and regular beat or pulse of radiation?,0.9446804523468018,"is given to a rotating star which emits a regular beat of radiation?
 model
 A pulsar.
@@ -377,190 +377,190 @@ A pulsar is a type of neutron star that emits regular, high-energy radio waves."
 model
 A pulsar.
 
-A pulsar is a type of neutron star that emits regular, high-energy pulses of radio waves.",52.062325314950115,0.9514927864074707,0.90283203125,27.1875,0.202880859375,,NO,1.406060606060606,2.0,0.1875,0.0,-47.93767468504993,-0.05531954765319824,-0.048507094383239746,-0.0966796875,,-1.0
-G-2B,1,global,2.0,trivia_qa,"""Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""","""Which specific operetta created by Gilbert and Sullivan is known by the subtitle 'The Witches Curse'?""",0.9426360130310059,"Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""
+A pulsar is a type of neutron star that emits regular, high-energy pulses of radio waves.",52.06232531495012,0.9514927864074708,0.90283203125,-27.1875,0.202880859375,0.0,-47.93767468504992,-0.05531954765319824,-0.048507094383239635,-0.0966796875,-1.0
+G-2B,1,global,2.0,trivia_qa,"""Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""","""Which specific operetta created by Gilbert and Sullivan is known by the subtitle 'The Witches Curse'?""",0.942636013031006,"Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""
 model
 The Gilbert and Sullivan operetta ""The Witches of Oz"" is subtitled ""The Witches' Curse"". It premiered in 1910 and is one of the most popular and beloved operettas in the world.","user
 ""Which specific operetta created by Gilbert and Sullivan is known by the subtitle 'The Witches Curse'?""
 model
-The operetta ""The Pirates of Penzance"" by Gilbert and Sullivan is known by the subtitle 'The Witches Curse'.",11.414387415122844,0.8956958651542664,0.9541015625,56.4375,0.048828125,,NO,0.8549019607843137,2.0,0.1875,0.0,-88.5856125848772,-0.05736398696899414,-0.10430407524108887,-0.0458984375,,-1.0
+The operetta ""The Pirates of Penzance"" by Gilbert and Sullivan is known by the subtitle 'The Witches Curse'.",11.414387415122844,0.8956958651542664,0.9541015625,-56.4375,0.048828125,0.0,-88.5856125848772,-0.05736398696899403,-0.10430407524108887,-0.0458984375,-1.0
 G-2B,2,global,2.0,trivia_qa,Which English cricketer had figures for bowling 10 for 53 against Australia 1956?,Which specific English cricketer achieved bowling figures of 10 wickets for 53 runs against the Australian cricket team in the year 1956?,0.9403154850006104,"3 against Australia 1956?
 model
 The cricketer whose figures for bowling 10 for 53 against Australia 1956 are mentioned are **Jack Hobbs**.","10 wickets for 53 runs against the Australian cricket team in the year 1956?
 model
-I am unable to provide specific details about individuals or match scores from 1956, as I do not have access to real-time or comprehensive historical information.",4.511748393095595,0.8601601719856262,0.7568359375,50.0,0.2744140625,,YES,1.7753623188405796,2.0,0.1875,1.0,-95.48825160690444,-0.0596843957901001,-0.139839768409729,-0.24267578125,,0.0
+I am unable to provide specific details about individuals or match scores from 1956, as I do not have access to real-time or comprehensive historical information.",4.511748393095595,0.8601601719856262,0.7568359375,-50.0,0.2744140625,1.0,-95.48825160690444,-0.0596843957901001,-0.139839768409729,-0.24267578125,0.0
 G-2B,3,global,2.0,trivia_qa,Wolf Mankowitz wrote the 1953 novel ‘A Kid For Two….’what’?,Wolf Mankowitz is the author who wrote the novel titled ‘A Kid For Two…’ which was published in the year 1953.,0.9184105396270752,"3 novel ‘A Kid For Two….’what’?
 model
 Wolf Mankowitz did not write the 1953 novel 'A Kid For Two…'.","author who wrote the novel titled ‘A Kid For Two…’ which was published in the year 1953.
 model
-That is incorrect. Wolf Mankowitz was born in 1928 and wrote the novel titled 'A Kid For Two' in 1955.",7.453191893400844,0.9011527895927429,0.87255859375,45.125,0.09814453125,,YES,1.9898989898989898,2.0,0.1875,1.0,-92.5468081065992,-0.08158928155899048,-0.09884709119796753,-0.12744140625,,0.0
+That is incorrect. Wolf Mankowitz was born in 1928 and wrote the novel titled 'A Kid For Two' in 1955.",7.453191893400844,0.9011527895927428,0.87255859375,-45.125,0.09814453125,1.0,-92.5468081065992,-0.08158928155899037,-0.09884709119796764,-0.12744140625,0.0
 G-2B,4,global,2.0,trivia_qa,Who is the patron saint of dancers?,Who is recognized as the patron saint specifically for dancers?,0.9543651342391968,"user
 Who is the patron saint of dancers?
 model
 The patron saint of dancers is Saint Cecilia, a Roman Catholic saint known for her love of music and dance. She is often depicted as a young woman playing a musical instrument, and her feast day is celebrated on March 25th.","user
 Who is recognized as the patron saint specifically for dancers?
 model
-The patron saint for dancers is Saint Cecilia. She is the Roman goddess of music, dance, and the arts. She is often depicted as a young woman playing a musical instrument, and her symbol is a pair of dancing sandals.",45.45679291385328,0.9379201531410217,0.98779296875,10.5,0.076171875,,NO,1.079245283018868,2.0,0.1875,0.0,-54.543207086146765,-0.04563480615615845,-0.062079787254333496,-0.01318359375,,-1.0
+The patron saint for dancers is Saint Cecilia. She is the Roman goddess of music, dance, and the arts. She is often depicted as a young woman playing a musical instrument, and her symbol is a pair of dancing sandals.",45.45679291385328,0.9379201531410216,0.98779296875,-10.5,0.076171875,0.0,-54.543207086146765,-0.04563480615615845,-0.06207978725433361,-0.01318359375,-1.0
 G-2B,5,global,2.0,trivia_qa,"Published on Feb 21, 1848, which two authors were responsible for the Communist Manifesto?","The Communist Manifesto, which was published on the date of February 21 in the year 1848, was authored by which two individuals?",0.9212384223937988,"authors were responsible for the Communist Manifesto?
 model
 The Communist Manifesto was written by Karl Marx and Friedrich Engels in 1848.","date of February 21 in the year 1848, was authored by which two individuals?
 model
-The Communist Manifesto was written by Karl Marx and Friedrich Engels in 1848.",49.79011709703444,0.9378151893615723,0.94384765625,8.6875,0.033447265625,,NO,1.1666666666666667,2.0,0.1875,0.0,-50.2098829029656,-0.07876139879226685,-0.062184810638427734,-0.05712890625,,-1.0
-G-2B,6,global,2.0,trivia_qa,The fortified wine drink Sherry is named after what town?,"The drink known as Sherry, which is a type of fortified wine, is named after which specific town?",0.9341399669647217,"user
+The Communist Manifesto was written by Karl Marx and Friedrich Engels in 1848.",49.79011709703444,0.9378151893615724,0.94384765625,-8.6875,0.033447265625,0.0,-50.2098829029656,-0.07876139879226673,-0.06218481063842762,-0.05712890625,-1.0
+G-2B,6,global,2.0,trivia_qa,The fortified wine drink Sherry is named after what town?,"The drink known as Sherry, which is a type of fortified wine, is named after which specific town?",0.9341399669647216,"user
 The fortified wine drink Sherry is named after what town?
 model
 Sherry is named after the city of Jerez in the province of Jerez, in the autonomous community of Andalusia, in southwestern Spain. The name Sherry is derived from the Latin word ""sherrum"", which means a fortified wine.","user
 The drink known as Sherry, which is a type of fortified wine, is named after which specific town?
 model
-The drink known as Sherry is named after the city of Jerez, in the autonomous community of Andalusia, in southwestern Spain. Sherry is a fortified wine that has been produced in the region for over 500 years.",41.29693215024707,0.9263504147529602,0.98388671875,32.1875,0.05908203125,,NO,1.1063829787234043,2.0,0.1875,0.0,-58.70306784975297,-0.06585997343063354,-0.07364952564239502,-0.01611328125,,-1.0
+The drink known as Sherry is named after the city of Jerez, in the autonomous community of Andalusia, in southwestern Spain. Sherry is a fortified wine that has been produced in the region for over 500 years.",41.29693215024707,0.9263504147529602,0.98388671875,-32.1875,0.05908203125,0.0,-58.70306784975297,-0.06585997343063366,-0.07364952564239502,-0.01611328125,-1.0
 G-2B,7,global,2.0,trivia_qa,The nickname for Dumfries became the name of which Scottish football club?,"What is the nickname that was given to Dumfries, which later became the name of a particular Scottish football club?",0.9368241429328918,"user
 The nickname for Dumfries became the name of which Scottish football club?
 model
 The nickname for Dumfries is ""The Dumfries Fifer"", which is derived from the town's history and its association with cattle. The town is home to Dumfries Football Club, a Scottish football club that competes in the Scottish Football League.","user
 What is the nickname that was given to Dumfries, which later became the name of a particular Scottish football club?
 model
-The nickname of Dumfries is ""The Devil's Own"", derived from the town's location on the River Clyde and its reputation for witchcraft.",25.400537178896094,0.911609947681427,0.91064453125,27.75,0.2294921875,,NO,0.7975077881619937,2.0,0.1875,0.0,-74.59946282110394,-0.06317579746246338,-0.088390052318573,-0.08935546875,,-1.0
+The nickname of Dumfries is ""The Devil's Own"", derived from the town's location on the River Clyde and its reputation for witchcraft.",25.40053717889609,0.911609947681427,0.91064453125,-27.75,0.2294921875,0.0,-74.59946282110396,-0.06317579746246338,-0.088390052318573,-0.08935546875,-1.0
 G-2B,8,global,2.0,trivia_qa,The revolutionary group the Sandinistas were active in which country?,In which country was the revolutionary group known as the Sandinistas actively involved in their activities?,0.9243392944335938,"user
 The revolutionary group the Sandinistas were active in which country?
 model
 The Sandinistas were active in Nicaragua. They were a leftist rebel group that fought against the Somoza dictatorship from 1979 to 1990.","user
 In which country was the revolutionary group known as the Sandinistas actively involved in their activities?
 model
-The Sandinistas were a revolutionary group in Nicaragua. They were active in Nicaragua from 1979 to 1990.",38.12350150421333,0.9405028820037842,0.9619140625,8.5,0.119140625,,NO,1.0377358490566038,2.0,0.1875,0.0,-61.87649849578671,-0.0756605863571167,-0.05949711799621582,-0.0380859375,,-1.0
+The Sandinistas were a revolutionary group in Nicaragua. They were active in Nicaragua from 1979 to 1990.",38.12350150421333,0.9405028820037842,0.9619140625,-8.5,0.119140625,0.0,-61.87649849578671,-0.0756605863571167,-0.05949711799621582,-0.0380859375,-1.0
 G-2B,9,global,2.0,trivia_qa,Who was the conservative candidate beaten by Ken Livingstone in the first two elections for Mayor of London?,Who was the conservative candidate who was defeated by Ken Livingstone in the initial two elections that were held for the position of Mayor of London?,0.9642236232757568,"Ken Livingstone in the first two elections for Mayor of London?
 model
 There is no evidence to support the claim that a conservative candidate was beaten in the first two elections for Mayor of London.","was the conservative candidate who was defeated by Ken Livingstone in the initial two elections that were held for the position of Mayor of London?
 model
-I cannot access real-time information, therefore I cannot answer this question. For the most up-to-date information on the London Mayoral election, please refer to reliable news sources or election websites.",12.409344452970076,0.8821022510528564,0.96630859375,35.125,0.128173828125,,YES,1.805,2.0,0.1875,1.0,-87.59065554702997,-0.03577625751495361,-0.11789768934249878,-0.03466796875,,0.0
-G-2B,10,global,2.0,trivia_qa,"""Who said, To err is human but it feels divine?""""""","Who is the individual that stated, ""To err is human, but it feels divine""?",0.9163829684257507,"user
+I cannot access real-time information, therefore I cannot answer this question. For the most up-to-date information on the London Mayoral election, please refer to reliable news sources or election websites.",12.409344452970076,0.8821022510528564,0.96630859375,-35.125,0.128173828125,1.0,-87.59065554702997,-0.03577625751495361,-0.11789768934249878,-0.03466796875,0.0
+G-2B,10,global,2.0,trivia_qa,"""Who said, To err is human but it feels divine?""""""","Who is the individual that stated, ""To err is human, but it feels divine""?",0.9163829684257508,"user
 ""Who said, To err is human but it feels divine?""""""
 model
 The quote is attributed to the Roman philosopher Seneca. It means that even the greatest mistakes are often seen as a gift from the divine.","user
 Who is the individual that stated, ""To err is human, but it feels divine""?
 model
-The quote is attributed to Saint Augustine, a 5th-century Christian bishop and theologian.",22.89557255815426,0.9127792119979858,0.947265625,41.125,0.2578125,,NO,0.8724489795918368,2.0,0.1875,0.0,-77.10442744184579,-0.08361703157424927,-0.08722072839736938,-0.05224609375,,-1.0
+The quote is attributed to Saint Augustine, a 5th-century Christian bishop and theologian.",22.89557255815426,0.9127792119979858,0.947265625,-41.125,0.2578125,0.0,-77.10442744184579,-0.08361703157424916,-0.08722072839736938,-0.05224609375,-1.0
 G-2B,11,global,2.0,trivia_qa,"When Mr Benn was looking for an adventure, what type of shop did he visit?","When Mr. Benn was in search of an exciting adventure, what kind of shop did he choose to visit?",0.9712291955947876,"was looking for an adventure, what type of shop did he visit?
 model
 The context does not specify what type of shop Mr Benn was looking for, so I cannot answer this question from the provided context.","user
 When Mr. Benn was in search of an exciting adventure, what kind of shop did he choose to visit?
 model
-The context does not provide any information about the type of shop Mr. Benn visited when he was in search of an exciting adventure, so I cannot answer this question from the provided context.",38.14636037251182,0.9460852146148682,0.98046875,41.4375,0.08837890625,,NO,1.4773869346733668,2.0,0.1875,0.0,-61.85363962748822,-0.028771042823791504,-0.053914666175842285,-0.0205078125,,-1.0
+The context does not provide any information about the type of shop Mr. Benn visited when he was in search of an exciting adventure, so I cannot answer this question from the provided context.",38.14636037251182,0.9460852146148682,0.98046875,-41.4375,0.08837890625,0.0,-61.85363962748822,-0.028771042823791504,-0.053914666175842285,-0.0205078125,-1.0
 G-2B,12,global,2.0,trivia_qa,What was made and repaired by a Wainwright?,What specific items or objects were created and subsequently repaired by a skilled Wainwright?,0.9234333634376526,"user
 What was made and repaired by a Wainwright?
 model
 A Wainwright was a type of boat built by the renowned shipbuilder John Wainwright in the 19th century. These boats were known for their speed and durability, and were often used for fishing, pleasure boating, and racing.","user
 What specific items or objects were created and subsequently repaired by a skilled Wainwright?
 model
-There is no evidence or record of a skilled Wainwright ever creating or repairing any items or objects.",5.231185904583224,0.8748761415481567,0.775390625,51.5,0.26806640625,,NO,0.7555555555555555,2.0,0.1875,0.0,-94.76881409541681,-0.07656663656234741,-0.12512385845184326,-0.2255859375,,-1.0
-G-2B,13,global,2.0,trivia_qa,"The War of the Triple Alliance (1864 - 1870) was fought between the allied countries of Argentina, Brazil, and Uruguay and which other country?","The War of the Triple Alliance, which took place from the year 1864 to the year 1870, was a significant conflict that was fought between the allied nations of Argentina, Brazil, and Uruguay. Can you identify which other country was involved in this war?",0.9387028217315674,"The War of the Triple Alliance was fought between Argentina, Brazil, and Uruguay and the United States from 1864 to 1870.","The War of the Triple Alliance took place between Argentina, Brazil, and Uruguay from 1864 to 1870.",57.937763646610975,0.9741362929344177,0.85888671875,11.494140625,0.083740234375,,NO,0.8181818181818182,2.0,0.1875,0.0,-42.06223635338907,-0.06129729747772217,-0.025863587856292725,-0.140625,,-1.0
-G-2B,14,global,2.0,trivia_qa,What city will host the 2016 Olympics?,Which city is going to be the host for the 2016 Summer Olympics?,0.9659139513969421,"user
+There is no evidence or record of a skilled Wainwright ever creating or repairing any items or objects.",5.231185904583224,0.8748761415481567,0.775390625,-51.5,0.26806640625,0.0,-94.76881409541681,-0.07656663656234741,-0.12512385845184326,-0.2255859375,-1.0
+G-2B,13,global,2.0,trivia_qa,"The War of the Triple Alliance (1864 - 1870) was fought between the allied countries of Argentina, Brazil, and Uruguay and which other country?","The War of the Triple Alliance, which took place from the year 1864 to the year 1870, was a significant conflict that was fought between the allied nations of Argentina, Brazil, and Uruguay. Can you identify which other country was involved in this war?",0.9387028217315674,"The War of the Triple Alliance was fought between Argentina, Brazil, and Uruguay and the United States from 1864 to 1870.","The War of the Triple Alliance took place between Argentina, Brazil, and Uruguay from 1864 to 1870.",57.937763646610975,0.9741362929344176,0.85888671875,-11.494140625,0.083740234375,0.0,-42.06223635338907,-0.06129729747772217,-0.025863587856292836,-0.140625,-1.0
+G-2B,14,global,2.0,trivia_qa,What city will host the 2016 Olympics?,Which city is going to be the host for the 2016 Summer Olympics?,0.965913951396942,"user
 What city will host the 2016 Olympics?
 model
 The 2016 Summer Olympics will be held in Rio de Janeiro, Brazil. The city has hosted the Olympics twice before, in 1958 and 2008.","user
 Which city is going to be the host for the 2016 Summer Olympics?
 model
-The 2016 Summer Olympics will be held in Rio de Janeiro, Brazil.",45.527823521943525,0.9551775455474854,0.9814453125,18.0,0.041748046875,,NO,0.7758620689655172,2.0,0.1875,0.0,-54.47217647805652,-0.03408592939376831,-0.04482239484786987,-0.01953125,,-1.0
-G-2B,15,global,2.0,trivia_qa,Mount Entoto is the highest peak overlooking which African capital city?,Mount Entoto is recognized as the highest peak that overlooks which specific capital city located in Africa?,0.9493279457092285,"user
+The 2016 Summer Olympics will be held in Rio de Janeiro, Brazil.",45.527823521943525,0.9551775455474854,0.9814453125,-18.0,0.041748046875,0.0,-54.47217647805652,-0.03408592939376842,-0.04482239484786987,-0.01953125,-1.0
+G-2B,15,global,2.0,trivia_qa,Mount Entoto is the highest peak overlooking which African capital city?,Mount Entoto is recognized as the highest peak that overlooks which specific capital city located in Africa?,0.9493279457092284,"user
 Mount Entoto is the highest peak overlooking which African capital city?
 model
 Mount Entoto is the highest peak overlooking Addis Ababa, the capital city of Ethiopia. It stands at an elevation of 3,051 meters (9,984 feet) above sea level.","user
 Mount Entoto is recognized as the highest peak that overlooks which specific capital city located in Africa?
 model
-Mount Entoto is located in the Afar region of Ethiopia, overlooking the capital city of Addis Ababa.",23.788269588411016,0.9143816232681274,0.9267578125,25.1875,0.0791015625,,NO,0.9033613445378151,2.0,0.1875,0.0,-76.21173041158903,-0.050672054290771484,-0.08561837673187256,-0.07421875,,-1.0
+Mount Entoto is located in the Afar region of Ethiopia, overlooking the capital city of Addis Ababa.",23.788269588411016,0.9143816232681274,0.9267578125,-25.1875,0.0791015625,0.0,-76.21173041158903,-0.050672054290771595,-0.08561837673187256,-0.07421875,-1.0
 G-2B,0,global,3.0,trivia_qa,What general name is given to a rotating star which emits a regular beat of radiation?,"What is the general term or name that is commonly used to refer to a type of star that rotates and emits a consistent and regular pattern of radiation, producing a rhythmic beat that can be detected?",0.9213359355926514,"is given to a rotating star which emits a regular beat of radiation?
 model
 A pulsar.
 
 A pulsar is a type of neutron star that emits regular, high-energy radio waves.","that is commonly used to refer to a type of star that rotates and emits a consistent and regular pattern of radiation, producing a rhythmic beat that can be detected?
 model
-A **pulsating star** is the general term used to describe a type of star that rotates and emits a consistent and regular pattern of radiation, producing a rhythmic beat that can be detected.",5.224803501181609,0.8942388296127319,0.89111328125,38.875,0.357666015625,,NO,2.2,3.0,0.125,0.0,-94.77519649881843,-0.07866406440734863,-0.10576105117797852,-0.1083984375,,-1.0
-G-2B,1,global,3.0,trivia_qa,"""Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""",Which specific operetta created by Gilbert and Sullivan is known by the subtitle 'The Witches Curse'?,0.9279224872589111,"Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""
+A **pulsating star** is the general term used to describe a type of star that rotates and emits a consistent and regular pattern of radiation, producing a rhythmic beat that can be detected.",5.224803501181609,0.8942388296127319,0.89111328125,-38.875,0.357666015625,0.0,-94.77519649881843,-0.07866406440734863,-0.10576105117797852,-0.1083984375,-1.0
+G-2B,1,global,3.0,trivia_qa,"""Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""",Which specific operetta created by Gilbert and Sullivan is known by the subtitle 'The Witches Curse'?,0.9279224872589112,"Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""
 model
 The Gilbert and Sullivan operetta ""The Witches of Oz"" is subtitled ""The Witches' Curse"". It premiered in 1910 and is one of the most popular and beloved operettas in the world.","user
 Which specific operetta created by Gilbert and Sullivan is known by the subtitle 'The Witches Curse'?
 model
-The Pirates of Penzance. It was a popular operetta by Gilbert and Sullivan that premiered in 1903. The opera tells the story of a group of pirates who are cursed by a witch.",7.09997661181192,0.8845082521438599,0.9345703125,58.4375,0.052734375,,NO,1.1019607843137256,3.0,0.125,0.0,-92.90002338818812,-0.07207751274108887,-0.11549168825149536,-0.0654296875,,-1.0
+The Pirates of Penzance. It was a popular operetta by Gilbert and Sullivan that premiered in 1903. The opera tells the story of a group of pirates who are cursed by a witch.",7.09997661181192,0.8845082521438599,0.9345703125,-58.4375,0.052734375,0.0,-92.90002338818812,-0.07207751274108876,-0.11549168825149536,-0.0654296875,-1.0
 G-2B,2,global,3.0,trivia_qa,Which English cricketer had figures for bowling 10 for 53 against Australia 1956?,Which specific English cricketer achieved remarkable bowling figures of 10 wickets for just 53 runs in a match against the Australian cricket team during the year 1956?,0.93121337890625,"3 against Australia 1956?
 model
 The cricketer whose figures for bowling 10 for 53 against Australia 1956 are mentioned are **Jack Hobbs**.","specific English cricketer achieved remarkable bowling figures of 10 wickets for just 53 runs in a match against the Australian cricket team during the year 1956?
 model
-I am unable to provide specific details about individuals or match outcomes, as I do not have access to real-time or comprehensive historical data.",3.469663712131999,0.8679527044296265,0.8369140625,44.875,0.37158203125,,YES,2.289855072463768,3.0,0.125,1.0,-96.53033628786804,-0.06878650188446045,-0.13204723596572876,-0.16259765625,,0.0
-G-2B,3,global,3.0,trivia_qa,Wolf Mankowitz wrote the 1953 novel ‘A Kid For Two….’what’?,Wolf Mankowitz is the author who wrote the novel titled ‘A Kid For Two…’ which was published in the year 1953. What is the question regarding this work?,0.9163427352905273,"3 novel ‘A Kid For Two….’what’?
+I am unable to provide specific details about individuals or match outcomes, as I do not have access to real-time or comprehensive historical data.",3.469663712131999,0.8679527044296265,0.8369140625,-44.875,0.37158203125,1.0,-96.53033628786804,-0.06878650188446045,-0.13204723596572876,-0.16259765625,0.0
+G-2B,3,global,3.0,trivia_qa,Wolf Mankowitz wrote the 1953 novel ‘A Kid For Two….’what’?,Wolf Mankowitz is the author who wrote the novel titled ‘A Kid For Two…’ which was published in the year 1953. What is the question regarding this work?,0.9163427352905272,"3 novel ‘A Kid For Two….’what’?
 model
 Wolf Mankowitz did not write the 1953 novel 'A Kid For Two…'.","is the author who wrote the novel titled ‘A Kid For Two…’ which was published in the year 1953. What is the question regarding this work?
 model
-I am unable to access external sources or provide information about specific books or authors, so I cannot answer this question from the provided context.",3.6117503894018803,0.8503996133804321,0.68212890625,71.0,-0.086669921875,,YES,3.01010101010101,3.0,0.125,1.0,-96.38824961059817,-0.08365708589553833,-0.14960026741027832,-0.31787109375,,0.0
-G-2B,4,global,3.0,trivia_qa,Who is the patron saint of dancers?,Who is recognized as the patron saint specifically designated for those individuals who are engaged in the art of dancing?,0.9223272800445557,"user
+I am unable to access external sources or provide information about specific books or authors, so I cannot answer this question from the provided context.",3.61175038940188,0.8503996133804321,0.68212890625,-71.0,-0.086669921875,1.0,-96.38824961059817,-0.08365708589553833,-0.14960026741027832,-0.31787109375,0.0
+G-2B,4,global,3.0,trivia_qa,Who is the patron saint of dancers?,Who is recognized as the patron saint specifically designated for those individuals who are engaged in the art of dancing?,0.9223272800445556,"user
 Who is the patron saint of dancers?
 model
 The patron saint of dancers is Saint Cecilia, a Roman Catholic saint known for her love of music and dance. She is often depicted as a young woman playing a musical instrument, and her feast day is celebrated on March 25th.","user
 Who is recognized as the patron saint specifically designated for those individuals who are engaged in the art of dancing?
 model
-The patron saint for dancers is **Saint Cecilia**. She is the Roman goddess of music, dance, and the arts.",15.8621437977231,0.9018556475639343,0.95361328125,17.1875,0.11279296875,,NO,0.8867924528301887,3.0,0.125,0.0,-84.13785620227694,-0.07767266035079956,-0.0981442928314209,-0.04736328125,,-1.0
-G-2B,5,global,3.0,trivia_qa,"Published on Feb 21, 1848, which two authors were responsible for the Communist Manifesto?","The Communist Manifesto, a significant political document, was published on the date of February 21 in the year 1848. Can you identify the names of the two authors who were responsible for writing and creating this influential manifesto?",0.9054964780807495,"authors were responsible for the Communist Manifesto?
+The patron saint for dancers is **Saint Cecilia**. She is the Roman goddess of music, dance, and the arts.",15.8621437977231,0.9018556475639344,0.95361328125,-17.1875,0.11279296875,0.0,-84.13785620227694,-0.07767266035079967,-0.09814429283142079,-0.04736328125,-1.0
+G-2B,5,global,3.0,trivia_qa,"Published on Feb 21, 1848, which two authors were responsible for the Communist Manifesto?","The Communist Manifesto, a significant political document, was published on the date of February 21 in the year 1848. Can you identify the names of the two authors who were responsible for writing and creating this influential manifesto?",0.9054964780807496,"authors were responsible for the Communist Manifesto?
 model
 The Communist Manifesto was written by Karl Marx and Friedrich Engels in 1848.","48. Can you identify the names of the two authors who were responsible for writing and creating this influential manifesto?
 model
-The Communist Manifesto was not written or created in 1848. It was written by Karl Marx and Friedrich Engels in 1848 and published in 1849.",30.837045957872448,0.9183061718940735,0.9150390625,9.3125,0.009521484375,,NO,1.9492753623188406,3.0,0.125,0.0,-69.1629540421276,-0.09450334310531616,-0.08169382810592651,-0.0859375,,-1.0
+The Communist Manifesto was not written or created in 1848. It was written by Karl Marx and Friedrich Engels in 1848 and published in 1849.",30.837045957872448,0.9183061718940736,0.9150390625,-9.3125,0.009521484375,0.0,-69.1629540421276,-0.09450334310531594,-0.0816938281059264,-0.0859375,-1.0
 G-2B,6,global,3.0,trivia_qa,The fortified wine drink Sherry is named after what town?,"The drink known as Sherry, which is a type of fortified wine, derives its name from which specific town that is associated with its production and history?",0.9113172888755798,"user
 The fortified wine drink Sherry is named after what town?
 model
 Sherry is named after the city of Jerez in the province of Jerez, in the autonomous community of Andalusia, in southwestern Spain. The name Sherry is derived from the Latin word ""sherrum"", which means a fortified wine.","user
 The drink known as Sherry, which is a type of fortified wine, derives its name from which specific town that is associated with its production and history?
 model
-Sherry is a type of fortified wine that is produced in the region of the same name in the province of Jerez, in the autonomous community of Andalusia, in southwestern Spain. The name Sherry comes from the Latin word ""sherrum"", which means ""oak tree"".",39.35915084266399,0.9367525577545166,0.96337890625,36.1875,0.1611328125,,NO,1.4609929078014185,3.0,0.125,0.0,-60.64084915733605,-0.08868265151977539,-0.06324738264083862,-0.03662109375,,-1.0
-G-2B,7,global,3.0,trivia_qa,The nickname for Dumfries became the name of which Scottish football club?,"What is the nickname that was given to Dumfries, which subsequently became the name of a particular Scottish football club?",0.9390789866447449,"user
+Sherry is a type of fortified wine that is produced in the region of the same name in the province of Jerez, in the autonomous community of Andalusia, in southwestern Spain. The name Sherry comes from the Latin word ""sherrum"", which means ""oak tree"".",39.35915084266399,0.9367525577545166,0.96337890625,-36.1875,0.1611328125,0.0,-60.64084915733605,-0.08868265151977539,-0.06324738264083862,-0.03662109375,-1.0
+G-2B,7,global,3.0,trivia_qa,The nickname for Dumfries became the name of which Scottish football club?,"What is the nickname that was given to Dumfries, which subsequently became the name of a particular Scottish football club?",0.9390789866447448,"user
 The nickname for Dumfries became the name of which Scottish football club?
 model
 The nickname for Dumfries is ""The Dumfries Fifer"", which is derived from the town's history and its association with cattle. The town is home to Dumfries Football Club, a Scottish football club that competes in the Scottish Football League.","user
 What is the nickname that was given to Dumfries, which subsequently became the name of a particular Scottish football club?
 model
-The nickname of Dumfries is ""The Devil's Own"", derived from the town's location on the River Clyde and its reputation for being a place of vice and lawlessness.",25.70407452506067,0.9069972634315491,0.9169921875,27.0,0.2109375,,NO,0.9034267912772586,3.0,0.125,0.0,-74.29592547493937,-0.06092095375061035,-0.09300273656845093,-0.0830078125,,-1.0
+The nickname of Dumfries is ""The Devil's Own"", derived from the town's location on the River Clyde and its reputation for being a place of vice and lawlessness.",25.70407452506067,0.9069972634315492,0.9169921875,-27.0,0.2109375,0.0,-74.29592547493937,-0.06092095375061046,-0.09300273656845082,-0.0830078125,-1.0
 G-2B,8,global,3.0,trivia_qa,The revolutionary group the Sandinistas were active in which country?,In which specific country was the revolutionary group known as the Sandinistas actively involved in their political and social movements?,0.91409832239151,"user
 The revolutionary group the Sandinistas were active in which country?
 model
 The Sandinistas were active in Nicaragua. They were a leftist rebel group that fought against the Somoza dictatorship from 1979 to 1990.","user
 In which specific country was the revolutionary group known as the Sandinistas actively involved in their political and social movements?
 model
-The Sandinistas were a revolutionary group in Nicaragua, Central America. They were active in the country from 1979 to 1990.",24.374491369679255,0.9322254061698914,0.9404296875,6.3125,0.13232421875,,NO,1.2641509433962264,3.0,0.125,0.0,-75.62550863032078,-0.08590155839920044,-0.06777459383010864,-0.0595703125,,-1.0
-G-2B,9,global,3.0,trivia_qa,Who was the conservative candidate beaten by Ken Livingstone in the first two elections for Mayor of London?,Who was the conservative candidate who was defeated by Ken Livingstone in the very first two elections that were held for the position of Mayor of London?,0.9636040329933167,"Ken Livingstone in the first two elections for Mayor of London?
+The Sandinistas were a revolutionary group in Nicaragua, Central America. They were active in the country from 1979 to 1990.",24.37449136967925,0.9322254061698914,0.9404296875,-6.3125,0.13232421875,0.0,-75.6255086303208,-0.08590155839920044,-0.06777459383010864,-0.0595703125,-1.0
+G-2B,9,global,3.0,trivia_qa,Who was the conservative candidate beaten by Ken Livingstone in the first two elections for Mayor of London?,Who was the conservative candidate who was defeated by Ken Livingstone in the very first two elections that were held for the position of Mayor of London?,0.9636040329933168,"Ken Livingstone in the first two elections for Mayor of London?
 model
 There is no evidence to support the claim that a conservative candidate was beaten in the first two elections for Mayor of London.","user
 Who was the conservative candidate who was defeated by Ken Livingstone in the very first two elections that were held for the position of Mayor of London?
 model
-There is no evidence or record of any conservative candidate ever being elected Mayor of London.",31.85229722842209,0.9165393710136414,0.98291015625,15.875,0.198974609375,,NO,1.285,3.0,0.125,0.0,-68.14770277157795,-0.0363958477973938,-0.08346056938171387,-0.01806640625,,-1.0
-G-2B,10,global,3.0,trivia_qa,"""Who said, To err is human but it feels divine?""""""","Who is the individual that famously stated, ""To err is human, but it feels divine""?",0.9147322177886963,"user
+There is no evidence or record of any conservative candidate ever being elected Mayor of London.",31.85229722842209,0.9165393710136414,0.98291015625,-15.875,0.198974609375,0.0,-68.14770277157795,-0.03639584779739369,-0.08346056938171387,-0.01806640625,-1.0
+G-2B,10,global,3.0,trivia_qa,"""Who said, To err is human but it feels divine?""""""","Who is the individual that famously stated, ""To err is human, but it feels divine""?",0.9147322177886964,"user
 ""Who said, To err is human but it feels divine?""""""
 model
 The quote is attributed to the Roman philosopher Seneca. It means that even the greatest mistakes are often seen as a gift from the divine.","user
 Who is the individual that famously stated, ""To err is human, but it feels divine""?
 model
-The quote is attributed to Saint Augustine, a 5th-century Christian bishop and theologian.",23.014506851745118,0.9115468859672546,0.92919921875,41.375,0.2255859375,,NO,0.9183673469387755,3.0,0.125,0.0,-76.98549314825493,-0.08526778221130371,-0.08845305442810059,-0.0703125,,-1.0
+The quote is attributed to Saint Augustine, a 5th-century Christian bishop and theologian.",23.01450685174512,0.9115468859672546,0.92919921875,-41.375,0.2255859375,0.0,-76.98549314825492,-0.0852677822113036,-0.08845305442810059,-0.0703125,-1.0
 G-2B,11,global,3.0,trivia_qa,"When Mr Benn was looking for an adventure, what type of shop did he visit?","When Mr. Benn was in search of an exciting and thrilling adventure, what specific kind of shop did he choose to visit in order to embark on this journey?",0.9468029737472534,"was looking for an adventure, what type of shop did he visit?
 model
 The context does not specify what type of shop Mr Benn was looking for, so I cannot answer this question from the provided context.","user
 When Mr. Benn was in search of an exciting and thrilling adventure, what specific kind of shop did he choose to visit in order to embark on this journey?
 model
-The context does not provide any information about the specific type of shop that Mr. Benn visited, so I cannot answer this question from the provided context.",33.202802932573526,0.9384000301361084,0.94287109375,69.5625,0.0078125,,NO,1.6030150753768844,3.0,0.125,0.0,-66.79719706742651,-0.053197264671325684,-0.06159985065460205,-0.05810546875,,-1.0
+The context does not provide any information about the specific type of shop that Mr. Benn visited, so I cannot answer this question from the provided context.",33.202802932573526,0.9384000301361084,0.94287109375,-69.5625,0.0078125,0.0,-66.79719706742651,-0.053197264671325684,-0.06159985065460205,-0.05810546875,-1.0
 G-2B,12,global,3.0,trivia_qa,What was made and repaired by a Wainwright?,"What specific items or objects were created and subsequently repaired by a skilled Wainwright, who specializes in the construction and maintenance of wooden vehicles?",0.908747136592865,"user
 What was made and repaired by a Wainwright?
 model
 A Wainwright was a type of boat built by the renowned shipbuilder John Wainwright in the 19th century. These boats were known for their speed and durability, and were often used for fishing, pleasure boating, and racing.","user
 What specific items or objects were created and subsequently repaired by a skilled Wainwright, who specializes in the construction and maintenance of wooden vehicles?
 model
-I am unable to provide specific examples of items or objects created and repaired by a skilled Wainwright, as I do not have access to personal or historical records.",6.930497532321182,0.8690844774246216,0.708984375,79.875,0.17431640625,,NO,1.2518518518518518,3.0,0.125,0.0,-93.06950246767886,-0.09125286340713501,-0.13091552257537842,-0.2919921875,,-1.0
-G-2B,13,global,3.0,trivia_qa,"The War of the Triple Alliance (1864 - 1870) was fought between the allied countries of Argentina, Brazil, and Uruguay and which other country?","The War of the Triple Alliance, which took place from the year 1864 to the year 1870, was a significant conflict that involved the allied nations of Argentina, Brazil, and Uruguay. This war was fought against another country that was not part of this alliance. Can you identify which specific country was involved in this conflict against the three allied nations?",0.9207553267478943,"The War of the Triple Alliance was fought between Argentina, Brazil, and Uruguay and the United States from 1864 to 1870.","The War of the Triple Alliance took place between Argentina, Brazil, and Uruguay against the United States from 1864 to 1870.",71.86969683828065,0.9826464056968689,0.8115234375,9.603515625,0.0703125,,NO,1.0330578512396693,3.0,0.125,0.0,-28.130303161719397,-0.07924479246139526,-0.017353475093841553,-0.18798828125,,-1.0
+I am unable to provide specific examples of items or objects created and repaired by a skilled Wainwright, as I do not have access to personal or historical records.",6.930497532321182,0.8690844774246216,0.708984375,-79.875,0.17431640625,0.0,-93.06950246767886,-0.09125286340713501,-0.13091552257537842,-0.2919921875,-1.0
+G-2B,13,global,3.0,trivia_qa,"The War of the Triple Alliance (1864 - 1870) was fought between the allied countries of Argentina, Brazil, and Uruguay and which other country?","The War of the Triple Alliance, which took place from the year 1864 to the year 1870, was a significant conflict that involved the allied nations of Argentina, Brazil, and Uruguay. This war was fought against another country that was not part of this alliance. Can you identify which specific country was involved in this conflict against the three allied nations?",0.9207553267478944,"The War of the Triple Alliance was fought between Argentina, Brazil, and Uruguay and the United States from 1864 to 1870.","The War of the Triple Alliance took place between Argentina, Brazil, and Uruguay against the United States from 1864 to 1870.",71.86969683828065,0.9826464056968688,0.8115234375,-9.603515625,0.0703125,0.0,-28.130303161719397,-0.07924479246139515,-0.017353475093841664,-0.18798828125,-1.0
 G-2B,14,global,3.0,trivia_qa,What city will host the 2016 Olympics?,Which specific city is going to be the host for the Olympic Games that are scheduled to take place in the year 2016?,0.9275415539741516,"user
 What city will host the 2016 Olympics?
 model
 The 2016 Summer Olympics will be held in Rio de Janeiro, Brazil. The city has hosted the Olympics twice before, in 1958 and 2008.","user
 Which specific city is going to be the host for the Olympic Games that are scheduled to take place in the year 2016?
 model
-I am unable to provide real-time information, therefore I cannot answer this question. For the most up-to-date information on the 2016 Olympics, please check the official Olympic website or any reputable news sources.",3.59956051598606,0.8658952713012695,0.67919921875,40.0,0.1083984375,,NO,1.9540229885057472,3.0,0.125,0.0,-96.40043948401399,-0.07245832681655884,-0.1341046690940857,-0.32177734375,,-1.0
-G-2B,15,global,3.0,trivia_qa,Mount Entoto is the highest peak overlooking which African capital city?,Mount Entoto is recognized as the highest peak that provides a stunning view overlooking which specific capital city located in Africa?,0.9448022246360779,"user
+I am unable to provide real-time information, therefore I cannot answer this question. For the most up-to-date information on the 2016 Olympics, please check the official Olympic website or any reputable news sources.",3.59956051598606,0.8658952713012695,0.67919921875,-40.0,0.1083984375,0.0,-96.40043948401399,-0.07245832681655884,-0.1341046690940857,-0.32177734375,-1.0
+G-2B,15,global,3.0,trivia_qa,Mount Entoto is the highest peak overlooking which African capital city?,Mount Entoto is recognized as the highest peak that provides a stunning view overlooking which specific capital city located in Africa?,0.944802224636078,"user
 Mount Entoto is the highest peak overlooking which African capital city?
 model
 Mount Entoto is the highest peak overlooking Addis Ababa, the capital city of Ethiopia. It stands at an elevation of 3,051 meters (9,984 feet) above sea level.","user
 Mount Entoto is recognized as the highest peak that provides a stunning view overlooking which specific capital city located in Africa?
 model
-Mount Entoto is located in the central highlands of Ethiopia, Africa. It is the highest peak in the country, with an elevation of 4,314 meters (14,205 feet). The capital city of Ethiopia is Addis Ababa.",22.80754857509446,0.933615505695343,0.8837890625,35.5,0.088134765625,,NO,1.4453781512605042,3.0,0.125,0.0,-77.19245142490558,-0.05519777536392212,-0.06638449430465698,-0.1171875,,-1.0
+Mount Entoto is located in the central highlands of Ethiopia, Africa. It is the highest peak in the country, with an elevation of 4,314 meters (14,205 feet). The capital city of Ethiopia is Addis Ababa.",22.80754857509446,0.933615505695343,0.8837890625,-35.5,0.088134765625,0.0,-77.19245142490558,-0.05519777536392201,-0.06638449430465698,-0.1171875,-1.0

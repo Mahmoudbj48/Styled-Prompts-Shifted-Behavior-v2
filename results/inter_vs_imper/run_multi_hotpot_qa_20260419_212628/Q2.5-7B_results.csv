@@ -1,0 +1,294 @@
+model,prompt_id,place,strength,category,prompt_orig,prompt_pert,bertscore_prompt,response_orig,response_pert,bleu,bertscore_response,activation_similarity,delta_log_prob,entropy_shift,jsd_drift,delta_bleu,delta_bertscore_prompt,delta_bertscore_response,delta_activation_similarity,delta_jsd_drift
+Q2.5-7B,0,global,original,hotpot_qa,What nationality was Oliver Reed's character in the film Royal Flash?,What nationality was Oliver Reed's character in the film Royal Flash?,1.0000001192092896,"user
+What nationality was Oliver Reed's character in the film Royal Flash?
+assistant
+Oliver Reed's character in the film ""Royal Flash"" (1973) was British. His character name was Sir Charles Blandy, a British aristocrat and art collector who is the target of a robbery attempt. Oliver Reed, an English actor, played this role in the film.","user
+What nationality was Oliver Reed's character in the film Royal Flash?
+assistant
+Oliver Reed's character in the film ""Royal Flash"" (1973) was British. His character name was Sir Charles Blandy, a British aristocrat and art collector who is the target of a robbery attempt. Oliver Reed, an English actor, played this role in the film.",100.00000000000004,0.9999998807907104,0.99951171875,,0.0,,,,,,
+Q2.5-7B,1,global,original,hotpot_qa,Pacific Mozart Ensemble performed which German composer's Der Lindberghflug in 2002?,Pacific Mozart Ensemble performed which German composer's Der Lindberghflug in 2002?,0.9999999403953552,"in 2002?
+assistant
+The Pacific Mozart Ensemble performed ""Der Lindberghflug"" by the German composer Ernst Krenek in 2002. This work is an oratorio that was composed in 1938 and later revised. It tells the story of Charles Lindbergh's solo transatlantic flight in 1927, which made him an international celebrity. Krenek, who was an Austrian composer, wrote this piece to celebrate Lindbergh's achievement and its significance for the United","in 2002?
+assistant
+The Pacific Mozart Ensemble performed ""Der Lindberghflug"" by the German composer Ernst Krenek in 2002. This work is an oratorio that was composed in 1938 and later revised. It tells the story of Charles Lindbergh's solo transatlantic flight in 1927, which made him an international celebrity. Krenek, who was an Austrian composer, wrote this piece to celebrate Lindbergh's achievement and its significance for the United",100.00000000000004,1.0,1.0,,0.0,,,,,,
+Q2.5-7B,2,global,original,hotpot_qa,"Who released the song ""With or Without You"" first, Jai McDowall or U2?","Who released the song ""With or Without You"" first, Jai McDowall or U2?",1.0000001192092896,"McDowall or U2?
+assistant
+The song ""With or Without You"" was originally released by the Irish rock band U2 in 1987 on their album ""The Joshua Tree."" Jai McDowall did not release this song first; he is an Australian singer-songwriter who has covered the song but did not release it as his own original work. The original version by U2 is the one that came out first and is widely recognized as the definitive version of the song.","McDowall or U2?
+assistant
+The song ""With or Without You"" was originally released by the Irish rock band U2 in 1987 on their album ""The Joshua Tree."" Jai McDowall did not release this song first; he is an Australian singer-songwriter who has covered the song but did not release it as his own original work. The original version by U2 is the one that came out first and is widely recognized as the definitive version of the song.",100.00000000000004,1.0,1.0009765625,,0.0,,,,,,
+Q2.5-7B,3,global,original,hotpot_qa,"What Kentucky county has a population of 60,316 and features the Lake Louisvilla neighborhood?","What Kentucky county has a population of 60,316 and features the Lake Louisvilla neighborhood?",0.9999999403953552,"the Lake Louisvilla neighborhood?
+assistant
+The Kentucky county that has a population of approximately 60,316 and features the Lake Louisvilla neighborhood is Oldham County. According to the United States Census Bureau, as of the 2020 census, Oldham County's population was 60,316. Lake Louisvilla is located within Oldham County and is a popular area for recreational activities such as boating, fishing, and swimming.","the Lake Louisvilla neighborhood?
+assistant
+The Kentucky county that has a population of approximately 60,316 and features the Lake Louisvilla neighborhood is Oldham County. According to the United States Census Bureau, as of the 2020 census, Oldham County's population was 60,316. Lake Louisvilla is located within Oldham County and is a popular area for recreational activities such as boating, fishing, and swimming.",100.00000000000004,0.9999999403953552,1.0,,0.0,,,,,,
+Q2.5-7B,4,global,original,hotpot_qa,"Para Hills West, South Australia lies within a city with what estimated population?","Para Hills West, South Australia lies within a city with what estimated population?",1.0,"West, South Australia lies within a city with what estimated population?
+assistant
+To provide an accurate answer, I would need more specific information about which city in Para Hills, West Australia you are referring to. Para Hills is a suburb located in the Adelaide Hills region of South Australia, but it doesn't have its own city status; it's part of the broader local government areas.
+
+If you're asking about the population of the local government area that includes Para Hills, such as the City of Onkaparinga or the District Council of Mount Barker, I would need to know","West, South Australia lies within a city with what estimated population?
+assistant
+To provide an accurate answer, I would need more specific information about which city in Para Hills, West Australia you are referring to. Para Hills is a suburb located in the Adelaide Hills region of South Australia, but it doesn't have its own city status; it's part of the broader local government areas.
+
+If you're asking about the population of the local government area that includes Para Hills, such as the City of Onkaparinga or the District Council of Mount Barker, I would need to know",100.00000000000004,0.9999998807907104,1.0,,0.0,,,,,,
+Q2.5-7B,5,global,original,hotpot_qa,"In what year was the narrator of ""Blackadder's Christmas Carol"" born?","In what year was the narrator of ""Blackadder's Christmas Carol"" born?",1.0,"the narrator of ""Blackadder's Christmas Carol"" born?
+assistant
+The narrator of ""Blackadder's Christmas Carol"" is Richard Griffiths, who played the role of Fezziwig. Richard Griffiths was born on February 24, 1947.
+
+So, the answer is 1947.","the narrator of ""Blackadder's Christmas Carol"" born?
+assistant
+The narrator of ""Blackadder's Christmas Carol"" is Richard Griffiths, who played the role of Fezziwig. Richard Griffiths was born on February 24, 1947.
+
+So, the answer is 1947.",100.00000000000004,0.9999999403953552,0.99951171875,,0.0,,,,,,
+Q2.5-7B,6,global,original,hotpot_qa,"Thomas Fitch defended John Henry Holliday when he was accused of killing men during the gunfight at the o.k. corral, when was that?","Thomas Fitch defended John Henry Holliday when he was accused of killing men during the gunfight at the o.k. corral, when was that?",1.0,"assistant
+The Gunfight at the O.K. Corral took place on October 26, 1881, in Tombstone, Arizona. John Henry ""Doc"" Holliday was indeed involved in this event, but he was not the one who killed anyone during the gunfight itself. Doc Holliday and the other members of the Earp faction (Wyatt Earp, Morgan Earp, and Virgil Earp) were defending themselves against the Cowboys, a group led by Ike Cl","assistant
+The Gunfight at the O.K. Corral took place on October 26, 1881, in Tombstone, Arizona. John Henry ""Doc"" Holliday was indeed involved in this event, but he was not the one who killed anyone during the gunfight itself. Doc Holliday and the other members of the Earp faction (Wyatt Earp, Morgan Earp, and Virgil Earp) were defending themselves against the Cowboys, a group led by Ike Cl",100.00000000000004,1.0,0.99951171875,,0.0,,,,,,
+Q2.5-7B,7,global,original,hotpot_qa,The actor that played Gutthi on Comedy nights with Kapil Show also starred in what 2016 Punjabi film directed by Smeep Kang?,The actor that played Gutthi on Comedy nights with Kapil Show also starred in what 2016 Punjabi film directed by Smeep Kang?,1.0,"The actor who played the character Gutthi on ""Comedy Nights with Kapil"" is Gurpreet Ghuggi. He starred in the 2016 Punjabi film ""Dilwale Dil Ke Jharoke Mein,"" which was directed by Smeep Kang. This film is part of a series of similar titled films in different languages, and it's worth noting that while ""Dilwale"" is a Hindi film starring Shah Rukh Khan, the Pun","The actor who played the character Gutthi on ""Comedy Nights with Kapil"" is Gurpreet Ghuggi. He starred in the 2016 Punjabi film ""Dilwale Dil Ke Jharoke Mein,"" which was directed by Smeep Kang. This film is part of a series of similar titled films in different languages, and it's worth noting that while ""Dilwale"" is a Hindi film starring Shah Rukh Khan, the Pun",100.00000000000004,0.9999999403953552,1.0,,0.0,,,,,,
+Q2.5-7B,8,global,original,hotpot_qa,"Victor Varnada directed Twisted Fortune, which starred which brother of Eddie Murphy?","Victor Varnada directed Twisted Fortune, which starred which brother of Eddie Murphy?",1.0,"Fortune, which starred which brother of Eddie Murphy?
+assistant
+Twisted Fortune was indeed directed by Victor Varnado, and it starred Chris Murphy, who is the brother of comedian Eddie Murphy. Chris Murphy played the role of Tyrone ""Twista"" Washington in the film, which was released in 2007.","Fortune, which starred which brother of Eddie Murphy?
+assistant
+Twisted Fortune was indeed directed by Victor Varnado, and it starred Chris Murphy, who is the brother of comedian Eddie Murphy. Chris Murphy played the role of Tyrone ""Twista"" Washington in the film, which was released in 2007.",100.00000000000004,1.0,1.0,,0.0,,,,,,
+Q2.5-7B,9,global,original,hotpot_qa,"After his curacy at the village that is a suburb of Scunthorpe, who was Industrial Chaplain to the Bishop of Lincoln?","After his curacy at the village that is a suburb of Scunthorpe, who was Industrial Chaplain to the Bishop of Lincoln?",1.0,"assistant
+To answer your question accurately, I would need more specific information about the individual you're referring to. However, based on the details provided, it sounds like you might be referring to someone who served as an industrial chaplain after working in a village near Scunthorpe and under the Bishop of Lincoln.
+
+Scunthorpe is a town in Lincolnshire, England. If we consider a village that could be a suburb or nearby area, it might be somewhere like Willoughby or nearby","assistant
+To answer your question accurately, I would need more specific information about the individual you're referring to. However, based on the details provided, it sounds like you might be referring to someone who served as an industrial chaplain after working in a village near Scunthorpe and under the Bishop of Lincoln.
+
+Scunthorpe is a town in Lincolnshire, England. If we consider a village that could be a suburb or nearby area, it might be somewhere like Willoughby or nearby",100.00000000000004,1.0,1.0,,0.0,,,,,,
+Q2.5-7B,10,global,original,hotpot_qa,What is the first two words of the fifth studio album of Joseph Edgar Foreman?,What is the first two words of the fifth studio album of Joseph Edgar Foreman?,0.9999998807907104,"of the fifth studio album of Joseph Edgar Foreman?
+assistant
+Joseph Edgar Foreman is better known as Joe Walsh, a renowned guitarist and singer. However, I couldn't find information on him having five studio albums. Could you please provide more details or clarify the name or the context? If you meant a different artist, please let me know the correct name so I can assist you accurately.","of the fifth studio album of Joseph Edgar Foreman?
+assistant
+Joseph Edgar Foreman is better known as Joe Walsh, a renowned guitarist and singer. However, I couldn't find information on him having five studio albums. Could you please provide more details or clarify the name or the context? If you meant a different artist, please let me know the correct name so I can assist you accurately.",100.00000000000004,0.9999998807907104,1.0009765625,,0.0,,,,,,
+Q2.5-7B,11,global,original,hotpot_qa,The Twelfth United States Army Group commander was the first chairman of what?,The Twelfth United States Army Group commander was the first chairman of what?,1.0,"elfth United States Army Group commander was the first chairman of what?
+assistant
+The Twelfth United States Army Group was commanded by General Omar Bradley during World War II. After the war, Omar Bradley became the first Chairman of the Joint Chiefs of Staff (JCS) of the United States Armed Forces. The Joint Chiefs of Staff is a body composed of the highest-ranking officers of the five United States uniformed services and advises the President of the United States on military matters. Therefore, the answer to your question is that the Twelfth United States Army Group commander, Omar Bradley,","elfth United States Army Group commander was the first chairman of what?
+assistant
+The Twelfth United States Army Group was commanded by General Omar Bradley during World War II. After the war, Omar Bradley became the first Chairman of the Joint Chiefs of Staff (JCS) of the United States Armed Forces. The Joint Chiefs of Staff is a body composed of the highest-ranking officers of the five United States uniformed services and advises the President of the United States on military matters. Therefore, the answer to your question is that the Twelfth United States Army Group commander, Omar Bradley,",100.00000000000004,1.0,0.99951171875,,0.0,,,,,,
+Q2.5-7B,12,global,original,hotpot_qa,Politician Lyman Sherwood was born in what New York county?,Politician Lyman Sherwood was born in what New York county?,0.9999999403953552,"Politician Lyman Sherwood was born in what New York county?
+assistant
+To accurately answer this question, I would need more specific information about Politician Lyman Sherwood, such as the year he was born or any other details that might help pinpoint his birthplace. Without additional context, it's not possible to definitively state which New York county he was born in. If you have any more details about Lyman Sherwood, please provide them and I'll do my best to assist you.","Politician Lyman Sherwood was born in what New York county?
+assistant
+To accurately answer this question, I would need more specific information about Politician Lyman Sherwood, such as the year he was born or any other details that might help pinpoint his birthplace. Without additional context, it's not possible to definitively state which New York county he was born in. If you have any more details about Lyman Sherwood, please provide them and I'll do my best to assist you.",100.00000000000004,1.0,0.99951171875,,0.0,,,,,,
+Q2.5-7B,13,global,original,hotpot_qa,Robert Earl Holding owned an oil company that was originally founded by who?,Robert Earl Holding owned an oil company that was originally founded by who?,1.0,"Robert Earl Holding owned an oil company that was originally founded by who?
+assistant
+To accurately answer this question, I would need more specific information about the oil company owned by Robert Earl Holding. The name of the company or additional context would be necessary to determine its founding details. If you can provide the name of the oil company, I would be able to research and provide you with the information about who originally founded it.","Robert Earl Holding owned an oil company that was originally founded by who?
+assistant
+To accurately answer this question, I would need more specific information about the oil company owned by Robert Earl Holding. The name of the company or additional context would be necessary to determine its founding details. If you can provide the name of the oil company, I would be able to research and provide you with the information about who originally founded it.",100.00000000000004,0.9999998807907104,1.0009765625,,0.0,,,,,,
+Q2.5-7B,14,global,original,hotpot_qa,"The chorus of ""On the Radio"" contains references to the song ""November Rain"" whose band's lead singer is?","The chorus of ""On the Radio"" contains references to the song ""November Rain"" whose band's lead singer is?",1.0000001192092896,"lead singer is?
+assistant
+The lead singer of Guns N' Roses, whose song ""November Rain"" is referenced in the chorus of ""On the Radio"" by CHVRCHES, is Axl Rose.","lead singer is?
+assistant
+The lead singer of Guns N' Roses, whose song ""November Rain"" is referenced in the chorus of ""On the Radio"" by CHVRCHES, is Axl Rose.",100.00000000000004,0.9999998807907104,1.0,,0.0,,,,,,
+Q2.5-7B,15,global,original,hotpot_qa,"If the Charhki  Dadri crash was less dangerous than the Tenerife airport disaster, which occured firat?","If the Charhki  Dadri crash was less dangerous than the Tenerife airport disaster, which occured firat?",0.9999999403953552,"firat?
+assistant
+The Charhki Dadri mid-air collision occurred on January 10, 1996, while the Tenerife airport disaster took place on March 27, 1977. Therefore, the Tenerife airport disaster occurred first.
+
+The Tenerife airport disaster is widely considered one of the deadliest aviation disasters in history, resulting in 583 fatalities. In contrast, the Charhki Dadri mid-air collision involved two aircraft colliding in mid-air","firat?
+assistant
+The Charhki Dadri mid-air collision occurred on January 10, 1996, while the Tenerife airport disaster took place on March 27, 1977. Therefore, the Tenerife airport disaster occurred first.
+
+The Tenerife airport disaster is widely considered one of the deadliest aviation disasters in history, resulting in 583 fatalities. In contrast, the Charhki Dadri mid-air collision involved two aircraft colliding in mid-air",100.00000000000004,1.0,1.0,,0.0,,,,,,
+Q2.5-7B,0,global,interrogative,hotpot_qa,What nationality was Oliver Reed's character in the film Royal Flash?,What was the nationality of Oliver Reed's character in the film Royal Flash?,0.9828360676765442,"user
+What nationality was Oliver Reed's character in the film Royal Flash?
+assistant
+Oliver Reed's character in the film ""Royal Flash"" (1973) was British. His character name was Sir Charles Blandy, a British aristocrat and art collector who is the target of a robbery attempt. Oliver Reed, an English actor, played this role in the film.","was the nationality of Oliver Reed's character in the film Royal Flash?
+assistant
+In the film ""Royal Flash"" (1973), Oliver Reed played the character of James Bond. James Bond is typically portrayed as British, so Oliver Reed's character, who was playing James Bond, was British.",32.05554241971856,0.906895637512207,0.994140625,,0.005859375,,,,,,
+Q2.5-7B,1,global,interrogative,hotpot_qa,Pacific Mozart Ensemble performed which German composer's Der Lindberghflug in 2002?,Which German composer’s Der Lindberghflug was performed by the Pacific Mozart Ensemble in 2002?,0.9604073762893677,"in 2002?
+assistant
+The Pacific Mozart Ensemble performed ""Der Lindberghflug"" by the German composer Ernst Krenek in 2002. This work is an oratorio that was composed in 1938 and later revised. It tells the story of Charles Lindbergh's solo transatlantic flight in 1927, which made him an international celebrity. Krenek, who was an Austrian composer, wrote this piece to celebrate Lindbergh's achievement and its significance for the United","2002?
+assistant
+The work ""Der Lindberghflug"" was composed by the German composer Hans Werner Henze. The Pacific Mozart Ensemble did indeed perform this piece in 2002. This opera is based on the kidnapping of Charles Lindbergh's infant son in 1932 and reflects Henze's interest in political and social issues through his music.",17.642649663437663,0.9140686988830566,0.85888671875,,-0.02294921875,,,,,,
+Q2.5-7B,2,global,interrogative,hotpot_qa,"Who released the song ""With or Without You"" first, Jai McDowall or U2?","Who was the first to release the song ""With or Without You,"" Jai McDowall or U2?",0.9796825647354126,"McDowall or U2?
+assistant
+The song ""With or Without You"" was originally released by the Irish rock band U2 in 1987 on their album ""The Joshua Tree."" Jai McDowall did not release this song first; he is an Australian singer-songwriter who has covered the song but did not release it as his own original work. The original version by U2 is the one that came out first and is widely recognized as the definitive version of the song.","owall or U2?
+assistant
+The song ""With or Without You"" was released by the band U2, not by Jai McDowall. U2 released this song in 1987 as part of their album ""The Unforgettable Fire."" Jai McDowall is not associated with this song; he is an Australian singer-songwriter and musician known for his work in various musical projects but not for this particular track.",29.54065200055194,0.9185495972633362,0.98193359375,,0.069091796875,,,,,,
+Q2.5-7B,3,global,interrogative,hotpot_qa,"What Kentucky county has a population of 60,316 and features the Lake Louisvilla neighborhood?","Which Kentucky county has a population of 60,316 and features the Lake Louisvilla neighborhood?",0.9945307970046997,"the Lake Louisvilla neighborhood?
+assistant
+The Kentucky county that has a population of approximately 60,316 and features the Lake Louisvilla neighborhood is Oldham County. According to the United States Census Bureau, as of the 2020 census, Oldham County's population was 60,316. Lake Louisvilla is located within Oldham County and is a popular area for recreational activities such as boating, fishing, and swimming.","features the Lake Louisvilla neighborhood?
+assistant
+The county in Kentucky that has a population of approximately 60,316 and features the Lake Louisvilla neighborhood is Oldham County. Lake Louisvilla is located within Oldham County, near the city of Louisville.",35.89270053695502,0.9407392144203186,0.99560546875,,-0.011474609375,,,,,,
+Q2.5-7B,4,global,interrogative,hotpot_qa,"Para Hills West, South Australia lies within a city with what estimated population?","What is the estimated population of Para Hills West, South Australia?",0.9313440918922424,"West, South Australia lies within a city with what estimated population?
+assistant
+To provide an accurate answer, I would need more specific information about which city in Para Hills, West Australia you are referring to. Para Hills is a suburb located in the Adelaide Hills region of South Australia, but it doesn't have its own city status; it's part of the broader local government areas.
+
+If you're asking about the population of the local government area that includes Para Hills, such as the City of Onkaparinga or the District Council of Mount Barker, I would need to know","user
+What is the estimated population of Para Hills West, South Australia?
+assistant
+As of my last update in October 2023, I don't have specific and up-to-date population data for Para Hills West, South Australia. Population figures can change over time due to various factors such as birth rates, death rates, migration, and other demographic changes.
+
+For the most accurate and current population estimate, you should refer to the latest data from official sources such as the Australian Bureau of Statistics (ABS) or local government websites for South Australia. These sources provide detailed and regularly",6.111248382157569,0.8624443411827087,0.9033203125,,0.05517578125,,,,,,
+Q2.5-7B,5,global,interrogative,hotpot_qa,"In what year was the narrator of ""Blackadder's Christmas Carol"" born?","In what year was the narrator of ""Blackadder's Christmas Carol"" born?",1.0,"the narrator of ""Blackadder's Christmas Carol"" born?
+assistant
+The narrator of ""Blackadder's Christmas Carol"" is Richard Griffiths, who played the role of Fezziwig. Richard Griffiths was born on February 24, 1947.
+
+So, the answer is 1947.","was the narrator of ""Blackadder's Christmas Carol"" born?
+assistant
+The narrator of ""Blackadder's Christmas Carol"" is Richard Griffiths, who played the role of Fezziwig. Richard Griffiths was born on February 24, 1947.
+
+So, the answer is 1947.",97.84820426335567,0.9873636960983276,0.99951171875,,0.0,,,,,,
+Q2.5-7B,6,global,interrogative,hotpot_qa,"Thomas Fitch defended John Henry Holliday when he was accused of killing men during the gunfight at the o.k. corral, when was that?","When was Thomas Fitch defending John Henry Holliday, who was accused of killing men during the gunfight at the O.K. Corral?",0.9604203701019287,"assistant
+The Gunfight at the O.K. Corral took place on October 26, 1881, in Tombstone, Arizona. John Henry ""Doc"" Holliday was indeed involved in this event, but he was not the one who killed anyone during the gunfight itself. Doc Holliday and the other members of the Earp faction (Wyatt Earp, Morgan Earp, and Virgil Earp) were defending themselves against the Cowboys, a group led by Ike Cl","assistant
+Thomas Fitch did not defend John Henry ""Doc"" Holliday during the events related to the gunfight at the O.K. Corral in Tombstone, Arizona. The defense of Holliday in connection with the gunfight was handled by other attorneys.
+
+John Henry Holliday was indeed involved in the gunfight at the O.K. Corral on October 26, 1881, but he was not immediately arrested or charged for his role in the incident. The charges against him",31.65175997656945,0.8910245895385742,0.9306640625,,0.029296875,,,,,,
+Q2.5-7B,7,global,interrogative,hotpot_qa,The actor that played Gutthi on Comedy nights with Kapil Show also starred in what 2016 Punjabi film directed by Smeep Kang?,What 2016 Punjabi film directed by Smeep Kang did the actor who played Gutthi on Comedy Nights with Kapil Show also star in?,0.9611990451812744,"The actor who played the character Gutthi on ""Comedy Nights with Kapil"" is Gurpreet Ghuggi. He starred in the 2016 Punjabi film ""Dilwale Dil Ke Jharoke Mein,"" which was directed by Smeep Kang. This film is part of a series of similar titled films in different languages, and it's worth noting that while ""Dilwale"" is a Hindi film starring Shah Rukh Khan, the Pun","The 2016 Punjabi film you're referring to is ""Gutthi,"" which was indeed directed by Smeep Kang. The actor who played Gutthi in this film is Kapil Sharma, who is also known for his role as a comedian and host on the show ""Comedy Nights with Kapil."" Kapil Sharma starred alongside himself in this film, portraying the character of Gutthi.",20.300536230669124,0.8815737962722778,0.9228515625,,0.01806640625,,,,,,
+Q2.5-7B,8,global,interrogative,hotpot_qa,"Victor Varnada directed Twisted Fortune, which starred which brother of Eddie Murphy?","Who is the brother of Eddie Murphy that starred in Twisted Fortune, directed by Victor Varnada?",0.9312711358070374,"Fortune, which starred which brother of Eddie Murphy?
+assistant
+Twisted Fortune was indeed directed by Victor Varnado, and it starred Chris Murphy, who is the brother of comedian Eddie Murphy. Chris Murphy played the role of Tyrone ""Twista"" Washington in the film, which was released in 2007.","isted Fortune directed by Victor Varnada?
+assistant
+Eddie Murphy does not have a brother who starred in ""Twisted Fortune,"" which was directed by Victor Varnado and released in 2006. The film stars Eddie Murphy himself along with actors such as Mike Epps, Tichina Arnold, and others. Eddie Murphy is an actor, comedian, and filmmaker, but he does not have a sibling who acted in this particular movie. If you're looking for information about Eddie Murphy's family or his filmography, I'd be",5.65412484997037,0.8701989054679871,0.89306640625,,0.01806640625,,,,,,
+Q2.5-7B,9,global,interrogative,hotpot_qa,"After his curacy at the village that is a suburb of Scunthorpe, who was Industrial Chaplain to the Bishop of Lincoln?",Who was the Industrial Chaplain to the Bishop of Lincoln after his curacy at the village that is a suburb of Scunthorpe?,0.9708126187324524,"assistant
+To answer your question accurately, I would need more specific information about the individual you're referring to. However, based on the details provided, it sounds like you might be referring to someone who served as an industrial chaplain after working in a village near Scunthorpe and under the Bishop of Lincoln.
+
+Scunthorpe is a town in Lincolnshire, England. If we consider a village that could be a suburb or nearby area, it might be somewhere like Willoughby or nearby","assistant
+To answer this question accurately, I would need more specific information about the individual in question and the exact timeframe involved. However, based on the details provided:
+
+1. **Curacy at a Village Suburb of Scunthorpe**: Scunthorpe is a town in Lincolnshire, England. The villages that could be considered suburbs of Scunthorpe include nearby settlements like Willoughby, Westborough, or other smaller communities.
+
+2. **Industrial Chaplain to the Bishop",34.582304958167114,0.9066609740257263,0.95751953125,,-0.02294921875,,,,,,
+Q2.5-7B,10,global,interrogative,hotpot_qa,What is the first two words of the fifth studio album of Joseph Edgar Foreman?,What are the first two words of the fifth studio album of Joseph Edgar Foreman?,0.9938735961914062,"of the fifth studio album of Joseph Edgar Foreman?
+assistant
+Joseph Edgar Foreman is better known as Joe Walsh, a renowned guitarist and singer. However, I couldn't find information on him having five studio albums. Could you please provide more details or clarify the name or the context? If you meant a different artist, please let me know the correct name so I can assist you accurately.","words of the fifth studio album of Joseph Edgar Foreman?
+assistant
+I'm sorry, but there seems to be a bit of confusion here. Joseph Edgar Foreman is better known by his stage name, Joe Jonas, who is part of the Jonas Brothers and has released several albums. However, he hasn't released a fifth studio album as of my last update in October 2023. His most recent studio album is ""Heartbreak on the High Low"" which was released in 2021, but it's not his fifth studio album.
+
+If",18.230470290752127,0.8773501515388489,0.99755859375,,-0.02587890625,,,,,,
+Q2.5-7B,11,global,interrogative,hotpot_qa,The Twelfth United States Army Group commander was the first chairman of what?,What was the first position held by the Twelfth United States Army Group commander?,0.9352025985717773,"elfth United States Army Group commander was the first chairman of what?
+assistant
+The Twelfth United States Army Group was commanded by General Omar Bradley during World War II. After the war, Omar Bradley became the first Chairman of the Joint Chiefs of Staff (JCS) of the United States Armed Forces. The Joint Chiefs of Staff is a body composed of the highest-ranking officers of the five United States uniformed services and advises the President of the United States on military matters. Therefore, the answer to your question is that the Twelfth United States Army Group commander, Omar Bradley,","first chairmanship of the Twelfth United States Army Group commander?
+assistant
+The first chairman of the Twelfth United States Army Group during World War II was General Omar Bradley. He took command on January 25, 1943, and served in this role until July 12, 1945. The Twelfth United States Army Group was responsible for Allied operations in Europe under the command of General Dwight D. Eisenhower, who was Supreme Commander of the Allied Expeditionary Force.",19.68084200977178,0.8744776844978333,0.8515625,,0.07275390625,,,,,,
+Q2.5-7B,12,global,interrogative,hotpot_qa,Politician Lyman Sherwood was born in what New York county?,In which New York county was politician Lyman Sherwood born?,0.9539384245872498,"Politician Lyman Sherwood was born in what New York county?
+assistant
+To accurately answer this question, I would need more specific information about Politician Lyman Sherwood, such as the year he was born or any other details that might help pinpoint his birthplace. Without additional context, it's not possible to definitively state which New York county he was born in. If you have any more details about Lyman Sherwood, please provide them and I'll do my best to assist you.","user
+In which New York county was politician Lyman Sherwood born?
+assistant
+Lyman Sherwood was born in Cortland County, New York. He was born on February 12, 1806, in the town of Cortlandville, which is located in Cortland County. Sherwood went on to have a notable political career, serving as a U.S. Representative from New York.",9.553545087703165,0.8615505695343018,0.92919921875,,0.0068359375,,,,,,
+Q2.5-7B,13,global,interrogative,hotpot_qa,Robert Earl Holding owned an oil company that was originally founded by who?,Who originally founded the oil company owned by Robert Earl Holding?,0.9405529499053955,"Robert Earl Holding owned an oil company that was originally founded by who?
+assistant
+To accurately answer this question, I would need more specific information about the oil company owned by Robert Earl Holding. The name of the company or additional context would be necessary to determine its founding details. If you can provide the name of the oil company, I would be able to research and provide you with the information about who originally founded it.","user
+Who originally founded the oil company owned by Robert Earl Holding?
+assistant
+To accurately answer your question about who originally founded the oil company owned by Robert Earl Holding, I would need more specific information about which oil company you are referring to. Robert Earl Holding is not a widely known name associated with a specific oil company, and there could be multiple companies that he might own or have an interest in.
+
+If you can provide the name of the specific oil company, I would be able to research and provide you with the information on its founding and the original founder.",41.3598260036054,0.9294831156730652,0.951171875,,0.01318359375,,,,,,
+Q2.5-7B,14,global,interrogative,hotpot_qa,"The chorus of ""On the Radio"" contains references to the song ""November Rain"" whose band's lead singer is?","Who is the lead singer of the band referenced in the chorus of ""On the Radio"" that contains references to the song ""November Rain""?",0.9326526522636414,"lead singer is?
+assistant
+The lead singer of Guns N' Roses, whose song ""November Rain"" is referenced in the chorus of ""On the Radio"" by CHVRCHES, is Axl Rose.","""?
+assistant
+The song ""On the Radio"" by David Bowie does not contain any direct references to ""November Rain"" by Guns N' Roses. However, if you're asking about the lead singer of Guns N' Roses, who is often associated with the song ""November Rain,"" it would be Axl Rose. 
+
+If you meant a different song or context, could you please provide more details?",21.121397619166885,0.890200138092041,0.85009765625,,0.05859375,,,,,,
+Q2.5-7B,15,global,interrogative,hotpot_qa,"If the Charhki  Dadri crash was less dangerous than the Tenerife airport disaster, which occured firat?","Was the Charhki Dadri crash less dangerous than the Tenerife airport disaster, and which occurred first?",0.9369075298309326,"firat?
+assistant
+The Charhki Dadri mid-air collision occurred on January 10, 1996, while the Tenerife airport disaster took place on March 27, 1977. Therefore, the Tenerife airport disaster occurred first.
+
+The Tenerife airport disaster is widely considered one of the deadliest aviation disasters in history, resulting in 583 fatalities. In contrast, the Charhki Dadri mid-air collision involved two aircraft colliding in mid-air","assistant
+The Tenerife North Airport disaster occurred on March 27, 1977, and the Charhki Dadri air disaster occurred on January 6, 2010.
+
+Given that the Charhki Dadri crash happened after the Tenerife disaster, it cannot be said to have been less dangerous just because it occurred later. The severity of an aviation accident is not determined by its chronological order but by various factors such as the number of casualties, the circumstances leading",10.766311536011724,0.8910190463066101,0.9658203125,,-0.006591796875,,,,,,
+Q2.5-7B,0,global,imperative,hotpot_qa,What nationality was Oliver Reed's character in the film Royal Flash?,Determine the nationality of Oliver Reed's character in the film Royal Flash.,0.9313585758209229,"user
+What nationality was Oliver Reed's character in the film Royal Flash?
+assistant
+Oliver Reed's character in the film ""Royal Flash"" (1973) was British. His character name was Sir Charles Blandy, a British aristocrat and art collector who is the target of a robbery attempt. Oliver Reed, an English actor, played this role in the film.","Determine the nationality of Oliver Reed's character in the film Royal Flash.
+assistant
+In the film ""Royal Flash"" (1973), directed by Carol Reed and starring Oliver Reed, the character played by Oliver Reed is Sir Charles Carruthers. Sir Charles Carruthers is a British Secret Service agent. Therefore, the nationality of Oliver Reed's character in the film ""Royal Flash"" is British.",32.653984029472845,0.9059531688690186,0.98779296875,,0.02734375,,,,,,
+Q2.5-7B,1,global,imperative,hotpot_qa,Pacific Mozart Ensemble performed which German composer's Der Lindberghflug in 2002?,Identify which German composer’s Der Lindberghflug was performed by the Pacific Mozart Ensemble in 2002.,0.9521336555480957,"in 2002?
+assistant
+The Pacific Mozart Ensemble performed ""Der Lindberghflug"" by the German composer Ernst Krenek in 2002. This work is an oratorio that was composed in 1938 and later revised. It tells the story of Charles Lindbergh's solo transatlantic flight in 1927, which made him an international celebrity. Krenek, who was an Austrian composer, wrote this piece to celebrate Lindbergh's achievement and its significance for the United","2002.
+assistant
+The piece ""Der Lindberghflug"" was composed by the German composer Carl Orff. The Pacific Mozart Ensemble did indeed perform this work in 2002. ""Der Lindberghflug"" is an oratorio that tells the story of Charles Lindbergh's solo transatlantic flight in 1927.",26.00025524029538,0.9345852136611938,0.87890625,,-0.04541015625,,,,,,
+Q2.5-7B,2,global,imperative,hotpot_qa,"Who released the song ""With or Without You"" first, Jai McDowall or U2?","Determine who released the song ""With or Without You"" first, Jai McDowall or U2.",0.9717568159103394,"McDowall or U2?
+assistant
+The song ""With or Without You"" was originally released by the Irish rock band U2 in 1987 on their album ""The Joshua Tree."" Jai McDowall did not release this song first; he is an Australian singer-songwriter who has covered the song but did not release it as his own original work. The original version by U2 is the one that came out first and is widely recognized as the definitive version of the song.","ai McDowall or U2.
+assistant
+The song ""With or Without You"" was first released by the band U2 in 1987. It appeared on their album ""The Unforgettable Fire."" Jai McDowall did not release this song; he is an Australian singer-songwriter and producer, known for his work in various musical projects but not for this particular track.",33.54991851925509,0.9241437315940857,0.990234375,,0.035888671875,,,,,,
+Q2.5-7B,3,global,imperative,hotpot_qa,"What Kentucky county has a population of 60,316 and features the Lake Louisvilla neighborhood?","Identify the Kentucky county that has a population of 60,316 and features the Lake Louisvilla neighborhood.",0.9685819745063782,"the Lake Louisvilla neighborhood?
+assistant
+The Kentucky county that has a population of approximately 60,316 and features the Lake Louisvilla neighborhood is Oldham County. According to the United States Census Bureau, as of the 2020 census, Oldham County's population was 60,316. Lake Louisvilla is located within Oldham County and is a popular area for recreational activities such as boating, fishing, and swimming.","the Lake Louisvilla neighborhood.
+assistant
+The Kentucky county that has a population of approximately 60,316 and features the Lake Louisville neighborhood is Jefferson County. Lake Louisville is located in Jefferson County, near the city of Louisville. The population figure you mentioned closely matches the estimated population of Jefferson County as of the latest census data. However, please note that population figures can change over time, so for the most current information, you should refer to the latest census data or official county records.",23.504400272718016,0.8975706696510315,0.95556640625,,-0.034423828125,,,,,,
+Q2.5-7B,4,global,imperative,hotpot_qa,"Para Hills West, South Australia lies within a city with what estimated population?","Estimate the population of Para Hills West, South Australia.",0.9198487997055054,"West, South Australia lies within a city with what estimated population?
+assistant
+To provide an accurate answer, I would need more specific information about which city in Para Hills, West Australia you are referring to. Para Hills is a suburb located in the Adelaide Hills region of South Australia, but it doesn't have its own city status; it's part of the broader local government areas.
+
+If you're asking about the population of the local government area that includes Para Hills, such as the City of Onkaparinga or the District Council of Mount Barker, I would need to know","user
+What is the estimated population of Para Hills West, South Australia?
+assistant
+As of my last update in October 2023, I don't have specific and up-to-date population data for Para Hills West, South Australia. Population figures can change over time due to various factors such as birth rates, death rates, migration, and other demographic changes.
+
+For the most accurate and current population estimate, you should refer to the latest data from official sources such as the Australian Bureau of Statistics (ABS) or local government websites for South Australia. These sources provide detailed and regularly",6.111248382157569,0.8624443411827087,0.8857421875,,0.07373046875,,,,,,
+Q2.5-7B,5,global,imperative,hotpot_qa,"In what year was the narrator of ""Blackadder's Christmas Carol"" born?","Determine the year in which the narrator of ""Blackadder's Christmas Carol"" was born.",0.9455921053886414,"the narrator of ""Blackadder's Christmas Carol"" born?
+assistant
+The narrator of ""Blackadder's Christmas Carol"" is Richard Griffiths, who played the role of Fezziwig. Richard Griffiths was born on February 24, 1947.
+
+So, the answer is 1947.","narrator of ""Blackadder's Christmas Carol"" was born.
+assistant
+To determine the year in which the narrator of ""Blackadder's Christmas Carol"" was born, we need to identify who the narrator is and then use information from the show to deduce their birth year.
+
+The narrator of ""Blackadder's Christmas Carol"" is Edmund Blackadder, played by Rowan Atkinson. The show is a parody of Charles Dickens' ""A Christmas Carol,"" set in 19th-century England but with modern characters.
+
+In ""Blackadder's Christmas Carol,"" Edmund Black",17.178859506842787,0.8840778470039368,0.83544921875,,0.04638671875,,,,,,
+Q2.5-7B,6,global,imperative,hotpot_qa,"Thomas Fitch defended John Henry Holliday when he was accused of killing men during the gunfight at the o.k. corral, when was that?",Defend John Henry Holliday when he is accused of killing men during the gunfight at the O.K. Corral; when was that?,0.9657091498374939,"assistant
+The Gunfight at the O.K. Corral took place on October 26, 1881, in Tombstone, Arizona. John Henry ""Doc"" Holliday was indeed involved in this event, but he was not the one who killed anyone during the gunfight itself. Doc Holliday and the other members of the Earp faction (Wyatt Earp, Morgan Earp, and Virgil Earp) were defending themselves against the Cowboys, a group led by Ike Cl","that?
+assistant
+John Henry Holliday, better known as Doc Holliday, is often associated with the gunfight at the O.K. Corral in Tombstone, Arizona, which took place on October 26, 1881. However, it's important to clarify that Doc Holliday did not kill any men during this specific gunfight. The gunfight involved Wyatt Earp, his brothers Morgan and Virgil, and Doc Holliday against the Clantons and McLaurys, led by",23.350799786582154,0.9094597697257996,0.8505859375,,0.0859375,,,,,,
+Q2.5-7B,7,global,imperative,hotpot_qa,The actor that played Gutthi on Comedy nights with Kapil Show also starred in what 2016 Punjabi film directed by Smeep Kang?,Identify the 2016 Punjabi film directed by Smeep Kang in which the actor that played Gutthi on Comedy Nights with Kapil Show also starred.,0.9458204507827759,"The actor who played the character Gutthi on ""Comedy Nights with Kapil"" is Gurpreet Ghuggi. He starred in the 2016 Punjabi film ""Dilwale Dil Ke Jharoke Mein,"" which was directed by Smeep Kang. This film is part of a series of similar titled films in different languages, and it's worth noting that while ""Dilwale"" is a Hindi film starring Shah Rukh Khan, the Pun","The 2016 Punjabi film you're referring to is ""Gutthi,"" which was indeed directed by Smeep Kang. The actor who played Gutthi on the popular Indian comedy show ""Comedy Nights with Kapil"" and also starred in this film is Kapil Sharma. Kapil Sharma's role as Gutthi in the show made him a household name before he ventured into feature films.",21.65912967482834,0.8802272081375122,0.740234375,,0.0556640625,,,,,,
+Q2.5-7B,8,global,imperative,hotpot_qa,"Victor Varnada directed Twisted Fortune, which starred which brother of Eddie Murphy?",Identify which brother of Eddie Murphy starred in Twisted Fortune directed by Victor Varnada.,0.9411225914955139,"Fortune, which starred which brother of Eddie Murphy?
+assistant
+Twisted Fortune was indeed directed by Victor Varnado, and it starred Chris Murphy, who is the brother of comedian Eddie Murphy. Chris Murphy played the role of Tyrone ""Twista"" Washington in the film, which was released in 2007.","starred in Twisted Fortune directed by Victor Varnada.
+assistant
+Eddie Murphy's brother is Dan Murphy. However, there is no widely known film titled ""Twisted Fortune"" directed by Victor Varnada that features Dan Murphy. It's possible there might be some confusion with the title or the director. If you have any additional details or if there's a specific film you're referring to, please provide more information so I can assist you better.",3.3179043083390116,0.8534197807312012,0.89111328125,,0.04443359375,,,,,,
+Q2.5-7B,9,global,imperative,hotpot_qa,"After his curacy at the village that is a suburb of Scunthorpe, who was Industrial Chaplain to the Bishop of Lincoln?",Identify who was the Industrial Chaplain to the Bishop of Lincoln after his curacy at the village that is a suburb of Scunthorpe.,0.9550239443778992,"assistant
+To answer your question accurately, I would need more specific information about the individual you're referring to. However, based on the details provided, it sounds like you might be referring to someone who served as an industrial chaplain after working in a village near Scunthorpe and under the Bishop of Lincoln.
+
+Scunthorpe is a town in Lincolnshire, England. If we consider a village that could be a suburb or nearby area, it might be somewhere like Willoughby or nearby",".
+assistant
+To answer this question accurately, we need to identify the specific village that is a suburb of Scunthorpe and then find out who served as the Industrial Chaplain to the Bishop of Lincoln after holding a curacy in that village.
+
+Scunthorpe has several villages that could be considered suburbs, but one notable village is Willoughby. Willoughby is indeed a village that can be considered a suburb of Scunthorpe.
+
+The next step would be to research the clergy",9.832300821707245,0.8902407884597778,0.92919921875,,-0.03662109375,,,,,,
+Q2.5-7B,10,global,imperative,hotpot_qa,What is the first two words of the fifth studio album of Joseph Edgar Foreman?,Provide the first two words of the fifth studio album of Joseph Edgar Foreman.,0.9553960561752319,"of the fifth studio album of Joseph Edgar Foreman?
+assistant
+Joseph Edgar Foreman is better known as Joe Walsh, a renowned guitarist and singer. However, I couldn't find information on him having five studio albums. Could you please provide more details or clarify the name or the context? If you meant a different artist, please let me know the correct name so I can assist you accurately.","the first two words of the fifth studio album of Joseph Edgar Foreman.
+assistant
+I'm sorry, but there seems to be a misunderstanding. Joseph Edgar Foreman is better known by his stage name, Joe Pesci, who is an actor, not a musician. Therefore, he does not have studio albums. Could you please provide more accurate information so I can assist you better?",32.233404023231635,0.9111211895942688,0.72216796875,,0.05859375,,,,,,
+Q2.5-7B,11,global,imperative,hotpot_qa,The Twelfth United States Army Group commander was the first chairman of what?,What was the first chairmanship of the Twelfth United States Army Group commander?,0.9359526038169861,"elfth United States Army Group commander was the first chairman of what?
+assistant
+The Twelfth United States Army Group was commanded by General Omar Bradley during World War II. After the war, Omar Bradley became the first Chairman of the Joint Chiefs of Staff (JCS) of the United States Armed Forces. The Joint Chiefs of Staff is a body composed of the highest-ranking officers of the five United States uniformed services and advises the President of the United States on military matters. Therefore, the answer to your question is that the Twelfth United States Army Group commander, Omar Bradley,","was the first chairmanship of the Twelfth United States Army Group commander?
+assistant
+The first chairman of the Twelfth United States Army Group during World War II was General Omar Bradley. He took command on January 25, 1943, and served in this role until July 12, 1945. The Twelfth United States Army Group was responsible for Allied operations in Europe under the command of General Dwight D. Eisenhower, who was Supreme Commander of the Allied Expeditionary Force.",20.543774856152833,0.8738439679145813,0.953125,,0.174072265625,,,,,,
+Q2.5-7B,12,global,imperative,hotpot_qa,Politician Lyman Sherwood was born in what New York county?,Determine in which New York county politician Lyman Sherwood was born.,0.933020293712616,"Politician Lyman Sherwood was born in what New York county?
+assistant
+To accurately answer this question, I would need more specific information about Politician Lyman Sherwood, such as the year he was born or any other details that might help pinpoint his birthplace. Without additional context, it's not possible to definitively state which New York county he was born in. If you have any more details about Lyman Sherwood, please provide them and I'll do my best to assist you.","Find out in which New York county politician Lyman Sherwood was born.
+assistant
+To provide accurate information about where Lyman Sherwood was born, I would need to conduct a search using reliable historical or biographical sources. However, based on available public records and historical information, Lyman Sherwood was born in Rensselaer County, New York.
+
+Lyman Sherwood was an American politician who served as a member of the New York State Assembly. He was born on October 29, 1837, in the town of Hadley, which is",12.431265039725393,0.8780463933944702,0.94873046875,,0.025390625,,,,,,
+Q2.5-7B,13,global,imperative,hotpot_qa,Robert Earl Holding owned an oil company that was originally founded by who?,Find out who originally founded the oil company owned by Robert Earl Holding.,0.9265883564949036,"Robert Earl Holding owned an oil company that was originally founded by who?
+assistant
+To accurately answer this question, I would need more specific information about the oil company owned by Robert Earl Holding. The name of the company or additional context would be necessary to determine its founding details. If you can provide the name of the oil company, I would be able to research and provide you with the information about who originally founded it.","user
+Find out who originally founded the oil company owned by Robert Earl Holding.
+assistant
+To accurately answer your question about who originally founded the oil company owned by Robert Earl Holding, I would need more specific information about which oil company you are referring to. Robert Earl Holding is not a widely known name associated with a specific oil company, and there could be multiple companies that he might own or have an interest in.
+
+If you can provide the name of the specific oil company, I would be able to research its founding details for you. Alternatively, if you have any additional context or details about",35.455830779310084,0.91978520154953,0.9501953125,,0.06982421875,,,,,,
+Q2.5-7B,14,global,imperative,hotpot_qa,"The chorus of ""On the Radio"" contains references to the song ""November Rain"" whose band's lead singer is?","Identify the lead singer of the band associated with the song ""November Rain"" referenced in the chorus of ""On the Radio.""",0.9195505380630493,"lead singer is?
+assistant
+The lead singer of Guns N' Roses, whose song ""November Rain"" is referenced in the chorus of ""On the Radio"" by CHVRCHES, is Axl Rose.","of ""On the Radio.""
+assistant
+The song ""On the Radio"" by David Bowie references ""November Rain"" by Guns N' Roses. The lead singer of Guns N' Roses is Axl Rose. Therefore, Axl Rose is the lead singer of the band whose song is referenced in the chorus of ""On the Radio.""",36.19189917046857,0.9099553227424622,0.7021484375,,-0.056640625,,,,,,
+Q2.5-7B,15,global,imperative,hotpot_qa,"If the Charhki  Dadri crash was less dangerous than the Tenerife airport disaster, which occured firat?","Determine which occurred first: the Charhki Dadri crash or the Tenerife airport disaster, if the Charhki Dadri crash was less dangerous.",0.8926572203636169,"firat?
+assistant
+The Charhki Dadri mid-air collision occurred on January 10, 1996, while the Tenerife airport disaster took place on March 27, 1977. Therefore, the Tenerife airport disaster occurred first.
+
+The Tenerife airport disaster is widely considered one of the deadliest aviation disasters in history, resulting in 583 fatalities. In contrast, the Charhki Dadri mid-air collision involved two aircraft colliding in mid-air","assistant
+To determine which occurred first between the Charhki Dadri crash and the Tenerife airport disaster, we need to look at the dates of these incidents.
+
+The Tenerife airport disaster occurred on March 27, 1977. This was a catastrophic collision between two Boeing 747 aircraft at Los Rodeos Airport (now known as Tenerife North Airport) in Spain.
+
+The Charhki Dadri crash occurred on January 10, 19",25.284167296092342,0.9009929299354553,0.9423828125,,0.02392578125,,,,,,

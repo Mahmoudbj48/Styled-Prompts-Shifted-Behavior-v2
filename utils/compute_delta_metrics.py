@@ -6,6 +6,11 @@ Compute per-prompt delta metrics relative to the baseline strength.
 For delta_log_prob the sign is flipped (baseline − variant → negate to get
 variant − baseline direction consistent with all other metrics).
 
+Baselines per style:
+    spacing, punctuation, letter_case, politeness  → strength == 0
+    length_variation                               → strength == 1.0
+    inter_vs_imper                                 → strength == "interrogative"
+
 Usage
 -----
 Run as a script to backfill all existing CSVs in-place:
@@ -22,12 +27,12 @@ import pandas as pd
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 # Baseline strength value for each style
-BASELINE_STRENGTH: dict[str, Union[int, float]] = {
-    "spacing": 0,
-    "punctuation": 0,
-    "letter_case": 0,
-    "politeness": 0,
-    "inter_vs_imper": 0,
+BASELINE_STRENGTH: dict[str, Union[int, float, str]] = {
+    "spacing":        0,
+    "punctuation":    0,
+    "letter_case":    0,
+    "politeness":     0,
+    "inter_vs_imper": "interrogative",
     "length_variation": 1.0,
 }
 
@@ -39,13 +44,13 @@ METRIC_SIGN: dict[str, int] = {
 
 # source column → delta column name
 DELTA_COL: dict[str, str] = {
-    "bleu": "delta_bleu",
-    "bertscore_prompt": "delta_bertscore_prompt",
-    "bertscore_response": "delta_bertscore_response",
+    "bleu":                  "delta_bleu",
+    "bertscore_prompt":      "delta_bertscore_prompt",
+    "bertscore_response":    "delta_bertscore_response",
     "activation_similarity": "delta_activation_similarity",
-    "delta_log_prob": "delta_log_prob",   # overwrites itself (after sign flip)
-    "jsd_drift": "delta_jsd_drift",
-    "mirroring_rate": "delta_mirroring_rate",
+    "delta_log_prob":        "delta_log_prob",   # overwrites itself (after sign flip)
+    "jsd_drift":             "delta_jsd_drift",
+    "mirroring_rate":        "delta_mirroring_rate",
 }
 
 
@@ -73,19 +78,22 @@ def add_delta_columns(df: pd.DataFrame, style: str) -> pd.DataFrame:
     elif "problem_id" in df.columns:
         id_col = "problem_id"
     else:
-        # No ID column – skip delta computation
         return df
 
     group_keys = ["model", id_col, "place"]
-
-    # Only keep group keys that actually exist as columns
     group_keys = [k for k in group_keys if k in df.columns]
 
     if not group_keys:
         return df
 
-    # Baseline subset
-    base = df[df["strength"] == baseline_strength].set_index(group_keys)
+    # For inter_vs_imper the strength column contains strings; cast to str
+    # for a reliable equality check so "interrogative" is found correctly.
+    strength_col = df["strength"].astype(str) if style == "inter_vs_imper" \
+                   else df["strength"]
+    baseline_mask = strength_col == str(baseline_strength) if style == "inter_vs_imper" \
+                    else df["strength"] == baseline_strength
+
+    base = df[baseline_mask].set_index(group_keys)
 
     for src_col, delta_col in DELTA_COL.items():
         if src_col not in df.columns:
@@ -95,7 +103,6 @@ def add_delta_columns(df: pd.DataFrame, style: str) -> pd.DataFrame:
 
         sign = METRIC_SIGN.get(delta_col, 1)
 
-        # Broadcast baseline value onto every row via MultiIndex reindex
         idx = pd.MultiIndex.from_arrays([df[k] for k in group_keys])
         baseline_vals = base[src_col].reindex(idx).values
 
@@ -117,7 +124,7 @@ def main() -> None:
     updated = 0
     skipped = 0
 
-    # TruthfulQA / style CSVs
+    # Style CSVs
     for style, rel_paths in STYLE_CSV_PATHS.items():
         for rel in rel_paths:
             csv_path = PROJECT_ROOT / rel

@@ -32,60 +32,290 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 # ── TruthfulQA CSV paths ───────────────────────────────────────────────────────
 STYLE_CSV_PATHS: dict[str, list[str]] = {
     "spacing": [
-        "results/spacing/run_multi_truthful_qa_20260223_221345/results_with_mirroring.csv",
-        "results/spacing/run_multi_truthful_qa_20260224_154406/results_with_mirroring.csv",
-        "results/spacing/run_multi_truthful_qa_20260224_160542/results_with_mirroring.csv",
-        "results/spacing/run_multi_truthful_qa_20260224_164304/results_with_mirroring.csv",
-        "results/spacing/run_multi_truthful_qa_20260224_173202/results_with_mirroring.csv",
-        "results/spacing/run_multi_truthful_qa_20260224_181508/results_with_mirroring.csv",
-        # G4-E4B, Q3.5-9B
-        "results/spacing/run_multi_truthful_qa_20260409_163159/full_results_all_models.csv",
-        "results/spacing/run_multi_truthful_qa_20260410_094504/full_results_all_models.csv",
+        "results/spacing/run_multi_truthful_qa_20260224_154406/full_results_all_models.csv",  # L3.2-3B/TruthfulQA
+        "results/spacing/run_multi_natural_questions_20260416_120651/full_results_all_models.csv",  # L3.2-3B/Natural Questions
+        "results/spacing/run_multi_alpaca_20260416_135049/full_results_all_models.csv",  # L3.2-3B/Alpaca
+        "results/spacing/run_multi_simpleqa_verified_20260416_154600/full_results_all_models.csv",  # L3.2-3B/SimpleQA Verified
+        "results/spacing/run_multi_trivia_qa_20260416_173400/full_results_all_models.csv",  # L3.2-3B/TriviaQA
+        "results/spacing/run_multi_hotpot_qa_20260416_192143/full_results_all_models.csv",  # L3.2-3B/HotpotQA
+        "results/spacing/run_multi_truthful_qa_20260224_164304/full_results_all_models.csv",  # L3.1-8B/TruthfulQA
+        "results/spacing/run_multi_natural_questions_20260303_125434/full_results_all_models.csv",  # L3.1-8B/Natural Questions
+        "results/spacing/run_multi_alpaca_20260419_221401/full_results_all_models.csv",  # L3.1-8B/Alpaca
+        "results/spacing/run_multi_simpleqa_verified_20260419_233712/full_results_all_models.csv",  # L3.1-8B/SimpleQA Verified
+        "results/spacing/run_multi_trivia_qa_20260420_005114/full_results_all_models.csv",  # L3.1-8B/TriviaQA
+        "results/spacing/run_multi_hotpot_qa_20260420_020656/full_results_all_models.csv",  # L3.1-8B/HotpotQA
+        "results/spacing/run_multi_truthful_qa_20260223_221345/full_results_all_models.csv",  # G-2B/TruthfulQA
+        "results/spacing/run_multi_natural_questions_20260416_115300/full_results_all_models.csv",  # G-2B/Natural Questions
+        "results/spacing/run_multi_alpaca_20260416_125945/full_results_all_models.csv",  # G-2B/Alpaca
+        "results/spacing/run_multi_simpleqa_verified_20260416_140431/full_results_all_models.csv",  # G-2B/SimpleQA Verified
+        "results/spacing/run_multi_trivia_qa_20260416_144318/full_results_all_models.csv",  # G-2B/TriviaQA
+        "results/spacing/run_multi_hotpot_qa_20260416_152216/full_results_all_models.csv",  # G-2B/HotpotQA
+        "results/spacing/run_multi_truthful_qa_20260409_163159/full_results_all_models.csv",  # G4-E4B/TruthfulQA
+        "results/spacing/run_multi_natural_questions_20260419_163119/full_results_all_models.csv",  # G4-E4B/Natural Questions
+        "results/spacing/run_multi_alpaca_20260419_183244/full_results_all_models.csv",  # G4-E4B/Alpaca
+        "results/spacing/run_multi_simpleqa_verified_20260419_204433/full_results_all_models.csv",  # G4-E4B/SimpleQA Verified
+        "results/spacing/run_multi_trivia_qa_20260419_224944/full_results_all_models.csv",  # G4-E4B/TriviaQA
+        "results/spacing/run_multi_hotpot_qa_20260420_004659/full_results_all_models.csv",  # G4-E4B/HotpotQA
+        "results/spacing/run_multi_truthful_qa_20260224_173202/full_results_all_models.csv",  # G-7B/TruthfulQA
+        "results/spacing/run_multi_natural_questions_20260303_130138/full_results_all_models.csv",  # G-7B/Natural Questions
+        "results/spacing/run_multi_alpaca_20260420_121817/full_results_all_models.csv",  # G-7B/Alpaca
+        "results/spacing/run_multi_simpleqa_verified_20260420_125300/full_results_all_models.csv",  # G-7B/SimpleQA Verified
+        "results/spacing/run_multi_trivia_qa_20260420_133758/full_results_all_models.csv",  # G-7B/TriviaQA
+        "results/spacing/run_multi_hotpot_qa_20260420_141011/full_results_all_models.csv",  # G-7B/HotpotQA
+        "results/spacing/run_multi_truthful_qa_20260224_160542/full_results_all_models.csv",  # Q2.5-1.5B/TruthfulQA
+        "results/spacing/run_multi_natural_questions_20260416_115143/full_results_all_models.csv",  # Q2.5-1.5B/Natural Questions
+        "results/spacing/run_multi_alpaca_20260416_123332/full_results_all_models.csv",  # Q2.5-1.5B/Alpaca
+        "results/spacing/run_multi_simpleqa_verified_20260416_134342/full_results_all_models.csv",  # Q2.5-1.5B/SimpleQA Verified
+        "results/spacing/run_multi_trivia_qa_20260416_144844/full_results_all_models.csv",  # Q2.5-1.5B/TriviaQA
+        "results/spacing/run_multi_hotpot_qa_20260416_152741/full_results_all_models.csv",  # Q2.5-1.5B/HotpotQA
+        "results/spacing/run_multi_truthful_qa_20260224_181508/full_results_all_models.csv",  # Q2.5-7B/TruthfulQA
+        "results/spacing/run_multi_natural_questions_20260303_130609/full_results_all_models.csv",  # Q2.5-7B/Natural Questions
+        "results/spacing/run_multi_alpaca_20260419_165120/full_results_all_models.csv",  # Q2.5-7B/Alpaca
+        "results/spacing/run_multi_simpleqa_verified_20260419_180305/full_results_all_models.csv",  # Q2.5-7B/SimpleQA Verified
+        "results/spacing/run_multi_trivia_qa_20260419_201113/full_results_all_models.csv",  # Q2.5-7B/TriviaQA
+        "results/spacing/run_multi_hotpot_qa_20260419_212231/full_results_all_models.csv",  # Q2.5-7B/HotpotQA
+        "results/spacing/run_multi_truthful_qa_20260410_094504/full_results_all_models.csv",  # Q3.5-9B/TruthfulQA
+        "results/spacing/run_multi_natural_questions_20260419_170320/full_results_all_models.csv",  # Q3.5-9B/Natural Questions
+        "results/spacing/run_multi_alpaca_20260419_191509/full_results_all_models.csv",  # Q3.5-9B/Alpaca
+        "results/spacing/run_multi_simpleqa_verified_20260419_211628/full_results_all_models.csv",  # Q3.5-9B/SimpleQA Verified
+        "results/spacing/run_multi_trivia_qa_20260420_013355/full_results_all_models.csv",  # Q3.5-9B/TriviaQA
+        "results/spacing/run_multi_hotpot_qa_20260420_032953/full_results_all_models.csv",  # Q3.5-9B/HotpotQA
     ],
     "punctuation": [
-        "results/punctuation/run_multi_truthful_qa_20260222_215846/results_with_mirroring.csv",
-        "results/punctuation/run_multi_truthful_qa_20260223_215814/results_with_mirroring.csv",
-        "results/punctuation/run_multi_truthful_qa_20260224_162341/results_with_mirroring.csv",
-        "results/punctuation/run_multi_truthful_qa_20260224_185252/results_with_mirroring.csv",
-        "results/punctuation/run_multi_truthful_qa_20260224_193108/results_with_mirroring.csv",
-        "results/punctuation/run_multi_truthful_qa_20260224_195351/results_with_mirroring.csv",
-        # G4-E4B, Q3.5-9B
-        "results/punctuation/run_multi_truthful_qa_20260409_143341/full_results_all_models.csv",
-        "results/punctuation/run_multi_truthful_qa_20260410_042041/full_results_all_models.csv",
+        "results/punctuation/run_multi_truthful_qa_20260222_215846/full_results_all_models.csv",  # L3.2-3B/TruthfulQA
+        "results/punctuation/run_multi_natural_questions_20260416_122203/full_results_all_models.csv",  # L3.2-3B/Natural Questions
+        "results/punctuation/run_multi_alpaca_20260416_141001/full_results_all_models.csv",  # L3.2-3B/Alpaca
+        "results/punctuation/run_multi_simpleqa_verified_20260416_160338/full_results_all_models.csv",  # L3.2-3B/SimpleQA Verified
+        "results/punctuation/run_multi_trivia_qa_20260416_175102/full_results_all_models.csv",  # L3.2-3B/TriviaQA
+        "results/punctuation/run_multi_hotpot_qa_20260416_193901/full_results_all_models.csv",  # L3.2-3B/HotpotQA
+        "results/punctuation/run_multi_truthful_qa_20260224_185252/full_results_all_models.csv",  # L3.1-8B/TruthfulQA
+        "results/punctuation/run_multi_natural_questions_20260303_131249/full_results_all_models.csv",  # L3.1-8B/Natural Questions
+        "results/punctuation/run_multi_alpaca_20260419_222538/full_results_all_models.csv",  # L3.1-8B/Alpaca
+        "results/punctuation/run_multi_simpleqa_verified_20260419_234509/full_results_all_models.csv",  # L3.1-8B/SimpleQA Verified
+        "results/punctuation/run_multi_trivia_qa_20260420_010134/full_results_all_models.csv",  # L3.1-8B/TriviaQA
+        "results/punctuation/run_multi_hotpot_qa_20260420_021310/full_results_all_models.csv",  # L3.1-8B/HotpotQA
+        "results/punctuation/run_multi_truthful_qa_20260223_215814/full_results_all_models.csv",  # G-2B/TruthfulQA
+        "results/punctuation/run_multi_natural_questions_20260416_120118/full_results_all_models.csv",  # G-2B/Natural Questions
+        "results/punctuation/run_multi_alpaca_20260416_131215/full_results_all_models.csv",  # G-2B/Alpaca
+        "results/punctuation/run_multi_simpleqa_verified_20260416_140907/full_results_all_models.csv",  # G-2B/SimpleQA Verified
+        "results/punctuation/run_multi_trivia_qa_20260416_144756/full_results_all_models.csv",  # G-2B/TriviaQA
+        "results/punctuation/run_multi_hotpot_qa_20260416_152608/full_results_all_models.csv",  # G-2B/HotpotQA
+        "results/punctuation/run_multi_truthful_qa_20260409_143341/full_results_all_models.csv",  # G4-E4B/TruthfulQA
+        "results/punctuation/run_multi_natural_questions_20260419_164334/full_results_all_models.csv",  # G4-E4B/Natural Questions
+        "results/punctuation/run_multi_alpaca_20260419_185046/full_results_all_models.csv",  # G4-E4B/Alpaca
+        "results/punctuation/run_multi_simpleqa_verified_20260419_210017/full_results_all_models.csv",  # G4-E4B/SimpleQA Verified
+        "results/punctuation/run_multi_trivia_qa_20260419_230437/full_results_all_models.csv",  # G4-E4B/TriviaQA
+        "results/punctuation/run_multi_hotpot_qa_20260420_010121/full_results_all_models.csv",  # G4-E4B/HotpotQA
+        "results/punctuation/run_multi_truthful_qa_20260224_193108/full_results_all_models.csv",  # G-7B/TruthfulQA
+        "results/punctuation/run_multi_natural_questions_20260303_131952/full_results_all_models.csv",  # G-7B/Natural Questions
+        "results/punctuation/run_multi_alpaca_20260420_121919/full_results_all_models.csv",  # G-7B/Alpaca
+        "results/punctuation/run_multi_simpleqa_verified_20260420_125733/full_results_all_models.csv",  # G-7B/SimpleQA Verified
+        "results/punctuation/run_multi_trivia_qa_20260420_133852/full_results_all_models.csv",  # G-7B/TriviaQA
+        "results/punctuation/run_multi_hotpot_qa_20260420_141118/full_results_all_models.csv",  # G-7B/HotpotQA
+        "results/punctuation/run_multi_truthful_qa_20260224_162341/full_results_all_models.csv",  # Q2.5-1.5B/TruthfulQA
+        "results/punctuation/run_multi_natural_questions_20260416_115228/full_results_all_models.csv",  # Q2.5-1.5B/Natural Questions
+        "results/punctuation/run_multi_alpaca_20260416_124414/full_results_all_models.csv",  # Q2.5-1.5B/Alpaca
+        "results/punctuation/run_multi_simpleqa_verified_20260416_135309/full_results_all_models.csv",  # Q2.5-1.5B/SimpleQA Verified
+        "results/punctuation/run_multi_trivia_qa_20260416_144929/full_results_all_models.csv",  # Q2.5-1.5B/TriviaQA
+        "results/punctuation/run_multi_hotpot_qa_20260416_152829/full_results_all_models.csv",  # Q2.5-1.5B/HotpotQA
+        "results/punctuation/run_multi_truthful_qa_20260224_195351/full_results_all_models.csv",  # Q2.5-7B/TruthfulQA
+        "results/punctuation/run_multi_natural_questions_20260303_132435/full_results_all_models.csv",  # Q2.5-7B/Natural Questions
+        "results/punctuation/run_multi_alpaca_20260419_165229/full_results_all_models.csv",  # Q2.5-7B/Alpaca
+        "results/punctuation/run_multi_simpleqa_verified_20260419_182107/full_results_all_models.csv",  # Q2.5-7B/SimpleQA Verified
+        "results/punctuation/run_multi_trivia_qa_20260419_201220/full_results_all_models.csv",  # Q2.5-7B/TriviaQA
+        "results/punctuation/run_multi_hotpot_qa_20260419_212335/full_results_all_models.csv",  # Q2.5-7B/HotpotQA
+        "results/punctuation/run_multi_truthful_qa_20260410_042041/full_results_all_models.csv",  # Q3.5-9B/TruthfulQA
+        "results/punctuation/run_multi_natural_questions_20260419_170558/full_results_all_models.csv",  # Q3.5-9B/Natural Questions
+        "results/punctuation/run_multi_alpaca_20260419_191827/full_results_all_models.csv",  # Q3.5-9B/Alpaca
+        "results/punctuation/run_multi_simpleqa_verified_20260419_220035/full_results_all_models.csv",  # Q3.5-9B/SimpleQA Verified
+        "results/punctuation/run_multi_trivia_qa_20260420_013848/full_results_all_models.csv",  # Q3.5-9B/TriviaQA
+        "results/punctuation/run_multi_hotpot_qa_20260420_033255/full_results_all_models.csv",  # Q3.5-9B/HotpotQA
     ],
     "letter_case": [
-        "results/letter_case/run_multi_truthful_qa_20260223_143708/results_with_mirroring.csv",
-        "results/letter_case/run_multi_truthful_qa_20260223_152205/results_with_mirroring.csv",
-        "results/letter_case/run_multi_truthful_qa_20260223_214923/results_with_mirroring.csv",
-        "results/letter_case/run_multi_truthful_qa_20260224_213628/results_with_mirroring.csv",
-        "results/letter_case/run_multi_truthful_qa_20260225_005805/results_with_mirroring.csv",
-        "results/letter_case/run_multi_truthful_qa_20260225_032721/results_with_mirroring.csv",
-        # G4-E4B, Q3.5-9B
-        "results/letter_case/run_multi_truthful_qa_20260409_121907/full_results_all_models.csv",
-        "results/letter_case/run_multi_truthful_qa_20260409_222404/full_results_all_models.csv",
+        "results/letter_case/run_multi_truthful_qa_20260223_143708/full_results_all_models.csv",  # L3.2-3B/TruthfulQA
+        "results/letter_case/run_multi_natural_questions_20260416_123726/full_results_all_models.csv",  # L3.2-3B/Natural Questions
+        "results/letter_case/run_multi_alpaca_20260416_142919/full_results_all_models.csv",  # L3.2-3B/Alpaca
+        "results/letter_case/run_multi_simpleqa_verified_20260416_162122/full_results_all_models.csv",  # L3.2-3B/SimpleQA Verified
+        "results/letter_case/run_multi_trivia_qa_20260416_180823/full_results_all_models.csv",  # L3.2-3B/TriviaQA
+        "results/letter_case/run_multi_hotpot_qa_20260416_195607/full_results_all_models.csv",  # L3.2-3B/HotpotQA
+        "results/letter_case/run_multi_truthful_qa_20260224_213628/full_results_all_models.csv",  # L3.1-8B/TruthfulQA
+        "results/letter_case/run_multi_natural_questions_20260228_231937/full_results_all_models.csv",  # L3.1-8B/Natural Questions
+        "results/letter_case/run_multi_alpaca_20260419_223724/full_results_all_models.csv",  # L3.1-8B/Alpaca
+        "results/letter_case/run_multi_simpleqa_verified_20260419_235321/full_results_all_models.csv",  # L3.1-8B/SimpleQA Verified
+        "results/letter_case/run_multi_trivia_qa_20260420_011135/full_results_all_models.csv",  # L3.1-8B/TriviaQA
+        "results/letter_case/run_multi_hotpot_qa_20260420_022050/full_results_all_models.csv",  # L3.1-8B/HotpotQA
+        "results/letter_case/run_multi_truthful_qa_20260223_152205/full_results_all_models.csv",  # G-2B/TruthfulQA
+        "results/letter_case/run_multi_natural_questions_20260416_120945/full_results_all_models.csv",  # G-2B/Natural Questions
+        "results/letter_case/run_multi_alpaca_20260416_132452/full_results_all_models.csv",  # G-2B/Alpaca
+        "results/letter_case/run_multi_simpleqa_verified_20260416_141359/full_results_all_models.csv",  # G-2B/SimpleQA Verified
+        "results/letter_case/run_multi_trivia_qa_20260416_145328/full_results_all_models.csv",  # G-2B/TriviaQA
+        "results/letter_case/run_multi_hotpot_qa_20260416_153006/full_results_all_models.csv",  # G-2B/HotpotQA
+        "results/letter_case/run_multi_truthful_qa_20260409_121907/full_results_all_models.csv",  # G4-E4B/TruthfulQA
+        "results/letter_case/run_multi_natural_questions_20260419_165551/full_results_all_models.csv",  # G4-E4B/Natural Questions
+        "results/letter_case/run_multi_alpaca_20260419_190856/full_results_all_models.csv",  # G4-E4B/Alpaca
+        "results/letter_case/run_multi_simpleqa_verified_20260419_211753/full_results_all_models.csv",  # G4-E4B/SimpleQA Verified
+        "results/letter_case/run_multi_trivia_qa_20260419_231934/full_results_all_models.csv",  # G4-E4B/TriviaQA
+        "results/letter_case/run_multi_hotpot_qa_20260420_011536/full_results_all_models.csv",  # G4-E4B/HotpotQA
+        "results/letter_case/run_multi_truthful_qa_20260225_005805/full_results_all_models.csv",  # G-7B/TruthfulQA
+        "results/letter_case/run_multi_natural_questions_20260228_231743/full_results_all_models.csv",  # G-7B/Natural Questions
+        "results/letter_case/run_multi_alpaca_20260420_122022/full_results_all_models.csv",  # G-7B/Alpaca
+        "results/letter_case/run_multi_simpleqa_verified_20260420_130214/full_results_all_models.csv",  # G-7B/SimpleQA Verified
+        "results/letter_case/run_multi_trivia_qa_20260420_133949/full_results_all_models.csv",  # G-7B/TriviaQA
+        "results/letter_case/run_multi_hotpot_qa_20260420_141215/full_results_all_models.csv",  # G-7B/HotpotQA
+        "results/letter_case/run_multi_truthful_qa_20260223_214923/full_results_all_models.csv",  # Q2.5-1.5B/TruthfulQA
+        "results/letter_case/run_multi_natural_questions_20260416_115315/full_results_all_models.csv",  # Q2.5-1.5B/Natural Questions
+        "results/letter_case/run_multi_alpaca_20260416_125459/full_results_all_models.csv",  # Q2.5-1.5B/Alpaca
+        "results/letter_case/run_multi_simpleqa_verified_20260416_140234/full_results_all_models.csv",  # Q2.5-1.5B/SimpleQA Verified
+        "results/letter_case/run_multi_trivia_qa_20260416_145014/full_results_all_models.csv",  # Q2.5-1.5B/TriviaQA
+        "results/letter_case/run_multi_hotpot_qa_20260416_152913/full_results_all_models.csv",  # Q2.5-1.5B/HotpotQA
+        "results/letter_case/run_multi_truthful_qa_20260225_032721/full_results_all_models.csv",  # Q2.5-7B/TruthfulQA
+        "results/letter_case/run_multi_natural_questions_20260302_171030/full_results_all_models.csv",  # Q2.5-7B/Natural Questions
+        "results/letter_case/run_multi_alpaca_20260419_165336/full_results_all_models.csv",  # Q2.5-7B/Alpaca
+        "results/letter_case/run_multi_simpleqa_verified_20260419_183912/full_results_all_models.csv",  # Q2.5-7B/SimpleQA Verified
+        "results/letter_case/run_multi_trivia_qa_20260419_201326/full_results_all_models.csv",  # Q2.5-7B/TriviaQA
+        "results/letter_case/run_multi_hotpot_qa_20260419_212438/full_results_all_models.csv",  # Q2.5-7B/HotpotQA
+        "results/letter_case/run_multi_truthful_qa_20260409_222404/full_results_all_models.csv",  # Q3.5-9B/TruthfulQA
+        "results/letter_case/run_multi_natural_questions_20260419_170848/full_results_all_models.csv",  # Q3.5-9B/Natural Questions
+        "results/letter_case/run_multi_alpaca_20260419_192146/full_results_all_models.csv",  # Q3.5-9B/Alpaca
+        "results/letter_case/run_multi_simpleqa_verified_20260419_224319/full_results_all_models.csv",  # Q3.5-9B/SimpleQA Verified
+        "results/letter_case/run_multi_trivia_qa_20260420_014154/full_results_all_models.csv",  # Q3.5-9B/TriviaQA
+        "results/letter_case/run_multi_hotpot_qa_20260420_033559/full_results_all_models.csv",  # Q3.5-9B/HotpotQA
     ],
     "politeness": [
-        "results/politeness/run_multi_truthful_qa_20260221_112112/full_results_all_models.csv",
-        "results/politeness/run_multi_truthful_qa_20260221_145354/full_results_all_models.csv",
-        "results/politeness/run_multi_truthful_qa_20260222_113341/full_results_all_models.csv",
-        "results/politeness/run_multi_truthful_qa_20260222_132615/full_results_all_models.csv",
-        "results/politeness/run_multi_truthful_qa_20260222_150512/full_results_all_models.csv",
-        "results/politeness/run_multi_truthful_qa_20260223_120916/full_results_all_models.csv",
-        # G4-E4B, Q3.5-9B
-        "results/politeness/run_multi_truthful_qa_20260409_021222/full_results_all_models.csv",
-        "results/politeness/run_multi_truthful_qa_20260409_021310/full_results_all_models.csv",
+        "results/politeness/run_multi_truthful_qa_20260222_113341/full_results_all_models.csv",  # L3.2-3B/TruthfulQA
+        "results/politeness/run_multi_natural_questions_20260416_112513/full_results_all_models.csv",  # L3.2-3B/Natural Questions
+        "results/politeness/run_multi_alpaca_20260416_130117/full_results_all_models.csv",  # L3.2-3B/Alpaca
+        "results/politeness/run_multi_simpleqa_verified_20260416_145922/full_results_all_models.csv",  # L3.2-3B/SimpleQA Verified
+        "results/politeness/run_multi_trivia_qa_20260416_164813/full_results_all_models.csv",  # L3.2-3B/TriviaQA
+        "results/politeness/run_multi_hotpot_qa_20260416_183545/full_results_all_models.csv",  # L3.2-3B/HotpotQA
+        "results/politeness/run_multi_truthful_qa_20260222_132615/full_results_all_models.csv",  # L3.1-8B/TruthfulQA
+        "results/politeness/run_multi_natural_questions_20260223_230428/full_results_all_models.csv",  # L3.1-8B/Natural Questions
+        "results/politeness/run_multi_alpaca_20260419_212741/full_results_all_models.csv",  # L3.1-8B/Alpaca
+        "results/politeness/run_multi_simpleqa_verified_20260419_225606/full_results_all_models.csv",  # L3.1-8B/SimpleQA Verified
+        "results/politeness/run_multi_trivia_qa_20260420_000652/full_results_all_models.csv",  # L3.1-8B/TriviaQA
+        "results/politeness/run_multi_hotpot_qa_20260420_012947/full_results_all_models.csv",  # L3.1-8B/HotpotQA
+        "results/politeness/run_multi_truthful_qa_20260221_112112/full_results_all_models.csv",  # G-2B/TruthfulQA
+        "results/politeness/run_multi_natural_questions_20260419_151622/full_results_all_models.csv",  # G-2B/Natural Questions
+        "results/politeness/run_multi_alpaca_20260416_122253/full_results_all_models.csv",  # G-2B/Alpaca
+        "results/politeness/run_multi_simpleqa_verified_20260416_134405/full_results_all_models.csv",  # G-2B/SimpleQA Verified
+        "results/politeness/run_multi_trivia_qa_20260416_142157/full_results_all_models.csv",  # G-2B/TriviaQA
+        "results/politeness/run_multi_hotpot_qa_20260416_150300/full_results_all_models.csv",  # G-2B/HotpotQA
+        "results/politeness/run_multi_truthful_qa_20260409_021222/full_results_all_models.csv",  # G4-E4B/TruthfulQA
+        "results/politeness/run_multi_natural_questions_20260419_152533/full_results_all_models.csv",  # G4-E4B/Natural Questions
+        "results/politeness/run_multi_alpaca_20260419_171545/full_results_all_models.csv",  # G4-E4B/Alpaca
+        "results/politeness/run_multi_simpleqa_verified_20260419_193704/full_results_all_models.csv",  # G4-E4B/SimpleQA Verified
+        "results/politeness/run_multi_trivia_qa_20260419_214443/full_results_all_models.csv",  # G4-E4B/TriviaQA
+        "results/politeness/run_multi_hotpot_qa_20260419_234339/full_results_all_models.csv",  # G4-E4B/HotpotQA
+        "results/politeness/run_multi_truthful_qa_20260222_150512/full_results_all_models.csv",  # G-7B/TruthfulQA
+        "results/politeness/run_multi_natural_questions_20260422_000653/full_results_all_models.csv",  # G-7B / Natural Questions  — run pending
+        "results/politeness/run_multi_alpaca_20260420_112748/full_results_all_models.csv",  # G-7B/Alpaca
+        "results/politeness/run_multi_simpleqa_verified_20260420_122244/full_results_all_models.csv",  # G-7B/SimpleQA Verified
+        "results/politeness/run_multi_trivia_qa_20260420_131019/full_results_all_models.csv",  # G-7B/TriviaQA
+        "results/politeness/run_multi_hotpot_qa_20260420_134207/full_results_all_models.csv",  # G-7B/HotpotQA
+        "results/politeness/run_multi_truthful_qa_20260221_145354/full_results_all_models.csv",  # Q2.5-1.5B/TruthfulQA
+        "results/politeness/run_multi_natural_questions_20260415_192823/full_results_all_models.csv",  # Q2.5-1.5B/Natural Questions
+        "results/politeness/run_multi_alpaca_20260416_120003/full_results_all_models.csv",  # Q2.5-1.5B/Alpaca
+        "results/politeness/run_multi_simpleqa_verified_20260416_131328/full_results_all_models.csv",  # Q2.5-1.5B/SimpleQA Verified
+        "results/politeness/run_multi_trivia_qa_20260416_141914/full_results_all_models.csv",  # Q2.5-1.5B/TriviaQA
+        "results/politeness/run_multi_hotpot_qa_20260416_145752/full_results_all_models.csv",  # Q2.5-1.5B/HotpotQA
+        "results/politeness/run_multi_truthful_qa_20260223_120916/full_results_all_models.csv",  # Q2.5-7B/TruthfulQA
+        "results/politeness/run_multi_natural_questions_20260422_000930/full_results_all_models.csv",# Q2.5-7B / Natural Questions  — run pending
+        "results/politeness/run_multi_alpaca_20260419_153633/full_results_all_models.csv",  # Q2.5-7B/Alpaca
+        "results/politeness/run_multi_simpleqa_verified_20260419_165609/full_results_all_models.csv",  # Q2.5-7B/SimpleQA Verified
+        "results/politeness/run_multi_trivia_qa_20260419_190720/full_results_all_models.csv",  # Q2.5-7B/TriviaQA
+        "results/politeness/run_multi_hotpot_qa_20260419_201554/full_results_all_models.csv",  # Q2.5-7B/HotpotQA
+        "results/politeness/run_multi_truthful_qa_20260409_021310/full_results_all_models.csv",  # Q3.5-9B/TruthfulQA
+        "results/politeness/run_multi_natural_questions_20260419_152502/full_results_all_models.csv",  # Q3.5-9B/Natural Questions
+        "results/politeness/run_multi_alpaca_20260419_171348/full_results_all_models.csv",  # Q3.5-9B/Alpaca
+        "results/politeness/run_multi_simpleqa_verified_20260419_192716/full_results_all_models.csv",  # Q3.5-9B/SimpleQA Verified
+        "results/politeness/run_multi_trivia_qa_20260419_234941/full_results_all_models.csv",  # Q3.5-9B/TriviaQA
+        "results/politeness/run_multi_hotpot_qa_20260420_014716/full_results_all_models.csv",  # Q3.5-9B/HotpotQA
     ],
     "length_variation": [
-        "results/length_variation/run_multi_truthful_qa_20260304_055338/full_results_all_models.csv",
-        # G4-E4B, Q3.5-9B
-        "results/length_variation/run_multi_truthful_qa_20260409_100412/full_results_all_models.csv",
-        "results/length_variation/run_multi_truthful_qa_20260409_164416/full_results_all_models.csv",
+        "results/length_variation/run_multi_truthful_qa_20260304_055338/full_results_all_models.csv",  # L3.2-3B/TruthfulQA, L3.1-8B/TruthfulQA, G-2B/TruthfulQA, G-7B/TruthfulQA, Q2.5-1.5B/TruthfulQA, Q2.5-7B/TruthfulQA
+        "results/length_variation/run_multi_natural_questions_20260416_125304/full_results_all_models.csv",  # L3.2-3B/Natural Questions
+        "results/length_variation/run_multi_alpaca_20260416_144937/full_results_all_models.csv",  # L3.2-3B/Alpaca
+        "results/length_variation/run_multi_simpleqa_verified_20260416_163938/full_results_all_models.csv",  # L3.2-3B/SimpleQA Verified
+        "results/length_variation/run_multi_trivia_qa_20260416_182633/full_results_all_models.csv",  # L3.2-3B/TriviaQA
+        "results/length_variation/run_multi_hotpot_qa_20260416_201351/full_results_all_models.csv",  # L3.2-3B/HotpotQA
+        "results/length_variation/run_multi_natural_questions_20260304_024838/full_results_all_models.csv",  # L3.1-8B/Natural Questions, G-7B/Natural Questions, Q2.5-7B/Natural Questions
+        "results/length_variation/run_multi_alpaca_20260419_224942/full_results_all_models.csv",  # L3.1-8B/Alpaca
+        "results/length_variation/run_multi_simpleqa_verified_20260420_000154/full_results_all_models.csv",  # L3.1-8B/SimpleQA Verified
+        "results/length_variation/run_multi_trivia_qa_20260420_012223/full_results_all_models.csv",  # L3.1-8B/TriviaQA
+        "results/length_variation/run_multi_hotpot_qa_20260420_022858/full_results_all_models.csv",  # L3.1-8B/HotpotQA
+        "results/length_variation/run_multi_natural_questions_20260416_121815/full_results_all_models.csv",  # G-2B/Natural Questions
+        "results/length_variation/run_multi_alpaca_20260416_133747/full_results_all_models.csv",  # G-2B/Alpaca
+        "results/length_variation/run_multi_simpleqa_verified_20260416_141915/full_results_all_models.csv",  # G-2B/SimpleQA Verified
+        "results/length_variation/run_multi_trivia_qa_20260416_145958/full_results_all_models.csv",  # G-2B/TriviaQA
+        "results/length_variation/run_multi_hotpot_qa_20260416_153436/full_results_all_models.csv",  # G-2B/HotpotQA
+        "results/length_variation/run_multi_truthful_qa_20260409_100412/full_results_all_models.csv",  # G4-E4B/TruthfulQA
+        "results/length_variation/run_multi_natural_questions_20260419_170824/full_results_all_models.csv",  # G4-E4B/Natural Questions
+        "results/length_variation/run_multi_alpaca_20260419_192733/full_results_all_models.csv",  # G4-E4B/Alpaca
+        "results/length_variation/run_multi_simpleqa_verified_20260419_213456/full_results_all_models.csv",  # G4-E4B/SimpleQA Verified
+        "results/length_variation/run_multi_trivia_qa_20260419_233509/full_results_all_models.csv",  # G4-E4B/TriviaQA
+        "results/length_variation/run_multi_hotpot_qa_20260420_013019/full_results_all_models.csv",  # G4-E4B/HotpotQA
+        "results/length_variation/run_multi_alpaca_20260420_122123/full_results_all_models.csv",  # G-7B/Alpaca
+        "results/length_variation/run_multi_simpleqa_verified_20260420_130706/full_results_all_models.csv",  # G-7B/SimpleQA Verified
+        "results/length_variation/run_multi_trivia_qa_20260420_134050/full_results_all_models.csv",  # G-7B/TriviaQA
+        "results/length_variation/run_multi_hotpot_qa_20260420_141314/full_results_all_models.csv",  # G-7B/HotpotQA
+        "results/length_variation/run_multi_natural_questions_20260416_115359/full_results_all_models.csv",  # Q2.5-1.5B/Natural Questions
+        "results/length_variation/run_multi_alpaca_20260416_130559/full_results_all_models.csv",  # Q2.5-1.5B/Alpaca
+        "results/length_variation/run_multi_simpleqa_verified_20260416_141211/full_results_all_models.csv",  # Q2.5-1.5B/SimpleQA Verified
+        "results/length_variation/run_multi_trivia_qa_20260416_145058/full_results_all_models.csv",  # Q2.5-1.5B/TriviaQA
+        "results/length_variation/run_multi_hotpot_qa_20260416_153003/full_results_all_models.csv",  # Q2.5-1.5B/HotpotQA
+        "results/length_variation/run_multi_alpaca_20260419_165444/full_results_all_models.csv",  # Q2.5-7B/Alpaca
+        "results/length_variation/run_multi_simpleqa_verified_20260419_185735/full_results_all_models.csv",  # Q2.5-7B/SimpleQA Verified
+        "results/length_variation/run_multi_trivia_qa_20260419_201433/full_results_all_models.csv",  # Q2.5-7B/TriviaQA
+        "results/length_variation/run_multi_hotpot_qa_20260419_212544/full_results_all_models.csv",  # Q2.5-7B/HotpotQA
+        "results/length_variation/run_multi_truthful_qa_20260409_164416/full_results_all_models.csv",  # Q3.5-9B/TruthfulQA
+        "results/length_variation/run_multi_natural_questions_20260419_171147/full_results_all_models.csv",  # Q3.5-9B/Natural Questions
+        "results/length_variation/run_multi_alpaca_20260419_192455/full_results_all_models.csv",  # Q3.5-9B/Alpaca
+        "results/length_variation/run_multi_simpleqa_verified_20260419_232717/full_results_all_models.csv",  # Q3.5-9B/SimpleQA Verified
+        "results/length_variation/run_multi_trivia_qa_20260420_014456/full_results_all_models.csv",  # Q3.5-9B/TriviaQA
+        "results/length_variation/run_multi_hotpot_qa_20260420_033905/full_results_all_models.csv",  # Q3.5-9B/HotpotQA
     ],
     "inter_vs_imper": [
-        "results/inter_vs_imper/run_multi_truthful_qa_20260304_165515/full_results_all_models.csv",
-        # G4-E4B, Q3.5-9B
-        "results/inter_vs_imper/run_multi_truthful_qa_20260409_183536/full_results_all_models.csv",
-        "results/inter_vs_imper/run_multi_truthful_qa_20260410_151032/full_results_all_models.csv",
+        "results/inter_vs_imper/run_multi_truthful_qa_20260304_165515/full_results_all_models.csv",  # L3.2-3B/TruthfulQA, L3.1-8B/TruthfulQA, G-2B/TruthfulQA, G-7B/TruthfulQA, Q2.5-1.5B/TruthfulQA, Q2.5-7B/TruthfulQA
+        "results/inter_vs_imper/run_multi_natural_questions_20260416_125828/full_results_all_models.csv",  # L3.2-3B/Natural Questions
+        "results/inter_vs_imper/run_multi_alpaca_20260416_145603/full_results_all_models.csv",  # L3.2-3B/Alpaca
+        "results/inter_vs_imper/run_multi_simpleqa_verified_20260416_164503/full_results_all_models.csv",  # L3.2-3B/SimpleQA Verified
+        "results/inter_vs_imper/run_multi_trivia_qa_20260416_183238/full_results_all_models.csv",  # L3.2-3B/TriviaQA
+        "results/inter_vs_imper/run_multi_hotpot_qa_20260416_201952/full_results_all_models.csv",  # L3.2-3B/HotpotQA
+        "results/inter_vs_imper/run_multi_natural_questions_20260304_175953/full_results_all_models.csv",  # L3.1-8B/Natural Questions, G-7B/Natural Questions, Q2.5-7B/Natural Questions
+        "results/inter_vs_imper/run_multi_alpaca_20260419_225350/full_results_all_models.csv",  # L3.1-8B/Alpaca
+        "results/inter_vs_imper/run_multi_simpleqa_verified_20260420_000500/full_results_all_models.csv",  # L3.1-8B/SimpleQA Verified
+        "results/inter_vs_imper/run_multi_trivia_qa_20260420_012625/full_results_all_models.csv",  # L3.1-8B/TriviaQA
+        "results/inter_vs_imper/run_multi_hotpot_qa_20260420_023148/full_results_all_models.csv",  # L3.1-8B/HotpotQA
+        "results/inter_vs_imper/run_multi_natural_questions_20260416_122117/full_results_all_models.csv",  # G-2B/Natural Questions
+        "results/inter_vs_imper/run_multi_alpaca_20260416_134154/full_results_all_models.csv",  # G-2B/Alpaca
+        "results/inter_vs_imper/run_multi_simpleqa_verified_20260416_142100/full_results_all_models.csv",  # G-2B/SimpleQA Verified
+        "results/inter_vs_imper/run_multi_trivia_qa_20260416_150150/full_results_all_models.csv",  # G-2B/TriviaQA
+        "results/inter_vs_imper/run_multi_hotpot_qa_20260416_153606/full_results_all_models.csv",  # G-2B/HotpotQA
+        "results/inter_vs_imper/run_multi_truthful_qa_20260409_183536/full_results_all_models.csv",  # G4-E4B/TruthfulQA
+        "results/inter_vs_imper/run_multi_natural_questions_20260419_171304/full_results_all_models.csv",  # G4-E4B/Natural Questions
+        "results/inter_vs_imper/run_multi_alpaca_20260419_193341/full_results_all_models.csv",  # G4-E4B/Alpaca
+        "results/inter_vs_imper/run_multi_simpleqa_verified_20260419_214140/full_results_all_models.csv",  # G4-E4B/SimpleQA Verified
+        "results/inter_vs_imper/run_multi_trivia_qa_20260419_234037/full_results_all_models.csv",  # G4-E4B/TriviaQA
+        "results/inter_vs_imper/run_multi_hotpot_qa_20260420_013545/full_results_all_models.csv",  # G4-E4B/HotpotQA
+        "results/inter_vs_imper/run_multi_alpaca_20260420_122202/full_results_all_models.csv",  # G-7B/Alpaca
+        "results/inter_vs_imper/run_multi_simpleqa_verified_20260420_130901/full_results_all_models.csv",  # G-7B/SimpleQA Verified
+        "results/inter_vs_imper/run_multi_trivia_qa_20260420_134128/full_results_all_models.csv",  # G-7B/TriviaQA
+        "results/inter_vs_imper/run_multi_hotpot_qa_20260420_141403/full_results_all_models.csv",  # G-7B/HotpotQA
+        "results/inter_vs_imper/run_multi_natural_questions_20260416_115804/full_results_all_models.csv",  # Q2.5-1.5B/Natural Questions
+        "results/inter_vs_imper/run_multi_alpaca_20260416_131107/full_results_all_models.csv",  # Q2.5-1.5B/Alpaca
+        "results/inter_vs_imper/run_multi_simpleqa_verified_20260416_141652/full_results_all_models.csv",  # Q2.5-1.5B/SimpleQA Verified
+        "results/inter_vs_imper/run_multi_trivia_qa_20260416_145539/full_results_all_models.csv",  # Q2.5-1.5B/TriviaQA
+        "results/inter_vs_imper/run_multi_hotpot_qa_20260416_153454/full_results_all_models.csv",  # Q2.5-1.5B/HotpotQA
+        "results/inter_vs_imper/run_multi_alpaca_20260419_165528/full_results_all_models.csv",  # Q2.5-7B/Alpaca
+        "results/inter_vs_imper/run_multi_simpleqa_verified_20260419_190354/full_results_all_models.csv",  # Q2.5-7B/SimpleQA Verified
+        "results/inter_vs_imper/run_multi_trivia_qa_20260419_201515/full_results_all_models.csv",  # Q2.5-7B/TriviaQA
+        "results/inter_vs_imper/run_multi_hotpot_qa_20260419_212628/full_results_all_models.csv",  # Q2.5-7B/HotpotQA
+        "results/inter_vs_imper/run_multi_truthful_qa_20260410_151032/full_results_all_models.csv",  # Q3.5-9B/TruthfulQA
+        "results/inter_vs_imper/run_multi_natural_questions_20260419_171302/full_results_all_models.csv",  # Q3.5-9B/Natural Questions
+        "results/inter_vs_imper/run_multi_alpaca_20260419_192620/full_results_all_models.csv",  # Q3.5-9B/Alpaca
+        "results/inter_vs_imper/run_multi_simpleqa_verified_20260419_234155/full_results_all_models.csv",  # Q3.5-9B/SimpleQA Verified
+        "results/inter_vs_imper/run_multi_trivia_qa_20260420_014625/full_results_all_models.csv",  # Q3.5-9B/TriviaQA
+        "results/inter_vs_imper/run_multi_hotpot_qa_20260420_034027/full_results_all_models.csv",  # Q3.5-9B/HotpotQA
     ],
 }
 

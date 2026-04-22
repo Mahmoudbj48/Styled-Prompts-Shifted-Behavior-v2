@@ -2532,7 +2532,7 @@ SGS_DEFAULT_DELTA_COLS: list[str] = [
     "delta_bertscore_response",
     "delta_activation_similarity",
     "delta_log_prob",
-    "delta_jsd_drift",
+    # "delta_jsd_drift",
     "delta_mirroring_rate",
 ]
 

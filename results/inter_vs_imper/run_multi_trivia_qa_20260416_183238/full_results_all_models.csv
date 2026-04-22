@@ -1,24 +1,24 @@
-model,prompt_id,place,strength,category,prompt_orig,prompt_pert,bertscore_prompt,response_orig,response_pert,bleu,bertscore_response,activation_similarity,delta_log_prob,entropy_shift,jsd_drift,delta_bleu,delta_bertscore_prompt,delta_bertscore_response,delta_activation_similarity,delta_jsd_drift
+model,prompt_id,place,strength,category,prompt_orig,prompt_pert,bertscore_prompt,response_orig,response_pert,bleu,bertscore_response,activation_similarity,delta_log_prob,entropy_shift,delta_bleu,delta_bertscore_prompt,delta_bertscore_response,delta_activation_similarity,mirroring_rate,delta_mirroring_rate
 L3.2-3B,0,global,original,trivia_qa,What general name is given to a rotating star which emits a regular beat of radiation?,What general name is given to a rotating star which emits a regular beat of radiation?,1.0,"rotating star which emits a regular beat of radiation?assistant
 
 A rotating star that emits a regular beat of radiation is commonly known as a Cepheid variable star.","rotating star which emits a regular beat of radiation?assistant
 
-A rotating star that emits a regular beat of radiation is commonly known as a Cepheid variable star.",100.00000000000004,1.0,1.0,,0.0,,,,,,
+A rotating star that emits a regular beat of radiation is commonly known as a Cepheid variable star.",100.00000000000004,1.0,1.0,,0.0,42.11608023664749,0.017639756202697754,0.03910589218139637,0.0126953125,0,0
 L3.2-3B,1,global,original,trivia_qa,"""Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""","""Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""",1.0,"is sub titled 'The Witches Curse""""?""assistant
 
 I am unable to verify which Gilbert and Sullivan operetta is sub titled 'The Witches Curse'.","is sub titled 'The Witches Curse""""?""assistant
 
-I am unable to verify which Gilbert and Sullivan operetta is sub titled 'The Witches Curse'.",100.00000000000004,0.9999999403953552,1.0,,0.0,,,,,,
+I am unable to verify which Gilbert and Sullivan operetta is sub titled 'The Witches Curse'.",100.00000000000004,0.9999999403953552,1.0,,0.0,47.9744311919242,0.05710726976394642,0.05253434181213379,0.02001953125,0,0
 L3.2-3B,2,global,original,trivia_qa,Which English cricketer had figures for bowling 10 for 53 against Australia 1956?,Which English cricketer had figures for bowling 10 for 53 against Australia 1956?,0.9999998807907104,"53 against Australia 1956?assistant
 
 I am unable to verify the English cricketer who took 10 wickets for 53 against Australia in 1956.","53 against Australia 1956?assistant
 
-I am unable to verify the English cricketer who took 10 wickets for 53 against Australia in 1956.",100.00000000000004,1.0,0.99951171875,,0.0,,,,,,
-L3.2-3B,3,global,original,trivia_qa,Wolf Mankowitz wrote the 1953 novel ‘A Kid For Two….’what’?,Wolf Mankowitz wrote the 1953 novel ‘A Kid For Two….’what’?,0.9999998211860657,"For Two….’what’?assistant
+I am unable to verify the English cricketer who took 10 wickets for 53 against Australia in 1956.",100.00000000000004,1.0,0.99951171875,,0.0,45.8225365781918,0.02038145065307606,0.030958950519561768,0.0234375,0,0
+L3.2-3B,3,global,original,trivia_qa,Wolf Mankowitz wrote the 1953 novel ‘A Kid For Two….’what’?,Wolf Mankowitz wrote the 1953 novel ‘A Kid For Two….’what’?,0.9999998211860656,"For Two….’what’?assistant
 
 I couldn't find any information on a novel called ""A Kid For Two…."" written by Wolf Mankowitz.","For Two….’what’?assistant
 
-I couldn't find any information on a novel called ""A Kid For Two…."" written by Wolf Mankowitz.",100.00000000000004,1.0,1.0,,0.0,,,,,,
+I couldn't find any information on a novel called ""A Kid For Two…."" written by Wolf Mankowitz.",100.00000000000004,1.0,1.0,,0.0,66.14536205890687,0.05893921852111794,0.06813496351242077,0.1181640625,0,0
 L3.2-3B,4,global,original,trivia_qa,Who is the patron saint of dancers?,Who is the patron saint of dancers?,0.9999999403953552,"16 Apr 2026
 
 user
@@ -31,12 +31,12 @@ user
 
 Who is the patron saint of dancers?assistant
 
-The patron saint of dancers is Saint Teresa of Ávila.",100.00000000000004,1.0000001192092896,1.0,,0.0,,,,,,
-L3.2-3B,5,global,original,trivia_qa,"Published on Feb 21, 1848, which two authors were responsible for the Communist Manifesto?","Published on Feb 21, 1848, which two authors were responsible for the Communist Manifesto?",0.9999998211860657,"for the Communist Manifesto?assistant
+The patron saint of dancers is Saint Teresa of Ávila.",100.00000000000004,1.0000001192092896,1.0,,0.0,8.181085378061084,-5.960464477539063e-08,0.015365183353423961,0.0,0,0
+L3.2-3B,5,global,original,trivia_qa,"Published on Feb 21, 1848, which two authors were responsible for the Communist Manifesto?","Published on Feb 21, 1848, which two authors were responsible for the Communist Manifesto?",0.9999998211860656,"for the Communist Manifesto?assistant
 
 The Communist Manifesto was published on February 21, 1848, by Karl Marx and Friedrich Engels.","for the Communist Manifesto?assistant
 
-The Communist Manifesto was published on February 21, 1848, by Karl Marx and Friedrich Engels.",100.00000000000004,1.0000001192092896,1.0,,0.0,,,,,,
+The Communist Manifesto was published on February 21, 1848, by Karl Marx and Friedrich Engels.",100.00000000000004,1.0000001192092896,1.0,,0.0,53.51155273337667,0.042263269424438366,0.06426358222961437,0.0390625,0,0
 L3.2-3B,6,global,original,trivia_qa,The fortified wine drink Sherry is named after what town?,The fortified wine drink Sherry is named after what town?,0.9999999403953552,"user
 
 The fortified wine drink Sherry is named after what town?assistant
@@ -45,27 +45,27 @@ The fortified wine drink Sherry is named after the town of Jerez in Spain.","use
 
 The fortified wine drink Sherry is named after what town?assistant
 
-The fortified wine drink Sherry is named after the town of Jerez in Spain.",100.00000000000004,0.9999999403953552,1.0,,0.0,,,,,,
+The fortified wine drink Sherry is named after the town of Jerez in Spain.",100.00000000000004,0.9999999403953552,1.0,,0.0,51.437846968916176,0.05750632286071766,0.04671072959899902,0.02734375,0,0
 L3.2-3B,7,global,original,trivia_qa,The nickname for Dumfries became the name of which Scottish football club?,The nickname for Dumfries became the name of which Scottish football club?,0.9999999403953552,"Dumfries became the name of which Scottish football club?assistant
 
 I am unable to verify the Scottish football club nicknamed Dumfries.","Dumfries became the name of which Scottish football club?assistant
 
-I am unable to verify the Scottish football club nicknamed Dumfries.",100.00000000000004,1.0000001192092896,1.0,,0.0,,,,,,
+I am unable to verify the Scottish football club nicknamed Dumfries.",100.00000000000004,1.0000001192092896,1.0,,0.0,64.75095276644079,0.06310826539993286,0.06786692142486572,0.0927734375,0,0
 L3.2-3B,8,global,original,trivia_qa,The revolutionary group the Sandinistas were active in which country?,The revolutionary group the Sandinistas were active in which country?,0.9999998807907104,"The revolutionary group the Sandinistas were active in which country?assistant
 
 The Sandinistas were a revolutionary group active in Nicaragua.","The revolutionary group the Sandinistas were active in which country?assistant
 
-The Sandinistas were a revolutionary group active in Nicaragua.",100.00000000000004,1.0,0.99951171875,,0.0,,,,,,
+The Sandinistas were a revolutionary group active in Nicaragua.",100.00000000000004,1.0,0.99951171875,,0.0,52.03715166386283,0.042673587799072266,0.05593085289001465,0.01806640625,0,0
 L3.2-3B,9,global,original,trivia_qa,Who was the conservative candidate beaten by Ken Livingstone in the first two elections for Mayor of London?,Who was the conservative candidate beaten by Ken Livingstone in the first two elections for Mayor of London?,0.9999998807907104,"two elections for Mayor of London?assistant
 
 I am unable to verify who the conservative candidate was beaten by Ken Livingstone in the first two elections for Mayor of London.","two elections for Mayor of London?assistant
 
-I am unable to verify who the conservative candidate was beaten by Ken Livingstone in the first two elections for Mayor of London.",100.00000000000004,0.9999999403953552,1.0009765625,,0.0,,,,,,
+I am unable to verify who the conservative candidate was beaten by Ken Livingstone in the first two elections for Mayor of London.",100.00000000000004,0.9999999403953552,1.0009765625,,0.0,28.56923558466393,0.023334026336670033,0.03849130868911743,0.0458984375,0,0
 L3.2-3B,10,global,original,trivia_qa,"""Who said, To err is human but it feels divine?""""""","""Who said, To err is human but it feels divine?""""""",1.0,"Who said, To err is human but it feels divine?""""""assistant
 
 The quote ""To err is human, but it feels divine"" is attributed to Oscar Wilde.","Who said, To err is human but it feels divine?""""""assistant
 
-The quote ""To err is human, but it feels divine"" is attributed to Oscar Wilde.",100.00000000000004,1.0,1.0009765625,,0.0,,,,,,
+The quote ""To err is human, but it feels divine"" is attributed to Oscar Wilde.",100.00000000000004,1.0,1.0009765625,,0.0,57.860801941524315,0.0705820918083192,0.08714294433593761,0.0322265625,0,0
 L3.2-3B,11,global,original,trivia_qa,"When Mr Benn was looking for an adventure, what type of shop did he visit?","When Mr Benn was looking for an adventure, what type of shop did he visit?",1.000000238418579,"adventure, what type of shop did he visit?assistant
 
 I'm not aware of a character named Mr. Benn who visits a specific type of shop for an adventure. However, I believe you may be referring to Mr. Benn, the main character from the popular children's television series ""The Adventures of Mr. Benn"". 
@@ -74,7 +74,7 @@ In the show, Mr. Benn visits a shop called ""The Magic Roundabout"" where he can
 
 I'm not aware of a character named Mr. Benn who visits a specific type of shop for an adventure. However, I believe you may be referring to Mr. Benn, the main character from the popular children's television series ""The Adventures of Mr. Benn"". 
 
-In the show, Mr. Benn visits a shop called ""The Magic Roundabout"" where he can choose which adventure he wants to have.",100.00000000000004,1.0,1.0009765625,,0.0,,,,,,
+In the show, Mr. Benn visits a shop called ""The Magic Roundabout"" where he can choose which adventure he wants to have.",100.00000000000004,1.0,1.0009765625,,0.0,47.35582871703871,0.04671603441238392,0.054926276206970215,0.0283203125,0,0
 L3.2-3B,12,global,original,trivia_qa,What was made and repaired by a Wainwright?,What was made and repaired by a Wainwright?,1.0,"user
 
 What was made and repaired by a Wainwright?assistant
@@ -87,12 +87,12 @@ What was made and repaired by a Wainwright?assistant
 
 A wainwright was a skilled craftsman who made and repaired wooden wagons, carts, and other vehicles, particularly in the medieval and early modern periods. They were responsible for constructing and maintaining the wooden frames, wheels, and other components of these vehicles, as well as repairing and refurbishing existing ones.
 
-Wainwrights were highly skilled craftsmen who worked with wood, metal, and other materials to create and repair wagons, carts, and other vehicles used for transportation, trade, and",100.00000000000004,1.0,1.0,,0.0,,,,,,
+Wainwrights were highly skilled craftsmen who worked with wood, metal, and other materials to create and repair wagons, carts, and other vehicles used for transportation, trade, and",100.00000000000004,1.0,1.0,,0.0,71.90087672889076,0.01802939176559437,0.07198464870452881,0.044921875,0,0
 L3.2-3B,13,global,original,trivia_qa,"The War of the Triple Alliance (1864 - 1870) was fought between the allied countries of Argentina, Brazil, and Uruguay and which other country?","The War of the Triple Alliance (1864 - 1870) was fought between the allied countries of Argentina, Brazil, and Uruguay and which other country?",1.0000001192092896,"I couldn't find any information about a War of the Triple Alliance fought between Argentina, Brazil, Uruguay, and another country from 1864-1870. 
 
 However, I did find information about the War of the Triple Alliance, which was fought between Argentina, Brazil, and Uruguay, and Paraguay from 1864 to 1870.","I couldn't find any information about a War of the Triple Alliance fought between Argentina, Brazil, Uruguay, and another country from 1864-1870. 
 
-However, I did find information about the War of the Triple Alliance, which was fought between Argentina, Brazil, and Uruguay, and Paraguay from 1864 to 1870.",100.00000000000004,1.0,1.0009765625,,0.0,,,,,,
+However, I did find information about the War of the Triple Alliance, which was fought between Argentina, Brazil, and Uruguay, and Paraguay from 1864 to 1870.",100.00000000000004,1.0,1.0009765625,,0.0,70.18588455766829,0.044003963470458984,0.08036434650421143,0.1240234375,0,0
 L3.2-3B,14,global,original,trivia_qa,What city will host the 2016 Olympics?,What city will host the 2016 Olympics?,0.9999998807907104,"6
 
 user
@@ -105,32 +105,32 @@ user
 
 What city will host the 2016 Olympics?assistant
 
-The 2016 Summer Olympics were hosted by Rio de Janeiro, Brazil.",100.00000000000004,0.9999997615814209,1.0,,0.0,,,,,,
+The 2016 Summer Olympics were hosted by Rio de Janeiro, Brazil.",100.00000000000004,0.9999997615814208,1.0,,0.0,16.093761183638634,0.00019508600234985352,0.02773398160934437,0.00244140625,0,0
 L3.2-3B,15,global,original,trivia_qa,Mount Entoto is the highest peak overlooking which African capital city?,Mount Entoto is the highest peak overlooking which African capital city?,1.0,"Mount Entoto is the highest peak overlooking which African capital city?assistant
 
 I am unable to verify which African capital city Mount Entoto overlooks.","Mount Entoto is the highest peak overlooking which African capital city?assistant
 
-I am unable to verify which African capital city Mount Entoto overlooks.",100.00000000000004,0.9999998807907104,1.0,,0.0,,,,,,
+I am unable to verify which African capital city Mount Entoto overlooks.",100.00000000000004,0.9999998807907104,1.0,,0.0,89.83141301454611,0.07946240901947021,0.11137402057647705,0.1337890625,0,0
 L3.2-3B,0,global,interrogative,trivia_qa,What general name is given to a rotating star which emits a regular beat of radiation?,What is the general name given to a rotating star that emits a regular beat of radiation?,0.9823602437973022,"rotating star which emits a regular beat of radiation?assistant
 
 A rotating star that emits a regular beat of radiation is commonly known as a Cepheid variable star.","to a rotating star that emits a regular beat of radiation?assistant
 
-The general name given to a rotating star that emits a regular beat of radiation is a Cepheid variable star.",57.88391976335255,0.9608941078186035,0.9873046875,,0.04443359375,,,,,,
-L3.2-3B,1,global,interrogative,trivia_qa,"""Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""",Which Gilbert and Sullivan operetta is subtitled 'The Witches Curse'?,0.9428927302360535,"is sub titled 'The Witches Curse""""?""assistant
+The general name given to a rotating star that emits a regular beat of radiation is a Cepheid variable star.",57.88391976335255,0.9608941078186036,0.9873046875,,0.04443359375,0.0,0.0,0.0,0.0,0,0
+L3.2-3B,1,global,interrogative,trivia_qa,"""Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""",Which Gilbert and Sullivan operetta is subtitled 'The Witches Curse'?,0.9428927302360536,"is sub titled 'The Witches Curse""""?""assistant
 
 I am unable to verify which Gilbert and Sullivan operetta is sub titled 'The Witches Curse'.","Which Gilbert and Sullivan operetta is subtitled 'The Witches Curse'?assistant
 
-I am unable to verify which Gilbert and Sullivan operetta is subtitled 'The Witches Curse'.",52.025568808075846,0.9474655985832214,0.97998046875,,0.15625,,,,,,
-L3.2-3B,2,global,interrogative,trivia_qa,Which English cricketer had figures for bowling 10 for 53 against Australia 1956?,Which English cricketer had bowling figures of 10 for 53 against Australia in 1956?,0.9796184301376343,"53 against Australia 1956?assistant
+I am unable to verify which Gilbert and Sullivan operetta is subtitled 'The Witches Curse'.",52.025568808075846,0.9474655985832214,0.97998046875,,0.15625,0.0,0.0,0.0,0.0,0,0
+L3.2-3B,2,global,interrogative,trivia_qa,Which English cricketer had figures for bowling 10 for 53 against Australia 1956?,Which English cricketer had bowling figures of 10 for 53 against Australia in 1956?,0.9796184301376344,"53 against Australia 1956?assistant
 
 I am unable to verify the English cricketer who took 10 wickets for 53 against Australia in 1956.","53 against Australia in 1956?assistant
 
-I am unable to verify which English cricketer had bowling figures of 10 for 53 against Australia in 1956.",54.177463421808234,0.9690410494804382,0.97607421875,,0.11328125,,,,,,
-L3.2-3B,3,global,interrogative,trivia_qa,Wolf Mankowitz wrote the 1953 novel ‘A Kid For Two….’what’?,Did Wolf Mankowitz write the 1953 novel ‘A Kid For Two….’?,0.9410606026649475,"For Two….’what’?assistant
+I am unable to verify which English cricketer had bowling figures of 10 for 53 against Australia in 1956.",54.17746342180824,0.9690410494804382,0.97607421875,,0.11328125,0.0,0.0,0.0,0.0,0,0
+L3.2-3B,3,global,interrogative,trivia_qa,Wolf Mankowitz wrote the 1953 novel ‘A Kid For Two….’what’?,Did Wolf Mankowitz write the 1953 novel ‘A Kid For Two….’?,0.9410606026649476,"For Two….’what’?assistant
 
 I couldn't find any information on a novel called ""A Kid For Two…."" written by Wolf Mankowitz.","1953 novel ‘A Kid For Two….’?assistant
 
-I couldn't find any information about a writer named Wolf Mankowitz writing a novel called 'A Kid For Two'.",33.85463794109317,0.9318650364875793,0.8818359375,,0.2529296875,,,,,,
+I couldn't find any information about a writer named Wolf Mankowitz writing a novel called 'A Kid For Two'.",33.85463794109317,0.9318650364875792,0.8818359375,,0.2529296875,0.0,0.0,0.0,0.0,0,0
 L3.2-3B,4,global,interrogative,trivia_qa,Who is the patron saint of dancers?,Who is the patron saint of dancers?,1.0,"16 Apr 2026
 
 user
@@ -143,13 +143,13 @@ user
 
 Who is the patron saint of dancers?assistant
 
-The patron saint of dancers is Saint Teresa of Ávila.",91.81891462193897,0.9846349358558655,1.0,,0.0,,,,,,
+The patron saint of dancers is Saint Teresa of Ávila.",91.81891462193896,0.9846349358558656,1.0,,0.0,0.0,0.0,0.0,0.0,0,0
 L3.2-3B,5,global,interrogative,trivia_qa,"Published on Feb 21, 1848, which two authors were responsible for the Communist Manifesto?","Which two authors were responsible for the Communist Manifesto, published on Feb 21, 1848?",0.9577365517616272,"for the Communist Manifesto?assistant
 
 The Communist Manifesto was published on February 21, 1848, by Karl Marx and Friedrich Engels.","on Feb 21, 1848?assistant
 
-The two authors responsible for the Communist Manifesto, published on February 21, 1848, were Karl Marx and Friedrich Engels.",46.488447266623375,0.9357365369796753,0.9609375,,0.09423828125,,,,,,
-L3.2-3B,6,global,interrogative,trivia_qa,The fortified wine drink Sherry is named after what town?,What town is the fortified wine drink Sherry named after?,0.9424936175346375,"user
+The two authors responsible for the Communist Manifesto, published on February 21, 1848, were Karl Marx and Friedrich Engels.",46.488447266623375,0.9357365369796752,0.9609375,,0.09423828125,0.0,0.0,0.0,0.0,0,0
+L3.2-3B,6,global,interrogative,trivia_qa,The fortified wine drink Sherry is named after what town?,What town is the fortified wine drink Sherry named after?,0.9424936175346376,"user
 
 The fortified wine drink Sherry is named after what town?assistant
 
@@ -157,39 +157,39 @@ The fortified wine drink Sherry is named after the town of Jerez in Spain.","use
 
 What town is the fortified wine drink Sherry named after?assistant
 
-The fortified wine drink Sherry is named after the town of Jerez, which is located in the Andalusia region of Spain.",48.56215303108387,0.9532892107963562,0.97265625,,0.048828125,,,,,,
+The fortified wine drink Sherry is named after the town of Jerez, which is located in the Andalusia region of Spain.",48.56215303108387,0.9532892107963562,0.97265625,,0.048828125,0.0,0.0,0.0,0.0,0,0
 L3.2-3B,7,global,interrogative,trivia_qa,The nickname for Dumfries became the name of which Scottish football club?,Which Scottish football club became known by the nickname for Dumfries?,0.9368916749954224,"Dumfries became the name of which Scottish football club?assistant
 
 I am unable to verify the Scottish football club nicknamed Dumfries.","Which Scottish football club became known by the nickname for Dumfries?assistant
 
-I am unable to verify which Scottish football club is nicknamed ""The Dumfries"".",35.24904723355925,0.9321331977844238,0.9072265625,,0.0029296875,,,,,,
+I am unable to verify which Scottish football club is nicknamed ""The Dumfries"".",35.24904723355925,0.9321331977844238,0.9072265625,,0.0029296875,0.0,0.0,0.0,0.0,0,0
 L3.2-3B,8,global,interrogative,trivia_qa,The revolutionary group the Sandinistas were active in which country?,In which country were the revolutionary group the Sandinistas active?,0.9573262929916382,"The revolutionary group the Sandinistas were active in which country?assistant
 
 The Sandinistas were a revolutionary group active in Nicaragua.","user
 
 In which country were the revolutionary group the Sandinistas active?assistant
 
-The Sandinistas were active in Nicaragua.",47.96284833613721,0.9440691471099854,0.9814453125,,0.1181640625,,,,,,
-L3.2-3B,9,global,interrogative,trivia_qa,Who was the conservative candidate beaten by Ken Livingstone in the first two elections for Mayor of London?,Who was the conservative candidate that Ken Livingstone beat in the first two elections for Mayor of London?,0.9766658544540405,"two elections for Mayor of London?assistant
+The Sandinistas were active in Nicaragua.",47.96284833613721,0.9440691471099854,0.9814453125,,0.1181640625,0.0,0.0,0.0,0.0,0,0
+L3.2-3B,9,global,interrogative,trivia_qa,Who was the conservative candidate beaten by Ken Livingstone in the first two elections for Mayor of London?,Who was the conservative candidate that Ken Livingstone beat in the first two elections for Mayor of London?,0.9766658544540404,"two elections for Mayor of London?assistant
 
 I am unable to verify who the conservative candidate was beaten by Ken Livingstone in the first two elections for Mayor of London.","in the first two elections for Mayor of London?assistant
 
-I am unable to verify who Ken Livingstone beat in the first two elections for Mayor of London.",71.43076441533611,0.9615086317062378,0.955078125,,0.1298828125,,,,,,
-L3.2-3B,10,global,interrogative,trivia_qa,"""Who said, To err is human but it feels divine?""""""","Who said, ""To err is human but it feels divine?""",0.9294179081916809,"Who said, To err is human but it feels divine?""""""assistant
+I am unable to verify who Ken Livingstone beat in the first two elections for Mayor of London.",71.43076441533611,0.9615086317062378,0.955078125,,0.1298828125,0.0,0.0,0.0,0.0,0,0
+L3.2-3B,10,global,interrogative,trivia_qa,"""Who said, To err is human but it feels divine?""""""","Who said, ""To err is human but it feels divine?""",0.9294179081916808,"Who said, To err is human but it feels divine?""""""assistant
 
 The quote ""To err is human, but it feels divine"" is attributed to Oscar Wilde.","user
 
 Who said, ""To err is human but it feels divine?""assistant
 
-I couldn't find any information on who said or wrote the exact phrase ""To err is human but it feels divine.""",42.13919805847573,0.9128570556640625,0.96875,,0.04931640625,,,,,,
-L3.2-3B,11,global,interrogative,trivia_qa,"When Mr Benn was looking for an adventure, what type of shop did he visit?",What type of shop did Mr Benn visit when he was looking for an adventure?,0.9532842040061951,"adventure, what type of shop did he visit?assistant
+I couldn't find any information on who said or wrote the exact phrase ""To err is human but it feels divine.""",42.13919805847573,0.9128570556640624,0.96875,,0.04931640625,0.0,0.0,0.0,0.0,0,0
+L3.2-3B,11,global,interrogative,trivia_qa,"When Mr Benn was looking for an adventure, what type of shop did he visit?",What type of shop did Mr Benn visit when he was looking for an adventure?,0.9532842040061952,"adventure, what type of shop did he visit?assistant
 
 I'm not aware of a character named Mr. Benn who visits a specific type of shop for an adventure. However, I believe you may be referring to Mr. Benn, the main character from the popular children's television series ""The Adventures of Mr. Benn"". 
 
 In the show, Mr. Benn visits a shop called ""The Magic Roundabout"" where he can choose which adventure he wants to have.","of shop did Mr Benn visit when he was looking for an adventure?assistant
 
-I'm not aware of a well-known character named Mr. Benn who visits a specific type of shop for an adventure. However, I think you might be referring to Mr. Benn from the popular children's television series ""Mr. Benn"" (1971-1972). In the show, Mr. Benn visits a magical shop called ""The Dressing Room"" where he chooses an outfit that determines his adventure for the day.",52.64417128296133,0.9450737237930298,0.97265625,,0.052734375,,,,,,
-L3.2-3B,12,global,interrogative,trivia_qa,What was made and repaired by a Wainwright?,What is made and repaired by a Wainwright?,0.9819706082344055,"user
+I'm not aware of a well-known character named Mr. Benn who visits a specific type of shop for an adventure. However, I think you might be referring to Mr. Benn from the popular children's television series ""Mr. Benn"" (1971-1972). In the show, Mr. Benn visits a magical shop called ""The Dressing Room"" where he chooses an outfit that determines his adventure for the day.",52.64417128296133,0.9450737237930298,0.97265625,,0.052734375,0.0,0.0,0.0,0.0,0,0
+L3.2-3B,12,global,interrogative,trivia_qa,What was made and repaired by a Wainwright?,What is made and repaired by a Wainwright?,0.9819706082344056,"user
 
 What was made and repaired by a Wainwright?assistant
 
@@ -203,12 +203,12 @@ What is made and repaired by a Wainwright?assistant
 
 A wainwright is a person who makes and repairs wooden frames for wagons, carts, and other vehicles, particularly those used for hauling heavy loads. They are skilled craftsmen who specialize in working with wood to create the structural components of these vehicles, such as the wheels, axles, and frames.
 
-Historically, wainwrights were essential to the development of transportation and trade, as they provided the necessary equipment for farmers, merchants, and other individuals to transport goods over long distances.",28.099123271109274,0.9280153512954712,0.955078125,,0.0751953125,,,,,,
+Historically, wainwrights were essential to the development of transportation and trade, as they provided the necessary equipment for farmers, merchants, and other individuals to transport goods over long distances.",28.09912327110928,0.9280153512954712,0.955078125,,0.0751953125,0.0,0.0,0.0,0.0,0,0
 L3.2-3B,13,global,interrogative,trivia_qa,"The War of the Triple Alliance (1864 - 1870) was fought between the allied countries of Argentina, Brazil, and Uruguay and which other country?","Which other country was involved in the War of the Triple Alliance (1864 - 1870) that was fought between the allied countries of Argentina, Brazil, and Uruguay?",0.9559961557388306,"I couldn't find any information about a War of the Triple Alliance fought between Argentina, Brazil, Uruguay, and another country from 1864-1870. 
 
 However, I did find information about the War of the Triple Alliance, which was fought between Argentina, Brazil, and Uruguay, and Paraguay from 1864 to 1870.","The War of the Triple Alliance (1864-1870) was actually fought between Argentina, Brazil, and Uruguay, but it was not a war between these countries. 
 
-The war was actually fought between Argentina, Brazil, and Paraguay.",29.814115442331758,0.9196356534957886,0.876953125,,0.06640625,,,,,,
+The war was actually fought between Argentina, Brazil, and Paraguay.",29.81411544233176,0.9196356534957886,0.876953125,,0.06640625,0.0,0.0,0.0,0.0,0,0
 L3.2-3B,14,global,interrogative,trivia_qa,What city will host the 2016 Olympics?,Which city will host the 2016 Olympics?,0.9998047947883606,"6
 
 user
@@ -221,35 +221,35 @@ user
 
 Which city will host the 2016 Olympics?assistant
 
-The 2016 Summer Olympics were hosted by Rio de Janeiro, Brazil.",83.90623881636141,0.9722657799720764,0.99755859375,,0.0751953125,,,,,,
+The 2016 Summer Olympics were hosted by Rio de Janeiro, Brazil.",83.90623881636141,0.9722657799720764,0.99755859375,,0.0751953125,0.0,0.0,0.0,0.0,0,0
 L3.2-3B,15,global,interrogative,trivia_qa,Mount Entoto is the highest peak overlooking which African capital city?,"Which African capital city is overlooked by Mount Entoto, the highest peak?",0.9205375909805298,"Mount Entoto is the highest peak overlooking which African capital city?assistant
 
 I am unable to verify which African capital city Mount Entoto overlooks.","Which African capital city is overlooked by Mount Entoto, the highest peak?assistant
 
-Addis Ababa, the capital of Ethiopia, is overlooked by Mount Entoto, the highest peak.",10.168586985453928,0.8886258602142334,0.8662109375,,-0.05517578125,,,,,,
+Addis Ababa, the capital of Ethiopia, is overlooked by Mount Entoto, the highest peak.",10.168586985453928,0.8886258602142334,0.8662109375,,-0.05517578125,0.0,0.0,0.0,0.0,0,0
 L3.2-3B,0,global,imperative,trivia_qa,What general name is given to a rotating star which emits a regular beat of radiation?,Provide the general name given to a rotating star that emits a regular beat of radiation.,0.9498650431632996,"rotating star which emits a regular beat of radiation?assistant
 
 A rotating star that emits a regular beat of radiation is commonly known as a Cepheid variable star.","general name given to a rotating star that emits a regular beat of radiation.assistant
 
-The general name given to a rotating star that emits a regular beat of radiation is a Cepheid variable star.",47.703093154003376,0.9336608648300171,0.97314453125,,-0.024169921875,,,,,,
-L3.2-3B,1,global,imperative,trivia_qa,"""Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""",Identify which Gilbert and Sullivan operetta is subtitled 'The Witches Curse.',0.9427521824836731,"is sub titled 'The Witches Curse""""?""assistant
+The general name given to a rotating star that emits a regular beat of radiation is a Cepheid variable star.",47.703093154003376,0.9336608648300172,0.97314453125,,-0.024169921875,-10.180826609349175,-0.032495200634002686,-0.027233242988586426,-0.01416015625,0,0
+L3.2-3B,1,global,imperative,trivia_qa,"""Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""",Identify which Gilbert and Sullivan operetta is subtitled 'The Witches Curse.',0.9427521824836732,"is sub titled 'The Witches Curse""""?""assistant
 
 I am unable to verify which Gilbert and Sullivan operetta is sub titled 'The Witches Curse'.","which Gilbert and Sullivan operetta is subtitled 'The Witches Curse.'assistant
 
-I am unable to verify which Gilbert and Sullivan operetta is subtitled 'The Witches Curse.'",42.56995349694284,0.9431392550468445,0.98095703125,,0.1640625,,,,,,
+I am unable to verify which Gilbert and Sullivan operetta is subtitled 'The Witches Curse.'",42.56995349694284,0.9431392550468444,0.98095703125,,0.1640625,-9.455615311133009,-0.0001405477523803711,-0.004326343536377064,0.0009765625,0,0
 L3.2-3B,2,global,imperative,trivia_qa,Which English cricketer had figures for bowling 10 for 53 against Australia 1956?,Identify the English cricketer who had figures for bowling 10 for 53 against Australia in 1956.,0.9509112238883972,"53 against Australia 1956?assistant
 
 I am unable to verify the English cricketer who took 10 wickets for 53 against Australia in 1956.","53 against Australia in 1956.assistant
 
-I am unable to verify the English cricketer who had figures of 10 for 53 against Australia in 1956.",60.81013816063651,0.970876932144165,0.986328125,,0.16015625,,,,,,
-L3.2-3B,3,global,imperative,trivia_qa,Wolf Mankowitz wrote the 1953 novel ‘A Kid For Two….’what’?,Write about the 1953 novel ‘A Kid For Two…’ by Wolf Mankowitz.,0.9213613867759705,"For Two….’what’?assistant
+I am unable to verify the English cricketer who had figures of 10 for 53 against Australia in 1956.",60.81013816063651,0.970876932144165,0.986328125,,0.16015625,6.632674738828271,-0.02870720624923717,0.0018358826637268066,0.01025390625,0,0
+L3.2-3B,3,global,imperative,trivia_qa,Wolf Mankowitz wrote the 1953 novel ‘A Kid For Two….’what’?,Write about the 1953 novel ‘A Kid For Two…’ by Wolf Mankowitz.,0.9213613867759703,"For Two….’what’?assistant
 
 I couldn't find any information on a novel called ""A Kid For Two…."" written by Wolf Mankowitz.","A Kid For Two…’ by Wolf Mankowitz.assistant
 
 I couldn't find any information on a novel called 'A Kid For Two' by Wolf Mankowitz. It's possible that the book you are thinking of is actually 'A Kid for Two Farthings' by Wolf Mankowitz, published in 1953.
 
-'A Kid for Two Farthings' is a satirical novel by Wolf Mankowitz, an American-born British writer. The novel is set in a fictional Indian town and explores themes of colonialism, racism, and social change.",14.319820701660452,0.8880769610404968,0.7822265625,,0.2314453125,,,,,,
-L3.2-3B,4,global,imperative,trivia_qa,Who is the patron saint of dancers?,Identify the patron saint of dancers.,0.9306023120880127,"16 Apr 2026
+'A Kid for Two Farthings' is a satirical novel by Wolf Mankowitz, an American-born British writer. The novel is set in a fictional Indian town and explores themes of colonialism, racism, and social change.",14.319820701660452,0.8880769610404968,0.7822265625,,0.2314453125,-19.53481723943272,-0.019699215888977273,-0.04378807544708241,-0.099609375,0,0
+L3.2-3B,4,global,imperative,trivia_qa,Who is the patron saint of dancers?,Identify the patron saint of dancers.,0.9306023120880128,"16 Apr 2026
 
 user
 
@@ -261,12 +261,12 @@ user
 
 Identify the patron saint of dancers.assistant
 
-The patron saint of dancers is Saint Teresa of Ávila.",65.98997557898731,0.9610435366630554,0.99072265625,,0.072265625,,,,,,
+The patron saint of dancers is Saint Teresa of Ávila.",65.98997557898731,0.9610435366630554,0.99072265625,,0.072265625,-25.828939042951646,-0.0693976879119872,-0.02359139919281017,-0.00927734375,0,0
 L3.2-3B,5,global,imperative,trivia_qa,"Published on Feb 21, 1848, which two authors were responsible for the Communist Manifesto?","Identify which two authors were responsible for the Communist Manifesto published on Feb 21, 1848.",0.9510449171066284,"for the Communist Manifesto?assistant
 
 The Communist Manifesto was published on February 21, 1848, by Karl Marx and Friedrich Engels.","published on Feb 21, 1848.assistant
 
-The authors of the Communist Manifesto, published on February 21, 1848, were Karl Marx and Friedrich Engels.",41.94221477808666,0.9377621412277222,0.958984375,,0.025390625,,,,,,
+The authors of the Communist Manifesto, published on February 21, 1848, were Karl Marx and Friedrich Engels.",41.94221477808666,0.9377621412277222,0.958984375,,0.025390625,-4.546232488536717,-0.006691634654998779,0.002025604248046986,-0.001953125,0,0
 L3.2-3B,6,global,imperative,trivia_qa,The fortified wine drink Sherry is named after what town?,Name the town after which the fortified wine drink Sherry is named.,0.910945475101471,"user
 
 The fortified wine drink Sherry is named after what town?assistant
@@ -275,27 +275,27 @@ The fortified wine drink Sherry is named after the town of Jerez in Spain.","use
 
 Name the town after which the fortified wine drink Sherry is named.assistant
 
-The fortified wine drink Sherry is named after the town of Jerez, in the province of Cádiz, Spain.",49.91383405036513,0.9412451982498169,0.9169921875,,0.10107421875,,,,,,
+The fortified wine drink Sherry is named after the town of Jerez, in the province of Cádiz, Spain.",49.91383405036513,0.9412451982498168,0.9169921875,,0.10107421875,1.3516810192812656,-0.031548142433166615,-0.012044012546539418,-0.0556640625,0,0
 L3.2-3B,7,global,imperative,trivia_qa,The nickname for Dumfries became the name of which Scottish football club?,Identify the Scottish football club that the nickname for Dumfries became.,0.9161003828048706,"Dumfries became the name of which Scottish football club?assistant
 
 I am unable to verify the Scottish football club nicknamed Dumfries.","Identify the Scottish football club that the nickname for Dumfries became.assistant
 
-I am unable to verify the Scottish football club that the nickname for Dumfries became.",39.307487936445575,0.9108549952507019,0.90087890625,,-0.052734375,,,,,,
-L3.2-3B,8,global,imperative,trivia_qa,The revolutionary group the Sandinistas were active in which country?,Identify the country where the revolutionary group the Sandinistas were active.,0.9119303226470947,"The revolutionary group the Sandinistas were active in which country?assistant
+I am unable to verify the Scottish football club that the nickname for Dumfries became.",39.307487936445575,0.910854995250702,0.90087890625,,-0.052734375,4.0584407028863225,-0.020791292190551758,-0.021278202533721813,-0.00634765625,0,0
+L3.2-3B,8,global,imperative,trivia_qa,The revolutionary group the Sandinistas were active in which country?,Identify the country where the revolutionary group the Sandinistas were active.,0.9119303226470948,"The revolutionary group the Sandinistas were active in which country?assistant
 
 The Sandinistas were a revolutionary group active in Nicaragua.","Identify the country where the revolutionary group the Sandinistas were active.assistant
 
-The Sandinistas were a revolutionary group active in Nicaragua.",65.28674230372313,0.9461260437965393,0.97119140625,,-0.159912109375,,,,,,
+The Sandinistas were a revolutionary group active in Nicaragua.",65.28674230372313,0.9461260437965392,0.97119140625,,-0.159912109375,17.323893967585917,-0.045395970344543346,0.002056896686553844,-0.01025390625,0,0
 L3.2-3B,9,global,imperative,trivia_qa,Who was the conservative candidate beaten by Ken Livingstone in the first two elections for Mayor of London?,Identify the conservative candidate beaten by Ken Livingstone in the first two elections for Mayor of London.,0.9577937126159668,"two elections for Mayor of London?assistant
 
 I am unable to verify who the conservative candidate was beaten by Ken Livingstone in the first two elections for Mayor of London.","Livingstone in the first two elections for Mayor of London.assistant
 
-I am unable to verify the name of the conservative candidate who was beaten by Ken Livingstone in the first two elections for Mayor of London.",63.41170781138565,0.9538207650184631,0.96630859375,,0.1806640625,,,,,,
-L3.2-3B,10,global,imperative,trivia_qa,"""Who said, To err is human but it feels divine?""""""","""Identify who said, 'To err is human but it feels divine.'""",0.9433804750442505,"Who said, To err is human but it feels divine?""""""assistant
+I am unable to verify the name of the conservative candidate who was beaten by Ken Livingstone in the first two elections for Mayor of London.",63.41170781138565,0.9538207650184632,0.96630859375,,0.1806640625,-8.019056603950467,-0.01887214183807362,-0.007687866687774547,0.01123046875,0,0
+L3.2-3B,10,global,imperative,trivia_qa,"""Who said, To err is human but it feels divine?""""""","""Identify who said, 'To err is human but it feels divine.'""",0.9433804750442504,"Who said, To err is human but it feels divine?""""""assistant
 
 The quote ""To err is human, but it feels divine"" is attributed to Oscar Wilde.","""Identify who said, 'To err is human but it feels divine.'""assistant
 
-I couldn't find any information on who said the phrase ""To err is human but it feels divine.""",34.16963324005141,0.9118580222129822,0.93603515625,,0.04541015625,,,,,,
+I couldn't find any information on who said the phrase ""To err is human but it feels divine.""",34.16963324005141,0.9118580222129822,0.93603515625,,0.04541015625,-7.969564818424317,0.01396256685256958,-0.0009990334510802112,-0.03271484375,0,0
 L3.2-3B,11,global,imperative,trivia_qa,"When Mr Benn was looking for an adventure, what type of shop did he visit?",Visit the type of shop Mr Benn went to when he was looking for an adventure.,0.928215742111206,"adventure, what type of shop did he visit?assistant
 
 I'm not aware of a character named Mr. Benn who visits a specific type of shop for an adventure. However, I believe you may be referring to Mr. Benn, the main character from the popular children's television series ""The Adventures of Mr. Benn"". 
@@ -304,8 +304,8 @@ In the show, Mr. Benn visits a shop called ""The Magic Roundabout"" where he can
 
 I think you're referring to the classic children's book series ""Mr. Benn"" by Roger Hargreaves. In the stories, Mr. Benn visits a magical shop called ""The Drift"" where he buys a hat that transports him to different fantastical worlds.
 
-If I were to visit The Drift, I'd expect to find a quirky and enchanting shop with a wide variety of unusual hats, each with its own unique characteristics and magical properties. The shop would likely be filled with",16.378736266592536,0.8876084089279175,0.77783203125,,0.197265625,,,,,,
-L3.2-3B,12,global,imperative,trivia_qa,What was made and repaired by a Wainwright?,Identify what was made and repaired by a Wainwright.,0.9409225583076477,"user
+If I were to visit The Drift, I'd expect to find a quirky and enchanting shop with a wide variety of unusual hats, each with its own unique characteristics and magical properties. The shop would likely be filled with",16.378736266592536,0.8876084089279175,0.77783203125,,0.197265625,-36.2654350163688,-0.025068461894989125,-0.057465314865112305,-0.19482421875,0,0
+L3.2-3B,12,global,imperative,trivia_qa,What was made and repaired by a Wainwright?,Identify what was made and repaired by a Wainwright.,0.9409225583076476,"user
 
 What was made and repaired by a Wainwright?assistant
 
@@ -319,10 +319,10 @@ A Wainwright was a skilled craftsman who specialized in building, repairing, and
 
 1. Bridges: Wainwrights were responsible for designing, building, and repairing bridges, including wooden bridges, iron bridges, and other types of bridges.
 2. Ships: Wainwrights were also skilled shipbuilders and repairers, constructing and maintaining sailing vessels, including ships, boats, and barges.
-3. Fortifications: Wainwrights were involved",16.406644191368077,0.8986350297927856,0.97802734375,,0.03515625,,,,,,
-L3.2-3B,13,global,imperative,trivia_qa,"The War of the Triple Alliance (1864 - 1870) was fought between the allied countries of Argentina, Brazil, and Uruguay and which other country?","Identify which other country was involved in the War of the Triple Alliance (1864 - 1870) that was fought between the allied countries of Argentina, Brazil, and Uruguay.",0.9498389959335327,"I couldn't find any information about a War of the Triple Alliance fought between Argentina, Brazil, Uruguay, and another country from 1864-1870. 
+3. Fortifications: Wainwrights were involved",16.406644191368077,0.8986350297927856,0.97802734375,,0.03515625,-11.692479079741204,-0.041048049926758035,-0.029380321502685547,0.02294921875,0,0
+L3.2-3B,13,global,imperative,trivia_qa,"The War of the Triple Alliance (1864 - 1870) was fought between the allied countries of Argentina, Brazil, and Uruguay and which other country?","Identify which other country was involved in the War of the Triple Alliance (1864 - 1870) that was fought between the allied countries of Argentina, Brazil, and Uruguay.",0.9498389959335328,"I couldn't find any information about a War of the Triple Alliance fought between Argentina, Brazil, Uruguay, and another country from 1864-1870. 
 
-However, I did find information about the War of the Triple Alliance, which was fought between Argentina, Brazil, and Uruguay, and Paraguay from 1864 to 1870.","The War of the Triple Alliance (1864-1870) was actually fought between the allied countries of Argentina, Brazil, and Uruguay, and Paraguay.",16.49515234681938,0.9169859886169434,0.8798828125,,0.07421875,,,,,,
+However, I did find information about the War of the Triple Alliance, which was fought between Argentina, Brazil, and Uruguay, and Paraguay from 1864 to 1870.","The War of the Triple Alliance (1864-1870) was actually fought between the allied countries of Argentina, Brazil, and Uruguay, and Paraguay.",16.49515234681938,0.9169859886169434,0.8798828125,,0.07421875,-13.31896309551238,-0.0061571598052977405,-0.002649664878845215,0.0029296875,0,0
 L3.2-3B,14,global,imperative,trivia_qa,What city will host the 2016 Olympics?,Determine which city will host the 2016 Olympics.,0.9447999000549316,"6
 
 user
@@ -335,9 +335,9 @@ user
 
 Determine which city will host the 2016 Olympics.assistant
 
-The 2016 Summer Olympics were hosted by Rio de Janeiro, Brazil.",72.67072830982373,0.9542345404624939,0.96435546875,,0.1484375,,,,,,
+The 2016 Summer Olympics were hosted by Rio de Janeiro, Brazil.",72.67072830982373,0.954234540462494,0.96435546875,,0.1484375,-11.235510506537679,-0.055004894733428955,-0.01803123950958241,-0.033203125,0,0
 L3.2-3B,15,global,imperative,trivia_qa,Mount Entoto is the highest peak overlooking which African capital city?,Identify the African capital city that Mount Entoto overlooks as its highest peak.,0.901053249835968,"Mount Entoto is the highest peak overlooking which African capital city?assistant
 
 I am unable to verify which African capital city Mount Entoto overlooks.","the African capital city that Mount Entoto overlooks as its highest peak.assistant
 
-I am unable to verify the African capital city that Mount Entoto overlooks as its highest peak.",28.54879317075056,0.92677903175354,0.92431640625,,0.06640625,,,,,,
+I am unable to verify the African capital city that Mount Entoto overlooks as its highest peak.",28.54879317075056,0.92677903175354,0.92431640625,,0.06640625,18.380206185296633,-0.019484341144561768,0.03815317153930664,0.05810546875,0,0
