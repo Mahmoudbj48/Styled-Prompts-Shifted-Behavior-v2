@@ -20,6 +20,7 @@ Usage
 """
 
 import argparse
+import pickle
 import sys
 from pathlib import Path
 
@@ -281,7 +282,7 @@ SAFETY_RUN_DIRS: dict[str, list[str]] = {
 
 # ── Metric label maps ──────────────────────────────────────────────────────────
 CONTINUOUS_METRICS: dict[str, str] = {
-    "delta_bertscore_response":    "Δ BERTScore (Response)",
+    "delta_bertscore_response":    "Δ BERTScore",
     "delta_bleu":                  "Δ BLEU",
     "delta_activation_similarity": "Δ Cos. Sim (Activation)",
     "delta_log_prob":              "Δ Log-Prob",
@@ -304,6 +305,13 @@ ALL_METRIC_LABELS: dict[str, str] = {
     "delta_mirroring_rate": "Δ Mirroring Rate",
     "silhouette":     "Silhouette Score",
 }
+
+_METRIC_ORDER = list(ALL_METRIC_LABELS)
+
+
+def _metric_sort_key(m: str) -> int:
+    return _METRIC_ORDER.index(m) if m in _METRIC_ORDER else len(_METRIC_ORDER)
+
 
 MODEL_COLORS: dict[str, str] = {
     "G-2B":      "#1f77b4",
@@ -703,8 +711,8 @@ def _axis_style_var(ax, subset_sizes: list[int], ylabel: str = "Std of Group Mea
     ax.set_xscale("log", base=2)
     ax.set_xticks(subset_sizes)
     ax.set_xticklabels([str(n) for n in subset_sizes])
-    ax.set_xlabel("Number of Prompts (N)", fontsize=10)
-    ax.set_ylabel(ylabel, fontsize=10)
+    ax.set_xlabel("Number of Prompts (N)", fontsize=12)
+    ax.set_ylabel(ylabel, fontsize=12)
     ax.set_ylim(bottom=0)
     ax.grid(True, alpha=0.2, linestyle="--")
 
@@ -716,7 +724,7 @@ def plot_variance_per_metric(
     subset_sizes: list[int],
     out_path: Path,
 ):
-    metrics = sorted(all_var_results.keys())
+    metrics = sorted(all_var_results.keys(), key=_metric_sort_key)
 
     ncols = 3
     nrows = max(1, (len(metrics) + ncols - 1) // ncols)
@@ -733,7 +741,7 @@ def plot_variance_per_metric(
             )
             color = MODEL_COLORS.get(model, "gray")
             ax.plot(subset_sizes, vals, label=model, color=color,
-                    marker="o", linewidth=1.6, markersize=3.5)
+                    marker="o", linewidth=2.2, markersize=5.5)
             _label_points(ax, subset_sizes, vals, color=color)
 
         # Best N per panel: max across models
@@ -746,20 +754,20 @@ def plot_variance_per_metric(
         ]
         best_n = max(best_ns) if best_ns else max(subset_sizes)
         chosen_ns.append(best_n)
-        ax.axvline(best_n, color="black", lw=1.0, ls="--", alpha=0.75, zorder=5)
+        ax.axvline(best_n, color="black", lw=1.6, ls="--", alpha=0.75, zorder=5)
         ylims = ax.get_ylim()
         ax.text(best_n * 1.06, ylims[0] + 0.04 * (ylims[1] - ylims[0]),
                 f"N={best_n}", fontsize=6.5, color="black", va="bottom")
 
         _axis_style_var(ax, subset_sizes, ylabel="Condition Spread (Std)")
-        ax.set_title(ALL_METRIC_LABELS.get(metric, metric), fontsize=9)
+        ax.set_title(ALL_METRIC_LABELS.get(metric, metric), fontsize=11)
 
     for j in range(len(metrics), nrows * ncols):
         axes[j // ncols][j % ncols].set_visible(False)
 
     handles, labels = axes[0][0].get_legend_handles_labels()
     fig.legend(handles, labels, loc="center left", bbox_to_anchor=(1.01, 0.5),
-               fontsize=7.5, framealpha=0.85)
+               fontsize=9, framealpha=0.85)
     rec_n = max(chosen_ns) if chosen_ns else max(subset_sizes)
     _add_recommendation_text(fig, [f"Recommended N: {rec_n}"])
     fig.suptitle(
@@ -770,6 +778,7 @@ def plot_variance_per_metric(
     plt.tight_layout()
     out_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_path, dpi=150, bbox_inches="tight")
+    fig.savefig(out_path.with_suffix(".pdf"), bbox_inches="tight")
     plt.close()
     print(f"  Saved → {out_path}")
 
@@ -780,6 +789,93 @@ def plot_variance_per_metric(
     csv_path = out_path.with_suffix(".csv")
     pd.DataFrame(rows).to_csv(csv_path, index=False)
     print(f"  Saved → {csv_path}")
+
+
+_PUB_FONT_AXIS   = 34
+_PUB_FONT_TICK   = 30
+_PUB_FONT_LEGEND = 28
+_PUB_FIG_W       = 12
+_PUB_FIG_H       = 7
+
+
+def plot_variance_per_metric_pub(
+    all_var_results: dict[str, dict[str, dict[int, float]]],
+    subset_sizes: list[int],
+    out_path: Path,
+):
+    """
+    Publication-ready version of plot_variance_per_metric.
+    Y = STD (condition spread).  One panel per metric, one line per model.
+    No main title.  No recommendation slot.  Large fonts matching plot_individual_figures.py.
+    """
+    metrics = sorted(all_var_results.keys(), key=_metric_sort_key)
+
+    ncols = 3
+    nrows = max(1, (len(metrics) + ncols - 1) // ncols)
+    fig, axes = plt.subplots(
+        nrows, ncols,
+        figsize=(_PUB_FIG_W * ncols, _PUB_FIG_H * nrows),
+        squeeze=False,
+    )
+
+    for i, metric in enumerate(metrics):
+        ax = axes[i // ncols][i % ncols]
+        for model in sorted(all_var_results[metric]):
+            vals = np.array(
+                [all_var_results[metric][model].get(n, np.nan) for n in subset_sizes]
+            )
+            color = MODEL_COLORS.get(model, "gray")
+            ax.plot(
+                subset_sizes, vals,
+                label=model, color=color,
+                marker="o", linewidth=4.0, markersize=10,
+            )
+
+        best_ns = [
+            _find_best_n(
+                {n: [all_var_results[metric][m].get(n, np.nan)] for n in subset_sizes},
+                subset_sizes,
+            )
+            for m in all_var_results[metric]
+        ]
+        best_n = max(best_ns) if best_ns else max(subset_sizes)
+        ax.axvline(best_n, color="black", lw=3.5, ls="--", alpha=0.85, zorder=5)
+
+        ax.set_xscale("log", base=2)
+        ax.set_xticks(subset_sizes)
+        ax.set_xticklabels([str(n) for n in subset_sizes], fontsize=_PUB_FONT_TICK)
+        ax.set_xlabel("Number of Prompts (N)", fontsize=_PUB_FONT_AXIS)
+        ax.set_ylabel("STD", fontsize=_PUB_FONT_AXIS)
+        ax.tick_params(axis="y", labelsize=_PUB_FONT_TICK, width=2.5, length=6)
+        ax.tick_params(axis="x", width=2.5, length=6)
+        ax.set_ylim(bottom=0)
+        ax.set_title(ALL_METRIC_LABELS.get(metric, metric), fontsize=_PUB_FONT_AXIS)
+        ax.grid(True, alpha=0.2, linestyle="--")
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+        ax.spines["left"].set_linewidth(2.5)
+        ax.spines["bottom"].set_linewidth(2.5)
+
+    for j in range(len(metrics), nrows * ncols):
+        axes[j // ncols][j % ncols].set_visible(False)
+
+    handles, labels = axes[0][0].get_legend_handles_labels()
+    leg = fig.legend(
+        handles, labels,
+        loc="center left",
+        bbox_to_anchor=(1.01, 0.5),
+        fontsize=_PUB_FONT_LEGEND,
+        framealpha=0.9,
+        handlelength=2.0,
+    )
+    for lh in leg.legend_handles:
+        lh.set_linewidth(4.0)
+    plt.tight_layout(h_pad=3.0)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_path, dpi=150, bbox_inches="tight")
+    fig.savefig(out_path.with_suffix(".pdf"), bbox_inches="tight")
+    plt.close()
+    print(f"  Saved → {out_path}")
 
 
 def _find_best_n(
@@ -820,7 +916,7 @@ def plot_metric_per_model(
     A vertical dashed line marks the 'best N' — the smallest N where every
     model's mean estimate is within `tolerance` of the N=128 reference.
     """
-    metrics = sorted(all_metric_results.keys())
+    metrics = sorted(all_metric_results.keys(), key=_metric_sort_key)
     ncols = 3
     nrows = max(1, (len(metrics) + ncols - 1) // ncols)
     fig, axes = plt.subplots(nrows, ncols,
@@ -845,12 +941,12 @@ def plot_metric_per_model(
             means, lo, hi = _band(model_data[model], subset_sizes)
             color = MODEL_COLORS.get(model, "gray")
             ax.plot(subset_sizes, means, label=model, color=color,
-                    marker="o", linewidth=1.6, markersize=3.5)
+                    marker="o", linewidth=2.2, markersize=5.5)
             ax.fill_between(subset_sizes, lo, hi, alpha=0.09, color=color)
             _label_points(ax, subset_sizes, means, color=color)
 
         # Vertical line at best N
-        ax.axvline(best_n, color="black", lw=1.2, ls="--", alpha=0.75,
+        ax.axvline(best_n, color="black", lw=1.6, ls="--", alpha=0.75,
                    zorder=5, label=f"Best N={best_n}")
         ylims = ax.get_ylim()
         ax.text(best_n * 1.06, ylims[0] + 0.04 * (ylims[1] - ylims[0]),
@@ -859,9 +955,9 @@ def plot_metric_per_model(
         ax.set_xscale("log", base=2)
         ax.set_xticks(subset_sizes)
         ax.set_xticklabels([str(n) for n in subset_sizes])
-        ax.set_xlabel("Number of Prompts (N)", fontsize=9)
-        ax.set_ylabel(ALL_METRIC_LABELS.get(metric, metric), fontsize=9)
-        ax.set_title(ALL_METRIC_LABELS.get(metric, metric), fontsize=9)
+        ax.set_xlabel("Number of Prompts (N)", fontsize=11)
+        ax.set_ylabel(ALL_METRIC_LABELS.get(metric, metric), fontsize=11)
+        ax.set_title(ALL_METRIC_LABELS.get(metric, metric), fontsize=11)
         ax.grid(True, alpha=0.2, linestyle="--")
 
     for j in range(len(metrics), nrows * ncols):
@@ -869,7 +965,7 @@ def plot_metric_per_model(
 
     handles, labels = axes[0][0].get_legend_handles_labels()
     fig.legend(handles, labels, loc="center left", bbox_to_anchor=(1.01, 0.5),
-               fontsize=7.5, framealpha=0.85)
+               fontsize=9, framealpha=0.85)
     rec_n = max(chosen_ns) if chosen_ns else max(subset_sizes)
     _add_recommendation_text(fig, [f"Recommended N: {rec_n}"])
     fig.suptitle(
@@ -880,6 +976,7 @@ def plot_metric_per_model(
     plt.tight_layout()
     out_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_path, dpi=150, bbox_inches="tight")
+    fig.savefig(out_path.with_suffix(".pdf"), bbox_inches="tight")
     plt.close()
     print(f"  Saved → {out_path}")
 
@@ -890,6 +987,80 @@ def plot_metric_per_model(
     csv_path = out_path.with_suffix(".csv")
     pd.DataFrame(rows).to_csv(csv_path, index=False)
     print(f"  Saved → {csv_path}")
+
+
+def plot_metric_per_model_pub(
+    all_metric_results: dict[str, dict[str, dict[int, list[float]]]],
+    subset_sizes: list[int],
+    out_path: Path,
+    tolerance: float = 0.15,
+):
+    """
+    Publication-ready version of plot_metric_per_model.
+    No main title.  No recommendation slot.  Large fonts matching plot_individual_figures.py.
+    """
+    metrics = sorted(all_metric_results.keys(), key=_metric_sort_key)
+    ncols = 3
+    nrows = max(1, (len(metrics) + ncols - 1) // ncols)
+    fig, axes = plt.subplots(
+        nrows, ncols,
+        figsize=(_PUB_FIG_W * ncols, _PUB_FIG_H * nrows),
+        squeeze=False,
+    )
+
+    for i, metric in enumerate(metrics):
+        ax = axes[i // ncols][i % ncols]
+        model_data = all_metric_results[metric]
+
+        best_ns = [
+            _find_best_n(size_dict, subset_sizes, tolerance=tolerance)
+            for size_dict in model_data.values()
+        ]
+        best_n = max(best_ns) if best_ns else max(subset_sizes)
+
+        for model in sorted(model_data):
+            means, lo, hi = _band(model_data[model], subset_sizes)
+            color = MODEL_COLORS.get(model, "gray")
+            ax.plot(subset_sizes, means, label=model, color=color,
+                    marker="o", linewidth=4.0, markersize=10)
+            ax.fill_between(subset_sizes, lo, hi, alpha=0.09, color=color)
+
+        ax.axvline(best_n, color="black", lw=3.5, ls="--", alpha=0.85, zorder=5)
+
+        ax.set_xscale("log", base=2)
+        ax.set_xticks(subset_sizes)
+        ax.set_xticklabels([str(n) for n in subset_sizes], fontsize=_PUB_FONT_TICK)
+        ax.set_xlabel("Number of Prompts (N)", fontsize=_PUB_FONT_AXIS)
+        ax.set_ylabel(ALL_METRIC_LABELS.get(metric, metric), fontsize=_PUB_FONT_AXIS)
+        ax.tick_params(axis="y", labelsize=_PUB_FONT_TICK, width=2.5, length=6)
+        ax.tick_params(axis="x", width=2.5, length=6)
+        ax.set_title(ALL_METRIC_LABELS.get(metric, metric), fontsize=_PUB_FONT_AXIS)
+        ax.grid(True, alpha=0.2, linestyle="--")
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+        ax.spines["left"].set_linewidth(2.5)
+        ax.spines["bottom"].set_linewidth(2.5)
+
+    for j in range(len(metrics), nrows * ncols):
+        axes[j // ncols][j % ncols].set_visible(False)
+
+    handles, labels = axes[0][0].get_legend_handles_labels()
+    leg = fig.legend(
+        handles, labels,
+        loc="center left",
+        bbox_to_anchor=(1.01, 0.5),
+        fontsize=_PUB_FONT_LEGEND,
+        framealpha=0.9,
+        handlelength=2.0,
+    )
+    for lh in leg.legend_handles:
+        lh.set_linewidth(4.0)
+    plt.tight_layout(h_pad=3.0)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_path, dpi=150, bbox_inches="tight")
+    fig.savefig(out_path.with_suffix(".pdf"), bbox_inches="tight")
+    plt.close()
+    print(f"  Saved → {out_path}")
 
 
 # ── Place ablation ────────────────────────────────────────────────────────────
@@ -962,13 +1133,23 @@ def _make_place_panels(
     ylabel: str,
     suptitle: str,
     out_path: Path,
+    pub: bool = False,
 ) -> None:
     PLACE_ORDER = ["global", "prefix", "suffix"]
-    metrics = sorted(all_results.keys())
+    metrics = sorted(all_results.keys(), key=_metric_sort_key)
     ncols = 3
     nrows = max(1, (len(metrics) + ncols - 1) // ncols)
+
+    _fw = _PUB_FIG_W if pub else 4.5
+    _fh = _PUB_FIG_H if pub else 3.2
+    _fa = _PUB_FONT_AXIS if pub else 11
+    _ft = _PUB_FONT_TICK if pub else 10
+    _fl = _PUB_FONT_LEGEND if pub else 9
+    _lw = 4.0 if pub else 2.2
+    _ms = 10 if pub else 5.5
+
     fig, axes = plt.subplots(nrows, ncols,
-                              figsize=(4.5 * ncols, 3.2 * nrows),
+                              figsize=(_fw * ncols, _fh * nrows),
                               squeeze=False)
 
     all_selected_places: set = set()
@@ -991,41 +1172,66 @@ def _make_place_panels(
             vals = [model_data[model].get(p, np.nan) for p in places]
             color = MODEL_COLORS.get(model, "gray")
             ax.plot(x_pos, vals, label=model, color=color,
-                    marker="o", linewidth=1.6, markersize=4)
-            _label_points(ax, x_pos, vals, color=color)
+                    marker="o", linewidth=_lw, markersize=_ms)
+            if not pub:
+                _label_points(ax, x_pos, vals, color=color)
 
         ylims = ax.get_ylim()
         y_range = ylims[1] - ylims[0]
         for idx, sel in enumerate(selected):
             sel_x = places.index(sel)
-            ax.axvline(sel_x, color="black", lw=1.0, ls="--", alpha=0.75, zorder=5)
-            y_label = ylims[0] + (0.04 + 0.10 * (idx % 3)) * y_range
-            ax.text(sel_x + 0.08, y_label, sel,
-                    fontsize=7, color="black", va="bottom")
+            ax.axvline(sel_x, color="black", lw=3.5 if pub else 1.0, ls="--", alpha=0.85 if pub else 0.75, zorder=5)
+            if not pub:
+                y_label = ylims[0] + (0.04 + 0.10 * (idx % 3)) * y_range
+                ax.text(sel_x + 0.08, y_label, sel,
+                        fontsize=7, color="black", va="bottom")
 
         ax.set_xticks(x_pos)
-        ax.set_xticklabels(places, fontsize=8)
-        ax.set_xlabel("Placement", fontsize=9)
+        ax.set_xticklabels(places, fontsize=_ft)
+        ax.set_xlabel("Placement", fontsize=_fa)
         ax.set_ylabel(
             ALL_METRIC_LABELS.get(metric, metric) if ylabel == "metric" else ylabel,
-            fontsize=9,
+            fontsize=_fa,
         )
-        ax.set_title(ALL_METRIC_LABELS.get(metric, metric), fontsize=9)
+        if pub:
+            ax.tick_params(axis="y", labelsize=_ft, width=2.5, length=6)
+            ax.tick_params(axis="x", width=2.5, length=6)
+        else:
+            ax.tick_params(axis="y", labelsize=_ft)
+        ax.set_title(ALL_METRIC_LABELS.get(metric, metric), fontsize=_fa)
         ax.grid(True, alpha=0.2, linestyle="--", axis="y")
+        if pub:
+            ax.spines["top"].set_visible(False)
+            ax.spines["right"].set_visible(False)
+            ax.spines["left"].set_linewidth(2.5)
+            ax.spines["bottom"].set_linewidth(2.5)
 
     for j in range(len(metrics), nrows * ncols):
         axes[j // ncols][j % ncols].set_visible(False)
 
     handles, labels = axes[0][0].get_legend_handles_labels()
-    fig.legend(handles, labels, loc="center left", bbox_to_anchor=(1.01, 0.5),
-               fontsize=7.5, framealpha=0.85)
     rec_places = sorted(all_selected_places,
                         key=lambda p: PLACE_ORDER.index(p) if p in PLACE_ORDER else 99)
-    _add_recommendation_text(fig, [f"Recommended places: {', '.join(rec_places)}"])
-    fig.suptitle(suptitle, fontsize=11, y=1.01)
-    plt.tight_layout()
+    if pub:
+        leg = fig.legend(
+            handles, labels,
+            loc="center left",
+            bbox_to_anchor=(1.01, 0.5),
+            fontsize=_fl,
+            framealpha=0.9,
+            handlelength=2.0,
+        )
+        for lh in leg.legend_handles:
+            lh.set_linewidth(4.0)
+    else:
+        fig.legend(handles, labels, loc="center left", bbox_to_anchor=(1.01, 0.5),
+                   fontsize=_fl, framealpha=0.85)
+        _add_recommendation_text(fig, [f"Recommended places: {', '.join(rec_places)}"])
+        fig.suptitle(suptitle, fontsize=11, y=1.01)
+    plt.tight_layout(h_pad=3.0 if pub else 1.0)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_path, dpi=150, bbox_inches="tight")
+    fig.savefig(out_path.with_suffix(".pdf"), bbox_inches="tight")
     plt.close()
     print(f"  Saved → {out_path}")
 
@@ -1052,6 +1258,11 @@ def plot_place_metric(all_means: dict, out_path: Path) -> None:
     )
 
 
+def plot_place_metric_pub(all_means: dict, out_path: Path) -> None:
+    """Publication-ready version of plot_place_metric."""
+    _make_place_panels(all_means, ylabel="metric", suptitle="", out_path=out_path, pub=True)
+
+
 def plot_place_variance(all_variances: dict, out_path: Path) -> None:
     _make_place_panels(
         all_variances, ylabel="Condition Spread (Std)",
@@ -1061,6 +1272,11 @@ def plot_place_variance(all_variances: dict, out_path: Path) -> None:
         ),
         out_path=out_path,
     )
+
+
+def plot_place_variance_pub(all_variances: dict, out_path: Path) -> None:
+    """Publication-ready version of plot_place_variance."""
+    _make_place_panels(all_variances, ylabel="STD", suptitle="", out_path=out_path, pub=True)
 
 
 # ── Strength ablation ─────────────────────────────────────────────────────────
@@ -1104,12 +1320,22 @@ def _make_strength_panels(
     suptitle: str,
     out_path: Path,
     style: str = "",
+    pub: bool = False,
 ) -> None:
-    metrics = sorted(all_results.keys())
+    metrics = sorted(all_results.keys(), key=_metric_sort_key)
     ncols = 3
     nrows = max(1, (len(metrics) + ncols - 1) // ncols)
+
+    _fw = _PUB_FIG_W if pub else 4.5
+    _fh = _PUB_FIG_H if pub else 3.2
+    _fa = _PUB_FONT_AXIS if pub else 11
+    _ft = _PUB_FONT_TICK if pub else 10
+    _fl = _PUB_FONT_LEGEND if pub else 9
+    _lw = 4.0 if pub else 2.2
+    _ms = 10 if pub else 5.5
+
     fig, axes = plt.subplots(nrows, ncols,
-                              figsize=(4.5 * ncols, 3.2 * nrows),
+                              figsize=(_fw * ncols, _fh * nrows),
                               squeeze=False)
 
     forced_s = [0.0]
@@ -1131,38 +1357,62 @@ def _make_strength_panels(
             vals = [model_data[model].get(s, np.nan) for s in sorted_strengths]
             color = MODEL_COLORS.get(model, "gray")
             ax.plot(sorted_strengths, vals, label=model, color=color,
-                    marker="o", linewidth=1.6, markersize=3.5)
-            _label_points(ax, sorted_strengths, vals, color=color)
+                    marker="o", linewidth=_lw, markersize=_ms)
+            if not pub:
+                _label_points(ax, sorted_strengths, vals, color=color)
 
         ylims = ax.get_ylim()
         y_range = ylims[1] - ylims[0]
         span = sorted_strengths[-1] - sorted_strengths[0] if len(sorted_strengths) > 1 else 1
         for idx, sel in enumerate(selected):
-            ax.axvline(sel, color="black", lw=1.0, ls="--", alpha=0.75, zorder=5)
-            y_label = ylims[0] + (0.04 + 0.10 * (idx % 3)) * y_range
-            ax.text(sel + 0.02 * span, y_label,
-                    f"s={sel:g}", fontsize=7, color="black", va="bottom")
+            ax.axvline(sel, color="black", lw=3.5 if pub else 1.0, ls="--", alpha=0.85 if pub else 0.75, zorder=5)
+            if not pub:
+                y_label = ylims[0] + (0.04 + 0.10 * (idx % 3)) * y_range
+                ax.text(sel + 0.02 * span, y_label,
+                        f"s={sel:g}", fontsize=7, color="black", va="bottom")
 
-        ax.set_xlabel("Strength", fontsize=9)
+        ax.set_xlabel("Strength", fontsize=_fa)
         ax.set_ylabel(
             ALL_METRIC_LABELS.get(metric, metric) if ylabel == "metric" else ylabel,
-            fontsize=9,
+            fontsize=_fa,
         )
-        ax.set_title(ALL_METRIC_LABELS.get(metric, metric), fontsize=9)
+        if pub:
+            ax.tick_params(axis="both", labelsize=_ft, width=2.5, length=6)
+        else:
+            ax.tick_params(axis="both", labelsize=_ft)
+        ax.set_title(ALL_METRIC_LABELS.get(metric, metric), fontsize=_fa)
         ax.grid(True, alpha=0.2, linestyle="--")
+        if pub:
+            ax.spines["top"].set_visible(False)
+            ax.spines["right"].set_visible(False)
+            ax.spines["left"].set_linewidth(2.5)
+            ax.spines["bottom"].set_linewidth(2.5)
 
     for j in range(len(metrics), nrows * ncols):
         axes[j // ncols][j % ncols].set_visible(False)
 
     handles, labels = axes[0][0].get_legend_handles_labels()
-    fig.legend(handles, labels, loc="center left", bbox_to_anchor=(1.01, 0.5),
-               fontsize=7.5, framealpha=0.85)
     rec_strengths = sorted(all_selected_strengths)
-    _add_recommendation_text(fig, [f"Recommended strengths: {', '.join(f'{s:g}' for s in rec_strengths)}"])
-    fig.suptitle(suptitle, fontsize=11, y=1.01)
-    plt.tight_layout()
+    if pub:
+        leg = fig.legend(
+            handles, labels,
+            loc="center left",
+            bbox_to_anchor=(1.01, 0.5),
+            fontsize=_fl,
+            framealpha=0.9,
+            handlelength=2.0,
+        )
+        for lh in leg.legend_handles:
+            lh.set_linewidth(4.0)
+    else:
+        fig.legend(handles, labels, loc="center left", bbox_to_anchor=(1.01, 0.5),
+                   fontsize=_fl, framealpha=0.85)
+        _add_recommendation_text(fig, [f"Recommended strengths: {', '.join(f'{s:g}' for s in rec_strengths)}"])
+        fig.suptitle(suptitle, fontsize=11, y=1.01)
+    plt.tight_layout(h_pad=3.0 if pub else 1.0)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_path, dpi=150, bbox_inches="tight")
+    fig.savefig(out_path.with_suffix(".pdf"), bbox_inches="tight")
     plt.close()
     print(f"  Saved → {out_path}")
 
@@ -1191,6 +1441,13 @@ def plot_strength_metric(all_means: dict, sorted_strengths: list, out_path: Path
     )
 
 
+def plot_strength_metric_pub(all_means: dict, sorted_strengths: list, out_path: Path,
+                              style: str = "") -> None:
+    """Publication-ready version of plot_strength_metric."""
+    _make_strength_panels(all_means, sorted_strengths, ylabel="metric", suptitle="",
+                          out_path=out_path, style=style, pub=True)
+
+
 def plot_strength_variance(all_variances: dict, sorted_strengths: list, out_path: Path,
                            style: str = "") -> None:
     _make_strength_panels(
@@ -1201,6 +1458,13 @@ def plot_strength_variance(all_variances: dict, sorted_strengths: list, out_path
         ),
         out_path=out_path, style=style,
     )
+
+
+def plot_strength_variance_pub(all_variances: dict, sorted_strengths: list, out_path: Path,
+                                style: str = "") -> None:
+    """Publication-ready version of plot_strength_variance."""
+    _make_strength_panels(all_variances, sorted_strengths, ylabel="STD",
+                          suptitle="", out_path=out_path, style=style, pub=True)
 
 
 # ── Main ───────────────────────────────────────────────────────────────────────
@@ -1217,10 +1481,87 @@ def main():
                         help="Only compute these metrics, e.g. --metrics silhouette unsafe_score")
     parser.add_argument("--models",      nargs="*", default=None,
                         help="Only compute for these models, e.g. --models G4-E4B Q3.5-9B")
+    parser.add_argument("--skip_bootstrap", action="store_true",
+                        help="Skip data loading and bootstrap; regenerate all plots from "
+                             "the cached sensitivity_summary.csv and sensitivity_ablation_cache.pkl.")
     args = parser.parse_args()
 
-    out_dir = PROJECT_ROOT / args.out_dir
+    out_dir   = PROJECT_ROOT / args.out_dir
     out_dir.mkdir(parents=True, exist_ok=True)
+    csv_out   = out_dir / "sensitivity_summary.csv"
+    cache_pkl = out_dir / "sensitivity_ablation_cache.pkl"
+
+    # ── Fast path: regenerate plots from existing cache files ─────────────────
+    if args.skip_bootstrap:
+        if not csv_out.exists():
+            print(f"[ERROR] No cached summary at {csv_out}. Run without --skip_bootstrap first.",
+                  file=sys.stderr)
+            sys.exit(1)
+        print(f"  Loading N-ablation results from {csv_out}")
+        df_summary = pd.read_csv(csv_out, dtype={"n": str})
+        df_plot_num = df_summary[df_summary["n"] != "all"].copy()
+        df_plot_num["n"] = pd.to_numeric(df_plot_num["n"])
+        plot_metric_results: dict = {}
+        plot_var_results:    dict = {}
+        for metric, grp_m in df_plot_num.groupby("metric"):
+            plot_metric_results[metric] = {}
+            plot_var_results[metric]    = {}
+            for model, grp_mod in grp_m.groupby("model"):
+                plot_metric_results[metric][model] = {
+                    int(row["n"]): (row["mean_rho"], row["p10_rho"], row["p90_rho"])
+                    for _, row in grp_mod.iterrows()
+                }
+                plot_var_results[metric][model] = {
+                    int(row["n"]): row["bootstrap_std"]
+                    for _, row in grp_mod.iterrows()
+                }
+        all_place_means: dict = {}
+        all_place_vars:  dict = {}
+        strength_results: dict = {}
+        if cache_pkl.exists():
+            print(f"  Loading place/strength cache from {cache_pkl}")
+            with open(cache_pkl, "rb") as _f:
+                _cache = pickle.load(_f)
+            all_place_means  = _cache.get("all_place_means", {})
+            all_place_vars   = _cache.get("all_place_vars", {})
+            strength_results = _cache.get("strength_results", {})
+        else:
+            print(f"  [WARN] No place/strength cache at {cache_pkl} — those plots skipped.")
+        if plot_metric_results:
+            print("\nGenerating N-ablation plots …")
+            plot_metric_per_model(plot_metric_results, SUBSET_SIZES, out_dir / "metric_ablation.png")
+            plot_metric_per_model_pub(plot_metric_results, SUBSET_SIZES, out_dir / "metric_ablation_pub.png")
+            plot_variance_per_metric(plot_var_results, SUBSET_SIZES, out_dir / "variance_per_metric.png")
+            plot_variance_per_metric_pub(plot_var_results, SUBSET_SIZES, out_dir / "variance_per_metric_pub.png")
+        if all_place_means:
+            print("\nGenerating place-ablation plots …")
+            plot_place_metric(all_place_means,    out_dir / "place_ablation_metric.png")
+            plot_place_metric_pub(all_place_means, out_dir / "place_ablation_metric_pub.png")
+            plot_place_variance(all_place_vars,   out_dir / "place_ablation_variance.png")
+            plot_place_variance_pub(all_place_vars, out_dir / "place_ablation_variance_pub.png")
+        if strength_results:
+            print("\nGenerating strength-ablation plots …")
+            for style, (sm, sv, all_s) in strength_results.items():
+                plot_strength_metric(sm,  all_s, out_dir / f"strength_ablation_metric_{style}.png",  style=style)
+                plot_strength_metric_pub(sm,  all_s, out_dir / f"strength_ablation_metric_{style}_pub.png",  style=style)
+                plot_strength_variance(sv, all_s, out_dir / f"strength_ablation_variance_{style}.png", style=style)
+                plot_strength_variance_pub(sv, all_s, out_dir / f"strength_ablation_variance_{style}_pub.png", style=style)
+        df_numeric = df_summary[df_summary["n"] != "all"]
+        if not df_numeric.empty:
+            df_numeric = df_numeric.copy()
+            df_numeric["n"] = pd.to_numeric(df_numeric["n"])
+            print("\n── Best N per metric (smallest N within 15% of N=128 for all models) ──")
+            for metric in sorted(df_numeric["metric"].unique()):
+                sub_m = df_numeric[df_numeric["metric"] == metric]
+                best_ns_per_model = {}
+                for model, sub_mod in sub_m.groupby("model"):
+                    size_dict = {int(row["n"]): [row["mean_rho"]] for _, row in sub_mod.iterrows()}
+                    best_ns_per_model[model] = _find_best_n(size_dict, SUBSET_SIZES)
+                best_n = max(best_ns_per_model.values())
+                models_str = ", ".join(f"{m}={n}" for m, n in sorted(best_ns_per_model.items()))
+                print(f"  {metric:30s}: recommended N={best_n}  ({models_str})")
+        print("\nDone.")
+        return
 
     rng    = np.random.default_rng(args.seed)
     styles = args.styles or list(STYLE_CSV_PATHS.keys())
@@ -1356,6 +1697,15 @@ def main():
             strength_results[style] = (sm_by_metric, sv_by_metric, all_s)
             print(f"  {style}: strengths = {all_s}")
 
+    # ── Save place/strength ablation cache ────────────────────────────────────
+    with open(cache_pkl, "wb") as _f:
+        pickle.dump({
+            "all_place_means":  all_place_means,
+            "all_place_vars":   all_place_vars,
+            "strength_results": strength_results,
+        }, _f)
+    print(f"\nSaved place/strength cache → {cache_pkl}")
+
     # ── Summary CSV ───────────────────────────────────────────────────────────
     rows = []
     for metric, model_vals in all_metric_results.items():
@@ -1419,18 +1769,24 @@ def main():
     if plot_metric_results:
         print("\nGenerating N-ablation plots …")
         plot_metric_per_model(plot_metric_results, SUBSET_SIZES, out_dir / "metric_ablation.png")
+        plot_metric_per_model_pub(plot_metric_results, SUBSET_SIZES, out_dir / "metric_ablation_pub.png")
         plot_variance_per_metric(plot_var_results, SUBSET_SIZES, out_dir / "variance_per_metric.png")
+        plot_variance_per_metric_pub(plot_var_results, SUBSET_SIZES, out_dir / "variance_per_metric_pub.png")
 
     if all_place_means:
         print("\nGenerating place-ablation plots …")
         plot_place_metric(all_place_means,  out_dir / "place_ablation_metric.png")
+        plot_place_metric_pub(all_place_means, out_dir / "place_ablation_metric_pub.png")
         plot_place_variance(all_place_vars, out_dir / "place_ablation_variance.png")
+        plot_place_variance_pub(all_place_vars, out_dir / "place_ablation_variance_pub.png")
 
     if strength_results:
         print("\nGenerating strength-ablation plots …")
         for style, (sm, sv, all_s) in strength_results.items():
             plot_strength_metric(sm,  all_s, out_dir / f"strength_ablation_metric_{style}.png",  style=style)
+            plot_strength_metric_pub(sm,  all_s, out_dir / f"strength_ablation_metric_{style}_pub.png",  style=style)
             plot_strength_variance(sv, all_s, out_dir / f"strength_ablation_variance_{style}.png", style=style)
+            plot_strength_variance_pub(sv, all_s, out_dir / f"strength_ablation_variance_{style}_pub.png", style=style)
 
     # ── Decision table: best N per metric ────────────────────────────────────
     df_numeric = df_summary[df_summary["n"] != "all"]
