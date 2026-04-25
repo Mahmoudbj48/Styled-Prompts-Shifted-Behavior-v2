@@ -220,24 +220,31 @@ def compute_all_metrics(
     """
     metrics = {}
     
+    # Prompt similarity (BERTScore between baseline and styled prompts)
+    if compute_similarity:
+        prompt_bertscore = compute_bertscore(
+            baseline_prompt,
+            styled_prompt,
+            device=device,
+        )
+        metrics["bertscore_prompt"] = float(prompt_bertscore)
+    
     # Confidence (if logprobs available)
     if compute_confidence:
         baseline_conf = compute_confidence_from_logprobs(baseline_logprobs)
         styled_conf = compute_confidence_from_logprobs(styled_logprobs)
         
-        metrics["baseline_mean_confidence"] = baseline_conf["mean_confidence"]
-        metrics["baseline_min_confidence"] = baseline_conf["min_confidence"]
-        metrics["baseline_entropy"] = baseline_conf["entropy"]
-        
-        metrics["styled_mean_confidence"] = styled_conf["mean_confidence"]
-        metrics["styled_min_confidence"] = styled_conf["min_confidence"]
-        metrics["styled_entropy"] = styled_conf["entropy"]
-        
-        # Delta metrics
+        # Compute delta_mean_confidence (styled - baseline)
         if np.isfinite(baseline_conf["mean_confidence"]) and np.isfinite(styled_conf["mean_confidence"]):
             metrics["delta_mean_confidence"] = styled_conf["mean_confidence"] - baseline_conf["mean_confidence"]
         else:
             metrics["delta_mean_confidence"] = np.nan
+        
+        # Compute delta_entropy (styled - baseline) 
+        if np.isfinite(baseline_conf["entropy"]) and np.isfinite(styled_conf["entropy"]):
+            metrics["delta_entropy"] = styled_conf["entropy"] - baseline_conf["entropy"]
+        else:
+            metrics["delta_entropy"] = np.nan
     
     # Response similarity
     if compute_similarity:

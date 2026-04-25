@@ -23,7 +23,6 @@ import json
 import yaml
 from datetime import datetime
 from typing import List, Dict, Any, Optional
-from tqdm import tqdm
 import pandas as pd
 import numpy as np
 
@@ -33,6 +32,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.llm_client import get_llm_client
 from utils.closed_model_metrics import compute_all_metrics
 from utils.data import load_dataset_by_name
+from utils.compute_delta_metrics import add_delta_columns
 from utils.styles import (
     apply_spacing,
     apply_punctuation,
@@ -163,7 +163,7 @@ def run_style_experiment(
     style_name: str,
     items: List[Dict[str, Any]],
     *,
-    max_tokens: int = 512,
+    max_tokens: int = 100,  # Match open-source experiments
     temperature: float = 0.0,
     judge_provider: str = "openai",
     judge_model: str = "gpt-4o-mini",
@@ -206,15 +206,18 @@ def run_style_experiment(
     
     rows = []
     
-    # Progress bar
+    # Progress tracking
     total = len(prompts) * len(strengths)
-    pbar = tqdm(total=total, desc=f"{style_name}", unit="prompt")
+    completed = 0
     
     for strength in strengths:
         # Apply style to all prompts
         styled_prompts = [apply_fn(p, strength, place) for p in prompts]
         
         for i, (prompt_orig, prompt_styled) in enumerate(zip(prompts, styled_prompts)):
+            
+            completed += 1
+            print(f"  [{completed}/{total}] Strength={strength}, Prompt {i+1}/{len(prompts)}", flush=True)
             
             # Generate baseline response
             baseline_resp = client.complete(
@@ -251,33 +254,87 @@ def run_style_experiment(
                 device=device,
             )
             
-            # Build row
+            # Build row with exact column structure matching local experiments
             row = {
+                # Core identifiers
                 "model": model_name,
-                "dataset": dataset_name,
-                "style": style_name,
                 "prompt_id": i,
                 "place": place,
                 "strength": strength,
                 "category": categories[i],
+                
+                # Prompts
                 "prompt_orig": prompt_orig,
-                "prompt_styled": prompt_styled,
-                "response_baseline": baseline_resp["text"],
-                "response_styled": styled_resp["text"],
-                "tokens_baseline": baseline_resp["tokens_used"],
-                "tokens_styled": styled_resp["tokens_used"],
+                "prompt_pert": prompt_styled,  # Note: "pert" not "styled"
+                
+                # Prompt similarity (only BERTScore, BLEU not applicable to prompts)
+                "bertscore_prompt": metrics.get("bertscore_prompt", np.nan),
+                
+                # Responses
+                "response_orig": baseline_resp["text"],
+                "response_pert": styled_resp["text"],  # Note: "pert" not "styled"
+                
+                # Response similarity
+                "bleu": metrics.get("bleu", np.nan),
+                "bertscore_response": metrics.get("bertscore_response", np.nan),
+                
+                # Activation similarity (N/A for closed models - leave empty)
+                "activation_similarity": np.nan,
+                
+                # Confidence metrics (from logprobs when available)
+                "delta_log_prob": metrics.get("delta_mean_confidence", np.nan),  # Map to expected name
+                "entropy_shift": metrics.get("delta_entropy", np.nan),  # Map to expected name
+                
+                # Mirroring
+                "mirroring_rate": metrics.get("mirroring_rate", np.nan),
+                
+                # Delta columns (will be computed by add_delta_columns)
+                "delta_bleu": np.nan,
+                "delta_bertscore_prompt": np.nan,
+                "delta_bertscore_response": np.nan,
+                "delta_activation_similarity": np.nan,
+                "delta_mirroring_rate": np.nan,
             }
             
-            # Add metrics
-            row.update(metrics)
-            
             rows.append(row)
-            pbar.update(1)
-    
-    pbar.close()
     
     # Create DataFrame
     df = pd.DataFrame(rows)
+    
+    # Apply delta column computations (relative to baseline strength)
+    df = add_delta_columns(df, style=style_name)
+    
+    # Ensure exact column order to match local experiments
+    column_order = [
+        "model",
+        "prompt_id",
+        "place",
+        "strength",
+        "category",
+        "prompt_orig",
+        "prompt_pert",
+        "bertscore_prompt",
+        "response_orig",
+        "response_pert",
+        "bleu",
+        "bertscore_response",
+        "activation_similarity",
+        "delta_log_prob",
+        "entropy_shift",
+        "mirroring_rate",
+        "delta_bleu",
+        "delta_bertscore_prompt",
+        "delta_bertscore_response",
+        "delta_activation_similarity",
+        "delta_mirroring_rate",
+    ]
+    
+    # Reorder columns (fill missing with NaN)
+    for col in column_order:
+        if col not in df.columns:
+            df[col] = np.nan
+    
+    df = df[column_order]
     
     return df
 
@@ -322,8 +379,8 @@ def main():
     parser.add_argument(
         "--max_tokens",
         type=int,
-        default=512,
-        help="Max tokens for LLM responses (default: 512)",
+        default=100,
+        help="Max tokens for LLM responses (default: 100, matching open-source experiments)",
     )
     
     parser.add_argument(
