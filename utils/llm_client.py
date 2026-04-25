@@ -206,16 +206,32 @@ class GeminiClient(BaseLLMClient):
                         "temperature": temperature,
                     }
                     
+                    # Try with logprobs first if requested
                     if return_logprobs:
                         cfg_kwargs["response_logprobs"] = True
                     
                     cfg = genai_types.GenerateContentConfig(**cfg_kwargs)
                     
-                    resp = self._client.models.generate_content(
-                        model=self._model_name,
-                        contents=prompt,
-                        config=cfg,
-                    )
+                    try:
+                        resp = self._client.models.generate_content(
+                            model=self._model_name,
+                            contents=prompt,
+                            config=cfg,
+                        )
+                    except Exception as e:
+                        # If logprobs not supported, retry without it
+                        if "Logprobs is not enabled" in str(e) or "logprobs" in str(e).lower():
+                            print(f"    [Gemini] Logprobs not supported for {self._model_name}, retrying without...")
+                            self.supports_logprobs = False  # Update for future calls
+                            cfg_kwargs.pop("response_logprobs", None)
+                            cfg = genai_types.GenerateContentConfig(**cfg_kwargs)
+                            resp = self._client.models.generate_content(
+                                model=self._model_name,
+                                contents=prompt,
+                                config=cfg,
+                            )
+                        else:
+                            raise
                     
                     text = (resp.text or "").strip()
                     tokens = getattr(
@@ -225,7 +241,7 @@ class GeminiClient(BaseLLMClient):
                     )
                     
                     logprobs_list = None
-                    if return_logprobs and hasattr(resp, 'candidates'):
+                    if return_logprobs and self.supports_logprobs and hasattr(resp, 'candidates'):
                         candidate = resp.candidates[0] if resp.candidates else None
                         if candidate and hasattr(candidate, 'logprobs_result'):
                             logprobs_result = candidate.logprobs_result
