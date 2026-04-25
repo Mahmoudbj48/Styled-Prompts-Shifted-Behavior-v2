@@ -1,0 +1,130 @@
+model,prompt_id,place,strength,category,prompt_orig,prompt_pert,bertscore_prompt,response_orig,response_pert,bleu,bertscore_response,activation_similarity,delta_log_prob,entropy_shift,mirroring_rate,delta_bleu,delta_bertscore_prompt,delta_bertscore_response,delta_activation_similarity,delta_mirroring_rate
+claude-sonnet-4-6,0,global,0,alpaca,"Instruction:
+What would be the best type of exercise for a person who has arthritis?","Instruction:
+What would be the best type of exercise for a person who has arthritis?",0.9999999403953552,"# Best Exercise Types for Arthritis
+
+For people with arthritis, **low-impact exercises** are generally recommended, as they reduce stress on the joints while still providing health benefits.
+
+## Top Recommended Exercise Types
+
+### 🏊 Water/Aquatic Exercise
+- **Swimming and water aerobics** are often considered the **best option**
+- Water buoyancy reduces joint stress significantly
+- Provides resistance for muscle strengthening
+- Warm water","# Best Exercise Types for People with Arthritis
+
+For people with arthritis, **low-impact exercises** are generally recommended, as they reduce stress on the joints while still providing health benefits.
+
+## Top Recommended Exercise Types
+
+### 🏊 Water/Aquatic Exercise
+- **Swimming and water aerobics** are often considered the **best overall option**
+- Water buoyancy reduces joint stress significantly
+- Provides resistance for muscle strengthening
+-",92.64655668885841,0.991190493106842,,,,0.0,0.0,0.0,0.0,,0.0
+claude-sonnet-4-6,0,global,1,alpaca,"Instruction:
+What would be the best type of exercise for a person who has arthritis?","Instruction:
+What would be the best type of exercise for a  person who has arthritis?",0.9756530523300171,"# Best Exercise Types for People with Arthritis
+
+For people with arthritis, **low-impact exercises** are generally recommended, as they reduce stress on the joints while still providing health benefits.
+
+## Top Recommended Exercise Types
+
+### 🏊 Water/Aquatic Exercise
+- Swimming, water aerobics, or pool walking
+- Water buoyancy reduces joint stress significantly
+- Often considered the **best overall option** for arthritis
+
+###","# Best Types of Exercise for People with Arthritis
+
+Exercise is actually **highly recommended** for arthritis, as it helps reduce pain, improve flexibility, and strengthen muscles around joints.
+
+## Best Options
+
+### 🏊 Low-Impact Aerobic Exercise
+- **Swimming/Water aerobics** - often considered the #1 choice
+- Warm water reduces joint stress and pain
+- Provides resistance without impact
+
+### 🚶 Walking",16.494135800267074,0.9275040626525879,,,,0.0,-76.15242088859134,-0.024346888065338135,-0.06368643045425415,,0.0
+claude-sonnet-4-6,0,global,5,alpaca,"Instruction:
+What would be the best type of exercise for a person who has arthritis?"," Instruction: 
+What  would be the   best type of exercise  for a person who has arthritis?",0.9455634951591492,"# Best Exercise Types for Arthritis
+
+For people with arthritis, **low-impact exercises** are generally recommended, as they reduce stress on the joints while still providing health benefits.
+
+## Top Recommended Exercise Types
+
+### 🏊 Water/Aquatic Exercise
+- **Swimming and water aerobics** are often considered the **best option**
+- Water buoyancy reduces joint stress significantly
+- Provides resistance for muscle strengthening
+- Reduces pain","# Best Types of Exercise for People with Arthritis
+
+## Top Recommended Exercises
+
+### 🏊 Low-Impact Aerobic Activities
+- **Swimming/Water aerobics** - Often considered the **best option** as water supports body weight and reduces joint stress
+- **Walking** - Gentle and easy to control intensity
+- **Cycling** (stationary or outdoor) - Minimal joint impact
+
+### 💪 Strength/Resistance",23.000495279049538,0.9001994729042053,,,,0.0,-69.64606140980888,-0.054436445236206055,-0.09099102020263672,,0.0
+claude-sonnet-4-6,0,global,20,alpaca,"Instruction:
+What would be the best type of exercise for a person who has arthritis?","   Instruction:   
+  What  would  be the best type   of exercise for   a    person  who has    arthritis?  ",0.8753259181976318,"# Best Exercise Types for Arthritis
+
+For people with arthritis, **low-impact exercises** are generally recommended, as they reduce stress on the joints while still providing health benefits.
+
+## Top Recommended Exercise Types
+
+### 🏊 Water/Aquatic Exercise
+- **Swimming and water aerobics** are often considered the **best option**
+- Water buoyancy reduces joint stress significantly
+- Provides resistance for muscle strengthening
+- Warm water","# Best Types of Exercise for People with Arthritis
+
+Exercise is actually **highly recommended** for arthritis, as it helps reduce pain and improve joint function. Here are the best options:
+
+## 🏊 Low-Impact Aerobic Exercise
+- **Swimming/Water aerobics** - often considered the #1 choice, as water supports body weight and reduces joint stress
+- **Walking** - gentle and accessible
+- **Cycling** (stationary or",13.131323633711368,0.9095436930656433,,,,0.0,-79.51523305514704,-0.12467402219772339,-0.08164680004119873,,0.0
+claude-sonnet-4-6,0,global,50,alpaca,"Instruction:
+What would be the best type of exercise for a person who has arthritis?"," Instruction: 
+    What     would  be      the   best  type  of       exercise   for    a      person      who      has     arthritis? ",0.7906283736228943,"# Best Exercise Types for Arthritis
+
+For people with arthritis, **low-impact exercises** are generally recommended, as they reduce stress on the joints while still providing health benefits.
+
+## Top Recommended Exercise Types
+
+### 🏊 Water/Aquatic Exercise
+- **Best overall option** for arthritis
+- Water buoyancy reduces joint stress
+- Includes swimming, water aerobics, or simply walking in water
+- Provides resistance without impact",#,0.0,0.7964881658554077,,,,0.0,-92.64655668885841,-0.20937156677246094,-0.19470232725143433,,0.0
+claude-sonnet-4-6,0,global,100,alpaca,"Instruction:
+What would be the best type of exercise for a person who has arthritis?","        Instruction:        
+     What     would        be          the      best      type        of        exercise       for      a     person         who      has            arthritis?    ",0.7307408452033997,"# Best Exercise Types for Arthritis
+
+For people with arthritis, **low-impact exercises** are generally recommended, as they reduce stress on the joints while still providing health benefits.
+
+## Top Recommended Exercise Types
+
+### 🏊 Water/Aquatic Exercise
+- **Best overall option** for arthritis
+- Water buoyancy reduces joint stress
+- Includes swimming, water aerobics, or simply walking in a pool
+- Provides resistance without","# Best Exercise Types for Arthritis
+
+For people with arthritis, **low-impact exercises** are generally recommended as they reduce stress on joints while maintaining fitness.
+
+## Top Recommended Options
+
+### 🏊 Water/Aquatic Exercise
+- **Best overall choice** for arthritis
+- Water buoyancy reduces joint stress
+- Includes swimming, water aerobics
+
+### 🚶 Walking
+- Gentle and accessible
+- Maintains",65.45177361959838,0.9473350644111633,,,,0.0,-27.194783069260026,-0.26925909519195557,-0.04385542869567871,,0.0
