@@ -1,0 +1,95 @@
+\begin{table}[ht]
+    \centering
+    \tiny
+    \caption{SGS per model and dataset --- \textit{Mean-abs normalization}: each delta is divided by the global mean absolute delta of that metric across all rows, so a value of 1.0 means the per-prompt instability equals the typical perturbation effect. Lower values indicate greater generalization robustness.}
+    \label{tab:sgs_meanabs}
+    \setlength{\tabcolsep}{3pt}
+    \renewcommand{\arraystretch}{1.1}
+    \begin{tabular}{ll cccccc}
+        \toprule
+        \textbf{Model} & \textbf{Dataset} & \textbf{Activations} & \multicolumn{2}{c}{\textbf{Generation Q.}} & \multicolumn{2}{c}{\textbf{Confidence}} & \textbf{Mirroring} \\
+        \cmidrule(lr){3-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7} \cmidrule(lr){8-8}
+        & & $\Delta$-Cos & $\Delta$-BLEU & $\Delta$-BERT & $\Delta$-Prob & $\Delta$-Ent & $\Delta$-MR \\
+        \midrule
+        % --- L3.2-3B ---
+        \multirow{6}{*}{\textbf{L-3B}}
+        & TruthfulQA \cite{lin2022truthfulqa} & 1.434 & 0.642 & 0.610 & 0.910 & 0.896 & 0.790 \\
+        & Natural Questions \cite{kwiatkowski2019natural} & 0.418 & 0.635 & 0.613 & 0.725 & 0.873 & 1.321 \\
+        & Alpaca \cite{taori2023stanford-alpaca} & 0.457 & 0.593 & 0.635 & 1.098 & 1.532 & 1.909 \\
+        & SimpleQA Verified \cite{haas_simpleqa_2026} & 0.343 & 0.523 & 0.519 & 0.785 & 1.701 & 1.858 \\
+        & TriviaQA \cite{joshi2017triviaqa} & 0.352 & 0.585 & 0.620 & 0.860 & 1.696 & 2.194 \\
+        & HotpotQA \cite{yang2018hotpotqa} & 0.417 & 0.612 & 0.622 & 0.964 & 1.883 & 2.040 \\
+        \rowcolor[gray]{.95} \multicolumn{2}{r}{\textbf{Total SGS}} & \textbf{0.570} & \textbf{0.598} & \textbf{0.603} & \textbf{0.891} & \textbf{1.430} & \textbf{1.685} \\
+        \midrule
+        % --- L3.1-8B ---
+        \multirow{6}{*}{\textbf{L-8B}}
+        & TruthfulQA \cite{lin2022truthfulqa} & 1.365 & 0.604 & 0.532 & 0.679 & 0.889 & 0.761 \\
+        & Natural Questions \cite{kwiatkowski2019natural} & 1.343 & 0.557 & 0.500 & 0.605 & 1.465 & 1.303 \\
+        & Alpaca \cite{taori2023stanford-alpaca} & 0.451 & 0.574 & 0.609 & 1.123 & 1.381 & 1.823 \\
+        & SimpleQA Verified \cite{haas_simpleqa_2026} & 0.314 & 0.513 & 0.492 & 0.585 & 1.277 & 2.009 \\
+        & TriviaQA \cite{joshi2017triviaqa} & 0.371 & 0.566 & 0.611 & 0.655 & 1.738 & 2.208 \\
+        & HotpotQA \cite{yang2018hotpotqa} & 0.387 & 0.589 & 0.603 & 0.734 & 1.970 & 2.038 \\
+        \rowcolor[gray]{.95} \multicolumn{2}{r}{\textbf{Total SGS}} & \textbf{0.705} & \textbf{0.567} & \textbf{0.558} & \textbf{0.730} & \textbf{1.453} & \textbf{1.690} \\
+        \midrule
+        % --- G-2B ---
+        \multirow{6}{*}{\textbf{G-2B}}
+        & TruthfulQA \cite{lin2022truthfulqa} & 0.819 & 0.708 & 0.711 & 1.068 & 1.016 & 0.991 \\
+        & Natural Questions \cite{kwiatkowski2019natural} & 0.327 & 0.686 & 0.708 & 1.124 & 0.785 & 0.956 \\
+        & Alpaca \cite{taori2023stanford-alpaca} & 0.287 & 0.616 & 0.701 & 1.528 & 0.922 & 1.997 \\
+        & SimpleQA Verified \cite{haas_simpleqa_2026} & 0.195 & 0.594 & 0.577 & 1.045 & 0.877 & 1.590 \\
+        & TriviaQA \cite{joshi2017triviaqa} & 0.317 & 0.631 & 0.678 & 1.405 & 1.030 & 1.940 \\
+        & HotpotQA \cite{yang2018hotpotqa} & 0.283 & 0.666 & 0.698 & 1.418 & 1.385 & 1.720 \\
+        \rowcolor[gray]{.95} \multicolumn{2}{r}{\textbf{Total SGS}} & \textbf{0.371} & \textbf{0.650} & \textbf{0.679} & \textbf{1.265} & \textbf{1.003} & \textbf{1.532} \\
+        \midrule
+        % --- G4-E4B ---
+        \multirow{6}{*}{\textbf{G4-E4B}}
+        & TruthfulQA \cite{lin2022truthfulqa} & 0.409 & 0.784 & 1.085 & 1.194 & 1.534 & 1.610 \\
+        & Natural Questions \cite{kwiatkowski2019natural} & 0.461 & 0.765 & 1.122 & 1.172 & 2.115 & 1.317 \\
+        & Alpaca \cite{taori2023stanford-alpaca} & 0.547 & 0.736 & 1.043 & 1.567 & 1.600 & 1.831 \\
+        & SimpleQA Verified \cite{haas_simpleqa_2026} & 0.317 & 0.771 & 1.054 & 0.916 & 1.231 & 1.603 \\
+        & TriviaQA \cite{joshi2017triviaqa} & 0.489 & 0.758 & 1.063 & 1.398 & 1.265 & 1.893 \\
+        & HotpotQA \cite{yang2018hotpotqa} & 0.451 & 0.791 & 1.094 & 1.070 & 1.097 & 1.651 \\
+        \rowcolor[gray]{.95} \multicolumn{2}{r}{\textbf{Total SGS}} & \textbf{0.446} & \textbf{0.768} & \textbf{1.077} & \textbf{1.219} & \textbf{1.474} & \textbf{1.651} \\
+        \midrule
+        % --- G-7B ---
+        \multirow{6}{*}{\textbf{G-7B}}
+        & TruthfulQA \cite{lin2022truthfulqa} & 0.988 & 0.649 & 0.599 & 1.086 & 1.348 & 0.862 \\
+        & Natural Questions \cite{kwiatkowski2019natural} & 0.661 & 0.659 & 0.609 & 1.092 & 1.252 & 0.963 \\
+        & Alpaca \cite{taori2023stanford-alpaca} & 0.056 & 0.597 & 0.682 & 1.572 & 0.760 & 2.152 \\
+        & SimpleQA Verified \cite{haas_simpleqa_2026} & 0.116 & 0.543 & 0.548 & 1.509 & 0.966 & 1.722 \\
+        & TriviaQA \cite{joshi2017triviaqa} & 0.133 & 0.575 & 0.628 & 1.191 & 1.048 & 2.079 \\
+        & HotpotQA \cite{yang2018hotpotqa} & 0.203 & 0.627 & 0.683 & 1.829 & 1.272 & 1.870 \\
+        \rowcolor[gray]{.95} \multicolumn{2}{r}{\textbf{Total SGS}} & \textbf{0.360} & \textbf{0.608} & \textbf{0.625} & \textbf{1.380} & \textbf{1.108} & \textbf{1.608} \\
+        \midrule
+        % --- Q2.5-1.5B ---
+        \multirow{6}{*}{\textbf{Q-1.5B}}
+        & TruthfulQA \cite{lin2022truthfulqa} & 1.341 & 0.715 & 0.689 & 0.601 & 0.584 & 0.842 \\
+        & Natural Questions \cite{kwiatkowski2019natural} & 0.129 & 0.735 & 0.753 & 0.556 & 0.704 & 0.780 \\
+        & Alpaca \cite{taori2023stanford-alpaca} & 0.146 & 0.626 & 0.708 & 0.965 & 1.224 & 2.342 \\
+        & SimpleQA Verified \cite{haas_simpleqa_2026} & 0.065 & 0.689 & 0.723 & 0.674 & 0.925 & 1.805 \\
+        & TriviaQA \cite{joshi2017triviaqa} & 0.109 & 0.657 & 0.700 & 0.750 & 1.120 & 1.999 \\
+        & HotpotQA \cite{yang2018hotpotqa} & 0.085 & 0.734 & 0.775 & 0.888 & 1.061 & 1.838 \\
+        \rowcolor[gray]{.95} \multicolumn{2}{r}{\textbf{Total SGS}} & \textbf{0.313} & \textbf{0.693} & \textbf{0.725} & \textbf{0.739} & \textbf{0.936} & \textbf{1.601} \\
+        \midrule
+        % --- Q2.5-7B ---
+        \multirow{6}{*}{\textbf{Q-7B}}
+        & TruthfulQA \cite{lin2022truthfulqa} & 1.355 & 0.641 & 0.578 & 1.165 & 0.660 & 1.426 \\
+        & Natural Questions \cite{kwiatkowski2019natural} & 1.305 & 0.625 & 0.548 & 1.102 & 0.714 & 1.262 \\
+        & Alpaca \cite{taori2023stanford-alpaca} & 0.279 & 0.578 & 0.649 & 1.775 & 0.722 & 2.500 \\
+        & SimpleQA Verified \cite{haas_simpleqa_2026} & 0.189 & 0.573 & 0.569 & 1.020 & 0.691 & 1.786 \\
+        & TriviaQA \cite{joshi2017triviaqa} & 0.255 & 0.576 & 0.593 & 1.567 & 0.818 & 2.222 \\
+        & HotpotQA \cite{yang2018hotpotqa} & 0.292 & 0.659 & 0.666 & 1.800 & 0.819 & 1.964 \\
+        \rowcolor[gray]{.95} \multicolumn{2}{r}{\textbf{Total SGS}} & \textbf{0.612} & \textbf{0.609} & \textbf{0.601} & \textbf{1.405} & \textbf{0.737} & \textbf{1.860} \\
+        \midrule
+        % --- Q3.5-9B ---
+        \multirow{6}{*}{\textbf{Q3.5-9B}}
+        & TruthfulQA \cite{lin2022truthfulqa} & 0.191 & 0.488 & 0.491 & 1.320 & 0.637 & 2.192 \\
+        & Natural Questions \cite{kwiatkowski2019natural} & 0.196 & 0.511 & 0.506 & 1.737 & 0.728 & 2.398 \\
+        & Alpaca \cite{taori2023stanford-alpaca} & 0.217 & 0.496 & 0.564 & 1.724 & 1.053 & 2.434 \\
+        & SimpleQA Verified \cite{haas_simpleqa_2026} & 0.286 & 0.447 & 0.434 & 1.242 & 0.542 & 2.063 \\
+        & TriviaQA \cite{joshi2017triviaqa} & 0.234 & 0.497 & 0.536 & 1.385 & 0.751 & 2.244 \\
+        & HotpotQA \cite{yang2018hotpotqa} & 0.256 & 0.485 & 0.485 & 1.553 & 0.943 & 1.964 \\
+        \rowcolor[gray]{.95} \multicolumn{2}{r}{\textbf{Total SGS}} & \textbf{0.230} & \textbf{0.487} & \textbf{0.503} & \textbf{1.494} & \textbf{0.776} & \textbf{2.216} \\
+        \bottomrule
+    \end{tabular}
+\end{table}
