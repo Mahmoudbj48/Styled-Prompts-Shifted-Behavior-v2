@@ -1,0 +1,16 @@
+{
+  "model": "gemini-2.5-flash",
+  "dataset": "alpaca",
+  "style": "spacing",
+  "sample_size": 1,
+  "num_prompts": 1,
+  "num_strengths": 6,
+  "total_rows": 6,
+  "timestamp": "2026-04-25T20:14:32.665271",
+  "config": {
+    "max_tokens": 100,
+    "temperature": 0.0,
+    "judge_provider": "openai",
+    "judge_model": "gpt-4o-mini"
+  }
+}

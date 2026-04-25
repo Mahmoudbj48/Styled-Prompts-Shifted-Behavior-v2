@@ -1,0 +1,14 @@
+model,prompt_id,place,strength,category,prompt_orig,prompt_pert,bertscore_prompt,response_orig,response_pert,bleu,bertscore_response,activation_similarity,delta_log_prob,entropy_shift,mirroring_rate,delta_bleu,delta_bertscore_prompt,delta_bertscore_response,delta_activation_similarity,delta_mirroring_rate
+gemini-2.5-flash,0,global,0.25,alpaca,"Instruction:
+What would be the best type of exercise for a person who has arthritis?",Best exercise for arthritis?,0.8783136606216431,For someone,"The ""best",0.0,0.8745333552360535,,,,0.0,0.0,-0.12168627977371216,-0.12546676397323608,,0.0
+gemini-2.5-flash,0,global,0.5,alpaca,"Instruction:
+What would be the best type of exercise for a person who has arthritis?",What exercise suits someone with arthritis best?,0.908149003982544,For someone,"The ""best""",0.0,0.8759551644325256,,,,0.0,0.0,-0.09185093641281128,-0.12404495477676392,,0.0
+gemini-2.5-flash,0,global,1.0,alpaca,"Instruction:
+What would be the best type of exercise for a person who has arthritis?","Instruction:
+What would be the best type of exercise for a person who has arthritis?",0.9999999403953552,For someone,For someone,0.0,1.0000001192092896,,,,0.0,0.0,0.0,0.0,,0.0
+gemini-2.5-flash,0,global,1.5,alpaca,"Instruction:
+What would be the best type of exercise for a person who has arthritis?",Instruction: What kind of exercise would be considered the most suitable and beneficial for a person who is suffering from arthritis?,0.9484776258468628,For someone,For someone suffering from,31.947155212313625,0.8843422532081604,,,,0.0,31.947155212313625,-0.05152231454849243,-0.11565786600112915,,0.0
+gemini-2.5-flash,0,global,2.0,alpaca,"Instruction:
+What would be the best type of exercise for a person who has arthritis?",Instruction: What is the most suitable and effective type of physical exercise or workout that would be highly beneficial and appropriate for a person who is suffering from arthritis and looking to stay active?,0.9309291839599609,For,For someone suffering from,15.97357760615681,0.8324978947639465,,,,0.0,15.97357760615681,-0.06907075643539429,-0.16750222444534302,,0.0
+gemini-2.5-flash,0,global,3.0,alpaca,"Instruction:
+What would be the best type of exercise for a person who has arthritis?","Instruction: What is the most suitable and effective type of physical exercise or workout that would be highly beneficial and appropriate for a person who is suffering from arthritis, considering their condition and the need to minimize joint pain while maintaining overall health?",0.9214311242103577,For someone,For,0.0,0.889668345451355,,,,0.0,0.0,-0.07856881618499756,-0.11033177375793457,,0.0

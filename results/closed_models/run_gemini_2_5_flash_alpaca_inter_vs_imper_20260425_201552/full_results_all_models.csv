@@ -1,0 +1,5 @@
+model,prompt_id,place,strength,category,prompt_orig,prompt_pert,bertscore_prompt,response_orig,response_pert,bleu,bertscore_response,activation_similarity,delta_log_prob,entropy_shift,mirroring_rate,delta_bleu,delta_bertscore_prompt,delta_bertscore_response,delta_activation_similarity,delta_mirroring_rate
+gemini-2.5-flash,0,global,interrogative,alpaca,"Instruction:
+What would be the best type of exercise for a person who has arthritis?",What is the best type of exercise for a person who has arthritis?,0.956887423992157,For someone,For,0.0,0.889668345451355,,,,,0.0,0.0,0.0,,
+gemini-2.5-flash,0,global,imperative,alpaca,"Instruction:
+What would be the best type of exercise for a person who has arthritis?",Determine the best type of exercise for a person who has arthritis.,0.9363998770713806,For,For,0.0,0.9999998807907104,,,,,0.0,-0.020487546920776367,0.11033153533935547,,
