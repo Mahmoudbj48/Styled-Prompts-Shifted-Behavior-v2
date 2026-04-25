@@ -1,0 +1,16 @@
+{
+  "model": "gpt-5.4",
+  "dataset": "alpaca",
+  "style": "length_variation",
+  "sample_size": 1,
+  "num_prompts": 1,
+  "num_strengths": 6,
+  "total_rows": 6,
+  "timestamp": "2026-04-25T19:23:47.467317",
+  "config": {
+    "max_tokens": 512,
+    "temperature": 0.0,
+    "judge_provider": "openai",
+    "judge_model": "gpt-4o-mini"
+  }
+}

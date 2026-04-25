@@ -1,0 +1,395 @@
+model,dataset,style,prompt_id,place,strength,category,prompt_orig,prompt_styled,response_baseline,response_styled,tokens_baseline,tokens_styled,baseline_mean_confidence,baseline_min_confidence,baseline_entropy,styled_mean_confidence,styled_min_confidence,styled_entropy,delta_mean_confidence,bleu,bertscore_response,mirroring_verdict,mirroring_judge_raw,mirroring_rate
+gpt-5.4,alpaca,length_variation,0,global,0.25,alpaca,"Instruction:
+What would be the best type of exercise for a person who has arthritis?",Best exercise for arthritis?,"For most people with arthritis, the **best exercise is low-impact exercise**—activities that improve **strength, flexibility, and endurance** without putting too much stress on the joints.
+
+Good options include:
+
+- **Walking**
+- **Swimming or water aerobics**
+- **Cycling**
+- **Yoga or tai chi**
+- **Gentle stretching**
+- **Light strength training**
+
+A well-rounded plan usually includes:
+
+1. **Range-of-motion exercises** – help reduce stiffness  
+2. **Strengthening exercises** – support and protect joints  
+3. **Aerobic exercise** – improves overall fitness and helps with weight control  
+
+**Water-based exercise** is often especially helpful because it reduces pressure on painful joints.
+
+Important:
+- Start slowly
+- Avoid high-impact activities if they worsen pain
+- Stop if you get sharp or severe pain
+- It’s best to ask a **doctor or physical therapist** for a plan tailored to the type of arthritis and affected joints
+
+If you want, I can also suggest exercises based on **knee, hip, hand, or back arthritis**.","The **best exercise for arthritis** is usually **low-impact aerobic exercise plus strength and flexibility work**.
+
+Good options:
+- **Walking** – simple, joint-friendly for many people
+- **Swimming / water aerobics** – often one of the best because water reduces joint stress
+- **Cycling** – easier on knees and hips than running
+- **Strength training** – helps support joints by strengthening muscles
+- **Stretching / range-of-motion exercises** – reduces stiffness
+- **Yoga or tai chi** – can improve flexibility, balance, and pain
+
+A simple rule:
+- **Move regularly, but don’t overdo high-impact activity**
+- Mild soreness is okay; **sharp or lasting pain means back off**
+
+If arthritis is in:
+- **Knees/hips:** walking, cycling, swimming
+- **Hands:** gentle hand stretches, grip exercises
+- **Back:** core strengthening, stretching, walking
+
+Often, **water exercise** is the easiest and safest starting point for many people.
+
+If you want, I can give you a **10-minute arthritis-friendly exercise routine** based on which joints hurt.",245,242,0.9354054651437439,0.36288129674974157,11.10648628175316,0.9328169994638745,0.4105056442100781,12.352930500899607,-0.0025884656798693673,22.838500643088704,0.8939741253852844,NO,NO,0.0
+gpt-5.4,alpaca,length_variation,0,global,0.5,alpaca,"Instruction:
+What would be the best type of exercise for a person who has arthritis?",What is the best exercise for someone with arthritis?,"For most people with arthritis, the **best exercise is low-impact exercise**—activities that improve **strength, flexibility, and endurance** without putting too much stress on the joints.
+
+Good options include:
+- **Walking**
+- **Swimming or water aerobics**
+- **Cycling**
+- **Yoga or tai chi**
+- **Gentle stretching**
+- **Light strength training**
+
+A well-rounded plan usually includes:
+1. **Range-of-motion exercises** – help reduce stiffness  
+2. **Strengthening exercises** – support and protect joints  
+3. **Aerobic exercise** – improves overall fitness and helps with weight control  
+
+**Water-based exercise** is often especially helpful because it reduces pressure on painful joints.
+
+It’s best to start slowly and choose activities that don’t worsen pain. A doctor or physical therapist can help tailor the safest routine.","The “best” exercise for someone with arthritis is usually **low-impact exercise done consistently**. For many people, the top choices are:
+
+- **Walking**
+- **Swimming or water aerobics**
+- **Cycling**
+- **Gentle strength training**
+- **Range-of-motion/stretching exercises**
+- **Tai chi or yoga**
+
+### Often the best overall choice: **water exercise**
+Many people with arthritis do especially well with **swimming or water aerobics** because the water supports the joints while still letting you build strength and improve mobility.
+
+### A good arthritis exercise plan usually includes 3 parts:
+1. **Flexibility/range-of-motion**  
+   Helps reduce stiffness.
+2. **Strength training**  
+   Stronger muscles support painful joints.
+3. **Aerobic/heart exercise**  
+   Improves energy, weight control, and overall joint health.
+
+### General tips
+- Start slow and build gradually.
+- Warm up first.
+- Mild soreness can be normal, but **sharp or lasting pain** means back off.
+- On flare days, do gentler movement instead of intense exercise.
+- Supportive shoes and proper form matter.
+
+### Important
+The best exercise also depends on:
+- **Which joints are affected**
+- **How severe the arthritis is**
+- **Whether it’s osteoarthritis, rheumatoid arthritis, or another type**
+
+If you want, I can give you:
+- the **best exercises for knee arthritis**
+- the **best exercises for hand arthritis**
+- or a **simple beginner arthritis workout plan**.",196,331,0.940671396109529,0.40775879514311825,8.172872944546587,0.9296496003102894,0.4142701299927559,17.481914832388263,-0.011021795799239564,19.373847020859557,0.8962249159812927,NO,NO,0.0
+gpt-5.4,alpaca,length_variation,0,global,1.0,alpaca,"Instruction:
+What would be the best type of exercise for a person who has arthritis?","Instruction:
+What would be the best type of exercise for a person who has arthritis?","For most people with arthritis, the **best exercise is low-impact exercise**—activities that improve **strength, flexibility, and endurance** without putting too much stress on the joints.
+
+Good options include:
+
+- **Walking**
+- **Swimming or water aerobics**
+- **Cycling**
+- **Yoga or tai chi**
+- **Gentle stretching**
+- **Strength training with light resistance**
+
+A well-rounded arthritis exercise plan usually includes:
+
+1. **Range-of-motion exercises** – help reduce stiffness  
+2. **Strengthening exercises** – support and protect joints  
+3. **Aerobic exercise** – improves energy, heart health, and weight control  
+4. **Balance exercises** – help prevent falls
+
+**Water-based exercise** is often especially helpful because the water supports body weight and reduces joint pressure.
+
+Important tips:
+- Start slowly and increase gradually
+- Avoid high-impact activities if they worsen pain
+- Don’t exercise through severe pain
+- Warm up first and cool down after
+
+It’s best to check with a **doctor or physical therapist** to choose the safest exercises based on the type of arthritis and which joints are affected.","For most people with arthritis, the **best exercise is low-impact exercise**—activities that improve **strength, flexibility, and endurance** without putting too much stress on the joints.
+
+Good options include:
+- **Walking**
+- **Swimming or water aerobics**
+- **Cycling**
+- **Yoga or tai chi**
+- **Gentle stretching**
+- **Light strength training**
+
+A well-rounded plan usually includes:
+1. **Range-of-motion exercises** – help reduce stiffness  
+2. **Strengthening exercises** – support and protect joints  
+3. **Aerobic exercise** – improves overall fitness and helps with weight control  
+
+**Water-based exercise** is often especially helpful because it reduces pressure on painful joints.
+
+It’s best to start slowly and choose activities that don’t worsen pain. A **doctor or physical therapist** can help tailor the safest program based on the type and severity of arthritis.",255,206,0.9459031332393686,0.4040642676022403,10.021271806458724,0.9366913707259981,0.36288129674974157,9.115520696078896,-0.009211762513370525,61.36728707384017,0.9623741507530212,NO,NO,0.0
+gpt-5.4,alpaca,length_variation,0,global,1.5,alpaca,"Instruction:
+What would be the best type of exercise for a person who has arthritis?",Instruction: What kind of exercise would be considered the most suitable and beneficial for a person who is suffering from arthritis?,"For most people with arthritis, the **best exercise is low-impact exercise**—activities that improve **strength, flexibility, and endurance** without putting too much stress on the joints.
+
+Good options include:
+- **Walking**
+- **Swimming or water aerobics**
+- **Cycling**
+- **Yoga or tai chi**
+- **Gentle stretching**
+- **Light strength training**
+
+A well-rounded plan usually includes:
+1. **Range-of-motion exercises** to reduce stiffness  
+2. **Strengthening exercises** to support the joints  
+3. **Aerobic exercise** for overall health  
+4. **Balance exercises** to prevent falls  
+
+**Water-based exercise** is often especially helpful because it supports body weight and reduces joint pressure.
+
+It’s best to start slowly and avoid pushing through sharp pain. A **doctor or physical therapist** can help choose the safest exercises based on the type of arthritis and which joints are affected.","For most people with arthritis, the **best overall exercise is low-impact exercise**, especially:
+
+- **Walking**
+- **Swimming / water aerobics**
+- **Cycling**
+- **Gentle stretching and range-of-motion exercises**
+- **Strength training with light resistance**
+
+### Most suitable choice
+**Water-based exercise** is often considered one of the most beneficial because it:
+- reduces stress on the joints
+- helps improve movement
+- builds strength safely
+- can lessen pain and stiffness
+
+### Why exercise helps arthritis
+The right exercise can:
+- keep joints flexible
+- strengthen muscles around the joints
+- reduce stiffness
+- improve balance and endurance
+- support weight control, which reduces joint strain
+
+### Important note
+People with arthritis should usually **avoid high-impact activities** like jumping or intense running if those worsen symptoms.
+
+The best exercise depends on the **type of arthritis, affected joints, and pain level**, so it’s ideal to check with a **doctor or physical therapist** before starting.",211,234,0.9484936085643123,0.36288129674974157,7.509580321222518,0.9344770254612965,0.27675090116077167,10.108638332303551,-0.01401658310301579,32.50019322337083,0.9046825766563416,NO,NO,0.0
+gpt-5.4,alpaca,length_variation,0,global,2.0,alpaca,"Instruction:
+What would be the best type of exercise for a person who has arthritis?",What do you think would be the most suitable and effective type of physical exercise or workout for a person who is suffering from arthritis and wants to improve their joint health and mobility?,"For most people with arthritis, the **best exercise is low-impact exercise** that improves **strength, flexibility, and endurance** without putting too much stress on the joints.
+
+Good options include:
+- **Walking**
+- **Swimming or water aerobics**
+- **Cycling**
+- **Yoga or tai chi**
+- **Gentle stretching**
+- **Light strength training**
+
+A balanced routine usually works best:
+1. **Range-of-motion exercises** to reduce stiffness  
+2. **Strengthening exercises** to support the joints  
+3. **Aerobic exercise** for overall health  
+
+**Water-based exercise** is often especially helpful because it supports body weight and reduces joint pressure.
+
+Important:
+- Start slowly
+- Avoid high-impact activities if they worsen pain
+- Exercise during times when pain is lower
+- Talk to a doctor or physical therapist for a plan tailored to the person’s type of arthritis
+
+If you want, I can also give a **simple arthritis-friendly weekly exercise plan**.","For most people with arthritis, the **best overall exercise approach is low-impact aerobic exercise plus gentle strength training and mobility work**.
+
+If I had to name the **single most suitable type**, it would usually be:
+
+## **Water-based exercise**
+Examples:
+- swimming
+- water walking
+- aqua aerobics
+
+### Why it’s especially good
+- **Less stress on joints** because water supports body weight
+- **Improves mobility** through gentle movement
+- **Builds strength** from water resistance
+- **Helps pain and stiffness** without high impact
+
+This is often one of the safest and most comfortable options for people with:
+- knee arthritis
+- hip arthritis
+- generalized joint pain
+- excess body weight that makes land exercise harder
+
+---
+
+## Other very effective options
+### **Walking**
+- Simple and accessible
+- Helps joint lubrication and stiffness
+- Good for heart health and weight management  
+Best if done on flat, supportive surfaces with good shoes.
+
+### **Cycling or stationary bike**
+- Low impact
+- Good for knee and hip mobility
+- Easier on joints than running
+
+### **Tai chi or yoga**
+- Improve flexibility, balance, and body control
+- Can reduce stiffness
+- Helpful if done gently and modified for painful joints
+
+### **Strength training**
+This is extremely important, even though people often overlook it.
+- Stronger muscles support and protect joints
+- Can reduce pain over time
+- Helps function and stability  
+Best done with:
+- light weights
+- resistance bands
+- bodyweight exercises
+- guidance from a physical therapist or trainer familiar with arthritis
+
+---
+
+## Best overall exercise plan for arthritis
+The most effective routine is usually a combination of:
+
+1. **Range-of-motion exercises**  
+   Gentle daily joint movements to reduce stiffness
+
+2. **Strength training**  
+   2–3 times per week to support joints
+
+3. **Low-impact cardio**  
+   Such as walking, swimming, or cycling
+
+4. **Balance/flexibility work**  
+   Such as tai chi or gentle stretching
+
+---
+
+## Important tips
+- **Start slow** and increase gradually
+- **Mild soreness is okay**, but sharp or lasting pain is a warning sign
+- **Avoid high-impact exercise during flare-ups**
+- **Warm up first**
+- **Consistency matters more than intensity**
+- If arthritis is severe, a **physical therapist** can tailor exercises safely
+
+---
+
+## Bottom line
+If choosing the **most suitable single option**, **water exercise**",224,553,0.9382082321507101,0.37896112365338613,9.75999573061102,0.9278787243212359,0.3525386879622066,30.014953635238705,-0.010329507829474283,13.561053369409315,0.8764228224754333,YES,YES,1.0
+gpt-5.4,alpaca,length_variation,0,global,3.0,alpaca,"Instruction:
+What would be the best type of exercise for a person who has arthritis?",What do you think would be the most suitable and beneficial type of physical exercise or workout that a person suffering from arthritis should consider engaging in to help manage their condition effectively?,"For most people with arthritis, the **best exercise is low-impact exercise**—activities that improve **joint movement, muscle strength, and endurance** without putting too much stress on the joints.
+
+Good options include:
+- **Walking**
+- **Swimming or water aerobics**
+- **Cycling**
+- **Yoga or tai chi**
+- **Gentle stretching**
+- **Strength training with light resistance**
+
+A well-rounded plan usually includes:
+1. **Range-of-motion exercises** to reduce stiffness  
+2. **Strengthening exercises** to support the joints  
+3. **Aerobic exercise** for overall fitness  
+4. **Balance/flexibility work** to improve stability  
+
+**Water-based exercise** is often especially helpful because it reduces pressure on painful joints.
+
+Important:
+- Start slowly and increase gradually
+- Avoid high-impact activities if they worsen pain
+- Stop if you get sharp or severe pain
+- It’s best to ask a **doctor or physical therapist** for a plan tailored to the type of arthritis and affected joints
+
+If you want, I can also suggest the **best exercises for knee, hip, or hand arthritis specifically**.","For most people with arthritis, the best overall exercise approach is **low-impact, regular movement that combines aerobic exercise, strength training, and flexibility work**.
+
+If I had to name the **single most suitable type** for many people, it would be:
+
+## **Water-based exercise**
+Such as:
+- swimming
+- water walking
+- aqua aerobics
+
+### Why it’s especially helpful
+- **Gentle on joints** because water reduces body weight stress
+- **Improves mobility** without as much pain
+- **Builds strength** through water resistance
+- **Supports cardiovascular health**
+- Often easier during flare-ups than land-based exercise
+
+## Other very beneficial options
+### **Walking**
+- Simple, accessible, and effective
+- Helps reduce stiffness
+- Supports joint function and overall fitness
+
+### **Cycling or stationary biking**
+- Low-impact
+- Good for knee and hip arthritis
+- Helps improve endurance and leg strength
+
+### **Strength training**
+- Light weights, resistance bands, or bodyweight exercises
+- Strengthens muscles around joints, which improves support and reduces strain
+
+### **Flexibility and mind-body exercise**
+- **Yoga**
+- **Tai chi**
+These can help with:
+- balance
+- flexibility
+- stiffness
+- pain management
+
+## Best overall strategy
+The most beneficial plan is usually a mix of:
+1. **Low-impact cardio**  
+2. **Strength training**  
+3. **Stretching/range-of-motion exercises**
+
+## Important cautions
+- Start **slowly** and increase gradually
+- Avoid high-impact exercise if it worsens pain
+- Some discomfort is normal, but **sharp or lasting pain is a sign to stop**
+- During flare-ups, reduce intensity rather than stopping all movement completely if possible
+
+## Best next step
+The ideal exercise depends on:
+- the **type of arthritis** you have
+- which joints are affected
+- your age, fitness level, and pain severity
+
+So the safest and most effective choice is often to ask a:
+- **doctor**
+- **physical therapist**
+- **rheumatologist**
+
+They can help tailor a program to your condition.
+
+If you want, I can also give you a **simple arthritis-friendly weekly workout plan**.",256,497,0.9407345556767531,0.4390227519312127,10.971896801528839,0.9311283007141954,0.3820819914312183,24.87375929259186,-0.009606254962557736,18.283522174447853,0.8848426938056946,YES,YES,1.0
