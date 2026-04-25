@@ -31,11 +31,23 @@ except ImportError:
     _HAS_OPENAI = False
 
 try:
-    import google.generativeai as genai
+    # Try new API first (google-generativeai >= 0.8.0)
+    from google import genai
     from google.genai import types as genai_types
     _HAS_GEMINI = True
+    _GEMINI_NEW_API = True
 except ImportError:
-    _HAS_GEMINI = False
+    try:
+        # Fall back to old API (google-generativeai < 0.8.0)
+        import google.generativeai as genai
+        _HAS_GEMINI = True
+        _GEMINI_NEW_API = False
+        genai_types = None
+    except ImportError:
+        _HAS_GEMINI = False
+        _GEMINI_NEW_API = False
+        genai = None
+        genai_types = None
 
 try:
     import anthropic as _anthropic_module
@@ -154,7 +166,7 @@ class GeminiClient(BaseLLMClient):
 
     def __init__(self, model: str, api_key_env: str = "GEMINI_API_KEY"):
         super().__init__(model)
-        self.supports_logprobs = True
+        self.supports_logprobs = _GEMINI_NEW_API  # Only new API supports logprobs
         
         if not _HAS_GEMINI:
             raise ImportError(
@@ -165,8 +177,15 @@ class GeminiClient(BaseLLMClient):
         if not api_key:
             raise ValueError(f"Environment variable '{api_key_env}' not set.")
         
-        genai.configure(api_key=api_key)
-        self._model = genai.GenerativeModel(model)
+        if _GEMINI_NEW_API:
+            # New API: use Client
+            self._client = genai.Client(api_key=api_key)
+            self._model_name = model
+        else:
+            # Old API: use configure + GenerativeModel
+            genai.configure(api_key=api_key)
+            self._model = genai.GenerativeModel(model)
+            self._model_name = model
 
     def complete(
         self,
@@ -178,38 +197,64 @@ class GeminiClient(BaseLLMClient):
         retry_delay: float = 2.0,
     ) -> Dict[str, Any]:
         
-        cfg_kwargs = {
-            "max_output_tokens": max_tokens,
-            "temperature": temperature,
-        }
-        
-        if return_logprobs:
-            cfg_kwargs["response_logprobs"] = True
-        
-        cfg = genai_types.GenerationConfig(**cfg_kwargs)
-        
         for attempt in range(1, max_retries + 1):
             try:
-                resp = self._model.generate_content(prompt, generation_config=cfg)
+                if _GEMINI_NEW_API:
+                    # New API (google.genai >= 0.8.0)
+                    cfg_kwargs = {
+                        "max_output_tokens": max_tokens,
+                        "temperature": temperature,
+                    }
+                    
+                    if return_logprobs:
+                        cfg_kwargs["response_logprobs"] = True
+                    
+                    cfg = genai_types.GenerateContentConfig(**cfg_kwargs)
+                    
+                    resp = self._client.models.generate_content(
+                        model=self._model_name,
+                        contents=prompt,
+                        config=cfg,
+                    )
+                    
+                    text = (resp.text or "").strip()
+                    tokens = getattr(
+                        getattr(resp, "usage_metadata", None),
+                        "total_token_count", 
+                        0
+                    )
+                    
+                    logprobs_list = None
+                    if return_logprobs and hasattr(resp, 'candidates'):
+                        candidate = resp.candidates[0] if resp.candidates else None
+                        if candidate and hasattr(candidate, 'logprobs_result'):
+                            logprobs_result = candidate.logprobs_result
+                            if logprobs_result and hasattr(logprobs_result, 'top_candidates'):
+                                # New API structure
+                                logprobs_list = []
+                                for position in logprobs_result.top_candidates:
+                                    if position.candidates:
+                                        # Take the first (most likely) candidate's log_probability
+                                        logprobs_list.append(position.candidates[0].log_probability)
                 
-                text = resp.text.strip()
-                tokens = getattr(
-                    getattr(resp, "usage_metadata", None),
-                    "total_token_count", 
-                    0
-                )
-                
-                logprobs_list = None
-                if return_logprobs and hasattr(resp, 'candidates'):
-                    candidate = resp.candidates[0] if resp.candidates else None
-                    if candidate and hasattr(candidate, 'logprobs_result'):
-                        logprobs_result = candidate.logprobs_result
-                        if logprobs_result and hasattr(logprobs_result, 'chosen_candidates'):
-                            logprobs_list = [
-                                token.log_probability
-                                for token in logprobs_result.chosen_candidates
-                                if hasattr(token, 'log_probability')
-                            ]
+                else:
+                    # Old API (google.generativeai < 0.8.0)
+                    cfg = genai.types.GenerationConfig(
+                        max_output_tokens=max_tokens,
+                        temperature=temperature,
+                    )
+                    
+                    resp = self._model.generate_content(prompt, generation_config=cfg)
+                    
+                    text = resp.text.strip() if hasattr(resp, 'text') else str(resp)
+                    tokens = getattr(
+                        getattr(resp, "usage_metadata", None),
+                        "total_token_count", 
+                        0
+                    )
+                    
+                    # Old API doesn't support logprobs
+                    logprobs_list = None
                 
                 return {
                     "text": text,
