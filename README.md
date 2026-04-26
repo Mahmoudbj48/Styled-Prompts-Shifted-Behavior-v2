@@ -1,294 +1,204 @@
-# 🎨 Styled Prompts, Shifted Behavior
+# Rephrase and Fail: Stylistic Prompt Variation Exposes Multi-Axis Generalization Failures in LLMs
 
-This project studies how natural human writing styles in prompts affect the behavior of instruction-tuned large language models (LLMs).
 
-While many robustness studies focus on adversarial inputs or token-level artifacts (e.g., padding tokens), real users rarely write clean benchmark prompts. Instead, they use informal language, politeness markers, typos, or varied formatting. These stylistic variations may change how LLMs process prompts internally and affect their responses.
+## Overview
 
-Our work systematically evaluates **stylistic prompt variation as a structured robustness space**, analyzing how stylistic changes influence LLM behavior across multiple behavioral axes — including internal representations, model confidence, safety behavior, and output characteristics.
+We formalize **stylistic generalization** as the ability of an instruction-tuned LLM to maintain consistent per-instance behavior under semantic-preserving variation in prompt style. We introduce the **Stylistic Generalization Score (SGS)**, which quantifies generalization as the mean per-prompt standard deviation of behavioral deltas across multi-dimensional stylistic variations, evaluated along four behavioral axes: activation geometry, generation quality, confidence and uncertainty, and style mirroring.
 
----
-
-## ✍️ Writing Styles
-
-We analyze three families of realistic prompt styles, each applied with a controlled **strength parameter** (ranging from minimal to strong stylistic modification) and inserted at different **prompt positions**:
-
-| Position | Description |
-|----------|-------------|
-| Global | Full prompt rewrite |
-| Prefix | Style applied to the beginning |
-| Suffix | Style applied to the end |
-
-### 🤝 Politeness / Social Tone
-Greetings, politeness markers ("please", "thank you"), and conversational phrasing.
-
-### 🔡 Surface Noise / Informal Variation
-Casing, spacing irregularities, and punctuation marks.
-
-### 🔄 Structured Rewriting
-Reformulating prompts while preserving semantic intent.
+We evaluate eight open-source and three closed-source instruction-tuned LLMs across six benchmark datasets and three families of semantic-preserving stylistic transformations. **No model achieves uniform stylistic generalization** (p < 0.001 for all SGS values). Generation quality is consistently the most sensitive axis; confidence remains largely stable. Content stability and style mirroring are independent failure modes — the model with the lowest generation sensitivity records the highest mirroring instability, a dissociation that a single aggregate robustness score would conflate.
 
 ---
 
-## 🤖 Models Evaluated
+## Stylistic Transformations
 
-We evaluate six instruction-tuned LLMs spanning three families at two scales each, representing distinct architectural implementations, pretraining corpora, and alignment pipelines. Evaluating both smaller (1.5–3B) and medium-scale (7–8B) variants per family allows us to disentangle robustness effects attributable to architectural lineage from those attributable to scale. All models are evaluated under identical deterministic decoding settings.
+Three families of semantic-preserving prompt styles, each applied with controlled strength levels:
+
+| Family | Styles |
+|--------|--------|
+| **Politeness / Social Tone** | Greetings, politeness markers, conversational phrasing — applied at prefix, suffix, or global position |
+| **Surface Noise** | Spacing irregularities, punctuation variation, letter case randomization |
+| **Structured Rewriting** | Length expansion/compression, interrogative vs. imperative reformulation (LLM-rewritten) |
+
+---
+
+## Models
+
+**Open-source (8):**
 
 | Family | Models |
 |--------|--------|
-| **Llama** | Llama-3.2-3B-Instruct (L-3B), Llama-3.1-8B-Instruct (L-8B) |
-| **Gemma** | Gemma-2B-IT (G-2B), Gemma-7B-IT (G-7B) |
-| **Qwen2.5** | Qwen2.5-1.5B-Instruct (Q-1.5B), Qwen2.5-7B-Instruct (Q-7B) |
+| **Llama** | Llama-3.2-3B-Instruct (L3.2-3B), Llama-3.1-8B-Instruct (L3.1-8B) |
+| **Gemma** | Gemma-2B-IT (G-2B), Gemma-7B-IT (G-7B), Gemma-4-E4B-IT (G4-E4B) |
+| **Qwen** | Qwen2.5-1.5B-Instruct (Q2.5-1.5B), Qwen2.5-7B-Instruct (Q2.5-7B), Qwen3.5-9B (Q3.5-9B) |
+
+**Closed-source (3):** GPT-5.4, Gemini-2.5-Flash, Claude-Sonnet-4.6
 
 ---
 
-## 📊 Behavioral Axes
+## Behavioral Axes
 
-We evaluate stylistic effects across several behavioral dimensions:
+| Axis | Metrics | Description |
+|------|---------|-------------|
+| **Activation Geometry** | Cosine similarity | Representational drift in hidden states under stylistic variation |
+| **Generation Quality** | BLEU, BERTScore-F1 | Lexical and semantic similarity between baseline and styled outputs |
+| **Confidence & Uncertainty** | Δ log-prob, entropy shift | Shift in token-level predictive confidence and output distribution sharpness |
+| **Style Mirroring** | LLM judge, rule-based heuristics, length check | Whether the model's response adapts to match the prompt's style |
 
-| Axis | Metric | Description |
-|------|--------|-------------|
-| **Activation Geometry** | Cosine similarity, Silhouette score | Representational drift in hidden states and safety-relevant separability between harmful/harmless prompts |
-| **Generation Quality** | BLEU, BERTScore-F1 | Lexical overlap and semantic similarity between baseline and styled outputs |
-| **Confidence & Uncertainty** | Δ log-prob, Entropy shift | Shift in token-level predictive confidence and output distribution sharpness |
-| **Style Mirroring** | LLM judge, rule-based heuristics, length check | Whether model responses mirror the prompt's style (Mirroring Rate) |
-| **CoT Reasoning** | Step count, Exact-match accuracy | Effects on reasoning trace length and answer correctness |
-| **Safety & Refusal** | Attack success rate (ASR) | Fraction of harmful prompts producing unsafe completions |
+SGS aggregates per-instance deltas across all four axes into a single generalization score per model.
 
 ---
 
-## 📚 Datasets
+## Datasets
 
-Each dataset is evaluated on a subset of approximately 128 prompts.
+N = 16 prompts sampled per dataset. Open-source models are evaluated on all six; closed-source models on three (TruthfulQA, Alpaca, SimpleQA Verified) due to API cost constraints.
 
-| Dataset | Use |
-|---------|-----|
-| **TruthfulQA** | Activation geometry, generation quality, confidence and uncertainty, style mirroring |
-| **Natural Questions** | Robustness check replicating TruthfulQA axes on naturally occurring user queries (larger models only) |
-| **GSM8K** | CoT reasoning (trace length and answer correctness) |
-| **HarmBench** | Safety and refusal (ASR), activation geometry (harmful prompts) |
-| **Alpaca** | Activation geometry (harmless prompts paired with HarmBench for silhouette separation) |
+| Dataset | Description |
+|---------|-------------|
+| **TruthfulQA** | Factual questions probing susceptibility to misconceptions |
+| **Natural Questions** | Real user search queries with factual answers |
+| **Alpaca** | Diverse general instruction-following prompts |
+| **SimpleQA (Verified)** | Short, unambiguous factual questions with verified answers |
+| **TriviaQA** | Trivia questions with naturally varied phrasing |
+| **HotpotQA** | Multi-hop reasoning questions over multiple supporting facts |
 
 ---
 
-## 🗂️ Repository Structure
+## Repository Structure
 
 ```
 experiments/
-├── politeness.py                    # Politeness / social tone — all behavioral axes
-├── spacing.py                       # Surface noise: spacing irregularities
-├── punctuation.py                   # Surface noise: punctuation variation
-├── letter_case.py                   # Surface noise: letter case variation
-├── length_variation.py              # Structured rewriting: length expansion/compression
-├── interrogative_vs_imperative.py   # Structured rewriting: interrogative vs imperative
-├── safety_full.py                   # Safety analysis (activations + ASR) — all styles
-├── cot_reasoning_generate.py        # Generate chain-of-thought responses under style
-├── compute_cot_analysis.py          # Evaluate CoT step count and answer correctness
-├── compute_correctness.py           # Evaluate TruthfulQA factual correctness (LLM judge)
-└── compute_mirroring.py             # Detect style mirroring in surface noise responses
+├── politeness.py                    # Politeness / social tone experiments
+├── spacing.py                       # Surface noise: spacing
+├── punctuation.py                   # Surface noise: punctuation
+├── letter_case.py                   # Surface noise: letter case
+├── length_variation.py              # Structured rewriting: length
+├── interrogative_vs_imperative.py   # Structured rewriting: interrogative vs. imperative
+├── compute_mirroring.py             # Style mirroring detection for surface noise styles
+└── run_closed_models.py             # Experiments for closed-source models
 
 plots/
-├── plots.py                         # All plotting utilities (line, ridge, radar plots)
-├── radar_plots.py                   # Multi-style radar plot generator (Types A–D)
-├── run_plots.py                     # CLI runner: aggregate plots, radar, prompt check
-├── plot_2d_activation_safety_politeness.py  # 2D activation scatter (politeness safety)
-└── plot_individual_figures.py       # Individual publication-ready figure scripts
+├── plots.py                         # Core plotting utilities
+├── radar_plots.py                   # Multi-style radar plot generator
+├── run_plots.py                     # CLI runner for all plot types
+├── plot_2d_activation_safety_politeness.py
+├── plot_individual_figures.py
+├── run_bertscore_check_paper.py     # BERTScore semantic-preservation check
+└── sensitivity_analysis.py
 
 utils/
-├── data.py                          # Dataset loading utilities
+├── data.py                          # Dataset loading
 ├── models.py                        # Model loading and generation
 ├── styles.py                        # Style transformation functions
-├── metrics.py                       # Metric computation (activations, ASR, BERTScore, …)
-├── llm_style_cache.py               # LLM-rewrite cache for structured styles
+├── metrics.py                       # Metric computation (activations, BERTScore, …)
+├── llm_client.py                    # API client for closed models and LLM-rewriting
+├── llm_style_cache.py               # Cache for LLM-rewritten prompts
+├── compute_delta_metrics.py         # Per-instance behavioral delta computation
+├── compute_sgs_table.py             # SGS table generation (open-source models)
+├── compute_sgs_closed_table.py      # SGS table generation (closed-source models)
+├── closed_model_metrics.py          # Metrics specific to closed-source model outputs
 ├── surface_mirroring_detector.py    # Rule-based style mirroring detection
-├── correctness_judge.py             # LLM-as-judge for TruthfulQA correctness
-├── cot_judge.py                     # LLM-as-judge for CoT step counting and correctness
-└── significance_test.py             # Pairwise and baseline-vs-perturbed significance tests
+└── significance_test.py             # Statistical significance tests
 
-
-config.yaml         # Model paths, style levels, and dataset configuration
+config.yaml                          # Model paths, datasets, style levels, positions
+requirements.txt
 ```
 
 ---
 
-## ⚙️ Configuration
-
-Model paths, style strength levels, and dataset settings are defined in `config.yaml`. Style positions and levels for surface noise and structured rewriting styles are also read from this file and do not need to be passed via CLI.
-
----
-
-## 🚀 Running Experiments
-
-### 📦 Install Dependencies
+## Setup
 
 ```bash
 pip install -r requirements.txt
 ```
 
-All scripts are run from the repository root. Results are saved under `results/` in timestamped subdirectories.
+Several components require API keys, configured in a `.env` file at the project root:
+
+```
+# Required for closed-source model experiments (GPT-5.4)
+OPENAI_API_KEY=...
+
+# Required for closed-source model experiments (Gemini-2.5-Flash)
+GOOGLE_API_KEY=...
+
+# Required for closed-source model experiments (Claude-Sonnet-4.6)
+ANTHROPIC_API_KEY=...
+
+# Required for structured rewriting (length variation, interrogative vs. imperative)
+# and LLM-as-judge style mirroring (politeness)
+# Uses GPT-4o-mini by default — can reuse OPENAI_API_KEY above
+```
+
+All scripts are run from the repository root.
 
 ---
 
-### 🤝 Politeness / Social Tone
+## Running Experiments
+
+### Open-source models
+
+Each experiment script accepts `--models`, `--dataset`, and `--experiments` flags. `--experiments all` runs all four behavioral axes.
 
 ```bash
+# Politeness
 python experiments/politeness.py \
     --models L3.1-8B \
-    --dataset truthful_qa \
+    --dataset alpaca \
     --experiments all \
-    --places prefix suffix global \
-    --batch_size 21
-```
-
-Key flags: `--experiments` accepts any subset of `prompt response activation confidence mirroring` or `all`.
-
----
-
-### 🔡 Surface Noise
-
-Each surface noise style has its own script with the same interface.
-
-```bash
-# Spacing
-python experiments/spacing.py --models L3.1-8B --dataset truthful_qa --experiments all
-
-# Punctuation
-python experiments/punctuation.py --models L3.1-8B --dataset truthful_qa --experiments all
-
-# Letter case (strengths are percentages 0–100)
-python experiments/letter_case.py --models L3.1-8B --dataset truthful_qa --experiments all
-```
-
----
-
-### 🔄 Structured Rewriting
-
-Structured styles rewrite prompts via an LLM API. Set your API key in `.env` before running.
-
-```bash
-# Length variation
-python experiments/length_variation.py \
-    --models L3.1-8B \
-    --experiments all \
-    --rewrite_provider openai \
-    --rewrite_model gpt-4o-mini
-
-# Interrogative vs imperative
-python experiments/interrogative_vs_imperative.py \
-    --models L3.1-8B \
-    --experiments activation confidence \
-    --rewrite_provider openai \
-    --rewrite_model gpt-4o-mini
-```
-
----
-
-### 🧠 Chain-of-Thought Reasoning
-
-```bash
-# Step 1: generate CoT responses under style
-python experiments/cot_reasoning_generate.py \
-    --models L3.1-8B \
-    --dataset gsm8k \
-    --style politeness \
-    --batch_size 32
-
-# Step 2: evaluate CoT step count and answer correctness (LLM judge)
-python experiments/compute_cot_analysis.py \
-    --run_dir results/cot_reasoning/run_<timestamp> \
-    --sample_size 128 \
-    --judge_provider openai \
-    --judge_model gpt-4o-mini
-```
-
----
-
-### 🛡️ Safety Analysis
-
-`safety_full.py` supports politeness, surface noise, and structured styles in a single script.
-
-```bash
-# Stage 1: generate model responses
-python experiments/safety_full.py \
-    --model L3.1-8B \
-    --compute_activations \
-    --compute_asr \
-    --asr_stage stage1 \
-    --style_family politeness \
     --places prefix suffix global
 
-# Stage 2: judge responses with Llama-Guard-3 (reuse stage1 run directory)
-python experiments/safety_full.py \
-    --model L3.1-8B \
-    --compute_asr \
-    --asr_stage stage2 \
-    --run_dir results/safety/run_<timestamp>
+# Surface noise (spacing, punctuation, letter_case share the same interface)
+python experiments/spacing.py --models L3.1-8B --dataset alpaca --experiments all
+python experiments/punctuation.py --models L3.1-8B --dataset alpaca --experiments all
+python experiments/letter_case.py --models L3.1-8B --dataset alpaca --experiments all
 
-# Surface noise example
-python experiments/safety_full.py \
-    --model L3.1-8B \
-    --compute_activations --compute_asr \
-    --asr_stage both \
-    --style_family surface_noise \
-    --style_name spacing
+# Structured rewriting (requires LLM rewriter API)
+python experiments/length_variation.py \
+    --models L3.1-8B \
+    --dataset alpaca \
+    --experiments all \
+    --rewrite_provider openai \
+    --rewrite_model gpt-4o-mini
+
+python experiments/interrogative_vs_imperative.py \
+    --models L3.1-8B \
+    --dataset alpaca \
+    --experiments all \
+    --rewrite_provider openai \
+    --rewrite_model gpt-4o-mini
 ```
 
----
-
-### 🪞 Style Mirroring
-
-Style mirroring for politeness is computed within the main politeness experiment (`--experiments mirroring`). For surface noise styles, use the dedicated post-processing script:
+### Closed-source models
 
 ```bash
-# Detect mirroring in surface noise responses (spacing, punctuation, letter_case)
+python experiments/run_closed_models.py \
+    --dataset alpaca \
+    --experiments all
+```
+
+### Style mirroring (surface noise post-processing)
+
+```bash
 python experiments/compute_mirroring.py \
     --input results/spacing/run_<timestamp>/full_results_all_models.csv \
     --style spacing
 ```
 
-Factual correctness for TruthfulQA responses can be evaluated with:
-
-```bash
-python experiments/compute_correctness.py \
-    --run_dir results/politeness/run_<timestamp> \
-    --sample_size 128 \
-    --judge_provider openai \
-    --judge_model gpt-4o-mini
-```
-
 ---
 
-## 📈 Generating Plots
+## Generating Plots
 
-All plotting is driven by `plots/run_plots.py`, which has three modes.
-
-### 📉 Aggregate Line / Ridge / Radar Plots
+All plotting is driven by `plots/run_plots.py`.
 
 ```bash
+# Aggregate plots for a single style
 python plots/run_plots.py \
     --runs results/politeness/run_<timestamp>/summary.csv \
     --out_dir results/combined_plots/politeness \
     --style_name politeness \
-    --dataset_name TruthfulQA \
+    --dataset_name alpaca \
     --save_pdf
-```
 
-For surface noise styles (e.g. spacing):
-
-```bash
-python plots/run_plots.py \
-    --runs results/spacing/run_<timestamp>/combined_means_by_model_place_strength.csv \
-    --out_dir results/combined_plots/spacing \
-    --style_name spacing \
-    --dataset_name TruthfulQA
-```
-
----
-
-### 🕸️ Multi-Style Radar Plots
-
-Generates Type D radar plots comparing all styles and behavioral axes across models.
-
-```bash
+# Multi-style radar plots (SGS visualization)
 python plots/run_plots.py \
     --multi_style_radar \
     --out_dir results/combined_plots/radar \
@@ -296,22 +206,8 @@ python plots/run_plots.py \
         politeness:results/politeness/run_a/summary.csv \
         spacing:results/spacing/run_x/summary.csv \
         letter_case:results/letter_case/run_y/summary.csv \
-    --asr_data \
-        politeness:results/safety/run_pol/summary.csv \
-    --cot_data \
-        politeness:results/cot/run_pol/ \
     --save_pdf
-```
 
----
-
-### 🔍 BERTScore Prompt-Preservation Check
-
-Evaluates how much each style changes the semantic content of prompts.
-
-```bash
-python plots/run_plots.py \
-    --prompt_check \
-    --out_dir results/prompt_check \
-    --save_pdf
+# BERTScore semantic-preservation check for prompts
+python plots/run_bertscore_check_paper.py
 ```
