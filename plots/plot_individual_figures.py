@@ -1,388 +1,280 @@
 """
-Individual publication-ready plots (no titles, big fonts, consistent sizes):
-  1. BERTScore response – line per place  (politeness, TruthfulQA)
-  2. Mirroring rate     – ridge plot       (politeness, TruthfulQA)
-  3. Unsafe score       – line per place  (letter_case)
-  4. Standalone model-legend image        (one horizontal line)
+SGS heatmap — publication-ready figure.
 
 Usage:
-    python Plots/plot_individual_figures.py
-    python Plots/plot_individual_figures.py --out_dir results/individual_plots
+    python plots/plot_individual_figures.py
+    python plots/plot_individual_figures.py --out_dir results/individual_plots
 """
 
 import argparse
 import os
+import re as _re
 import sys
 
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-import matplotlib.lines as mlines
 import numpy as np
-import pandas as pd
 
 # ── repo root on path ──────────────────────────────────────────────────────
 _THIS = os.path.abspath(__file__)
 _ROOT = os.path.dirname(os.path.dirname(_THIS))
 sys.path.insert(0, _ROOT)
 
-from plots.plots import (
-    apply_neurips_style,
-    build_model_color_map,
-    _kde_1d,
-    _prepare_strength_axis,
-    _filter_df,
-    _sorted_strength_values,
-    _aggregate_for_radar,
-    _radar_setup,
-    _set_rgrid,
-    metric_display_name,
-)
-
-# ── Data paths ─────────────────────────────────────────────────────────────
-POLITENESS_CSVS = [
-    "results/politeness/run_multi_truthful_qa_20260221_112112/plots_metrics/combined_means_by_model_place_strength.csv",
-    "results/politeness/run_multi_truthful_qa_20260221_145354/plots_metrics/combined_means_by_model_place_strength.csv",
-    "results/politeness/run_multi_truthful_qa_20260222_113341/plots_metrics/combined_means_by_model_place_strength.csv",
-    "results/politeness/run_multi_truthful_qa_20260222_132615/plots_metrics/combined_means_by_model_place_strength.csv",
-    "results/politeness/run_multi_truthful_qa_20260222_150512/plots_metrics/combined_means_by_model_place_strength.csv",
-    "results/politeness/run_multi_truthful_qa_20260223_120916/plots_metrics/combined_means_by_model_place_strength.csv",
-]
-
-LENGTH_VARIATION_CSVS = [
-    "results/length_variation/run_multi_truthful_qa_20260304_055338/plots_metrics/combined_means_by_model_place_strength.csv",
-]
-
-COT_LENGTH_VARIATION_CSVS = [
-    "results/cot_responses/run_gsm8k_length_variation_20260304_075450/plots_metrics/combined_means_by_model_place_strength.csv",
-    "results/cot_responses/run_gsm8k_length_variation_20260304_103343/plots_metrics/combined_means_by_model_place_strength.csv",
-    "results/cot_responses/run_gsm8k_length_variation_20260304_113317/plots_metrics/combined_means_by_model_place_strength.csv",
-    "results/cot_responses/run_gsm8k_length_variation_20260304_132144/plots_metrics/combined_means_by_model_place_strength.csv",
-    "results/cot_responses/run_gsm8k_length_variation_20260304_134359/plots_metrics/combined_means_by_model_place_strength.csv",
-    "results/cot_responses/run_gsm8k_length_variation_20260304_154646/plots_metrics/combined_means_by_model_place_strength.csv",
-]
-
-LETTER_CASE_ASR_CSVS = [
-    "results/safety/letter_case/L3.1-8B/combined_means_by_model_place_strength.csv",
-    "results/safety/letter_case/L3.2-3B/combined_means_by_model_place_strength.csv",
-    "results/safety/letter_case/Q2.5-7B/combined_means_by_model_place_strength.csv",
-    "results/safety/letter_case/Q2.5-1.5B/combined_means_by_model_place_strength.csv",
-    "results/safety/letter_case/G-7B/combined_means_by_model_place_strength.csv",
-    "results/safety/letter_case/G-2B/combined_means_by_model_place_strength.csv",
-]
-
-# ── Shared style settings ──────────────────────────────────────────────────
-FIG_W, FIG_H   = 12, 7
-FONT_AXIS      = 34
-FONT_TICK      = 30
-FONT_LEGEND    = 28
+from plots.plots import apply_neurips_style
 
 
 def _apply_style():
-    """Apply the NeurIPS rcParams and override with large-font publication settings."""
+    """Apply the NeurIPS rcParams."""
     apply_neurips_style()
-    plt.rcParams.update({
-        "figure.figsize":        (FIG_W, FIG_H),
-        "font.size":             FONT_AXIS,
-        "axes.labelsize":        FONT_AXIS,
-        "xtick.labelsize":       FONT_TICK,
-        "ytick.labelsize":       FONT_TICK,
-        "legend.fontsize":       FONT_LEGEND,
-        "lines.linewidth":       2.5,
-        "lines.markersize":      8,
-        "axes.spines.top":       False,
-        "axes.spines.right":     False,
-    })
 
 
-def _load_and_aggregate(csv_paths: list, metric: str) -> pd.DataFrame:
-    """Load multiple CSVs, concatenate, aggregate by (model, place, strength)."""
-    dfs = []
-    for p in csv_paths:
-        full = os.path.join(_ROOT, p)
-        if not os.path.exists(full):
-            print(f"[WARN] Missing: {full}")
+def _extract_row_vals(parts: list) -> list:
+    """Extract 6 numeric values from a split LaTeX table row, ignoring text/ding cells."""
+    vals = []
+    for p in parts:
+        p = p.strip()
+        # bare number (dataset rows): starts with digit or is \ding
+        if _re.match(r"^[\d]", p):
+            clean = p.split("$")[0].strip()
+            try:
+                vals.append(float(clean))
+            except ValueError:
+                vals.append(float("nan"))
+        # \textbf{<digit>...} (Total SGS rows)
+        elif _re.search(r"\\textbf\{[\d.]", p):
+            inner = _re.sub(r"\\textbf\{([^}]+)\}", r"\1", p).strip()
+            clean = inner.split("$")[0].strip()
+            try:
+                vals.append(float(clean))
+            except ValueError:
+                vals.append(float("nan"))
+        # \ding{55} = not applicable → NaN
+        elif r"\ding" in p:
+            vals.append(float("nan"))
+    return vals
+
+
+def _parse_sgs_tex(tex_path: str):
+    """
+    Parse sgs_table.tex and return (model_labels, data_matrix) for Total SGS rows only.
+    One row per model (the bold \\rowcolor summary line), 6 metric columns.
+    """
+    with open(tex_path, encoding="utf-8") as f:
+        text = f.read()
+
+    model_labels, rows = [], []
+    current_model = None
+
+    for line in text.split("\n"):
+        s = line.strip()
+        m = _re.match(r"\\multirow\{\d+\}\{\*\}\{\\textbf\{(.+?)\}\}", s)
+        if m:
+            current_model = m.group(1)
             continue
-        df = pd.read_csv(full)
-        dfs.append(df)
-    if not dfs:
-        raise FileNotFoundError("No CSVs found.")
-    combined = pd.concat(dfs, ignore_index=True)
-    combined[metric] = pd.to_numeric(combined[metric], errors="coerce")
-    combined["strength"] = pd.to_numeric(combined["strength"], errors="coerce")
-    agg = (
-        combined.dropna(subset=["model", "place", "strength", metric])
-        .groupby(["model", "place", "strength"], as_index=False)[metric]
-        .mean()
-    )
-    return agg
+        if "\\rowcolor" in s and current_model is not None:
+            parts = s.rstrip("\\").split("&")
+            vals = _extract_row_vals(parts)
+            if len(vals) == 6:
+                model_labels.append(current_model)
+                rows.append(vals)
+
+    return model_labels, (np.array(rows) if rows else np.empty((0, 6)))
 
 
-# ══════════════════════════════════════════════════════════════════════════
-# 1. Line-per-place plot
-# ══════════════════════════════════════════════════════════════════════════
-
-def plot_line_per_place(df: pd.DataFrame, metric: str, out_dir: str, x_start=None, x_ticks=None, ylabel: str = None) -> None:
+def _parse_sgs_tex_full(tex_path: str):
     """
-    One PNG per place. Lines = models. No title. Big fonts.
-    Legend is saved separately (see plot_legend_only).
+    Parse sgs_table.tex and return per-dataset SGS values.
+
+    Returns
+    -------
+    model_labels  : list of model name strings
+    dataset_labels: list of dataset name strings (cleaned of citations)
+    data          : ndarray of shape (n_models, n_datasets, 6)
     """
-    _apply_style()
+    with open(tex_path, encoding="utf-8") as f:
+        text = f.read()
 
-    df[metric] = pd.to_numeric(df[metric], errors="coerce")
-    df = df.dropna(subset=["strength", metric])
-    if df.empty:
-        return
+    # strip \cite{...} for clean dataset labels
+    def _clean_ds(s):
+        return _re.sub(r"\\cite\{[^}]+\}", "", s).strip()
 
-    df, strengths_sorted, x_values, is_categorical = _prepare_strength_axis(df)
+    model_labels = []
+    dataset_labels_ordered = []
+    # records: list of (model, dataset, [6 vals])
+    records = []
+    current_model = None
 
-    models_u = sorted(df["model"].unique().tolist())
-    places_u = sorted(df["place"].unique().tolist())
-    model_colors = build_model_color_map(models_u)
-
-    os.makedirs(out_dir, exist_ok=True)
-
-    for place in places_u:
-        fig, ax = plt.subplots(figsize=(FIG_W, FIG_H))
-
-        for model in models_u:
-            sub = (
-                df[(df["model"] == model) & (df["place"] == place)]
-                .copy()
-                .drop_duplicates(subset=["strength"])
-                .set_index("strength")
-                .reindex(strengths_sorted)
-                .reset_index()
-            )
-            if sub.dropna(subset=[metric]).empty:
+    for line in text.split("\n"):
+        s = line.strip()
+        # model heading
+        m = _re.match(r"\\multirow\{\d+\}\{\*\}\{\\textbf\{(.+?)\}\}", s)
+        if m:
+            current_model = m.group(1)
+            if current_model not in model_labels:
+                model_labels.append(current_model)
+            continue
+        # skip Total SGS row
+        if "\\rowcolor" in s:
+            continue
+        # dataset row: starts with & <dataset label> & ...
+        if s.startswith("&") and current_model is not None:
+            parts = s.rstrip("\\").split("&")
+            if len(parts) < 3:
                 continue
-            ax.plot(
-                x_values,
-                sub[metric].values,
-                marker="o",
-                markersize=8,
-                linewidth=2.5,
-                color=model_colors[model],
-                linestyle="-",
-                alpha=0.95,
-                label=str(model),
-            )
+            ds_raw = parts[1].strip()
+            ds = _clean_ds(ds_raw)
+            if not ds:
+                continue
+            vals = _extract_row_vals(parts[2:])
+            if len(vals) == 6:
+                if ds not in dataset_labels_ordered:
+                    dataset_labels_ordered.append(ds)
+                records.append((current_model, ds, vals))
 
-        ax.set_xlabel("Style Strength", fontsize=FONT_AXIS)
-        ax.set_ylabel(ylabel if ylabel is not None else metric_display_name(metric), fontsize=FONT_AXIS)
+    n_models = len(model_labels)
+    n_ds = len(dataset_labels_ordered)
+    data = np.full((n_models, n_ds, 6), np.nan)
+    for model, ds, vals in records:
+        mi = model_labels.index(model)
+        di = dataset_labels_ordered.index(ds)
+        data[mi, di, :] = vals
 
-        if x_ticks is not None:
-            ax.set_xticks(x_ticks)
-            ax.set_xticklabels([str(t) for t in x_ticks], fontsize=FONT_TICK)
-        elif not is_categorical:
-            x0, x1 = ax.get_xlim()
-            step = max(1, int(round((x1 - x0) / 5)))
-            start = (int(round(x0)) // step) * step
-            ticks = np.arange(start, int(round(x1)) + step, step, dtype=int)
-            ax.set_xticks(ticks)
-            ax.set_xticklabels([str(t) for t in ticks], fontsize=FONT_TICK)
-        else:
-            ax.set_xticks(x_values)
-            ax.set_xticklabels([str(s) for s in strengths_sorted], fontsize=FONT_TICK)
-
-        ax.tick_params(axis="y", labelsize=FONT_TICK)
-        ax.set_title("")
-        if x_start is not None:
-            ax.set_xlim(left=x_start)
-
-        ymin = float(df[df["place"] == place][metric].min())
-        ymax = float(df[df["place"] == place][metric].max())
-        if np.isfinite(ymin) and np.isfinite(ymax) and ymin != ymax:
-            pad = 0.12 * (ymax - ymin)
-            ax.set_ylim(ymin - pad, ymax + pad)
-        ax.yaxis.set_major_locator(plt.MaxNLocator(nbins=10))
-        ax.tick_params(axis="y", labelsize=FONT_TICK)
-
-        # No legend on individual plots — saved separately
-        ax.get_legend() and ax.get_legend().remove()
-
-        plt.subplots_adjust(left=0.12, right=0.97, top=0.97, bottom=0.13)
-        fname = f"{metric}_line_per_place__{place}.png"
-        out_path = os.path.join(out_dir, fname)
-        plt.savefig(out_path, dpi=300, bbox_inches="tight")
-        plt.savefig(out_path.replace(".png", ".pdf"), bbox_inches="tight")
-        plt.close()
-        print(f"  [SAVE] {out_path}")
+    return model_labels, dataset_labels_ordered, data
 
 
-# ══════════════════════════════════════════════════════════════════════════
-# 2. Ridge plot
-# ══════════════════════════════════════════════════════════════════════════
+def plot_sgs_heatmap(tex_path: str, out_path: str) -> None:
+    """
+    Plot a Total SGS heatmap (Oranges colormap) from sgs_table.tex.
 
-def plot_ridge(df: pd.DataFrame, metric: str, out_path: str) -> None:
-    """Ridge plot – one ridge per strength value. No title. Big fonts."""
+    Rows = models (one row per model, Total SGS only), columns = 6 metrics + Mean.
+    No per-dataset rows. No colored separators between models.
+    """
     _apply_style()
 
-    df[metric] = pd.to_numeric(df[metric], errors="coerce")
-    df = df.dropna(subset=["strength", metric])
-    if df.empty:
+    model_labels, data = _parse_sgs_tex(tex_path)
+    if data.size == 0:
+        print(f"  [SKIP] No data parsed from {tex_path}")
         return
 
-    strengths = _sorted_strength_values(df["strength"].dropna().unique().tolist())
-    if not strengths:
-        return
+    METRIC_LABELS = ["Δ-Cos", "Δ-BLEU", "Δ-BERT", "Δ-Prob", "Δ-Ent", "Δ-MR"]
 
-    x_min = float(np.nanmin(df[metric].to_numpy(dtype=float)))
-    x_max = float(np.nanmax(df[metric].to_numpy(dtype=float)))
-    if x_min == x_max:
-        x_min -= 0.5
-        x_max += 0.5
-    x_grid = np.linspace(x_min, x_max, 300)
+    # Append mean column
+    row_means = np.nanmean(data, axis=1, keepdims=True)
+    data_plot = np.hstack([data, row_means])
+    col_labels = METRIC_LABELS + ["Mean"]
+    n_rows, n_cols = data_plot.shape
 
-    fig, ax = plt.subplots(figsize=(FIG_W, FIG_H))
+    vmin = float(np.nanmin(data_plot))
+    vmax = float(np.nanmax(data_plot))
+    if vmin == vmax:
+        vmax = vmin + 1e-6
 
-    y_ticks, y_labels = [], []
-    for i, s in enumerate(strengths):
-        vals = df.loc[df["strength"] == s, metric].to_numpy(dtype=float)
-        vals = vals[np.isfinite(vals)]
-        if vals.size == 0:
-            continue
-        dens = _kde_1d(vals, x_grid)
-        if np.nanmax(dens) > 0:
-            dens /= np.nanmax(dens) + 1e-12
-        base_y = i * 1.0
-        ax.fill_between(x_grid, base_y, base_y + dens * 0.85, alpha=0.35)
-        ax.plot(x_grid, base_y + dens * 0.85, linewidth=1.5)
-        y_ticks.append(base_y + 0.15)
-        y_labels.append(str(s))
+    fig_w = max(10, n_cols * 1.8 + 3.0)
+    fig_h = max(5, n_rows * 0.65 + 2.0)
+    fig, ax = plt.subplots(figsize=(fig_w, fig_h))
+    ax.grid(False)
+    for spine in ax.spines.values():
+        spine.set_visible(True)
+        spine.set_linewidth(1.2)
+        spine.set_edgecolor("gray")
 
-    ax.set_yticks(y_ticks)
-    ax.set_yticklabels(y_labels, fontsize=FONT_TICK)
-    ax.set_xlabel(metric_display_name(metric), fontsize=FONT_AXIS)
-    ax.set_ylabel("Style Strength", fontsize=FONT_AXIS)
-    ax.tick_params(axis="x", labelsize=FONT_TICK)
-    ax.set_title("")
+    im = ax.imshow(data_plot, cmap="Oranges", vmin=vmin, vmax=vmax, aspect="auto")
 
-    plt.subplots_adjust(left=0.12, right=0.97, top=0.97, bottom=0.12)
-    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    # Metric column labels on top + x-axis name
+    ax.set_xticks(range(n_cols))
+    ax.set_xticklabels(col_labels, fontsize=16, fontweight="bold")
+    ax.xaxis.set_ticks_position("top")
+    ax.xaxis.set_label_position("top")
+    ax.set_xlabel("Metrics", fontsize=16, fontweight="bold", labelpad=10)
+    ax.tick_params(axis="x", which="both", length=0)
+
+    # Model labels on y-axis + y-axis name
+    ax.set_yticks(range(n_rows))
+    ax.set_yticklabels(model_labels, fontsize=14, fontweight="bold")
+    ax.set_ylabel("Models", fontsize=16, fontweight="bold", labelpad=10)
+    ax.tick_params(axis="y", which="both", length=0)
+
+    # Cell value annotations
+    for i in range(n_rows):
+        for j in range(n_cols):
+            v = data_plot[i, j]
+            if np.isnan(v):
+                ax.text(j, i, "—", ha="center", va="center", fontsize=12, color="#aaa")
+            else:
+                norm_v = (v - vmin) / (vmax - vmin)
+                text_color = "white" if norm_v > 0.60 else "black"
+                ax.text(j, i, f"{v:.3f}", ha="center", va="center",
+                        fontsize=12, color=text_color)
+
+    # Cell borders
+    ax.set_xticks(np.arange(-0.5, n_cols, 1), minor=True)
+    ax.set_yticks(np.arange(-0.5, n_rows, 1), minor=True)
+    ax.grid(which="minor", color="gray", linewidth=0.5)
+    ax.tick_params(which="minor", length=0)
+
+    cbar = plt.colorbar(im, ax=ax, fraction=0.025, pad=0.02)
+    cbar.ax.tick_params(labelsize=13)
+    cbar.set_label("SGS", fontsize=14)
+
+    plt.tight_layout()
+    os.makedirs(os.path.dirname(out_path) if os.path.dirname(out_path) else ".", exist_ok=True)
     plt.savefig(out_path, dpi=300, bbox_inches="tight")
     plt.savefig(out_path.replace(".png", ".pdf"), bbox_inches="tight")
     plt.close()
     print(f"  [SAVE] {out_path}")
 
 
-# ══════════════════════════════════════════════════════════════════════════
-# 3. Standalone legend image – models in one horizontal line
-# ══════════════════════════════════════════════════════════════════════════
-
-# ══════════════════════════════════════════════════════════════════════════
-# 4. Radar plot – axes=places, colors=models  (no title, big fonts)
-# ══════════════════════════════════════════════════════════════════════════
-
-def plot_radar_places(df: pd.DataFrame, metric: str, out_path: str,
-                      style_name: str = None) -> None:
-    """Radar Type A: axes = places, one line per model. No title. Big fonts."""
-    _apply_style()
-
-    df = df.copy()
-    df[metric] = pd.to_numeric(df[metric], errors="coerce")
-    df = df.dropna(subset=[metric])
-    if df.empty or metric not in df.columns:
-        return
-
-    agg = _aggregate_for_radar(df, metric, style_name=style_name)
-    if agg.empty:
-        return
-
-    models_u = sorted(agg["model"].unique().tolist())
-    places_u = sorted(agg["place"].unique().tolist())
-
-    tab = (
-        agg.pivot(index="model", columns="place", values=metric)
-        .reindex(index=models_u, columns=places_u)
-    )
-    arr = tab.to_numpy(dtype=float)
-    finite_vals = arr[np.isfinite(arr)]
-    vmin = float(finite_vals.min()) if finite_vals.size > 0 else 0.0
-    vmax = float(finite_vals.max()) if finite_vals.size > 0 else 1.0
-
-    fig, ax = plt.subplots(figsize=(FIG_H, FIG_H), subplot_kw=dict(polar=True))
-    ax.set_position([0.1, 0.05, 0.85, 0.90])
-
-    # spoke labels – big font, no title; nudge prefix/suffix in display space
-    from matplotlib.transforms import ScaledTranslation
-    angles = _radar_setup(ax, places_u, title=None)
-    ax.set_xticklabels([p.title() for p in places_u], fontsize=FONT_AXIS)
-
-    _set_rgrid(ax, vmin, vmax)
-    ax.set_yticklabels(
-        [f"{r:.2f}" for r in np.linspace(0, vmax - vmin, 6)[1:] + vmin],
-        fontsize=FONT_TICK,
-    )
-    # Place ring numbers at midpoint between global (0°) and suffix (240°)
-    ax.set_rlabel_position(320)
-
-    model_colors = build_model_color_map(models_u)
-    for m in models_u:
-        row = tab.loc[m].to_numpy(dtype=float)
-        if np.all(np.isnan(row)):
-            continue
-        vals = (row - vmin).tolist()
-        vals += vals[:1]
-        ax.plot(angles, vals, color=model_colors[m], linewidth=3.0)
-        ax.fill(angles, vals, color=model_colors[m], alpha=0.12)
-
-    # Nudge specific spoke labels in display space (points)
-    _NUDGE = {"suffix": (-8, -8), "prefix": (8, -8)}
-    fig.canvas.draw()
-    for label in ax.get_xticklabels():
-        key = label.get_text().lower()
-        if key in _NUDGE:
-            dx_pt, dy_pt = _NUDGE[key]
-            offset = ScaledTranslation(dx_pt / 72, dy_pt / 72, fig.dpi_scale_trans)
-            label.set_transform(label.get_transform() + offset)
-
-    os.makedirs(os.path.dirname(out_path), exist_ok=True)
-    plt.savefig(out_path, dpi=300, bbox_inches="tight")
-    plt.savefig(out_path.replace(".png", ".pdf"), bbox_inches="tight")
-    plt.close()
-    print(f"  [SAVE] {out_path}")
-
-
-def plot_legend_only(models: list, out_path: str) -> None:
+def plot_sgs_barplot(tex_path: str, out_path: str) -> None:
     """
-    Save a legend-only PNG with all models in one horizontal line.
-    No axes, no data – just the coloured handles + labels.
+    Grouped bar chart: x = models, one bar group per metric.
+    Bar height = mean SGS across datasets; error bar = std across datasets.
+    One subplot per metric (2 rows × 3 cols).
     """
     _apply_style()
-    model_colors = build_model_color_map(models)
 
-    handles = [
-        mlines.Line2D(
-            [], [],
-            color=model_colors[m],
-            marker="o",
-            markersize=14,
-            linewidth=3.0,
-            label=m,
+    model_labels, dataset_labels, data = _parse_sgs_tex_full(tex_path)
+    if data.size == 0:
+        print(f"  [SKIP] No data parsed from {tex_path}")
+        return
+
+    METRIC_LABELS = ["Δ-Cos", "Δ-BLEU", "Δ-BERT", "Δ-Prob", "Δ-Ent", "Δ-MR"]
+    n_models = len(model_labels)
+    x = np.arange(n_models)
+
+    # mean and std per (model, metric) across datasets
+    means = np.nanmean(data, axis=1)   # (n_models, 6)
+    stds  = np.nanstd(data, axis=1, ddof=1)   # (n_models, 6)
+
+    cmap = plt.get_cmap("Oranges")
+    colors = [cmap(0.35 + 0.5 * i / max(n_models - 1, 1)) for i in range(n_models)]
+
+    fig, axes = plt.subplots(2, 3, figsize=(18, 9), sharey=False)
+    axes = axes.flatten()
+
+    for k, (metric_label, ax) in enumerate(zip(METRIC_LABELS, axes)):
+        ax.grid(False)
+        bars = ax.bar(
+            x,
+            means[:, k],
+            yerr=stds[:, k],
+            color=colors,
+            edgecolor="gray",
+            linewidth=0.8,
+            capsize=4,
+            error_kw=dict(elinewidth=1.2, ecolor="black"),
         )
-        for m in sorted(models)
-    ]
+        ax.set_xticks(x)
+        ax.set_xticklabels(model_labels, fontsize=12, fontweight="bold", rotation=30, ha="right")
+        ax.set_ylabel("SGS", fontsize=13)
+        ax.set_title(metric_label, fontsize=14, fontweight="bold", pad=6)
+        ax.tick_params(axis="y", labelsize=11)
+        for spine in ["top", "right"]:
+            ax.spines[spine].set_visible(False)
 
-    n = len(handles)
-    fig_w = max(4, n * 2.2)
-    fig, ax = plt.subplots(figsize=(fig_w, 0.9))
-    ax.set_axis_off()
-
-    leg = ax.legend(
-        handles=handles,
-        loc="center",
-        ncol=n,
-        frameon=True,
-        framealpha=0.95,
-        fontsize=FONT_LEGEND,
-        handlelength=1.6,
-        handletextpad=0.5,
-        columnspacing=1.2,
-        borderpad=0.3,
-    )
-
-    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    plt.suptitle("SGS per metric — mean ± std across datasets", fontsize=15, fontweight="bold", y=1.01)
+    plt.tight_layout()
+    os.makedirs(os.path.dirname(out_path) if os.path.dirname(out_path) else ".", exist_ok=True)
     plt.savefig(out_path, dpi=300, bbox_inches="tight")
     plt.savefig(out_path.replace(".png", ".pdf"), bbox_inches="tight")
     plt.close()
@@ -394,7 +286,7 @@ def plot_legend_only(models: list, out_path: str) -> None:
 # ══════════════════════════════════════════════════════════════════════════
 
 def main():
-    """Parse CLI args and generate all publication-ready individual figures."""
+    """Generate the SGS heatmap figure."""
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--out_dir",
@@ -403,71 +295,19 @@ def main():
     args = parser.parse_args()
     out = args.out_dir
 
-    # ── 1. Politeness – BERTScore response (line per place) ───────────────
-    print("\n[1] BERTScore response – line per place (politeness)")
-    df_pol_bsr = _load_and_aggregate(POLITENESS_CSVS, "bertscore_response")
-    plot_line_per_place(
-        df_pol_bsr, "bertscore_response",
-        os.path.join(out, "politeness_bertscore_response"),
-        x_ticks=np.arange(-10, 11, 2),
-    )
+    sgs_tex = os.path.join(_ROOT, "results", "sgs_table_minmax.tex")
 
-    # ── 2. Politeness – Mirroring rate (ridge) ────────────────────────────
-    print("\n[2] Mirroring rate – ridge plot (politeness)")
-    df_pol_mir = _load_and_aggregate(POLITENESS_CSVS, "mirroring_rate")
-    plot_ridge(
-        df_pol_mir, "mirroring_rate",
-        os.path.join(out, "politeness_mirroring_rate", "mirroring_rate_ridge.png"),
-    )
+    print("\n[1] SGS heatmap (Oranges)")
+    if os.path.exists(sgs_tex):
+        plot_sgs_heatmap(sgs_tex, os.path.join(out, "sgs_heatmap.png"))
+    else:
+        print(f"  [SKIP] {sgs_tex} not found — run utils/significance_test.py first")
 
-    # ── 3. Length variation – Activation similarity (line per place) ─────
-    print("\n[3] Activation similarity – line per place (length_variation)")
-    df_lv_act = _load_and_aggregate(LENGTH_VARIATION_CSVS, "activation_similarity")
-    plot_line_per_place(
-        df_lv_act, "activation_similarity",
-        os.path.join(out, "length_variation_activation_similarity"),
-    )
-
-    # ── 4. Letter-case – ASR (line per place) ─────────────────────────────
-    print("\n[4] ASR – line per place (letter_case)")
-    df_lc_asr = _load_and_aggregate(LETTER_CASE_ASR_CSVS, "asr")
-    plot_line_per_place(
-        df_lc_asr, "asr",
-        os.path.join(out, "letter_case_asr"),
-        x_start=0,
-    )
-
-    # ── 5. CoT steps – line per place (length_variation) ──────────────────
-    print("\n[5] CoT steps – line per place (length_variation)")
-    df_cot_lv = _load_and_aggregate(COT_LENGTH_VARIATION_CSVS, "cot_steps")
-    plot_line_per_place(
-        df_cot_lv, "cot_steps",
-        os.path.join(out, "cot_length_variation_steps"),
-        ylabel="CoT Steps",
-        x_ticks=np.arange(0.5, 3.5, 0.5),
-    )
-
-    # ── 6. Politeness – delta_log_prob radar (axes=places) ────────────────
-    print("\n[6] Delta log prob – radar axes=places (politeness)")
-    df_pol_dlp = _load_and_aggregate(POLITENESS_CSVS, "delta_log_prob")
-    plot_radar_places(
-        df_pol_dlp, "delta_log_prob",
-        os.path.join(out, "politeness_delta_log_prob_radar_places.png"),
-        style_name="politeness",
-    )
-
-    # ── 7. Standalone legend ──────────────────────────────────────────────
-    print("\n[7] Standalone model legend")
-    all_models = sorted(
-        set(df_pol_bsr["model"].tolist())
-        | set(df_lc_asr["model"].tolist())
-        | set(df_lv_act["model"].tolist())
-        | set(df_cot_lv["model"].tolist())
-    )
-    plot_legend_only(
-        all_models,
-        os.path.join(out, "legend_models.png"),
-    )
+    print("\n[2] SGS bar plots (mean ± std across datasets)")
+    if os.path.exists(sgs_tex):
+        plot_sgs_barplot(sgs_tex, os.path.join(out, "sgs_barplot.png"))
+    else:
+        print(f"  [SKIP] {sgs_tex} not found — run utils/significance_test.py first")
 
     print("\nDone.")
 

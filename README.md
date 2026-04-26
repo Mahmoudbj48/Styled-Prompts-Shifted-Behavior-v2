@@ -78,9 +78,7 @@ experiments/
 
 plots/
 ├── plots.py                         # Core plotting utilities
-├── radar_plots.py                   # Multi-style radar plot generator
 ├── run_plots.py                     # CLI runner for all plot types
-├── plot_2d_activation_safety_politeness.py
 ├── plot_individual_figures.py
 ├── run_bertscore_check_paper.py     # BERTScore semantic-preservation check
 └── sensitivity_analysis.py
