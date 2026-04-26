@@ -116,6 +116,7 @@ def add_delta_columns(df: pd.DataFrame, style: str) -> pd.DataFrame:
 # ---------------------------------------------------------------------------
 
 def main() -> None:
+    """Backfill delta columns in all existing style CSV files in-place."""
     import sys
     sys.path.insert(0, str(PROJECT_ROOT))
 

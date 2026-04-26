@@ -344,6 +344,7 @@ def run_style_experiment(
 # ══════════════════════════════════════════════════════════════════════════════
 
 def main():
+    """Parse CLI arguments and orchestrate closed-model experiments across all styles."""
     parser = argparse.ArgumentParser(
         description="Run closed-model experiments across all styles"
     )

@@ -691,6 +691,7 @@ def run_experiment(
         overwrite_output_cache: bool,
         places_override: Optional[List[str]],
 ) -> str:
+    """Run the spacing experiment for all models, save CSVs, and generate plots."""
     config = load_config()
     experiments_set = _normalize_experiments(experiments)
 
@@ -822,6 +823,7 @@ def run_experiment(
 
 
 def main():
+    """Parse CLI arguments and launch the spacing experiment."""
     parser = argparse.ArgumentParser(description="Run spacing style experiment (multi-model, batched)")
     parser.add_argument("--models", nargs="+", default=["L3.2-1B"], help="Model keys from config or 'all'")
     parser.add_argument("--dataset", type=str, default="truthful_qa")

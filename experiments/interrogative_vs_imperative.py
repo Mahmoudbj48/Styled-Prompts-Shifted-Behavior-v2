@@ -71,12 +71,14 @@ DEFAULT_MODES = ["interrogative", "imperative"]
 # Config + CLI helpers
 # ---------------------------------------------------------------------------
 def load_config() -> Dict[str, any]:
+    """Load the project-level config.yaml from the repository root."""
     config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.yaml")
     with open(config_path, "r") as f:
         return yaml.safe_load(f)
 
 
 def _normalize_experiments(experiments: Optional[List[str]]) -> Set[str]:
+    """Validate and expand experiment axis names; 'all' returns every valid experiment."""
     if experiments is None:
         return set(VALID_EXPERIMENTS)
     exp = [e.strip().lower() for e in experiments]
@@ -89,6 +91,7 @@ def _normalize_experiments(experiments: Optional[List[str]]) -> Set[str]:
 
 
 def _normalize_models(models: List[str], config: dict) -> List[str]:
+    """Validate model keys against config; 'all' returns every available model."""
     available = list(config.get("models", {}).keys())
     if not available:
         raise ValueError("No models found in config.yaml under 'models'.")
@@ -123,10 +126,12 @@ def _select_modes(
 
 
 def _num_batches(n: int, bs: int) -> int:
+    """Return the number of batches needed to cover n items with batch size bs."""
     return (n + bs - 1) // bs
 
 
 def _get_prompt_text(item: dict) -> str:
+    """Extract the prompt string from a dataset item dict, trying 'question' then 'prompt'."""
     if "question" in item and item["question"]:
         return str(item["question"])
     if "prompt" in item and item["prompt"]:
@@ -139,6 +144,7 @@ def _get_prompt_text(item: dict) -> str:
 # ---------------------------------------------------------------------------
 
 def _sample_cache_dir(*, data_dir, dataset, config_name, split, seed, sample_size) -> str:
+    """Return the directory path for the cached dataset sample."""
     return os.path.join(
         data_dir, "samples", _safe_name(dataset),
         f"config_{_safe_name(config_name)}",
@@ -148,14 +154,17 @@ def _sample_cache_dir(*, data_dir, dataset, config_name, split, seed, sample_siz
 
 
 def _sample_cache_path(sample_dir: str) -> str:
+    """Return the path for the sample JSONL file within its cache directory."""
     return os.path.join(sample_dir, "sample.jsonl")
 
 
 def _meta_path(sample_dir: str) -> str:
+    """Return the path for the sample metadata YAML file within its cache directory."""
     return os.path.join(sample_dir, "meta.yaml")
 
 
 def _write_yaml(path: str, obj: dict) -> None:
+    """Write a dict to a YAML file, creating parent directories as needed."""
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         yaml.safe_dump(obj, f, sort_keys=False)
@@ -165,6 +174,7 @@ def _load_or_create_sample(
         *, data_dir, dataset, config_name, split, seed, sample_size,
         overwrite_sample_cache,
 ) -> List[dict]:
+    """Load the dataset sample from cache, or create and cache it if missing or stale."""
     sdir = _sample_cache_dir(
         data_dir=data_dir, dataset=dataset, config_name=config_name,
         split=split, seed=seed, sample_size=sample_size,
@@ -198,6 +208,7 @@ def _outputs_cache_path(
         *, data_dir, dataset, config_name, split, seed, sample_size,
         model_name, place, mode, batch_idx=None,
 ) -> str:
+    """Return the gzip-compressed JSONL cache path for a (model, place, mode, batch) bucket."""
     base = os.path.join(
         data_dir, "outputs_cache",
         _safe_name(dataset),
@@ -215,6 +226,7 @@ def _outputs_cache_path(
 
 
 def _read_jsonl_gz(path: str) -> List[dict]:
+    """Read a gzip-compressed JSONL file and return a list of dicts."""
     out = []
     with gzip.open(path, "rt", encoding="utf-8") as f:
         for line in f:
@@ -225,6 +237,7 @@ def _read_jsonl_gz(path: str) -> List[dict]:
 
 
 def _write_jsonl_gz(path: str, rows: List[dict]) -> None:
+    """Write a list of dicts to a gzip-compressed JSONL file."""
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with gzip.open(path, "wt", encoding="utf-8") as f:
         for r in rows:
@@ -237,6 +250,7 @@ def _load_or_generate_outputs_for_bucket(
         prompt_orig_list, prompt_styled_list,
         max_new_tokens, batch_size,
 ) -> Dict[str, List[str]]:
+    """Return generated outputs for one bucket, loading from cache or generating if needed."""
     n = len(prompt_orig_list)
 
     if os.path.exists(cache_path) and (not overwrite_output_cache):
@@ -309,7 +323,7 @@ def run_for_one_model(
         dataset_sample_size: int,
         overwrite_output_cache: bool,
 ) -> pd.DataFrame:
-
+    """Run the inter-vs-imper experiment for one model across all (place, mode) buckets."""
     llm_experiments = {"response", "activation", "confidence"}
     run_llm_phase = len(experiments.intersection(llm_experiments)) > 0
 
@@ -505,6 +519,7 @@ def run_experiment(
         overwrite_style_cache: bool,
         places_override: Optional[List[str]] = None,
 ) -> str:
+    """Run the inter-vs-imper experiment for all models, save CSVs, and generate plots."""
     config = load_config()
     experiments_set = _normalize_experiments(experiments)
 
@@ -654,6 +669,7 @@ def run_experiment(
 # CLI
 # ---------------------------------------------------------------------------
 def main():
+    """Parse CLI arguments and launch the interrogative-vs-imperative experiment."""
     parser = argparse.ArgumentParser(
         description="Run interrogative-vs-imperative style experiment (multi-model, batched)"
     )

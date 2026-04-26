@@ -644,11 +644,10 @@ def make_multi_style_radar_plots(
         Per-style raw result CSVs (full_results_all_models.csv,
         results_with_mirroring.csv, etc.).
     cot_style_dirs : {style_name: [dir_or_csv, ...]}
-        Per-style CoT run directories (containing results_cleaned.csv)
-        or CSV paths with cot_correct / cot_steps columns.
+        Optional per-style supplementary run directories or CSV paths with
+        additional metric columns.
     asr_style_csvs : {style_name: [csv_path_or_dir, ...]}
-        Per-style ASR CSVs (combined_means_by_model_place_strength.csv or
-        summary.csv files) with unsafe_score / asr columns.
+        Optional per-style supplementary CSVs with additional metric columns.
     silhouette_style_csvs : {style_name: [csv_path_or_dir, ...]}
         Per-style silhouette CSVs (summary.csv files) with silhouette column.
     out_dir : str

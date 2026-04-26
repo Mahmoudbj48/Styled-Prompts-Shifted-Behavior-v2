@@ -540,6 +540,7 @@ _METRIC_ORDER = list(ALL_METRIC_LABELS)
 
 
 def _metric_sort_key(m: str) -> int:
+    """Return a sort key for a metric name based on the canonical display order."""
     return _METRIC_ORDER.index(m) if m in _METRIC_ORDER else len(_METRIC_ORDER)
 
 
@@ -562,6 +563,7 @@ RANDOM_SEED  = 42
 # ── Data loading ───────────────────────────────────────────────────────────────
 
 def _to_numeric(df: pd.DataFrame, cols: list[str]) -> pd.DataFrame:
+    """Coerce the given columns to numeric, replacing non-numeric values with NaN in-place."""
     for c in cols:
         if c in df.columns:
             df[c] = pd.to_numeric(df[c], errors="coerce")
@@ -904,6 +906,7 @@ def bootstrap_metric_per_model(
 # ── Plotting helpers ───────────────────────────────────────────────────────────
 
 def _band(corr_dict: dict, sizes: list[int]):
+    """Return (means, p10, p90) arrays across bootstrap samples for the given subset sizes."""
     means, lo, hi = [], [], []
     for n in sizes:
         v = corr_dict.get(n, [np.nan])
@@ -938,6 +941,7 @@ def _label_points(ax, xs, ys, color="black", fontsize=5.5, dy=3):
 # ── Plot helpers for variance ─────────────────────────────────────────────────
 
 def _axis_style_var(ax, subset_sizes: list[int], ylabel: str = "Std of Group Means (Condition Spread)"):
+    """Apply standard log2 x-axis styling and labels to a variance/spread panel."""
     ax.set_xscale("log", base=2)
     ax.set_xticks(subset_sizes)
     ax.set_xticklabels([str(n) for n in subset_sizes])
@@ -954,6 +958,7 @@ def plot_variance_per_metric(
     subset_sizes: list[int],
     out_path: Path,
 ):
+    """Plot per-metric condition spread (std of group means) vs. number of prompts N."""
     metrics = sorted(all_var_results.keys(), key=_metric_sort_key)
 
     ncols = 3
@@ -1365,6 +1370,7 @@ def _make_place_panels(
     out_path: Path,
     pub: bool = False,
 ) -> None:
+    """Render one panel per metric showing a metric or variance value vs. prompt placement."""
     PLACE_ORDER = ["global", "prefix", "suffix"]
     metrics = sorted(all_results.keys(), key=_metric_sort_key)
     ncols = 3
@@ -1478,6 +1484,7 @@ def _make_place_panels(
 
 
 def plot_place_metric(all_means: dict, out_path: Path) -> None:
+    """Plot mean metric value by prompt placement for the place ablation study."""
     _make_place_panels(
         all_means, ylabel="metric",
         suptitle=(
@@ -1494,6 +1501,7 @@ def plot_place_metric_pub(all_means: dict, out_path: Path) -> None:
 
 
 def plot_place_variance(all_variances: dict, out_path: Path) -> None:
+    """Plot condition spread (std) by prompt placement for the place ablation study."""
     _make_place_panels(
         all_variances, ylabel="Condition Spread (Std)",
         suptitle=(
@@ -1552,6 +1560,7 @@ def _make_strength_panels(
     style: str = "",
     pub: bool = False,
 ) -> None:
+    """Render one panel per metric showing a metric or variance value vs. style strength."""
     metrics = sorted(all_results.keys(), key=_metric_sort_key)
     ncols = 3
     nrows = max(1, (len(metrics) + ncols - 1) // ncols)
@@ -1661,6 +1670,7 @@ def _make_strength_panels(
 
 def plot_strength_metric(all_means: dict, sorted_strengths: list, out_path: Path,
                          style: str = "") -> None:
+    """Plot mean metric value by style strength for the strength ablation study."""
     _make_strength_panels(
         all_means, sorted_strengths, ylabel="metric",
         suptitle=(
@@ -1680,6 +1690,7 @@ def plot_strength_metric_pub(all_means: dict, sorted_strengths: list, out_path: 
 
 def plot_strength_variance(all_variances: dict, sorted_strengths: list, out_path: Path,
                            style: str = "") -> None:
+    """Plot condition spread (std) by style strength for the strength ablation study."""
     _make_strength_panels(
         all_variances, sorted_strengths, ylabel="Condition Spread (Std)",
         suptitle=(
@@ -1700,6 +1711,7 @@ def plot_strength_variance_pub(all_variances: dict, sorted_strengths: list, out_
 # ── Main ───────────────────────────────────────────────────────────────────────
 
 def main():
+    """Parse CLI arguments and run the sensitivity analysis bootstrap experiments."""
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--out_dir",     default="results/sensitivity_analysis")
@@ -1800,9 +1812,11 @@ def main():
     models_filter  = set(args.models)  if args.models  else None
 
     def _want_metric(m: str) -> bool:
+        """Return True if metric m passes the CLI metrics filter."""
         return metrics_filter is None or m in metrics_filter
 
     def _filter_models(df: pd.DataFrame) -> pd.DataFrame:
+        """Return df filtered to only the models in the CLI models filter, or unchanged if no filter."""
         if models_filter and "model" in df.columns:
             return df[df["model"].isin(models_filter)]
         return df

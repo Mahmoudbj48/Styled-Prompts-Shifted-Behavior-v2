@@ -13,8 +13,7 @@ Functions:
     - collect_activations_for_prompts: helper
 
 Also includes:
-    - Style mirroring judge via Gemini (LLM-as-judge)
-    - HarmBench safety ASR computation via LlamaGuard3 outputs
+    - Style mirroring judge via LLM-as-judge
     - compute_sgs: per-dataset Stylistic Generalization Score (SGS_{k,j})
     - compute_sgs_combined: SGS per dataset + pooled combined score (SGS_k)
 """
@@ -270,6 +269,7 @@ def compute_confidence(
     device = model.device
 
     def _encode_prompt_and_response(prompt: str, response: str) -> Tuple[torch.Tensor, int, torch.Tensor]:
+        """Tokenize a prompt and response together, returning input IDs, prompt length, and target IDs."""
         rendered = _render_user_prompt(tokenizer, prompt)
 
         # Encode separately to find split point
@@ -282,6 +282,7 @@ def compute_confidence(
         return input_ids, prompt_len, targets
 
     def get_response_logits(prompt: str, response: str) -> Tuple[torch.Tensor, torch.Tensor]:
+        """Run a forward pass and return the logits and target token IDs corresponding to the response."""
         input_ids, prompt_len, targets = _encode_prompt_and_response(prompt, response)
 
         with torch.no_grad():
@@ -990,6 +991,7 @@ _TRANSCRIPT_PATTERNS = [
 
 
 def _strip_transcript_lines(text: str) -> str:
+    """Remove transcript-style role-label lines (e.g. 'Human:', 'Assistant:') from text."""
     if not text:
         return ""
     lines = text.splitlines()
@@ -1037,6 +1039,7 @@ def clean_chatty_generation(output_text: str, *, prompt_text: Optional[str] = No
 # =============================================================================
 
 def _extract_yes_no(text: str) -> Optional[bool]:
+    """Return True for 'YES', False for 'NO', or None if neither word is found in the text."""
     if not text:
         return None
     m = re.search(r"\b(YES|NO)\b", text.strip().upper())
@@ -1359,6 +1362,7 @@ _POLITE_CUES = [
 
 
 def _politeness_cue_score(text: str) -> int:
+    """Count the number of politeness cue phrases present in the given text."""
     if not text:
         return 0
     t = text.lower()
@@ -1410,6 +1414,7 @@ def judge_style_mirroring_openai(
         temperature: float = 0.0,
         max_output_tokens: int = 16,
 ) -> MirroringJudgeResult:
+    """Call an OpenAI model as a YES/NO judge to determine whether the styled output mirrors the prompt style."""
     api_key = os.environ.get(api_key_env)
     if not api_key:
         raise RuntimeError(f"Missing API key env var: {api_key_env}")
@@ -1467,6 +1472,7 @@ def judge_style_mirroring_gemini(
         temperature: float = 0.0,
         max_output_tokens: int = 16,
 ) -> MirroringJudgeResult:
+    """Call a Gemini model as a YES/NO judge to determine whether the styled output mirrors the prompt style."""
     api_key = os.environ.get(api_key_env)
     if not api_key:
         raise RuntimeError(f"Missing API key env var: {api_key_env}")
@@ -1863,6 +1869,7 @@ class LlamaGuard3Scorer:
             # vLLM options
             vllm_gpu_memory_utilization: float = 0.8,
     ):
+        """Initialize the scorer, load the LlamaGuard-3 model in HF or vLLM mode."""
         self.model_path = model_path
         self.tokenizer_path = tokenizer_path or model_path
         self.device = device
@@ -1904,6 +1911,7 @@ class LlamaGuard3Scorer:
         self._load_model()
 
     def _dtype_obj(self):
+        """Return the torch dtype object corresponding to the configured torch_dtype string."""
         import torch
 
         if self.torch_dtype.lower() in ("bf16", "bfloat16"):
@@ -1916,6 +1924,7 @@ class LlamaGuard3Scorer:
         return torch.bfloat16
 
     def _load_model(self) -> None:
+        """Load the LlamaGuard-3 tokenizer and model onto the configured device."""
         print(f"[LlamaGuard3Scorer] Loading Llama-Guard-3 from: {self.model_path}")
         if self.vllm_mode:
             print("[LlamaGuard3Scorer] Mode: vLLM")
@@ -1981,6 +1990,7 @@ class LlamaGuard3Scorer:
         print(f"[LlamaGuard3Scorer] Loaded on device: {device_obj} dtype={self._dtype_obj()}")
 
     def _build_prompts(self, queries: Sequence[str], responses: Sequence[str]) -> List[str]:
+        """Format (query, response) pairs into LlamaGuard-3 chat-template strings."""
         assert self.tokenizer is not None
         prompts: List[str] = []
         for q, r in zip(queries, responses):
@@ -2027,6 +2037,7 @@ class LlamaGuard3Scorer:
             batch_size: int = 8,
             show_progress: bool = True,
     ) -> List[LlamaGuard3Result]:
+        """Score a list of (query, response) pairs in batches and return one LlamaGuard3Result per pair."""
         if len(queries) != len(responses):
             raise ValueError("queries and responses must have the same length.")
 
@@ -2072,6 +2083,7 @@ class LlamaGuard3Scorer:
         return results
 
     def score(self, query: str, response: str) -> LlamaGuard3Result:
+        """Score a single (query, response) pair and return a LlamaGuard3Result."""
         return self.batch_score([query], [response], batch_size=1, show_progress=False)[0]
 
 

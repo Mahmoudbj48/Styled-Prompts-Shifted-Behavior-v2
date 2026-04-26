@@ -219,6 +219,7 @@ print("  Saved → sgs_closed_scores_normalized.csv")
 # ══════════════════════════════════════════════════════════════════════════════
 
 def fmt(v) -> str:
+    """Format an SGS value as a 3-decimal string, or a LaTeX dash for NaN/None."""
     if v is None or (isinstance(v, float) and np.isnan(v)):
         return r"\text{---}"
     return f"{v:.3f}"

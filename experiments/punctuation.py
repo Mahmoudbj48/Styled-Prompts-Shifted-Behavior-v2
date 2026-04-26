@@ -430,7 +430,7 @@ def run_for_one_model(
         style_name: str,
         overwrite_output_cache: bool,
 ) -> pd.DataFrame:
-
+    """Run the punctuation experiment for one model across all (place, strength) buckets."""
     llm_experiments = {"response", "activation", "confidence", "mirroring"}
     run_llm_phase = len(experiments.intersection(llm_experiments)) > 0
 
@@ -681,6 +681,7 @@ def run_experiment(
         overwrite_output_cache: bool,
         places_override: Optional[List[str]],
 ) -> str:
+    """Run the punctuation experiment for all models, save CSVs, and generate plots."""
     config = load_config()
     experiments_set = _normalize_experiments(experiments)
 
@@ -811,6 +812,7 @@ def run_experiment(
 
 
 def main():
+    """Parse CLI arguments and launch the punctuation experiment."""
     parser = argparse.ArgumentParser(description="Run punctuation style experiment (multi-model, batched)")
     parser.add_argument("--models", nargs="+", default=["L3.2-1B"], help="Model keys from config or 'all'")
     parser.add_argument("--dataset", type=str, default="truthful_qa")

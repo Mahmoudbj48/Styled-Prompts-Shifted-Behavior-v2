@@ -453,6 +453,7 @@ def load_coords2d(
         strength: int,
         method: str,
 ) -> Optional[pd.DataFrame]:
+    """Load cached 2D projection coordinates from CSV, returning None if not found."""
     path = _coords_cache_path(
         cache_dir=cache_dir,
         dataset_name=dataset_name,
@@ -632,6 +633,7 @@ def plot_silhouette_vs_strength(
         save_pdf: bool = False,
         pdf_only: bool = False,
 ) -> None:
+    """Plot silhouette (cosine) score vs style strength; thin wrapper around plot_metric_vs_strength."""
     plot_metric_vs_strength(
         df_summary=df_summary,
         metric_col="silhouette_cosine",
@@ -2124,6 +2126,7 @@ def fix_radar_ax(ax) -> None:
 
 
 def _radar_setup(ax, labels: List[str], title: Optional[str] = None):
+    """Configure a polar axes for a radar chart and return the spoke angle list."""
     n = len(labels)
     angles = np.linspace(0, 2 * np.pi, n, endpoint=False).tolist()
     angles += angles[:1]
@@ -2145,6 +2148,7 @@ def _radar_setup(ax, labels: List[str], title: Optional[str] = None):
 
 def _aggregate_for_radar(df: pd.DataFrame, metric: str,
                          style_name: Optional[str] = None) -> pd.DataFrame:
+    """Aggregate a metric by (model, place), excluding the baseline strength row."""
     d = df.copy()
     d[metric] = pd.to_numeric(d[metric], errors="coerce")
     if style_name is not None and "strength" in d.columns:
@@ -2156,6 +2160,7 @@ def _aggregate_for_radar(df: pd.DataFrame, metric: str,
 
 
 def _normalize_table(values: pd.DataFrame, cols: List[str], mode: str) -> pd.DataFrame:
+    """Normalize selected columns of a DataFrame using minmax or zscore mode."""
     if mode == "none":
         return values
 
@@ -2183,6 +2188,7 @@ def _normalize_table(values: pd.DataFrame, cols: List[str], mode: str) -> pd.Dat
 
 
 def _set_rgrid(ax, data_min: float, data_max: float):
+    """Set radial grid ticks on a polar axes, shifted so the innermost ring corresponds to data_min."""
     span = data_max - data_min
     if not np.isfinite(span) or span <= 0:
         span = 1.0

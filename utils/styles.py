@@ -290,6 +290,7 @@ def apply_politeness(
     """
 
     def clamp(v: int) -> int:
+        """Clamp an integer strength value to the range [-10, 10]."""
         return int(max(-10, min(10, int(v))))
 
     # -------------------------
@@ -389,6 +390,7 @@ def apply_politeness(
     }
 
     def prefix_block(s: int) -> str:
+        """Return the politeness or negativity prefix string for strength s."""
         if s > 0:
             return POLITE_PREFIX[s]
         if s < 0:
@@ -396,6 +398,7 @@ def apply_politeness(
         return ""
 
     def suffix_block(s: int) -> str:
+        """Return the politeness or negativity suffix string for strength s."""
         if s > 0:
             return POLITE_SUFFIX[s]
         if s < 0:

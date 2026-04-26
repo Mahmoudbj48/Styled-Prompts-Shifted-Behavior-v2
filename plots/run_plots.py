@@ -215,12 +215,14 @@ def _run_prompt_check(args) -> None:
     print("[BERT] Ready.\n")
 
     def _bertscore_f1(refs, cands):
+        """Compute mean BERTScore F1 between reference and candidate lists."""
         with torch.inference_mode():
             _, _, F1 = _scorer.score(cands, refs, batch_size=bert_batch, verbose=False)
         return float(np.nanmean(F1.cpu().numpy()))
 
     # ── Dataset loader ────────────────────────────────────────────────────────
     def _get_prompt(item):
+        """Extract a prompt string from a dataset item dict or raw string."""
         if isinstance(item, dict):
             v = item.get("question") or item.get("prompt") or item.get("instruction") or item.get("text")
             if v is not None:
@@ -230,6 +232,7 @@ def _run_prompt_check(args) -> None:
         return str(item).strip()
 
     def _load_prompts(ds_name):
+        """Load and format prompts for the named dataset using the configured sample size."""
         dc = DATASETS_CFG[ds_name]
         n = sample_size_override if sample_size_override is not None else dc["sample_size"]
         kwargs = {"sample_size": n, "seed": seed}
@@ -418,6 +421,7 @@ def _run_multi_style_radar(args) -> None:
         raise SystemExit("[ERROR] --style_data is required in --multi_style_radar mode.")
 
     def _parse_style_entries(entries):
+        """Parse 'STYLE:path1,path2' CLI entries into a dict mapping style name to CSV path list."""
         result = {}
         if not entries:
             return result
@@ -454,6 +458,7 @@ def _run_multi_style_radar(args) -> None:
 
 
 def main():
+    """Parse CLI arguments and dispatch to the requested plot mode."""
     parser = argparse.ArgumentParser()
 
     # ── Standard aggregate-plot mode ─────────────────────────────────────────

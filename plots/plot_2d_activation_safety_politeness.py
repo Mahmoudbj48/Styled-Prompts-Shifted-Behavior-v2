@@ -522,6 +522,7 @@ def run_experiment(
 
 
 def main() -> None:
+    """Parse CLI arguments and launch the activation-drift experiment."""
     parser = argparse.ArgumentParser(
         description=(
             "Visualise how harmful-prompt activations drift across the "

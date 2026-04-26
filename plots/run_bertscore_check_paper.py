@@ -35,6 +35,7 @@ from plots.plots import (
 
 
 def main():
+    """Compute and save BERTScore prompt-preservation plots for all styles and datasets."""
     parser = argparse.ArgumentParser(
         description="BERTScore prompt-preservation check for the 6 paper datasets."
     )
@@ -102,12 +103,14 @@ def main():
     print("[BERT] Ready.\n")
 
     def _bertscore_f1(refs, cands):
+        """Compute mean BERTScore F1 between reference and candidate lists."""
         with torch.inference_mode():
             _, _, F1 = _scorer.score(cands, refs, batch_size=args.bert_batch_size, verbose=False)
         return float(np.nanmean(F1.cpu().numpy()))
 
     # ── Extract prompt text from standardised dataset dicts ───────────────────
     def _get_prompt(item):
+        """Extract a prompt string from a dataset item dict or raw string."""
         if isinstance(item, dict):
             v = (item.get("question") or item.get("prompt")
                  or item.get("instruction") or item.get("text"))
@@ -210,6 +213,7 @@ def main():
     }
 
     def _load_llm_cache(ds_cache_name, style_prefix, param):
+        """Load cached LLM outputs for a dataset/style/param combination, returning (originals, styled) lists."""
         fname = os.path.join(cache_root, ds_cache_name, f"{style_prefix}__{param}.jsonl")
         if not os.path.isfile(fname):
             return [], []

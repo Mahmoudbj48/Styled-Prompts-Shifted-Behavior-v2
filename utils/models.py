@@ -26,10 +26,12 @@ except Exception:
 
 
 def _get_hf_token() -> Optional[str]:
+    """Return the HuggingFace token from environment variables, or None if not set."""
     return os.environ.get("HF_TOKEN") or os.environ.get("HUGGINGFACE_HUB_TOKEN")
 
 
 def _has_accelerate() -> bool:
+    """Return True if the accelerate package is importable."""
     return importlib.util.find_spec("accelerate") is not None
 
 

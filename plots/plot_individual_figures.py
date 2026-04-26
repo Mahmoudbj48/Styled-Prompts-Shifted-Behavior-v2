@@ -2,7 +2,7 @@
 Individual publication-ready plots (no titles, big fonts, consistent sizes):
   1. BERTScore response – line per place  (politeness, TruthfulQA)
   2. Mirroring rate     – ridge plot       (politeness, TruthfulQA)
-  3. ASR                – line per place  (letter_case, safety)
+  3. Unsafe score       – line per place  (letter_case)
   4. Standalone model-legend image        (one horizontal line)
 
 Usage:

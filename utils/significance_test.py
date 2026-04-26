@@ -355,6 +355,7 @@ def save_significance_csvs(sig4: dict, sig5: dict,
                            MODEL_ORDER: list, DATASET_ORDER: list,
                            METRICS: list,
                            path_dataset: Path, path_model: Path) -> None:
+    """Save per-(model, dataset, metric) and per-(model, metric) significance p-values to CSV."""
     # per (model, dataset, metric)
     rows4 = []
     for model in MODEL_ORDER:
@@ -392,6 +393,7 @@ def save_significance_csvs(sig4: dict, sig5: dict,
 def print_significance_summary(sig4: dict, sig5: dict,
                                 MODEL_ORDER: list, DATASET_ORDER: list,
                                 METRICS: list, title: str) -> None:
+    """Print a formatted console table of significance markers for each model and dataset."""
     print(f"\n{'='*70}")
     print(f"  {title}")
     print(f"{'='*70}")
@@ -711,6 +713,7 @@ def build_combined_latex(
     dataset_display, metrics,
     caption, label,
 ) -> str:
+    """Build a LaTeX table combining closed-source and representative open-source model SGS rows."""
     lines = [
         r"\begin{table}[ht]",
         r"    \centering",
@@ -759,6 +762,7 @@ def build_remaining_latex(
     model_display, dataset_display, metrics,
     caption, label,
 ) -> str:
+    """Build a LaTeX table for the remaining open-source models not in the main table."""
     lines = [
         r"\begin{table}[ht]",
         r"    \centering",

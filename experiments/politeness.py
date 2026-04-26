@@ -316,6 +316,7 @@ def _load_or_create_sample(
         sample_size: int,
         overwrite_sample_cache: bool,
 ) -> List[dict]:
+    """Load the dataset sample from cache, or create and cache it if missing or stale."""
     sdir = _sample_cache_dir(
         data_dir=data_dir,
         dataset=dataset,
@@ -365,6 +366,7 @@ def _outputs_cache_path(
         place: str,
         strength: int,
 ) -> str:
+    """Return the gzip-compressed JSONL cache path for a (model, style, place, strength) bucket."""
     return os.path.join(
         data_dir,
         "outputs_cache",
@@ -381,6 +383,7 @@ def _outputs_cache_path(
 
 
 def _read_jsonl_gz(path: str) -> List[dict]:
+    """Read a gzip-compressed JSONL file and return a list of dicts."""
     out = []
     with gzip.open(path, "rt", encoding="utf-8") as f:
         for line in f:
@@ -392,6 +395,7 @@ def _read_jsonl_gz(path: str) -> List[dict]:
 
 
 def _write_jsonl_gz(path: str, rows: List[dict]) -> None:
+    """Write a list of dicts to a gzip-compressed JSONL file."""
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with gzip.open(path, "wt", encoding="utf-8") as f:
         for r in rows:
@@ -499,7 +503,7 @@ def run_for_one_model(
         style_name: str,
         overwrite_output_cache: bool,
 ) -> pd.DataFrame:
-
+    """Run the politeness experiment for one model across all (place, strength) buckets."""
     llm_experiments = {"response", "activation", "confidence", "mirroring"}
     run_llm_phase = len(experiments.intersection(llm_experiments)) > 0
 
@@ -822,6 +826,7 @@ def run_experiment(
         overwrite_output_cache: bool,
         places_override: Optional[List[str]],
 ) -> str:
+    """Run the politeness experiment for all models, save CSVs, and generate plots."""
     config = load_config()
     experiments_set = _normalize_experiments(experiments)
 
@@ -941,6 +946,7 @@ def run_experiment(
 
 
 def main():
+    """Parse CLI arguments and launch the politeness experiment."""
     parser = argparse.ArgumentParser(description="Run politeness style experiment (multi-model, batched)")
     parser.add_argument("--models", nargs="+", default=["L3-8B"], help="Model keys from config or 'all'")
     parser.add_argument("--dataset", type=str, default="truthful_qa")
