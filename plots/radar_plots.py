@@ -1,28 +1,9 @@
 """
-utils/radar_plots.py
-====================
 Multi-style radar plot generator.
 
-For each model two figures are produced:
-
-  Type A – metrics on the spokes, one polygon per (style × place)
-  Type B – styles on the spokes,  one polygon per (metric × place)
-
-Each figure contains 3 radar sub-plots in a row:
-  1. Baseline   (s = baseline strength for each style)
-  2. Median     (middle non-baseline strength level)
-  3. Max        (most extreme non-baseline strength level)
-
-All metrics are direction-normalised so that
-  0  =  no deviation from baseline
-  1  =  largest observed deviation
-
-Direction rules
-  "inv" : baseline − value   (lower raw = more perturbed, e.g. cosine sim, BLEU)
-  "fwd" : value − baseline   (higher raw = more perturbed, e.g. MR, ASR)
-  "abs" : |value − baseline| (bidirectional, e.g. ΔLogProb, entropy, CoT)
-
-Run via utils/run_plots.py --multi_style_radar
+For each model produces two figures: Type A (metrics on spokes, one polygon
+per style-place pair) and Type B (styles on spokes, one polygon per metric-place
+pair), each with three sub-plots for baseline, median, and maximum strength.
 """
 
 import os
