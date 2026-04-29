@@ -1,7 +1,7 @@
 """
 experiments/run_closed_models.py
 =================================
-Run experiments on closed API models (GPT, Gemini, Claude) across all styles.
+Run experiments on closed API models (GPT, Gemini, Claude) across all variations.
 
 Usage:
     python experiments/run_closed_models.py \\
@@ -10,7 +10,7 @@ Usage:
         --sample_size 16
 
 Features:
-    - Supports all 6 styles (spacing, punctuation, letter_case, politeness, length_variation, inter_vs_imper)
+    - Supports all 6 variations (spacing, punctuation, letter_case, politeness, length_variation, inter_vs_imper)
     - Computes BLEU, BERTScore, Confidence (when available), Mirroring
     - Uses cached prompts from existing experiments
     - Saves per-experiment results in separate folders
@@ -33,7 +33,7 @@ from utils.llm_client import get_llm_client
 from utils.closed_model_metrics import compute_all_metrics
 from utils.data import load_dataset_by_name
 from utils.compute_delta_metrics import add_delta_columns
-from utils.styles import (
+from utils.variations import (
     apply_spacing,
     apply_punctuation,
     apply_letter_case,
@@ -47,7 +47,7 @@ from utils.styles import (
 # STYLE CONFIGURATIONS
 # ══════════════════════════════════════════════════════════════════════════════
 
-STYLE_CONFIGS = {
+VARIATION_CONFIGS = {
     "spacing": {
         "strengths": [0, 1, 5, 20, 50, 100],
         "place": "global",
@@ -130,7 +130,7 @@ def load_dataset_prompts(
     return items
 
 
-def create_output_dir(model: str, dataset: str, style: str) -> str:
+def create_output_dir(model: str, dataset: str, variation: str) -> str:
     """Create output directory for this experiment"""
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     
@@ -145,7 +145,7 @@ def create_output_dir(model: str, dataset: str, style: str) -> str:
     
     run_dir = os.path.join(
         base_dir,
-        f"run_{model_safe}_{dataset}_{style}_{timestamp}",
+        f"run_{model_safe}_{dataset}_{variation}_{timestamp}",
     )
     
     os.makedirs(run_dir, exist_ok=True)
@@ -157,10 +157,10 @@ def create_output_dir(model: str, dataset: str, style: str) -> str:
 # CORE EXPERIMENT RUNNER
 # ══════════════════════════════════════════════════════════════════════════════
 
-def run_style_experiment(
+def run_variation_experiment(
     model_name: str,
     dataset_name: str,
-    style_name: str,
+    variation_name: str,
     items: List[Dict[str, Any]],
     *,
     max_tokens: int = 100,  # Match open-source experiments
@@ -170,24 +170,24 @@ def run_style_experiment(
     device: str = "cpu",
 ) -> pd.DataFrame:
     """
-    Run one style experiment for one model on one dataset.
+    Run one variation experiment for one model on one dataset.
     
     Returns DataFrame with all results.
     """
     
     print(f"\n{'='*80}")
-    print(f"Running: {model_name} | {dataset_name} | {style_name}")
+    print(f"Running: {model_name} | {dataset_name} | {variation_name}")
     print(f"{'='*80}\n")
     
-    # Get style config
-    if style_name not in STYLE_CONFIGS:
-        raise ValueError(f"Unknown style: {style_name}")
+    # Get variation config
+    if variation_name not in VARIATION_CONFIGS:
+        raise ValueError(f"Unknown variation: {variation_name}")
     
-    style_config = STYLE_CONFIGS[style_name]
-    strengths = style_config["strengths"]
-    place = style_config["place"]
-    apply_fn = style_config["apply_fn"]
-    has_mirroring = style_config["has_mirroring"]
+    variation_config = VARIATION_CONFIGS[variation_name]
+    strengths = variation_config["strengths"]
+    place = variation_config["place"]
+    apply_fn = variation_config["apply_fn"]
+    has_mirroring = variation_config["has_mirroring"]
     
     # Initialize LLM client
     client = get_llm_client(model_name)
@@ -195,7 +195,7 @@ def run_style_experiment(
     print(f"Model: {model_name}")
     print(f"Supports logprobs: {client.supports_logprobs}")
     print(f"Dataset: {dataset_name} ({len(items)} prompts)")
-    print(f"Style: {style_name}")
+    print(f"Style: {variation_name}")
     print(f"Strengths: {strengths}")
     print(f"Place: {place}")
     print(f"Has mirroring: {has_mirroring}\n")
@@ -211,10 +211,10 @@ def run_style_experiment(
     completed = 0
     
     for strength in strengths:
-        # Apply style to all prompts
-        styled_prompts = [apply_fn(p, strength, place) for p in prompts]
+        # Apply variation to all prompts
+        varied_prompts = [apply_fn(p, strength, place) for p in prompts]
         
-        for i, (prompt_orig, prompt_styled) in enumerate(zip(prompts, styled_prompts)):
+        for i, (prompt_orig, prompt_varied) in enumerate(zip(prompts, varied_prompts)):
             
             completed += 1
             print(f"  [{completed}/{total}] Strength={strength}, Prompt {i+1}/{len(prompts)}", flush=True)
@@ -227,9 +227,9 @@ def run_style_experiment(
                 return_logprobs=client.supports_logprobs,
             )
             
-            # Generate styled response
-            styled_resp = client.complete(
-                prompt_styled,
+            # Generate varied response
+            varied_resp = client.complete(
+                prompt_varied,
                 max_tokens=max_tokens,
                 temperature=temperature,
                 return_logprobs=client.supports_logprobs,
@@ -238,12 +238,12 @@ def run_style_experiment(
             # Compute metrics
             metrics = compute_all_metrics(
                 baseline_prompt=prompt_orig,
-                styled_prompt=prompt_styled,
+                varied_prompt=prompt_varied,
                 baseline_response=baseline_resp["text"],
-                styled_response=styled_resp["text"],
+                varied_response=varied_resp["text"],
                 baseline_logprobs=baseline_resp["logprobs"],
-                styled_logprobs=styled_resp["logprobs"],
-                style=style_name,
+                varied_logprobs=varied_resp["logprobs"],
+                variation=variation_name,
                 strength=strength,
                 place=place,
                 compute_confidence=client.supports_logprobs,
@@ -265,14 +265,14 @@ def run_style_experiment(
                 
                 # Prompts
                 "prompt_orig": prompt_orig,
-                "prompt_pert": prompt_styled,  # Note: "pert" not "styled"
+                "prompt_pert": prompt_varied,  # Note: "pert" not "varied"
                 
                 # Prompt similarity (only BERTScore, BLEU not applicable to prompts)
                 "bertscore_prompt": metrics.get("bertscore_prompt", np.nan),
                 
                 # Responses
                 "response_orig": baseline_resp["text"],
-                "response_pert": styled_resp["text"],  # Note: "pert" not "styled"
+                "response_pert": varied_resp["text"],  # Note: "pert" not "varied"
                 
                 # Response similarity
                 "bleu": metrics.get("bleu", np.nan),
@@ -302,7 +302,7 @@ def run_style_experiment(
     df = pd.DataFrame(rows)
     
     # Apply delta column computations (relative to baseline strength)
-    df = add_delta_columns(df, style=style_name)
+    df = add_delta_columns(df, variation=variation_name)
     
     # Ensure exact column order to match local experiments
     column_order = [
@@ -344,9 +344,9 @@ def run_style_experiment(
 # ══════════════════════════════════════════════════════════════════════════════
 
 def main():
-    """Parse CLI arguments and orchestrate closed-model experiments across all styles."""
+    """Parse CLI arguments and orchestrate closed-model experiments across all variations."""
     parser = argparse.ArgumentParser(
-        description="Run closed-model experiments across all styles"
+        description="Run closed-model experiments across all variations"
     )
     
     parser.add_argument(
@@ -371,10 +371,10 @@ def main():
     )
     
     parser.add_argument(
-        "--styles",
+        "--variations",
         nargs="+",
         default=None,
-        help="Specific styles to run (default: all)",
+        help="Specific variations to run (default: all)",
     )
     
     parser.add_argument(
@@ -418,15 +418,15 @@ def main():
     # Load config
     config = load_config()
     
-    # Determine which styles to run
-    styles_to_run = args.styles if args.styles else list(STYLE_CONFIGS.keys())
+    # Determine which variations to run
+    variations_to_run = args.variations if args.variations else list(VARIATION_CONFIGS.keys())
     
     print(f"\n{'='*80}")
     print("CLOSED MODEL EXPERIMENTS")
     print(f"{'='*80}")
     print(f"Models: {args.models}")
     print(f"Datasets: {args.datasets}")
-    print(f"Styles: {styles_to_run}")
+    print(f"Variations: {variations_to_run}")
     print(f"Sample size: {args.sample_size}")
     print(f"Max tokens: {args.max_tokens}")
     print(f"Temperature: {args.temperature}")
@@ -447,15 +447,15 @@ def main():
             # Load dataset prompts
             items = load_dataset_prompts(dataset_name, config, args.sample_size)
             
-            for style_name in styles_to_run:
+            for variation_name in variations_to_run:
                 # Create output directory
-                output_dir = create_output_dir(model_name, dataset_name, style_name)
+                output_dir = create_output_dir(model_name, dataset_name, variation_name)
                 
                 # Run experiment
-                df = run_style_experiment(
+                df = run_variation_experiment(
                     model_name=model_name,
                     dataset_name=dataset_name,
-                    style_name=style_name,
+                    variation_name=variation_name,
                     items=items,
                     max_tokens=args.max_tokens,
                     temperature=args.temperature,
@@ -476,10 +476,10 @@ def main():
                 metadata = {
                     "model": model_name,
                     "dataset": dataset_name,
-                    "style": style_name,
+                    "variation": variation_name,
                     "sample_size": args.sample_size,
                     "num_prompts": len(items),
-                    "num_strengths": len(STYLE_CONFIGS[style_name]["strengths"]),
+                    "num_strengths": len(VARIATION_CONFIGS[variation_name]["strengths"]),
                     "total_rows": len(df),
                     "timestamp": datetime.now().isoformat(),
                     "config": {

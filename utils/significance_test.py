@@ -63,7 +63,7 @@ METRIC_MAP = {
 METRICS = list(METRIC_MAP.keys())
 
 # ── Style families ────────────────────────────────────────────────────────────
-STYLE_FAMILIES = {
+VARIATION_FAMILIES = {
     "Polite.": "Politeness",
     "Punct.":  "Punctuation",
     "Spacing": "Spacing",
@@ -71,7 +71,7 @@ STYLE_FAMILIES = {
     "Length":  "Length",
     "Form":    "InterVsImper",
 }
-FAMILY_ORDER = list(STYLE_FAMILIES.keys())
+FAMILY_ORDER = list(VARIATION_FAMILIES.keys())
 
 # ── Open-model display ────────────────────────────────────────────────────────
 OPEN_MODEL_DISPLAY = {
@@ -219,18 +219,18 @@ def compute_sgs(df: pd.DataFrame,
     """
     METRICS_NORM = [m + "_norm" for m in METRICS]
 
-    # Step 3: per (model × dataset × style family)
+    # Step 3: per (model × dataset × variation family)
     family_records = []
     for model in MODEL_ORDER:
         for dataset in DATASET_ORDER:
-            for style_key in FAMILY_ORDER:
+            for variation_key in FAMILY_ORDER:
                 sl = df[
                     (df["model"]   == model)   &
                     (df["dataset"] == dataset) &
-                    (df["style"]   == style_key)
+                    (df["variation"]   == variation_key)
                 ]
                 row = {"model": model, "dataset": dataset,
-                       "family": STYLE_FAMILIES[style_key]}
+                       "family": VARIATION_FAMILIES[variation_key]}
                 for metric, norm_col in zip(METRICS, METRICS_NORM):
                     if sl.empty or norm_col not in sl.columns \
                             or sl[norm_col].isna().all():
@@ -246,7 +246,7 @@ def compute_sgs(df: pd.DataFrame,
 
     df_fam = pd.DataFrame(family_records)
 
-    # Step 4: mean over style families
+    # Step 4: mean over variation families
     sgs4: dict = {}
     for model in MODEL_ORDER:
         sgs4[model] = {}

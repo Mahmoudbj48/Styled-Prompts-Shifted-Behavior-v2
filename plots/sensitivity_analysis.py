@@ -4,9 +4,9 @@ Sensitivity analysis: how many prompts do we need for stable results?
 
 Method
 ------
-All styles are loaded together. For each model and sample size N ∈ {4, 8, 16,
+All variations are loaded together. For each model and sample size N ∈ {4, 8, 16,
 32, 64, 128} we bootstrap 500 random subsets of N prompt-IDs and compute each
-metric's mean over the sampled styled rows.
+metric's mean over the sampled varied rows.
 
 Y-axis: Metric value. One line per model with P10–P90 bootstrap band.
 A vertical dashed line marks the recommended N (smallest N within 15% of the
@@ -16,7 +16,7 @@ Usage
 -----
   python plots/sensitivity_analysis.py
   python plots/sensitivity_analysis.py --out_dir results/sensitivity_analysis --n_bootstrap 500
-  python plots/sensitivity_analysis.py --styles spacing punctuation letter_case
+  python plots/sensitivity_analysis.py --variations spacing punctuation letter_case
 """
 
 import argparse
@@ -31,7 +31,7 @@ import pandas as pd
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 # ── TruthfulQA CSV paths ───────────────────────────────────────────────────────
-STYLE_CSV_PATHS: dict[str, list[str]] = {
+VARIATION_CSV_PATHS: dict[str, list[str]] = {
     "spacing": [
         "results/spacing/run_multi_truthful_qa_20260224_154406/full_results_all_models.csv",  # L3.2-3B/TruthfulQA
         "results/spacing/run_multi_natural_questions_20260416_120651/full_results_all_models.csv",  # L3.2-3B/Natural Questions
@@ -386,8 +386,8 @@ COT_RUN_DIRS: dict[str, list[str]] = {
 }
 
 # ── Silhouette CSV paths (pre-aggregated per model/place/strength) ─────────────
-# Old models: results/safety/{style}/{model}/combined_means_by_model_place_strength.csv
-# New models: results/safety/{style}_activations/summary.csv
+# Old models: results/safety/{variation}/{model}/combined_means_by_model_place_strength.csv
+# New models: results/safety/{variation}_activations/summary.csv
 SILHOUETTE_CSV_PATHS: dict[str, list[str]] = {
     "spacing": [
         "results/safety/spacing/G-2B/combined_means_by_model_place_strength.csv",
@@ -458,7 +458,7 @@ SILHOUETTE_CSV_PATHS: dict[str, list[str]] = {
     ],
 }
 
-# ── New-style safety ASR dirs (results/safety/{style}_asr/asr_outputs/{model}/) ─
+# ── New-layout safety ASR dirs (results/safety/{variation}_asr/asr_outputs/{model}/) ─
 # harmbench_judged_{place}_s{strength}.csv files inside each model subdir
 SAFETY_ASR_STYLE_DIRS: dict[str, str] = {
     "spacing":         "results/safety/spacing_asr/asr_outputs",
@@ -470,7 +470,7 @@ SAFETY_ASR_STYLE_DIRS: dict[str, str] = {
 }
 
 # ── Safety run directories (asr_outputs/*/harmbench_judged_*.csv inside each) ─
-# Only styles that have per-prompt data (not pre-aggregated)
+# Only variations that have per-prompt data (not pre-aggregated)
 SAFETY_RUN_DIRS: dict[str, list[str]] = {
     "politeness": [
         "results/politeness_safety/run_20260226_130811",
@@ -572,22 +572,22 @@ def _to_numeric(df: pd.DataFrame, cols: list[str]) -> pd.DataFrame:
 
 def load_all_styles(
     style_paths: dict[str, list[str]],
-    styles: list[str],
+    variations: list[str],
 ) -> pd.DataFrame:
     """
-    Load every requested style, tag each row with its style name, and return
+    Load every requested variation, tag each row with its variation name, and return
     a single deduplicated DataFrame with columns:
-        model, style, prompt_id, place, strength, <metrics>...
+        model, variation, prompt_id, place, strength, <metrics>...
     """
     dfs = []
-    for style in styles:
-        for rel in style_paths.get(style, []):
+    for variation in variations:
+        for rel in style_paths.get(variation, []):
             p = PROJECT_ROOT / rel
             if not p.exists():
                 continue
             try:
                 df = pd.read_csv(p)
-                df["style"] = style
+                df["variation"] = variation
                 dfs.append(df)
             except Exception as exc:
                 print(f"  [warn] cannot read {p}: {exc}", file=sys.stderr)
@@ -610,9 +610,9 @@ def load_all_styles(
         id_col = "prompt_id" if "prompt_id" in combined.columns else "problem_id"
         group_keys = [k for k in ["model", id_col, "place"] if k in combined.columns]
         parts = []
-        for style_name, sdf in combined.groupby("style"):
+        for variation_name, sdf in combined.groupby("variation"):
             sdf = sdf.copy()
-            baseline_s = BASELINE_STRENGTH.get(style_name, 0)
+            baseline_s = BASELINE_STRENGTH.get(variation_name, 0)
             base = sdf[sdf["strength"] == baseline_s].set_index(group_keys)
             if not base.empty:
                 idx = pd.MultiIndex.from_arrays([sdf[k] for k in group_keys])
@@ -624,32 +624,32 @@ def load_all_styles(
 
     before = len(combined)
     combined = combined.drop_duplicates(
-        subset=["model", "style", "prompt_id", "place", "strength"]
+        subset=["model", "variation", "prompt_id", "place", "strength"]
     )
     print(
         f"\nLoaded {len(combined)} rows ({before - len(combined)} dupes dropped)\n"
-        f"  styles  : {sorted(combined['style'].unique().tolist())}\n"
+        f"  variations  : {sorted(combined['variation'].unique().tolist())}\n"
         f"  models  : {sorted(combined['model'].unique().tolist())}\n"
         f"  prompts : {combined['prompt_id'].nunique()} unique prompt_ids"
     )
     return combined
 
 
-def load_cot_df(styles: list[str]) -> pd.DataFrame:
+def load_cot_df(variations: list[str]) -> pd.DataFrame:
     """
     Load per-problem CoT analysis data from results_with_cot_analysis.csv files.
     Returns a DataFrame with columns:
-        model, style, prompt_id, place, strength, cot_steps, cot_correct_num
+        model, variation, prompt_id, place, strength, cot_steps, cot_correct_num
     """
     dfs = []
-    for style in styles:
-        for run_dir in COT_RUN_DIRS.get(style, []):
+    for variation in variations:
+        for run_dir in COT_RUN_DIRS.get(variation, []):
             p = PROJECT_ROOT / run_dir / "results_with_cot_analysis.csv"
             if not p.exists():
                 continue
             try:
                 df = pd.read_csv(p)
-                df["style"] = style
+                df["variation"] = variation
                 dfs.append(df)
             except Exception as exc:
                 print(f"  [warn] {p}: {exc}", file=sys.stderr)
@@ -673,34 +673,34 @@ def load_cot_df(styles: list[str]) -> pd.DataFrame:
 
     before = len(combined)
     combined = combined.drop_duplicates(
-        subset=["model", "style", "prompt_id", "place", "strength"]
+        subset=["model", "variation", "prompt_id", "place", "strength"]
     )
     print(
         f"\n[CoT] {len(combined)} rows ({before - len(combined)} dupes dropped)\n"
-        f"  styles  : {sorted(combined['style'].unique().tolist())}\n"
+        f"  variations  : {sorted(combined['variation'].unique().tolist())}\n"
         f"  models  : {sorted(combined['model'].unique().tolist())}\n"
         f"  prompts : {combined['prompt_id'].nunique()} unique prompt_ids"
     )
     return combined
 
 
-def load_safety_asr_df(styles: list[str]) -> pd.DataFrame:
+def load_safety_asr_df(variations: list[str]) -> pd.DataFrame:
     """
     Load per-prompt safety data from asr_outputs/*/harmbench_judged_*.csv files.
-    Only available for styles in SAFETY_RUN_DIRS.
+    Only available for variations in SAFETY_RUN_DIRS.
     Returns a DataFrame with columns:
-        model, style, prompt_id, place, strength, unsafe_score
+        model, variation, prompt_id, place, strength, unsafe_score
     """
     dfs = []
-    for style in styles:
-        for run_dir in SAFETY_RUN_DIRS.get(style, []):
+    for variation in variations:
+        for run_dir in SAFETY_RUN_DIRS.get(variation, []):
             asr_dir = PROJECT_ROOT / run_dir / "asr_outputs"
             if not asr_dir.exists():
                 continue
             for judged_file in sorted(asr_dir.glob("*/harmbench_judged_*.csv")):
                 try:
                     df = pd.read_csv(judged_file)
-                    df["style"] = style
+                    df["variation"] = variation
                     dfs.append(df)
                 except Exception as exc:
                     print(f"  [warn] {judged_file}: {exc}", file=sys.stderr)
@@ -720,33 +720,33 @@ def load_safety_asr_df(styles: list[str]) -> pd.DataFrame:
 
     before = len(combined)
     combined = combined.drop_duplicates(
-        subset=["model", "style", "prompt_id", "place", "strength"]
+        subset=["model", "variation", "prompt_id", "place", "strength"]
     )
     print(
         f"\n[Safety] {len(combined)} rows ({before - len(combined)} dupes dropped)\n"
-        f"  styles  : {sorted(combined['style'].unique().tolist())}\n"
+        f"  variations  : {sorted(combined['variation'].unique().tolist())}\n"
         f"  models  : {sorted(combined['model'].unique().tolist())}\n"
         f"  prompts : {combined['prompt_id'].nunique()} unique prompt_ids"
     )
     return combined
 
 
-def load_safety_asr_new_df(styles: list[str]) -> pd.DataFrame:
+def load_safety_asr_new_df(variations: list[str]) -> pd.DataFrame:
     """
-    Load per-prompt safety ASR data from the new-style flat directories:
-        results/safety/{style}_asr/asr_outputs/{model}/harmbench_judged_*.csv
+    Load per-prompt safety ASR data from the new-layout flat directories:
+        results/safety/{variation}_asr/asr_outputs/{model}/harmbench_judged_*.csv
     Returns a DataFrame with columns:
-        model, style, prompt_id, place, strength, unsafe_score
+        model, variation, prompt_id, place, strength, unsafe_score
     """
     dfs = []
-    for style in styles:
-        asr_dir = PROJECT_ROOT / SAFETY_ASR_STYLE_DIRS.get(style, "")
+    for variation in variations:
+        asr_dir = PROJECT_ROOT / SAFETY_ASR_STYLE_DIRS.get(variation, "")
         if not asr_dir.exists():
             continue
         for judged_file in sorted(asr_dir.glob("*/harmbench_judged_*.csv")):
             try:
                 df = pd.read_csv(judged_file)
-                df["style"] = style
+                df["variation"] = variation
                 dfs.append(df)
             except Exception as exc:
                 print(f"  [warn] {judged_file}: {exc}", file=sys.stderr)
@@ -760,37 +760,37 @@ def load_safety_asr_new_df(styles: list[str]) -> pd.DataFrame:
 
     before = len(combined)
     combined = combined.drop_duplicates(
-        subset=["model", "style", "prompt_id", "place", "strength"]
+        subset=["model", "variation", "prompt_id", "place", "strength"]
     )
     print(
         f"\n[Safety-new] {len(combined)} rows ({before - len(combined)} dupes dropped)\n"
-        f"  styles  : {sorted(combined['style'].unique().tolist())}\n"
+        f"  variations  : {sorted(combined['variation'].unique().tolist())}\n"
         f"  models  : {sorted(combined['model'].unique().tolist())}\n"
         f"  prompts : {combined['prompt_id'].nunique()} unique prompt_ids"
     )
     return combined
 
 
-def load_silhouette_df(styles: list[str]) -> pd.DataFrame:
+def load_silhouette_df(variations: list[str]) -> pd.DataFrame:
     """
-    Load pre-aggregated silhouette scores from results/safety/{style}_activations/summary.csv.
+    Load pre-aggregated silhouette scores from results/safety/{variation}_activations/summary.csv.
 
     Returns a DataFrame with columns:
-        model, style, place, strength, silhouette
+        model, variation, place, strength, silhouette
 
-    NOTE: silhouette is already one value per (model, style, place, strength) group —
+    NOTE: silhouette is already one value per (model, variation, place, strength) group —
     there is no per-prompt silhouette. Bootstrap sensitivity will operate over conditions
-    (style × place × strength) rather than prompt_ids.
+    (variation × place × strength) rather than prompt_ids.
     """
     dfs = []
-    for style in styles:
-        for rel in SILHOUETTE_CSV_PATHS.get(style, []):
+    for variation in variations:
+        for rel in SILHOUETTE_CSV_PATHS.get(variation, []):
             p = PROJECT_ROOT / rel
             if not p.exists():
                 continue
             try:
                 df = pd.read_csv(p)
-                df["style"] = style
+                df["variation"] = variation
                 dfs.append(df)
             except Exception as exc:
                 print(f"  [warn] {p}: {exc}", file=sys.stderr)
@@ -803,10 +803,10 @@ def load_silhouette_df(styles: list[str]) -> pd.DataFrame:
     combined = combined.dropna(subset=["silhouette"])
 
     before = len(combined)
-    combined = combined.drop_duplicates(subset=["model", "style", "place", "strength"])
+    combined = combined.drop_duplicates(subset=["model", "variation", "place", "strength"])
     print(
         f"\n[Silhouette] {len(combined)} rows ({before - len(combined)} dupes dropped)\n"
-        f"  styles  : {sorted(combined['style'].unique().tolist())}\n"
+        f"  variations  : {sorted(combined['variation'].unique().tolist())}\n"
         f"  models  : {sorted(combined['model'].unique().tolist())}"
     )
     return combined
@@ -822,17 +822,17 @@ def bootstrap_variance_per_model(
     rng: np.random.Generator,
 ) -> dict[str, dict[int, float]]:
     """
-    Condition-spread check: how much do results vary across (style × place × strength)?
+    Condition-spread check: how much do results vary across (variation × place × strength)?
 
     For each model and subset size N:
       1. Draw n_bootstrap random subsets of N prompt-IDs (with replacement).
-      2. For each subset, compute mean(metric) per (style × place × strength) group.
+      2. For each subset, compute mean(metric) per (variation × place × strength) group.
       3. Compute the std of those group means within this bootstrap → condition spread.
       4. Average that std across all bootstraps → Y.
 
     Interpretation:
-      High Y → metric varies strongly across style/place/strength conditions
-               → the style manipulation has a large measurable effect.
+      High Y → metric varies strongly across variation/place/strength conditions
+               → the variation manipulation has a large measurable effect.
       Low Y  → conditions all produce similar metric values
                → little variation detected at this N (may be noise or true flat effect).
       Stable curve → N is sufficient to detect the real condition spread.
@@ -844,15 +844,15 @@ def bootstrap_variance_per_model(
 
     for model, df_m in df_clean.groupby("model"):
         all_ids = df_m["prompt_id"].unique()
-        df_styled = df_m[df_m["strength"] != 0]
+        df_variationd = df_m[df_m["strength"] != 0]
         size_results: dict[int, float] = {}
         for n in subset_sizes:
             per_bootstrap_stds: list[float] = []
             for _ in range(n_bootstrap):
                 sampled = rng.choice(all_ids, size=n, replace=True)
                 sub_agg = (
-                    df_styled[df_styled["prompt_id"].isin(sampled)]
-                    .groupby(["style", "place", "strength"])[metric]
+                    df_variationd[df_variationd["prompt_id"].isin(sampled)]
+                    .groupby(["variation", "place", "strength"])[metric]
                     .mean()
                 )
                 # std across conditions for this bootstrap sample
@@ -876,7 +876,7 @@ def bootstrap_metric_per_model(
 ) -> dict[str, dict[int, list[float]]]:
     """
     For each model and N, bootstrap N prompt-IDs and compute the mean metric
-    across all styled rows (strength != 0) in the sampled subset.
+    across all variationd rows (strength != 0) in the sampled subset.
 
     Returns {model: {N: [mean_1, mean_2, ...]}}
     """
@@ -885,7 +885,7 @@ def bootstrap_metric_per_model(
 
     for model, df_m in df_clean.groupby("model"):
         all_ids = df_m["prompt_id"].unique()
-        df_styled = df_m[df_m["strength"] != 0]
+        df_variationd = df_m[df_m["strength"] != 0]
         size_results: dict[int, list[float]] = {}
 
         for n in subset_sizes:
@@ -893,7 +893,7 @@ def bootstrap_metric_per_model(
             means: list[float] = []
             for _ in range(n_bootstrap):
                 sampled = rng.choice(all_ids, size=n_sample, replace=False)
-                val = df_styled[df_styled["prompt_id"].isin(sampled)][metric].mean()
+                val = df_variationd[df_variationd["prompt_id"].isin(sampled)][metric].mean()
                 if not np.isnan(val):
                     means.append(float(val))
             size_results[n] = means if means else [np.nan]
@@ -1006,7 +1006,7 @@ def plot_variance_per_metric(
     rec_n = max(chosen_ns) if chosen_ns else max(subset_sizes)
     _add_recommendation_text(fig, [f"Recommended N: {rec_n}"])
     fig.suptitle(
-        "Per-Metric Condition Spread: Std of (style × place × strength) Group Means\n"
+        "Per-Metric Condition Spread: Std of (variation × place × strength) Group Means\n"
         "(High = strong condition effect;  Stable curve = N sufficient to detect it)",
         fontsize=11, y=1.01,
     )
@@ -1306,7 +1306,7 @@ def compute_place_stats(
 ) -> tuple[dict, dict]:
     """
     Returns (means, variances):
-      means     = {model: {place: mean_metric}}   (styled rows only, strength != 0)
+      means     = {model: {place: mean_metric}}   (varied rows only, strength != 0)
       variances = {model: {place: std_of_per_strength_group_means}}
     """
     df_c = df[df["strength"] != 0].dropna(subset=[metric])
@@ -1557,10 +1557,10 @@ def _make_strength_panels(
     ylabel: str,
     suptitle: str,
     out_path: Path,
-    style: str = "",
+    variation: str = "",
     pub: bool = False,
 ) -> None:
-    """Render one panel per metric showing a metric or variance value vs. style strength."""
+    """Render one panel per metric showing a metric or variance value vs. variation strength."""
     metrics = sorted(all_results.keys(), key=_metric_sort_key)
     ncols = 3
     nrows = max(1, (len(metrics) + ncols - 1) // ncols)
@@ -1578,7 +1578,7 @@ def _make_strength_panels(
                               squeeze=False)
 
     forced_s = [0.0]
-    if style == "length_variation" and 1.0 in sorted_strengths:
+    if variation == "length_variation" and 1.0 in sorted_strengths:
         forced_s.append(1.0)
 
     all_selected_strengths: set = set()
@@ -1669,43 +1669,43 @@ def _make_strength_panels(
 
 
 def plot_strength_metric(all_means: dict, sorted_strengths: list, out_path: Path,
-                         style: str = "") -> None:
-    """Plot mean metric value by style strength for the strength ablation study."""
+                         variation: str = "") -> None:
+    """Plot mean metric value by variation strength for the strength ablation study."""
     _make_strength_panels(
         all_means, sorted_strengths, ylabel="metric",
         suptitle=(
             "Strength Ablation: Mean Metric Value by Style Strength\n"
             "(dashed = representative strengths)"
         ),
-        out_path=out_path, style=style,
+        out_path=out_path, variation=variation,
     )
 
 
 def plot_strength_metric_pub(all_means: dict, sorted_strengths: list, out_path: Path,
-                              style: str = "") -> None:
+                              variation: str = "") -> None:
     """Publication-ready version of plot_strength_metric."""
     _make_strength_panels(all_means, sorted_strengths, ylabel="metric", suptitle="",
-                          out_path=out_path, style=style, pub=True)
+                          out_path=out_path, variation=variation, pub=True)
 
 
 def plot_strength_variance(all_variances: dict, sorted_strengths: list, out_path: Path,
-                           style: str = "") -> None:
-    """Plot condition spread (std) by style strength for the strength ablation study."""
+                           variation: str = "") -> None:
+    """Plot condition spread (std) by variation strength for the strength ablation study."""
     _make_strength_panels(
         all_variances, sorted_strengths, ylabel="Condition Spread (Std)",
         suptitle=(
             "Strength Ablation: Condition Spread by Style Strength\n"
             "(dashed = representative strengths)"
         ),
-        out_path=out_path, style=style,
+        out_path=out_path, variation=variation,
     )
 
 
 def plot_strength_variance_pub(all_variances: dict, sorted_strengths: list, out_path: Path,
-                                style: str = "") -> None:
+                                variation: str = "") -> None:
     """Publication-ready version of plot_strength_variance."""
     _make_strength_panels(all_variances, sorted_strengths, ylabel="STD",
-                          suptitle="", out_path=out_path, style=style, pub=True)
+                          suptitle="", out_path=out_path, variation=variation, pub=True)
 
 
 # ── Main ───────────────────────────────────────────────────────────────────────
@@ -1717,8 +1717,8 @@ def main():
     parser.add_argument("--out_dir",     default="results/sensitivity_analysis")
     parser.add_argument("--n_bootstrap", type=int, default=N_BOOTSTRAP)
     parser.add_argument("--seed",        type=int, default=RANDOM_SEED)
-    parser.add_argument("--styles",      nargs="*", default=None,
-                        help="Subset of styles to analyse (default: all)")
+    parser.add_argument("--variations",      nargs="*", default=None,
+                        help="Subset of variations to analyse (default: all)")
     parser.add_argument("--metrics",     nargs="*", default=None,
                         help="Only compute these metrics, e.g. --metrics silhouette unsafe_score")
     parser.add_argument("--models",      nargs="*", default=None,
@@ -1783,11 +1783,11 @@ def main():
             plot_place_variance_pub(all_place_vars, out_dir / "place_ablation_variance_pub.png")
         if strength_results:
             print("\nGenerating strength-ablation plots …")
-            for style, (sm, sv, all_s) in strength_results.items():
-                plot_strength_metric(sm,  all_s, out_dir / f"strength_ablation_metric_{style}.png",  style=style)
-                plot_strength_metric_pub(sm,  all_s, out_dir / f"strength_ablation_metric_{style}_pub.png",  style=style)
-                plot_strength_variance(sv, all_s, out_dir / f"strength_ablation_variance_{style}.png", style=style)
-                plot_strength_variance_pub(sv, all_s, out_dir / f"strength_ablation_variance_{style}_pub.png", style=style)
+            for variation, (sm, sv, all_s) in strength_results.items():
+                plot_strength_metric(sm,  all_s, out_dir / f"strength_ablation_metric_{variation}.png",  variation=variation)
+                plot_strength_metric_pub(sm,  all_s, out_dir / f"strength_ablation_metric_{variation}_pub.png",  variation=variation)
+                plot_strength_variance(sv, all_s, out_dir / f"strength_ablation_variance_{variation}.png", variation=variation)
+                plot_strength_variance_pub(sv, all_s, out_dir / f"strength_ablation_variance_{variation}_pub.png", variation=variation)
         df_numeric = df_summary[df_summary["n"] != "all"]
         if not df_numeric.empty:
             df_numeric = df_numeric.copy()
@@ -1806,7 +1806,7 @@ def main():
         return
 
     rng    = np.random.default_rng(args.seed)
-    styles = args.styles or list(STYLE_CSV_PATHS.keys())
+    variations = args.variations or list(VARIATION_CSV_PATHS.keys())
 
     metrics_filter = set(args.metrics) if args.metrics else None
     models_filter  = set(args.models)  if args.models  else None
@@ -1826,7 +1826,7 @@ def main():
 
     if metrics_filter is None or metrics_filter & (set(CONTINUOUS_METRICS) | {"delta_mirroring_rate"}):
         print("\n=== Loading TruthfulQA data ===")
-        df_tqa = _filter_models(load_all_styles(STYLE_CSV_PATHS, styles))
+        df_tqa = _filter_models(load_all_styles(VARIATION_CSV_PATHS, variations))
         if not df_tqa.empty:
             tqa_metrics = [
                 m for m in list(CONTINUOUS_METRICS) + ["delta_mirroring_rate"]
@@ -1837,7 +1837,7 @@ def main():
 
     # if metrics_filter is None or metrics_filter & set(COT_METRICS):
     #     print("\n=== Loading CoT (GSM8K) data ===")
-    #     df_cot = _filter_models(load_cot_df(styles))
+    #     df_cot = _filter_models(load_cot_df(variations))
     #     if not df_cot.empty:
     #         cot_metrics = [
     #             m for m in COT_METRICS
@@ -1848,12 +1848,12 @@ def main():
 
     # if metrics_filter is None or "unsafe_score" in (metrics_filter or set()):
     #     print("\n=== Loading Safety ASR (old runs) ===")
-    #     df_asr_old = _filter_models(load_safety_asr_df(styles))
+    #     df_asr_old = _filter_models(load_safety_asr_df(variations))
     #     print("\n=== Loading Safety ASR (new runs) ===")
-    #     df_asr_new = _filter_models(load_safety_asr_new_df(styles))
+    #     df_asr_new = _filter_models(load_safety_asr_new_df(variations))
     #     df_asr = pd.concat([df_asr_old, df_asr_new], ignore_index=True) if not df_asr_old.empty or not df_asr_new.empty else pd.DataFrame()
     #     if not df_asr.empty:
-    #         df_asr = df_asr.drop_duplicates(subset=["model", "style", "prompt_id", "place", "strength"])
+    #         df_asr = df_asr.drop_duplicates(subset=["model", "variation", "prompt_id", "place", "strength"])
     #         if _want_metric("unsafe_score") and "unsafe_score" in df_asr.columns:
     #             domain_specs.append((df_asr, ["unsafe_score"], "Safety/ASR"))
 
@@ -1861,7 +1861,7 @@ def main():
     sil_results: dict[str, dict[str, float]] = {}   # model → {place_strength_style: value}
     if _want_metric("silhouette"):
         print("\n=== Loading Silhouette data ===")
-        df_sil = _filter_models(load_silhouette_df(styles))
+        df_sil = _filter_models(load_silhouette_df(variations))
         if not df_sil.empty:
             # Compute condition spread (std across groups) per model — no N dimension
             for model, grp in df_sil.groupby("model"):
@@ -1917,29 +1917,29 @@ def main():
                 all_place_means[metric] = pm
                 all_place_vars[metric] = pv
 
-    # ── Strength ablation (per style, since strength scales differ) ────────────
+    # ── Strength ablation (per variation, since strength scales differ) ────────────
     print("\n=== Computing strength ablation ===")
-    # strength_results[style] = (means_by_metric, vars_by_metric, sorted_strengths)
+    # strength_results[variation] = (means_by_metric, vars_by_metric, sorted_strengths)
     strength_results: dict = {}
-    for style in styles:
+    for variation in variations:
         sm_by_metric: dict = {}
         sv_by_metric: dict = {}
         all_s: list = []
         for df_domain, metrics, _ in domain_specs:
-            if "style" not in df_domain.columns:
+            if "variation" not in df_domain.columns:
                 continue
-            df_style = df_domain[df_domain["style"] == style]
-            if df_style.empty:
+            df_variation = df_domain[df_domain["variation"] == variation]
+            if df_variation.empty:
                 continue
             for metric in metrics:
-                sm, sv, s_vals = compute_strength_stats(df_style, metric)
+                sm, sv, s_vals = compute_strength_stats(df_variation, metric)
                 if sm:
                     sm_by_metric[metric] = sm
                     sv_by_metric[metric] = sv
                     all_s = sorted(set(all_s) | set(s_vals))
         if sm_by_metric and all_s:
-            strength_results[style] = (sm_by_metric, sv_by_metric, all_s)
-            print(f"  {style}: strengths = {all_s}")
+            strength_results[variation] = (sm_by_metric, sv_by_metric, all_s)
+            print(f"  {variation}: strengths = {all_s}")
 
     # ── Save place/strength ablation cache ────────────────────────────────────
     with open(cache_pkl, "wb") as _f:
@@ -2026,11 +2026,11 @@ def main():
 
     if strength_results:
         print("\nGenerating strength-ablation plots …")
-        for style, (sm, sv, all_s) in strength_results.items():
-            plot_strength_metric(sm,  all_s, out_dir / f"strength_ablation_metric_{style}.png",  style=style)
-            plot_strength_metric_pub(sm,  all_s, out_dir / f"strength_ablation_metric_{style}_pub.png",  style=style)
-            plot_strength_variance(sv, all_s, out_dir / f"strength_ablation_variance_{style}.png", style=style)
-            plot_strength_variance_pub(sv, all_s, out_dir / f"strength_ablation_variance_{style}_pub.png", style=style)
+        for variation, (sm, sv, all_s) in strength_results.items():
+            plot_strength_metric(sm,  all_s, out_dir / f"strength_ablation_metric_{variation}.png",  variation=variation)
+            plot_strength_metric_pub(sm,  all_s, out_dir / f"strength_ablation_metric_{variation}_pub.png",  variation=variation)
+            plot_strength_variance(sv, all_s, out_dir / f"strength_ablation_variance_{variation}.png", variation=variation)
+            plot_strength_variance_pub(sv, all_s, out_dir / f"strength_ablation_variance_{variation}_pub.png", variation=variation)
 
     # ── Decision table: best N per metric ────────────────────────────────────
     df_numeric = df_summary[df_summary["n"] != "all"]

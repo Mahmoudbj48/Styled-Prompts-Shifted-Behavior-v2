@@ -1,5 +1,5 @@
 """
-Unified plotting utilities for all styled-prompt experiments.
+Unified plotting utilities for all variationd-prompt experiments.
 
 Reads per-example CSV files or run directories produced by experiment scripts
 and generates line plots, radar plots, ridge plots, and BERTScore preservation
@@ -25,7 +25,7 @@ from matplotlib.lines import Line2D
 
 def apply_neurips_style() -> None:
     """
-    NeurIPS-paper style optimised for \includegraphics[width=0.24\textwidth]{...}.
+    NeurIPS-paper variation optimised for \includegraphics[width=0.24\textwidth]{...}.
     All settings applied globally via rcParams so every subsequent plot inherits them.
     Axes fill most of the figure via subplots.left/right/top/bottom to avoid squishing.
     """
@@ -257,7 +257,7 @@ def plot_metric_lines_general_politeness(
 ) -> None:
     """
     NeurIPS-friendly line plot: metric vs strength (politeness variant).
-    Title uses only dataset_name (no style_name).
+    Title uses only dataset_name (no variation_name).
     Legend placed outside (recommended for NeurIPS to avoid clutter).
     """
     if df_mean.empty or metric not in df_mean.columns:
@@ -373,7 +373,7 @@ def _coords_cache_path(
         *,
         cache_dir: str,
         dataset_name: str,
-        style_name: str,
+        variation_name: str,
         model: str,
         place: str,
         strength: int,
@@ -384,7 +384,7 @@ def _coords_cache_path(
         os.path.expanduser(cache_dir),
         "coords2d",
         _safe_name(dataset_name),
-        _safe_name(style_name),
+        _safe_name(variation_name),
         _safe_name(model),
         _safe_name(place),
         f"strength_{int(strength)}",
@@ -396,7 +396,7 @@ def save_coords2d(
         *,
         cache_dir: str,
         dataset_name: str,
-        style_name: str,
+        variation_name: str,
         model: str,
         place: str,
         strength: int,
@@ -418,7 +418,7 @@ def save_coords2d(
     path = _coords_cache_path(
         cache_dir=cache_dir,
         dataset_name=dataset_name,
-        style_name=style_name,
+        variation_name=variation_name,
         model=model,
         place=place,
         strength=int(strength),
@@ -447,7 +447,7 @@ def load_coords2d(
         *,
         cache_dir: str,
         dataset_name: str,
-        style_name: str,
+        variation_name: str,
         model: str,
         place: str,
         strength: int,
@@ -457,7 +457,7 @@ def load_coords2d(
     path = _coords_cache_path(
         cache_dir=cache_dir,
         dataset_name=dataset_name,
-        style_name=style_name,
+        variation_name=variation_name,
         model=model,
         place=place,
         strength=int(strength),
@@ -633,7 +633,7 @@ def plot_silhouette_vs_strength(
         save_pdf: bool = False,
         pdf_only: bool = False,
 ) -> None:
-    """Plot silhouette (cosine) score vs style strength; thin wrapper around plot_metric_vs_strength."""
+    """Plot silhouette (cosine) score vs variation strength; thin wrapper around plot_metric_vs_strength."""
     plot_metric_vs_strength(
         df_summary=df_summary,
         metric_col="silhouette_cosine",
@@ -747,7 +747,7 @@ def plot_metric_lines_general_surface(
         out_path_png: str,
         *,
         dataset_name: str,
-        style_name: str = "surface_noise",
+        variation_name: str = "surface_noise",
         places: Optional[List[str]] = None,
         models: Optional[List[str]] = None,
         include_title: bool = False,
@@ -757,7 +757,7 @@ def plot_metric_lines_general_surface(
 ) -> None:
     """
     NeurIPS-friendly line plot: metric vs strength (surface noise variant).
-    Title includes both style_name and dataset_name.
+    Title includes both variation_name and dataset_name.
     Legend placed outside (recommended for NeurIPS to avoid clutter).
     """
     if df_mean.empty or metric not in df_mean.columns:
@@ -788,7 +788,7 @@ def plot_metric_lines_general_surface(
             y = sub[metric].values
             ax.plot(strengths_sorted, y, marker="o", label=f"{model}/{place}")
 
-    title = f"{metric} vs strength ({style_name}, {dataset_name})" if include_title else None
+    title = f"{metric} vs strength ({variation_name}, {dataset_name})" if include_title else None
     _format_axis(ax, xlabel="Strength", ylabel=metric, title=title)
 
     if legend_outside:
@@ -816,7 +816,7 @@ def make_all_plots_from_csvs_surface(
         places_filter: Optional[List[str]],
         models_filter: Optional[List[str]],
         dataset_name: str,
-        style_name: str = "surface_noise",
+        variation_name: str = "surface_noise",
         save_pdf: bool = False,
         pdf_only: bool = False,
         include_title: bool = False,
@@ -850,7 +850,7 @@ def make_all_plots_from_csvs_surface(
             strengths=strengths,
             out_path_png=out_png,
             dataset_name=dataset_name,
-            style_name=style_name,
+            variation_name=variation_name,
             places=places_filter,
             models=models_filter,
             include_title=include_title,
@@ -967,7 +967,7 @@ def plot_metric_lines(
         out_path_png: str,
         *,
         dataset_name: str,
-        style_name: str = "structuredness",
+        variation_name: str = "structuredness",
         places: Optional[List[str]] = None,
         models: Optional[List[str]] = None,
         include_title: bool = False,
@@ -1063,7 +1063,7 @@ def plot_metric_lines(
 
     xlabel = "Mode" if is_categorical else "Multiplier"
     ylabel_final = ylabel if ylabel is not None else metric
-    title = f"{metric} vs {xlabel.lower()} ({style_name}, {dataset_name})" if include_title else None
+    title = f"{metric} vs {xlabel.lower()} ({variation_name}, {dataset_name})" if include_title else None
 
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel_final)
@@ -1106,7 +1106,7 @@ def make_all_structuredness_metric_plots(
         places_filter: Optional[List[str]] = None,
         models_filter: Optional[List[str]] = None,
         dataset_name: str,
-        style_name: str = "structuredness",
+        variation_name: str = "structuredness",
         save_pdf: bool = False,
         pdf_only: bool = False,
         include_title: bool = False,
@@ -1114,7 +1114,7 @@ def make_all_structuredness_metric_plots(
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
     Load CSVs, compute means, save combined means, and make NeurIPS-friendly
-    metric-vs-strength line plots for structured style experiments.
+    metric-vs-strength line plots for structured variation experiments.
 
     Returns (df_rows, df_mean).
     """
@@ -1141,7 +1141,7 @@ def make_all_structuredness_metric_plots(
             strengths=strengths,
             out_path_png=out_png,
             dataset_name=dataset_name,
-            style_name=style_name,
+            variation_name=variation_name,
             places=places_filter,
             models=models_filter,
             include_title=include_title,
@@ -1165,7 +1165,7 @@ def plot_length_ratio_boxplot(
 ) -> None:
     """
     NeurIPS-friendly boxplot: for each length multiplier, show the
-    distribution of actual word-count ratio (styled / original).
+    distribution of actual word-count ratio (varied / original).
 
     Red × markers show the requested (ideal) multiplier for reference.
     Black-outlined white diamonds show the mean actual ratio.
@@ -1187,13 +1187,13 @@ def plot_length_ratio_boxplot(
     if d.empty:
         return
 
-    # De-duplicate first: styled prompts are identical across models.
+    # De-duplicate first: varied prompts are identical across models.
     dedup_cols = ["prompt_orig", "prompt_pert", "strength"]
     d = d.drop_duplicates(subset=dedup_cols)
 
     d["orig_words"] = d["prompt_orig"].apply(lambda s: len(str(s).split()))
-    d["styled_words"] = d["prompt_pert"].apply(lambda s: len(str(s).split()))
-    d["length_ratio"] = d["styled_words"] / d["orig_words"].clip(lower=1)
+    d["varied_words"] = d["prompt_pert"].apply(lambda s: len(str(s).split()))
+    d["length_ratio"] = d["varied_words"] / d["orig_words"].clip(lower=1)
 
     multipliers_sorted = sorted(d["strength"].unique())
     if not multipliers_sorted:
@@ -1325,12 +1325,12 @@ def make_structuredness_plots(
 
 PLOT_METRICS_DEFAULT_COT = [
     "num_steps_original",
-    "num_steps_styled",
+    "num_steps_varied",
     "steps_diff",
     "parse_success_original",
-    "parse_success_styled",
+    "parse_success_varied",
     "avg_step_length_original",
-    "avg_step_length_styled",
+    "avg_step_length_varied",
 ]
 
 
@@ -1370,7 +1370,7 @@ def plot_metric_lines_general_cot(
         out_path_png: str,
         *,
         dataset_name: str,
-        style_name: str = "unknown",
+        variation_name: str = "unknown",
         places: Optional[List[str]] = None,
         models: Optional[List[str]] = None,
         include_title: bool = False,
@@ -1407,7 +1407,7 @@ def plot_metric_lines_general_cot(
             y = sub[metric].values
             ax.plot(strengths_sorted, y, marker="o", label=f"{model}/{place}")
 
-    title = f"{metric} vs strength ({style_name}, {dataset_name})" if include_title else None
+    title = f"{metric} vs strength ({variation_name}, {dataset_name})" if include_title else None
     _format_axis(ax, xlabel="Strength", ylabel=metric, title=title)
 
     if legend_outside:
@@ -1435,7 +1435,7 @@ def make_all_plots_from_csvs_cot(
         places_filter: Optional[List[str]],
         models_filter: Optional[List[str]],
         dataset_name: str,
-        style_name: str = "unknown",
+        variation_name: str = "unknown",
         save_pdf: bool = False,
         pdf_only: bool = False,
         include_title: bool = False,
@@ -1465,7 +1465,7 @@ def make_all_plots_from_csvs_cot(
             strengths=strengths,
             out_path_png=out_png,
             dataset_name=dataset_name,
-            style_name=style_name,
+            variation_name=variation_name,
             places=places_filter,
             models=models_filter,
             include_title=include_title,
@@ -1515,10 +1515,10 @@ def metric_display_name(metric: str) -> str:
     return METRIC_DISPLAY.get(metric, metric)
 
 
-# Strength value to exclude from radar averages, keyed by style name.
-# For these styles the "identity" / baseline is not strength=0 or 1 but a
+# Strength value to exclude from radar averages, keyed by variation name.
+# For these variations the "identity" / baseline is not strength=0 or 1 but a
 # specific numeric value that should not bias the aggregate.
-STYLE_BASELINE_STRENGTH: Dict[str, float] = {
+VARIATION_BASELINE_STRENGTH: Dict[str, float] = {
     "politeness":     0.0,
     "spacing":        0.0,
     "letter_case":    0.0,
@@ -1527,23 +1527,23 @@ STYLE_BASELINE_STRENGTH: Dict[str, float] = {
 }
 
 
-STYLE_DISPLAY_NAMES: Dict[str, str] = {
+VARIATION_DISPLAY_NAMES: Dict[str, str] = {
     "politeness": "Social-Tone",
 }
 
 
-def _style_display_name(style_name: Optional[str]) -> str:
-    """Return the display name for a style, with overrides for renamed styles."""
-    if not style_name:
+def _style_display_name(variation_name: Optional[str]) -> str:
+    """Return the display name for a variation, with overrides for renamed variations."""
+    if not variation_name:
         return "Style"
-    return STYLE_DISPLAY_NAMES.get(style_name, style_name.replace("_", " ").title())
+    return VARIATION_DISPLAY_NAMES.get(variation_name, variation_name.replace("_", " ").title())
 
 
-def _style_suffix(style_name: Optional[str]) -> str:
+def _variation_suffix(variation_name: Optional[str]) -> str:
     """Return ' — Style Name' for use in plot titles, or '' if not given."""
-    if not style_name:
+    if not variation_name:
         return ""
-    return " — " + _style_display_name(style_name)
+    return " — " + _style_display_name(variation_name)
 
 
 _DATASET_CANON = {
@@ -1636,7 +1636,7 @@ def metric_dataset_suffix(metric: str, d: pd.DataFrame, dataset_name: Optional[s
 def apply_style():
     """
     Same NeurIPS-paper settings as apply_neurips_style(), used for aggregate
-    (ridge / multi-style line) plots.
+    (ridge / multi-variation line) plots.
     """
     apply_neurips_style()
 
@@ -1819,7 +1819,7 @@ def aggregate_plot_metric_lines(
         save_pdf: bool = False,
         pdf_only: bool = False,
         dataset_name: Optional[str] = None,
-        style_name: Optional[str] = None,
+        variation_name: Optional[str] = None,
 ):
     """Line plot TYPE 1: all models + all places (aggregate variant)."""
     apply_style()
@@ -1888,7 +1888,7 @@ def aggregate_plot_metric_lines(
         ax.set_xticklabels([str(s) for s in strengths_sorted], fontsize=24)
     ax.tick_params(axis="y", labelsize=24)
 
-    _sn = _style_display_name(style_name)
+    _sn = _style_display_name(variation_name)
     _ds = dataset_name or ""
     _scope = f"{_ds} — All Models & Places" if _ds else "All Models & Places"
     ax.set_title(f"{metric_display_name(metric)} vs. {_sn} Strength\n{_scope}", fontsize=26)
@@ -1933,7 +1933,7 @@ def plot_metric_lines_per_model(
         save_pdf: bool = False,
         pdf_only: bool = False,
         dataset_name: Optional[str] = None,
-        style_name: Optional[str] = None,
+        variation_name: Optional[str] = None,
 ):
     """Line plot TYPE 2: per-model (combine all places). One figure per model."""
     apply_style()
@@ -1990,7 +1990,7 @@ def plot_metric_lines_per_model(
         ax.set_xticks(x_values)
         ax.set_xticklabels([str(s) for s in strengths_sorted], fontsize=24)
         ax.tick_params(axis="y", labelsize=24)
-        _sn = _style_display_name(style_name)
+        _sn = _style_display_name(variation_name)
         _ds = dataset_name or ""
         _scope = f"{_ds} — {model}" if _ds else model
         ax.set_title(f"{metric_display_name(metric)} vs. {_sn} Strength\n{_scope}", fontsize=26)
@@ -2022,7 +2022,7 @@ def plot_metric_lines_per_place(
         save_pdf: bool = False,
         pdf_only: bool = False,
         dataset_name: Optional[str] = None,
-        style_name: Optional[str] = None,
+        variation_name: Optional[str] = None,
 ):
     """Line plot TYPE 3: per-place (combine all models). One figure per place."""
     apply_style()
@@ -2088,7 +2088,7 @@ def plot_metric_lines_per_place(
             ax.set_xticks(x_values)
             ax.set_xticklabels([str(s) for s in strengths_sorted], fontsize=24)
         ax.tick_params(axis="y", labelsize=24)
-        _sn = _style_display_name(style_name)
+        _sn = _style_display_name(variation_name)
         _ds = dataset_name or ""
         #upper case placement for better title formatting, e.g. "Prefix" instead of "prefix"
         _place= place.title() if isinstance(place, str) else str(place)
@@ -2147,12 +2147,12 @@ def _radar_setup(ax, labels: List[str], title: Optional[str] = None):
 
 
 def _aggregate_for_radar(df: pd.DataFrame, metric: str,
-                         style_name: Optional[str] = None) -> pd.DataFrame:
+                         variation_name: Optional[str] = None) -> pd.DataFrame:
     """Aggregate a metric by (model, place), excluding the baseline strength row."""
     d = df.copy()
     d[metric] = pd.to_numeric(d[metric], errors="coerce")
-    if style_name is not None and "strength" in d.columns:
-        baseline = STYLE_BASELINE_STRENGTH.get(style_name.lower())
+    if variation_name is not None and "strength" in d.columns:
+        baseline = VARIATION_BASELINE_STRENGTH.get(variation_name.lower())
         if baseline is not None:
             d = d[pd.to_numeric(d["strength"], errors="coerce") != baseline]
     agg = d.groupby(["model", "place"], dropna=False)[metric].mean().reset_index()
@@ -2206,7 +2206,7 @@ def plot_radar_places_axes(df: pd.DataFrame, metric: str, out_path: str,
                            save_pdf: bool = False,
         pdf_only: bool = False,
                            dataset_name: Optional[str] = None,
-                           style_name: Optional[str] = None):
+                           variation_name: Optional[str] = None):
     """Radar Type A: axes=places, colors=models."""
     apply_style()
 
@@ -2218,7 +2218,7 @@ def plot_radar_places_axes(df: pd.DataFrame, metric: str, out_path: str,
 
     ds_suffix = metric_dataset_suffix(metric, df_f, dataset_name=dataset_name)
 
-    agg = _aggregate_for_radar(df_f, metric, style_name=style_name)
+    agg = _aggregate_for_radar(df_f, metric, variation_name=variation_name)
     if agg.empty:
         return
 
@@ -2241,7 +2241,7 @@ def plot_radar_places_axes(df: pd.DataFrame, metric: str, out_path: str,
     fig, ax = plt.subplots(figsize=(10, 10), subplot_kw=dict(polar=True))
     ax.set_position([0.0, 0.0, 0.80, 0.95])
 
-    _sn = _style_display_name(style_name)
+    _sn = _style_display_name(variation_name)
     _ds = dataset_name or ""
     _ds_part = f" — {_ds}" if _ds else ""
     title = f"{metric_display_name(metric)} by Model and Place{_ds_part}\n{_sn} (Avg. over Style Strength)"
@@ -2274,7 +2274,7 @@ def plot_radar_models_axes(df: pd.DataFrame, metric: str, out_path: str,
                            save_pdf: bool = False,
         pdf_only: bool = False,
                            dataset_name: Optional[str] = None,
-                           style_name: Optional[str] = None):
+                           variation_name: Optional[str] = None):
     """Radar Type B: axes=models, colors=places."""
     apply_style()
 
@@ -2286,7 +2286,7 @@ def plot_radar_models_axes(df: pd.DataFrame, metric: str, out_path: str,
 
     ds_suffix = metric_dataset_suffix(metric, df_f, dataset_name=dataset_name)
 
-    agg = _aggregate_for_radar(df_f, metric, style_name=style_name)
+    agg = _aggregate_for_radar(df_f, metric, variation_name=variation_name)
     if agg.empty:
         return
 
@@ -2306,7 +2306,7 @@ def plot_radar_models_axes(df: pd.DataFrame, metric: str, out_path: str,
     fig, ax = plt.subplots(figsize=(10, 10), subplot_kw=dict(polar=True))
     ax.set_position([0.0, 0.0, 0.80, 0.95])
 
-    _sn = _style_display_name(style_name)
+    _sn = _style_display_name(variation_name)
     _ds = dataset_name or ""
     _ds_part = f" — {_ds}" if _ds else ""
     title = f"{metric_display_name(metric)} by Model and Place{_ds_part}\n{_sn} (Avg. over Style Strength)"
@@ -2339,7 +2339,7 @@ def plot_radar_metrics_axes(df: pd.DataFrame, metrics: List[str], out_path: str,
                             save_pdf: bool = False,
         pdf_only: bool = False,
                             dataset_name: Optional[str] = None,
-                            style_name: Optional[str] = None):
+                            variation_name: Optional[str] = None):
     """Radar Type C: axes=metrics, color=model, linestyle=place."""
     apply_style()
 
@@ -2353,8 +2353,8 @@ def plot_radar_metrics_axes(df: pd.DataFrame, metrics: List[str], out_path: str,
     if not keep_metrics:
         return
 
-    # Exclude baseline strength for this style before averaging.
-    baseline = STYLE_BASELINE_STRENGTH.get((style_name or "").lower())
+    # Exclude baseline strength for this variation before averaging.
+    baseline = VARIATION_BASELINE_STRENGTH.get((variation_name or "").lower())
 
     rows = []
     for m in keep_metrics:
@@ -2383,7 +2383,7 @@ def plot_radar_metrics_axes(df: pd.DataFrame, metrics: List[str], out_path: str,
 
     fig, ax = plt.subplots(figsize=(10, 10), subplot_kw=dict(polar=True))
     ax.set_position([0.0, 0.0, 0.80, 0.95])
-    _sn = _style_display_name(style_name)
+    _sn = _style_display_name(variation_name)
     _ds = dataset_name or ""
     _ds_part = f" — {_ds}" if _ds else ""
     title = f"Metric Profile by Model and Place{_ds_part}\n{_sn} (Avg. over Style Strength)"
@@ -2455,7 +2455,7 @@ def plot_metric_ridge(
         pdf_only: bool = False,
         max_strengths: int = 30,
         dataset_name: Optional[str] = None,
-        style_name: Optional[str] = None,
+        variation_name: Optional[str] = None,
 ):
     """
     Ridge plot: for each strength, show the distribution of metric values across (model,place).
@@ -2523,7 +2523,7 @@ def plot_metric_ridge(
 
     models_u = sorted(d["model"].unique().tolist()) if "model" in d.columns else []
     places_u = sorted(d["place"].unique().tolist()) if "place" in d.columns else []
-    _sn = _style_display_name(style_name)
+    _sn = _style_display_name(variation_name)
     _ds = dataset_name or ""
     _ds_part = f" — {_ds}" if _ds else ""
     ax.set_title(
@@ -2556,10 +2556,10 @@ def plot_bertscore_prompt_lines(
         threshold: float = 0.85,
         save_pdf: bool = False,
         pdf_only: bool = False,
-        style_name: Optional[str] = None,
+        variation_name: Optional[str] = None,
 ) -> None:
     """
-    Line plot of BERTScore(prompt) vs style strength across all datasets and places.
+    Line plot of BERTScore(prompt) vs variation strength across all datasets and places.
     Used by experiments/prompt_check.py and utils/run_plots.py --prompt_check.
 
     Args:
@@ -2567,7 +2567,7 @@ def plot_bertscore_prompt_lines(
         out_path_png:  Output PNG path.
         threshold:     Semantic-preservation threshold line drawn on the plot.
         save_pdf:      Also save a .pdf alongside the .png.
-        style_name:    Human-readable style label (e.g. "politeness", "spacing") added
+        variation_name:    Human-readable variation label (e.g. "politeness", "spacing") added
                        to the plot title.  Pass None to omit.
     """
     apply_style()
@@ -2619,9 +2619,9 @@ def plot_bertscore_prompt_lines(
     ax.set_xticklabels([str(x) for x in _ticks], fontsize=24)
     ax.tick_params(axis="y", labelsize=24)
 
-    style_suffix = _style_suffix(style_name)
+    variation_suffix = _variation_suffix(variation_name)
     ax.set_title(
-        f"BERTScore (Prompt) vs. Style Strength (All Datasets and Places){style_suffix}",
+        f"BERTScore (Prompt) vs. Style Strength (All Datasets and Places){variation_suffix}",
         fontsize=26,
     )
 
@@ -2647,7 +2647,7 @@ def plot_bertscore_prompt_lines(
 
 
 # ============================================================
-# Section 8: Multi-style subplot BERTScore prompt preservation
+# Section 8: Multi-variation subplot BERTScore prompt preservation
 # For spacing/letter_case/punctuation (3 subplots) and
 # length_variation/inter_vs_imper (2 subplots)
 # ============================================================
@@ -2712,7 +2712,7 @@ def save_bertscore_legend_image(
 
 def plot_bertscore_prompt_subplots(
         dfs: List[pd.DataFrame],
-        style_titles: List[str],
+        variation_titles: List[str],
         out_path_png: str,
         *,
         threshold: float = 0.85,
@@ -2722,18 +2722,18 @@ def plot_bertscore_prompt_subplots(
         force_xmin_zero: bool = False,
 ) -> None:
     """
-    One figure with N subplots (one per style), all sharing the same visual theme
+    One figure with N subplots (one per variation), all sharing the same visual theme
     as plot_bertscore_prompt_lines.  Each subplot is a line plot of
-    BERTScore(prompt) vs style strength, with lines per dataset × place.
+    BERTScore(prompt) vs variation strength, with lines per dataset × place.
 
     Used for:
       - 3 subplots: spacing | letter_case | punctuation
       - 2 subplots: length_variation | inter_vs_imper
 
     Args:
-        dfs:           List of DataFrames, one per style.  Each must have columns
+        dfs:           List of DataFrames, one per variation.  Each must have columns
                        dataset, place, strength, bertscore_prompt.
-        style_titles:  Human-readable title for each subplot (same length as dfs).
+        variation_titles:  Human-readable title for each subplot (same length as dfs).
         out_path_png:  Output PNG path.
         threshold:     Horizontal dashed threshold line drawn on every subplot.
         save_pdf:      Also save a .pdf alongside the .png.
@@ -2781,7 +2781,7 @@ def plot_bertscore_prompt_subplots(
     if n == 1:
         axes = [axes]
 
-    for ax, df, title in zip(axes, dfs, style_titles):
+    for ax, df, title in zip(axes, dfs, variation_titles):
         d = df.copy()
         d["bertscore_prompt"] = pd.to_numeric(d["bertscore_prompt"], errors="coerce")
         d = d.dropna(subset=["bertscore_prompt"])

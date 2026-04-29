@@ -6,7 +6,7 @@ Compute per-prompt delta metrics relative to the baseline strength.
 For delta_log_prob the sign is flipped (baseline − variant → negate to get
 variant − baseline direction consistent with all other metrics).
 
-Baselines per style:
+Baselines per variation:
     spacing, punctuation, letter_case, politeness  → strength == 0
     length_variation                               → strength == 1.0
     inter_vs_imper                                 → strength == "interrogative"
@@ -26,7 +26,7 @@ import pandas as pd
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
-# Baseline strength value for each style
+# Baseline strength value for each variation
 BASELINE_STRENGTH: dict[str, Union[int, float, str]] = {
     "spacing":        0,
     "punctuation":    0,
@@ -54,7 +54,7 @@ DELTA_COL: dict[str, str] = {
 }
 
 
-def add_delta_columns(df: pd.DataFrame, style: str) -> pd.DataFrame:
+def add_delta_columns(df: pd.DataFrame, variation: str) -> pd.DataFrame:
     """Return *df* with delta columns added (or overwritten).
 
     Groups by (model, <id_col>, place) to find each prompt's baseline row,
@@ -70,7 +70,7 @@ def add_delta_columns(df: pd.DataFrame, style: str) -> pd.DataFrame:
             df["mirroring_verdict"].astype(str).str.strip().str.upper() == "YES"
         ).astype(float)
 
-    baseline_strength = BASELINE_STRENGTH[style]
+    baseline_strength = BASELINE_STRENGTH[variation]
 
     # Detect the ID column
     if "prompt_id" in df.columns:
@@ -88,9 +88,9 @@ def add_delta_columns(df: pd.DataFrame, style: str) -> pd.DataFrame:
 
     # For inter_vs_imper the strength column contains strings; cast to str
     # for a reliable equality check so "interrogative" is found correctly.
-    strength_col = df["strength"].astype(str) if style == "inter_vs_imper" \
+    strength_col = df["strength"].astype(str) if variation == "inter_vs_imper" \
                    else df["strength"]
-    baseline_mask = strength_col == str(baseline_strength) if style == "inter_vs_imper" \
+    baseline_mask = strength_col == str(baseline_strength) if variation == "inter_vs_imper" \
                     else df["strength"] == baseline_strength
 
     base = df[baseline_mask].set_index(group_keys)
@@ -116,37 +116,37 @@ def add_delta_columns(df: pd.DataFrame, style: str) -> pd.DataFrame:
 # ---------------------------------------------------------------------------
 
 def main() -> None:
-    """Backfill delta columns in all existing style CSV files in-place."""
+    """Backfill delta columns in all existing variation CSV files in-place."""
     import sys
     sys.path.insert(0, str(PROJECT_ROOT))
 
-    from plots.sensitivity_analysis import STYLE_CSV_PATHS, COT_RUN_DIRS
+    from plots.sensitivity_analysis import VARIATION_CSV_PATHS, COT_RUN_DIRS
 
     updated = 0
     skipped = 0
 
     # Style CSVs
-    for style, rel_paths in STYLE_CSV_PATHS.items():
+    for variation, rel_paths in VARIATION_CSV_PATHS.items():
         for rel in rel_paths:
             csv_path = PROJECT_ROOT / rel
             if not csv_path.exists():
                 skipped += 1
                 continue
             df = pd.read_csv(csv_path)
-            df = add_delta_columns(df, style)
+            df = add_delta_columns(df, variation)
             df.to_csv(csv_path, index=False)
             updated += 1
             print(f"  updated {csv_path.relative_to(PROJECT_ROOT)}")
 
     # CoT CSVs
-    for style, run_dirs in COT_RUN_DIRS.items():
+    for variation, run_dirs in COT_RUN_DIRS.items():
         for run_dir_rel in run_dirs:
             csv_path = PROJECT_ROOT / run_dir_rel / "results_with_cot_analysis.csv"
             if not csv_path.exists():
                 skipped += 1
                 continue
             df = pd.read_csv(csv_path)
-            df = add_delta_columns(df, style)
+            df = add_delta_columns(df, variation)
             df.to_csv(csv_path, index=False)
             updated += 1
             print(f"  updated {csv_path.relative_to(PROJECT_ROOT)}")

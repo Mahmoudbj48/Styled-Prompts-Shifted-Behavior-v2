@@ -1,5 +1,5 @@
 """
-Style perturbation utilities.
+Variation perturbation utilities.
 
 Functions:
     - apply_spacing: Add random spaces
@@ -471,7 +471,7 @@ def _call_openai(
 ) -> str:
     """
     Lightweight OpenAI wrapper following the same pattern used in
-    utils/metrics.py (judge_style_mirroring_openai).
+    utils/metrics.py (judge_variation_mirroring_openai).
     """
     api_key = os.environ.get(api_key_env)
     if not api_key:
@@ -507,7 +507,7 @@ def _call_gemini(
 ) -> str:
     """
     Lightweight Gemini wrapper following the same pattern used in
-    utils/metrics.py (judge_style_mirroring_gemini).
+    utils/metrics.py (judge_variation_mirroring_gemini).
     """
     api_key = os.environ.get(api_key_env)
     if not api_key:

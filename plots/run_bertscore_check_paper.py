@@ -1,5 +1,5 @@
 """
-Generate BERTScore(prompt) preservation plots for all styles using the 6
+Generate BERTScore(prompt) preservation plots for all variations using the 6
 paper datasets at sample_size=16 (or --sample_size N).
 
 Produces (in --out_dir):
@@ -26,7 +26,7 @@ import yaml
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from utils.data import load_dataset_by_name
-from utils.styles import apply_politeness, apply_spacing, apply_letter_case, apply_punctuation
+from utils.variations import apply_politeness, apply_spacing, apply_letter_case, apply_punctuation
 from plots.plots import (
     plot_bertscore_prompt_subplots,
     save_bertscore_legend_image,
@@ -35,7 +35,7 @@ from plots.plots import (
 
 
 def main():
-    """Compute and save BERTScore prompt-preservation plots for all styles and datasets."""
+    """Compute and save BERTScore prompt-preservation plots for all variations and datasets."""
     parser = argparse.ArgumentParser(
         description="BERTScore prompt-preservation check for the 6 paper datasets."
     )
@@ -53,8 +53,8 @@ def main():
     with open(config_path) as f:
         cfg = yaml.safe_load(f)
 
-    style_levels    = cfg.get("style_levels",    {})
-    style_positions = cfg.get("style_positions", {})
+    variation_levels    = cfg.get("variation_levels",    {})
+    variation_positions = cfg.get("variation_positions", {})
     ds_cfg          = cfg.get("datasets",        {})
 
     # ── 6 paper datasets (display label → (loader_key, extra_kwargs)) ─────────
@@ -139,17 +139,17 @@ def main():
     # Politeness — needed for combined figure (plot 2)
     # ─────────────────────────────────────────────────────────────────────────
     print("[CHECK] Politeness …")
-    pol_strengths = style_levels.get("politeness", list(range(-10, 11, 2)))
-    pol_places    = style_positions.get("politeness", ["prefix", "suffix", "global"])
+    pol_strengths = variation_levels.get("politeness", list(range(-10, 11, 2)))
+    pol_places    = variation_positions.get("politeness", ["prefix", "suffix", "global"])
 
     rows_pol = []
     for label, prompts in dataset_prompts.items():
         for place in pol_places:
             for s in pol_strengths:
-                styled = [apply_politeness(p, int(s), place=place) for p in prompts]
+                varied = [apply_politeness(p, int(s), place=place) for p in prompts]
                 rows_pol.append({
                     "dataset": label, "place": place, "strength": s,
-                    "bertscore_prompt": _bertscore_f1(prompts, styled),
+                    "bertscore_prompt": _bertscore_f1(prompts, varied),
                 })
                 print(f"  politeness | {label} | {place} | s={s}")
     df_pol = pd.DataFrame(rows_pol)
@@ -159,12 +159,12 @@ def main():
     # ─────────────────────────────────────────────────────────────────────────
     print("\n[CHECK] Spacing / Letter Case / Punctuation …")
     det_styles = {
-        "Spacing":      (apply_spacing,      style_levels.get("spacing",     [0, 1, 5, 20, 50, 100]),
-                         style_positions.get("spacing",     ["prefix", "suffix", "global"])),
-        "Letter Case":  (apply_letter_case,  style_levels.get("letter_case", [0, 10, 25, 50, 75, 100]),
-                         style_positions.get("letter_case", ["prefix", "suffix", "global"])),
-        "Punctuation":  (apply_punctuation,  style_levels.get("punctuation", [0, 1, 3, 5, 10, 20]),
-                         style_positions.get("punctuation", ["prefix", "suffix", "global"])),
+        "Spacing":      (apply_spacing,      variation_levels.get("spacing",     [0, 1, 5, 20, 50, 100]),
+                         variation_positions.get("spacing",     ["prefix", "suffix", "global"])),
+        "Letter Case":  (apply_letter_case,  variation_levels.get("letter_case", [0, 10, 25, 50, 75, 100]),
+                         variation_positions.get("letter_case", ["prefix", "suffix", "global"])),
+        "Punctuation":  (apply_punctuation,  variation_levels.get("punctuation", [0, 1, 3, 5, 10, 20]),
+                         variation_positions.get("punctuation", ["prefix", "suffix", "global"])),
     }
 
     dfs_det, titles_det = [], []
@@ -173,10 +173,10 @@ def main():
         for label, prompts in dataset_prompts.items():
             for place in places:
                 for s in strengths:
-                    styled = [apply_fn(p, s, place=place) for p in prompts]
+                    varied = [apply_fn(p, s, place=place) for p in prompts]
                     rows.append({
                         "dataset": label, "place": place, "strength": s,
-                        "bertscore_prompt": _bertscore_f1(prompts, styled),
+                        "bertscore_prompt": _bertscore_f1(prompts, varied),
                     })
                     print(f"  {title} | {label} | {place} | s={s}")
         dfs_det.append(pd.DataFrame(rows))
@@ -184,7 +184,7 @@ def main():
 
     csv1 = os.path.join(args.out_dir, "bertscore_prompt_spacing_case_punct.csv")
     pd.concat(
-        [df.assign(style=t) for df, t in zip(dfs_det, titles_det)], ignore_index=True
+        [df.assign(variation=t) for df, t in zip(dfs_det, titles_det)], ignore_index=True
     ).to_csv(csv1, index=False)
 
     png1 = os.path.join(args.out_dir, "bertscore_prompt_spacing_case_punct.png")
@@ -197,10 +197,10 @@ def main():
     # ─────────────────────────────────────────────────────────────────────────
     # PLOT 2: Politeness | Length Variation | Interrogative vs Imperative
     # ─────────────────────────────────────────────────────────────────────────
-    print("[CHECK] LLM styles (length_variation | inter_vs_imper) from cache …")
-    cache_root   = os.path.join(repo_root, "data", "llm_style_cache")
-    lv_strengths = style_levels.get("length_variation", [0.25, 0.5, 1.0, 1.5, 2.0, 3.0])
-    imper_params = style_levels.get("inter_vs_imper",   ["interrogative", "imperative"])
+    print("[CHECK] LLM variations (length_variation | inter_vs_imper) from cache …")
+    cache_root   = os.path.join(repo_root, "data", "llm_variation_cache")
+    lv_strengths = variation_levels.get("length_variation", [0.25, 0.5, 1.0, 1.5, 2.0, 3.0])
+    imper_params = variation_levels.get("inter_vs_imper",   ["interrogative", "imperative"])
 
     # Map display label → cache subfolder name
     DS_TO_CACHE = {
@@ -212,12 +212,12 @@ def main():
         "HotpotQA":          "hotpot_qa",
     }
 
-    def _load_llm_cache(ds_cache_name, style_prefix, param):
-        """Load cached LLM outputs for a dataset/style/param combination, returning (originals, styled) lists."""
-        fname = os.path.join(cache_root, ds_cache_name, f"{style_prefix}__{param}.jsonl")
+    def _load_llm_cache(ds_cache_name, variation_prefix, param):
+        """Load cached LLM outputs for a dataset/variation/param combination, returning (originals, varied) lists."""
+        fname = os.path.join(cache_root, ds_cache_name, f"{variation_prefix}__{param}.jsonl")
         if not os.path.isfile(fname):
             return [], []
-        origs, styled_list = [], []
+        origs, varied_list = [], []
         with open(fname) as fh:
             for line in fh:
                 line = line.strip()
@@ -225,32 +225,32 @@ def main():
                     continue
                 rec = json.loads(line)
                 origs.append(rec.get("prompt_orig", ""))
-                styled_list.append(rec.get("prompt_styled", ""))
-        return origs, styled_list
+                varied_list.append(rec.get("prompt_varied", ""))
+        return origs, varied_list
 
     rows_lv = []
     for label, ds_cache in DS_TO_CACHE.items():
         for s in lv_strengths:
-            origs, styled_list = _load_llm_cache(ds_cache, "length_variation", s)
+            origs, varied_list = _load_llm_cache(ds_cache, "length_variation", s)
             if not origs:
                 print(f"  [WARN] No cache: length_variation | {label} | s={s} — skipping")
                 continue
             rows_lv.append({
                 "dataset": label, "place": "global", "strength": s,
-                "bertscore_prompt": _bertscore_f1(origs, styled_list),
+                "bertscore_prompt": _bertscore_f1(origs, varied_list),
             })
             print(f"  length_variation | {label} | s={s}")
 
     rows_iv = []
     for label, ds_cache in DS_TO_CACHE.items():
         for param in imper_params:
-            origs, styled_list = _load_llm_cache(ds_cache, "inter_vs_imper", param)
+            origs, varied_list = _load_llm_cache(ds_cache, "inter_vs_imper", param)
             if not origs:
                 print(f"  [WARN] No cache: inter_vs_imper | {label} | param={param} — skipping")
                 continue
             rows_iv.append({
                 "dataset": label, "place": "global", "strength": param,
-                "bertscore_prompt": _bertscore_f1(origs, styled_list),
+                "bertscore_prompt": _bertscore_f1(origs, varied_list),
             })
             print(f"  inter_vs_imper | {label} | param={param}")
 
@@ -259,7 +259,7 @@ def main():
 
     csv2 = os.path.join(args.out_dir, "bertscore_prompt_llm_styles.csv")
     pd.concat(
-        [df.assign(style=t) for df, t in zip(dfs_llm_pol, titles_llm_pol)], ignore_index=True
+        [df.assign(variation=t) for df, t in zip(dfs_llm_pol, titles_llm_pol)], ignore_index=True
     ).to_csv(csv2, index=False)
 
     png2 = os.path.join(args.out_dir, "bertscore_prompt_llm_styles.png")

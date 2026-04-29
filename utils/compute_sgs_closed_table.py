@@ -37,7 +37,7 @@ METRIC_MAP = {
 }
 METRICS = list(METRIC_MAP.keys())
 
-STYLE_FAMILIES = {
+VARIATION_FAMILIES = {
     "Polite.": "Politeness",
     "Punct.":  "Punctuation",
     "Spacing": "Spacing",
@@ -45,7 +45,7 @@ STYLE_FAMILIES = {
     "Length":  "Length",
     "Form":    "InterVsImper",
 }
-FAMILY_ORDER = list(STYLE_FAMILIES.keys())
+FAMILY_ORDER = list(VARIATION_FAMILIES.keys())
 
 # Adjust these to match the exact strings in your aggregated CSV's model column
 MODEL_DISPLAY = {
@@ -76,7 +76,7 @@ df = pd.read_csv(AGG_CSV, low_memory=False)
 print(f"  {len(df):,} rows")
 print(f"  models:   {sorted(df['model'].unique())}")
 print(f"  datasets: {sorted(df['dataset'].unique())}")
-print(f"  styles:   {sorted(df['style'].unique())}")
+print(f"  variations:   {sorted(df['variation'].unique())}")
 
 # Build ordered lists from data (preserving display order where possible)
 MODEL_ORDER   = [m for m in MODEL_DISPLAY if m in df["model"].unique()] + \
@@ -122,24 +122,24 @@ METRICS_NORM = [m + "_norm" for m in METRICS]
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# Step 3 — SGS per (model × dataset × style family)
+# Step 3 — SGS per (model × dataset × variation family)
 #   SGS_k(m, j, F) = mean_i [ std_{v in V_F} [ delta_norm_k(i,v) ] ]
 #   NaN-safe: all-NaN slices return NaN and are excluded downstream
 # ══════════════════════════════════════════════════════════════════════════════
 
-print("\nStep 3 — SGS per (model × dataset × style family) ...")
+print("\nStep 3 — SGS per (model × dataset × variation family) ...")
 family_records = []
 
 for model in MODEL_ORDER:
     for dataset in DATASET_ORDER:
-        for style_key in FAMILY_ORDER:
+        for variation_key in FAMILY_ORDER:
             sl = df[
                 (df["model"]   == model)   &
                 (df["dataset"] == dataset) &
-                (df["style"]   == style_key)
+                (df["variation"]   == variation_key)
             ]
             row = {"model": model, "dataset": dataset,
-                   "family": STYLE_FAMILIES[style_key]}
+                   "family": VARIATION_FAMILIES[variation_key]}
 
             for metric, norm_col in zip(METRICS, METRICS_NORM):
                 if sl.empty or norm_col not in sl.columns \
@@ -161,10 +161,10 @@ print(f"  Saved → sgs_per_family_closed.csv  ({len(df_fam)} rows)")
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# Step 4 — SGS per (model × dataset): mean over style families (NaN-safe)
+# Step 4 — SGS per (model × dataset): mean over variation families (NaN-safe)
 # ══════════════════════════════════════════════════════════════════════════════
 
-print("Step 4 — averaging over style families ...")
+print("Step 4 — averaging over variation families ...")
 sgs4 = {}
 for model in MODEL_ORDER:
     sgs4[model] = {}
