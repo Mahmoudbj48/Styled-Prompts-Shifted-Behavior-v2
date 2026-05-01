@@ -138,6 +138,7 @@ def load_alpaca_hf(
     """
 
     def _pick_split(ds_dict) -> str:
+        """Return the requested split, defaulting to 'train' or the first available split."""
         if split is not None:
             return split
         keys = list(ds_dict.keys())
@@ -148,6 +149,7 @@ def load_alpaca_hf(
         return keys[0]
 
     def _format_alpaca_prompt(ex: Dict[str, Any]) -> str:
+        """Format an Alpaca example dict into a prompt string with optional input field."""
         instr = (ex.get("instruction") or "").strip()
         inp = (ex.get("input") or "").strip()
 
@@ -449,6 +451,7 @@ def load_harmbench_hf(
     """
 
     def _pick_split(ds_dict) -> str:
+        """Return the requested split, defaulting to 'train' or the first available split."""
         if split is not None:
             return split
         keys = list(ds_dict.keys())

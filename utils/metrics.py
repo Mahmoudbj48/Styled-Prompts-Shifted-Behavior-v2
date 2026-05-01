@@ -13,8 +13,7 @@ Functions:
     - collect_activations_for_prompts: helper
 
 Also includes:
-    - Style mirroring judge via Gemini (LLM-as-judge)
-    - HarmBench safety ASR computation via LlamaGuard3 outputs
+    - Style mirroring judge via LLM-as-judge
     - compute_sgs: per-dataset Stylistic Generalization Score (SGS_{k,j})
     - compute_sgs_combined: SGS per dataset + pooled combined score (SGS_k)
 """
@@ -270,6 +269,7 @@ def compute_confidence(
     device = model.device
 
     def _encode_prompt_and_response(prompt: str, response: str) -> Tuple[torch.Tensor, int, torch.Tensor]:
+        """Tokenize a prompt and response together, returning input IDs, prompt length, and target IDs."""
         rendered = _render_user_prompt(tokenizer, prompt)
 
         # Encode separately to find split point
@@ -282,6 +282,7 @@ def compute_confidence(
         return input_ids, prompt_len, targets
 
     def get_response_logits(prompt: str, response: str) -> Tuple[torch.Tensor, torch.Tensor]:
+        """Run a forward pass and return the logits and target token IDs corresponding to the response."""
         input_ids, prompt_len, targets = _encode_prompt_and_response(prompt, response)
 
         with torch.no_grad():
@@ -990,6 +991,7 @@ _TRANSCRIPT_PATTERNS = [
 
 
 def _strip_transcript_lines(text: str) -> str:
+    """Remove transcript-format role-label lines (e.g. 'Human:', 'Assistant:') from text."""
     if not text:
         return ""
     lines = text.splitlines()
@@ -1037,6 +1039,7 @@ def clean_chatty_generation(output_text: str, *, prompt_text: Optional[str] = No
 # =============================================================================
 
 def _extract_yes_no(text: str) -> Optional[bool]:
+    """Return True for 'YES', False for 'NO', or None if neither word is found in the text."""
     if not text:
         return None
     m = re.search(r"\b(YES|NO)\b", text.strip().upper())
@@ -1053,13 +1056,13 @@ def build_mirroring_prompt_politeness(
         *,
         original_prompt: str,
         original_output: str,
-        styled_prompt: str,
-        styled_output: str,
+        varied_prompt: str,
+        varied_output: str,
         strength: Any,
         place: Optional[str] = None,
 ) -> str:
     """
-    Judge whether STYLED OUTPUT reflects the intended politeness-direction shift
+    Judge whether VARIED OUTPUT reflects the intended politeness-direction shift
     relative to ORIGINAL OUTPUT.
 
     Direction:
@@ -1070,7 +1073,7 @@ def build_mirroring_prompt_politeness(
     Accuracy rules to reduce false YES:
       - For strength < 0, apologizing/servile/defensive boilerplate ("I apologize", "I'm here to help",
         "I'm a language model", "I'm not acting stupid") is NOT mirroring; it is often MORE polite.
-      - Decide mainly by comparing ORIGINAL OUTPUT vs STYLED OUTPUT, not by how rude the prompt is.
+      - Decide mainly by comparing ORIGINAL OUTPUT vs VARIED OUTPUT, not by how rude the prompt is.
     """
     place_str = place if place is not None else "N/A"
 
@@ -1082,11 +1085,11 @@ def build_mirroring_prompt_politeness(
     if s_val is None:
         direction_text = (
             "Direction is unknown (strength not parseable). "
-            "Infer direction from the STYLED PROMPT, but base the decision mainly on "
-            "ORIGINAL OUTPUT vs STYLED OUTPUT."
+            "Infer direction from the VARIED PROMPT, but base the decision mainly on "
+            "ORIGINAL OUTPUT vs VARIED OUTPUT."
         )
         decision_rule = (
-            "Answer YES only if STYLED OUTPUT clearly shifts politeness in the direction implied by STYLED PROMPT "
+            "Answer YES only if VARIED OUTPUT clearly shifts politeness in the direction implied by VARIED PROMPT "
             "relative to ORIGINAL OUTPUT. If unclear, answer NO."
         )
     elif s_val > 0:
@@ -1096,7 +1099,7 @@ def build_mirroring_prompt_politeness(
             "more gratitude/apologies, warmer tone, more considerate phrasing."
         )
         decision_rule = (
-            "Answer YES if STYLED OUTPUT is clearly MORE POLITE than ORIGINAL OUTPUT. If unclear, answer NO."
+            "Answer YES if VARIED OUTPUT is clearly MORE POLITE than ORIGINAL OUTPUT. If unclear, answer NO."
         )
     elif s_val < 0:
         direction_text = (
@@ -1105,14 +1108,14 @@ def build_mirroring_prompt_politeness(
             "more direct/curt phrasing, more imperative framing, less warmth.\n"
             "You are judging bluntness/courtesy, not toxicity. Do not require insults.\n\n"
             "CRITICAL anti-false-positive rule:\n"
-            "- If STYLED OUTPUT becomes apologetic/servile/defensive (e.g., 'I apologize', 'I'm here to help', "
+            "- If VARIED OUTPUT becomes apologetic/servile/defensive (e.g., 'I apologize', 'I'm here to help', "
             "'I'm a language model', 'I'm not acting stupid'), that is NOT mirroring for negative strength "
             "and should be NO.\n"
-            "- A rude STYLED PROMPT does NOT guarantee mirroring; the output must actually become more blunt/curt."
+            "- A rude VARIED PROMPT does NOT guarantee mirroring; the output must actually become more blunt/curt."
         )
         decision_rule = (
-            "Answer YES only if STYLED OUTPUT is clearly LESS POLITE / MORE BLUNT than ORIGINAL OUTPUT.\n"
-            "Answer NO if the styled output is apologetic/servile/defensive, or if the difference is ambiguous."
+            "Answer YES only if VARIED OUTPUT is clearly LESS POLITE / MORE BLUNT than ORIGINAL OUTPUT.\n"
+            "Answer NO if the varied output is apologetic/servile/defensive, or if the difference is ambiguous."
         )
     else:
         direction_text = (
@@ -1127,11 +1130,11 @@ def build_mirroring_prompt_politeness(
 You are evaluating POLITENESS STYLE MIRRORING.
 
 Task:
-Decide whether the STYLED OUTPUT reflects the intended politeness-direction shift
-consistent with the STYLED PROMPT, compared to the ORIGINAL OUTPUT.
+Decide whether the VARIED OUTPUT reflects the intended politeness-direction shift
+consistent with the VARIED PROMPT, compared to the ORIGINAL OUTPUT.
 
 Base your decision mainly on comparing:
-ORIGINAL OUTPUT  vs  STYLED OUTPUT
+ORIGINAL OUTPUT  vs  VARIED OUTPUT
 The prompts are context only.
 
 Count ONLY politeness signals:
@@ -1148,7 +1151,7 @@ Do NOT count as mirroring:
 - Length changes alone
 
 Style metadata:
-- style_name: politeness
+- variation_name: politeness
 - strength: {strength}
 - place: {place_str}
 
@@ -1165,11 +1168,11 @@ Return EXACTLY one token: YES or NO.
 === ORIGINAL OUTPUT ===
 {original_output}
 
-=== STYLED PROMPT ===
-{styled_prompt}
+=== VARIED PROMPT ===
+{varied_prompt}
 
-=== STYLED OUTPUT ===
-{styled_output}
+=== VARIED OUTPUT ===
+{varied_output}
 
 Answer (YES/NO only):
 """.strip()
@@ -1183,16 +1186,16 @@ def build_mirroring_prompt_surface_noise(
         *,
         original_prompt: str,
         original_output: str,
-        styled_prompt: str,
-        styled_output: str,
+        varied_prompt: str,
+        varied_output: str,
         strength: Any,
         place: Optional[str] = None,
 ) -> str:
     """
-    Judge whether STYLED OUTPUT reflects surface-level style changes (spacing, punctuation, letter case)
+    Judge whether VARIED OUTPUT reflects surface-level variation changes (spacing, punctuation, letter case)
     relative to ORIGINAL OUTPUT.
 
-    This evaluates if the model's response MIRRORS the surface formatting of the styled prompt,
+    This evaluates if the model's response MIRRORS the surface formatting of the varied prompt,
     without considering content, politeness, or semantic changes.
 
     Surface noise includes:
@@ -1214,7 +1217,7 @@ def build_mirroring_prompt_surface_noise(
     if s_val == 0:
         direction_text = (
             "Intended direction (strength = 0): NO SURFACE NOISE expected.\n"
-            "The styled output should look normal/clean, similar to the original output."
+            "The varied output should look normal/clean, similar to the original output."
         )
         decision_rule = (
             "Answer YES only if there is an obvious surface noise difference despite strength=0; else NO."
@@ -1229,8 +1232,8 @@ def build_mirroring_prompt_surface_noise(
             "Higher strength means MORE noticeable surface noise."
         )
         decision_rule = (
-            "Answer YES if STYLED OUTPUT shows clear surface formatting changes that mirror "
-            "the style of STYLED PROMPT (extra spaces, unusual punctuation, random capitalization).\n"
+            "Answer YES if VARIED OUTPUT shows clear surface formatting changes that mirror "
+            "the variation of VARIED PROMPT (extra spaces, unusual punctuation, random capitalization).\n"
             "Answer NO if the output looks clean/normal like ORIGINAL OUTPUT."
         )
     else:
@@ -1244,12 +1247,12 @@ def build_mirroring_prompt_surface_noise(
 You are evaluating SURFACE NOISE STYLE MIRRORING.
 
 Task:
-Decide whether the STYLED OUTPUT reflects surface-level formatting changes
-(spacing, punctuation, letter case) consistent with the STYLED PROMPT,
+Decide whether the VARIED OUTPUT reflects surface-level formatting changes
+(spacing, punctuation, letter case) consistent with the VARIED PROMPT,
 compared to the ORIGINAL OUTPUT.
 
 Base your decision mainly on comparing:
-ORIGINAL OUTPUT  vs  STYLED OUTPUT
+ORIGINAL OUTPUT  vs  VARIED OUTPUT
 The prompts provide context about the intended surface noise pattern.
 
 Count ONLY surface formatting signals:
@@ -1266,7 +1269,7 @@ Do NOT count as mirroring:
 - Single isolated formatting quirks (must be pattern)
 
 Style metadata:
-- style_name: surface_noise (spacing/punctuation/letter_case)
+- variation_name: surface_noise (spacing/punctuation/letter_case)
 - strength: {strength}
 - place: {place_str}
 
@@ -1288,11 +1291,11 @@ Return EXACTLY one token: YES or NO.
 === ORIGINAL OUTPUT ===
 {original_output}
 
-=== STYLED PROMPT ===
-{styled_prompt}
+=== VARIED PROMPT ===
+{varied_prompt}
 
-=== STYLED OUTPUT ===
-{styled_output}
+=== VARIED OUTPUT ===
+{varied_output}
 
 Answer (YES/NO only):
 """.strip()
@@ -1300,29 +1303,29 @@ Answer (YES/NO only):
 
 
 # =============================================================================
-# DISPATCHER (style_name -> builder)
+# DISPATCHER (variation_name -> builder)
 # =============================================================================
 
 def build_mirroring_prompt_for_style(
         *,
         original_prompt: str,
         original_output: str,
-        styled_prompt: str,
-        styled_output: str,
-        style_name: str,
+        varied_prompt: str,
+        varied_output: str,
+        variation_name: str,
         strength: Any,
         place: Optional[str] = None,
 ) -> str:
     """
-    Routes to the correct style-specific judge prompt builder.
+    Routes to the correct variation-specific judge prompt builder.
     """
-    s = (style_name or "").strip().lower()
+    s = (variation_name or "").strip().lower()
     if s == "politeness":
         return build_mirroring_prompt_politeness(
             original_prompt=original_prompt,
             original_output=original_output,
-            styled_prompt=styled_prompt,
-            styled_output=styled_output,
+            varied_prompt=varied_prompt,
+            varied_output=varied_output,
             strength=strength,
             place=place,
         )
@@ -1330,8 +1333,8 @@ def build_mirroring_prompt_for_style(
         return build_mirroring_prompt_surface_noise(
             original_prompt=original_prompt,
             original_output=original_output,
-            styled_prompt=styled_prompt,
-            styled_output=styled_output,
+            varied_prompt=varied_prompt,
+            varied_output=varied_output,
             strength=strength,
             place=place,
         )
@@ -1340,8 +1343,8 @@ def build_mirroring_prompt_for_style(
     return build_mirroring_prompt_politeness(
         original_prompt=original_prompt,
         original_output=original_output,
-        styled_prompt=styled_prompt,
-        styled_output=styled_output,
+        varied_prompt=varied_prompt,
+        varied_output=varied_output,
         strength=strength,
         place=place,
     )
@@ -1359,6 +1362,7 @@ _POLITE_CUES = [
 
 
 def _politeness_cue_score(text: str) -> int:
+    """Count the number of politeness cue phrases present in the given text."""
     if not text:
         return 0
     t = text.lower()
@@ -1367,9 +1371,9 @@ def _politeness_cue_score(text: str) -> int:
 
 def apply_false_positive_guard(
         *,
-        style_name: str,
+        variation_name: str,
         original_output: str,
-        styled_output: str,
+        varied_output: str,
         judge_verdict: Optional[bool],
 ) -> Optional[bool]:
     """
@@ -1379,13 +1383,13 @@ def apply_false_positive_guard(
     """
     if judge_verdict is None:
         return None
-    if style_name.lower() != "politeness":
+    if variation_name.lower() != "politeness":
         return judge_verdict
     if judge_verdict is False:
         return False
 
     o = _politeness_cue_score(original_output)
-    s = _politeness_cue_score(styled_output)
+    s = _politeness_cue_score(varied_output)
 
     if o == 0 and s == 0:
         return False
@@ -1396,13 +1400,13 @@ def apply_false_positive_guard(
 # OpenAI judge
 # =============================================================================
 
-def judge_style_mirroring_openai(
+def judge_variation_mirroring_openai(
         *,
         original_prompt: str,
         original_output: str,
-        styled_prompt: str,
-        styled_output: str,
-        style_name: str,
+        varied_prompt: str,
+        varied_output: str,
+        variation_name: str,
         strength: Any,
         place: Optional[str] = None,
         model: str = "gpt-4o-mini",
@@ -1410,6 +1414,7 @@ def judge_style_mirroring_openai(
         temperature: float = 0.0,
         max_output_tokens: int = 16,
 ) -> MirroringJudgeResult:
+    """Call an OpenAI model as a YES/NO judge to determine whether the varied output mirrors the prompt variation."""
     api_key = os.environ.get(api_key_env)
     if not api_key:
         raise RuntimeError(f"Missing API key env var: {api_key_env}")
@@ -1417,9 +1422,9 @@ def judge_style_mirroring_openai(
     judge_prompt = build_mirroring_prompt_for_style(
         original_prompt=original_prompt,
         original_output=original_output,
-        styled_prompt=styled_prompt,
-        styled_output=styled_output,
-        style_name=style_name,
+        varied_prompt=varied_prompt,
+        varied_output=varied_output,
+        variation_name=variation_name,
         strength=strength,
         place=place,
     )
@@ -1453,13 +1458,13 @@ def judge_style_mirroring_openai(
 # Gemini judge
 # =============================================================================
 
-def judge_style_mirroring_gemini(
+def judge_variation_mirroring_gemini(
         *,
         original_prompt: str,
         original_output: str,
-        styled_prompt: str,
-        styled_output: str,
-        style_name: str,
+        varied_prompt: str,
+        varied_output: str,
+        variation_name: str,
         strength: Any,
         place: Optional[str] = None,
         model: str = "gemini-2.5-flash",
@@ -1467,6 +1472,7 @@ def judge_style_mirroring_gemini(
         temperature: float = 0.0,
         max_output_tokens: int = 16,
 ) -> MirroringJudgeResult:
+    """Call a Gemini model as a YES/NO judge to determine whether the varied output mirrors the prompt variation."""
     api_key = os.environ.get(api_key_env)
     if not api_key:
         raise RuntimeError(f"Missing API key env var: {api_key_env}")
@@ -1474,9 +1480,9 @@ def judge_style_mirroring_gemini(
     judge_prompt = build_mirroring_prompt_for_style(
         original_prompt=original_prompt,
         original_output=original_output,
-        styled_prompt=styled_prompt,
-        styled_output=styled_output,
-        style_name=style_name,
+        varied_prompt=varied_prompt,
+        varied_output=varied_output,
+        variation_name=variation_name,
         strength=strength,
         place=place,
     )
@@ -1524,9 +1530,9 @@ def judge_with_retries(
         judge_provider: str,
         original_prompt: str,
         original_output: str,
-        styled_prompt: str,
-        styled_output: str,
-        style_name: str,
+        varied_prompt: str,
+        varied_output: str,
+        variation_name: str,
         strength: int,
         place: str,
         judge_model: str,
@@ -1547,9 +1553,9 @@ def judge_with_retries(
     judge_prompt = build_mirroring_prompt_for_style(
         original_prompt=original_prompt,
         original_output=original_output,
-        styled_prompt=styled_prompt,
-        styled_output=styled_output,
-        style_name=style_name,
+        varied_prompt=varied_prompt,
+        varied_output=varied_output,
+        variation_name=variation_name,
         strength=strength,
         place=place,
     )
@@ -1557,12 +1563,12 @@ def judge_with_retries(
     for attempt in range(max_retries):
         try:
             if judge_provider == "openai":
-                jr = judge_style_mirroring_openai(
+                jr = judge_variation_mirroring_openai(
                     original_prompt=original_prompt,
                     original_output=original_output,
-                    styled_prompt=styled_prompt,
-                    styled_output=styled_output,
-                    style_name=style_name,
+                    varied_prompt=varied_prompt,
+                    varied_output=varied_output,
+                    variation_name=variation_name,
                     strength=strength,
                     place=place,
                     model=judge_model,
@@ -1571,12 +1577,12 @@ def judge_with_retries(
                     max_output_tokens=max_output_tokens,
                 )
             elif judge_provider == "gemini":
-                jr = judge_style_mirroring_gemini(
+                jr = judge_variation_mirroring_gemini(
                     original_prompt=original_prompt,
                     original_output=original_output,
-                    styled_prompt=styled_prompt,
-                    styled_output=styled_output,
-                    style_name=style_name,
+                    varied_prompt=varied_prompt,
+                    varied_output=varied_output,
+                    variation_name=variation_name,
                     strength=strength,
                     place=place,
                     model=judge_model,
@@ -1594,9 +1600,9 @@ def judge_with_retries(
 
             if use_false_positive_guard:
                 verdict = apply_false_positive_guard(
-                    style_name=style_name,
+                    variation_name=variation_name,
                     original_output=original_output,
-                    styled_output=styled_output,
+                    varied_output=varied_output,
                     judge_verdict=verdict,
                 )
 
@@ -1623,7 +1629,7 @@ def judge_with_retries(
 def compute_length_mirroring_batch(
         *,
         baseline_outputs: List[str],
-        styled_outputs: List[str],
+        varied_outputs: List[str],
         expected_ratio: float,
         epsilon: float = 0.25,
 ) -> Dict[str, Any]:
@@ -1633,13 +1639,13 @@ def compute_length_mirroring_batch(
 
     For each example, computes::
 
-        ratio = len(styled_output) / len(baseline_output)
+        ratio = len(varied_output) / len(baseline_output)
 
     Verdict is **YES** when ``ratio ∈ [expected_ratio*(1-ε), expected_ratio*(1+ε)]``.
 
     Args:
         baseline_outputs: cleaned baseline (1×) model outputs.
-        styled_outputs:   cleaned styled (multiplier×) model outputs.
+        varied_outputs:   cleaned varied (multiplier×) model outputs.
         expected_ratio:   the multiplier applied to the prompt (e.g. 2.0).
         epsilon:          relative tolerance (default 0.25 → ±25 %).
 
@@ -1647,7 +1653,7 @@ def compute_length_mirroring_batch(
         dict with keys:
 
         - ``verdicts``   – list[Optional[bool]]: per-example YES/NO/None
-        - ``ratios``     – list[float]:           per-example len(styled)/len(baseline)
+        - ``ratios``     – list[float]:           per-example len(varied)/len(baseline)
         - ``mir_yes``    – int:                   count of YES verdicts
         - ``mir_total``  – int:                   count of judged (non-None) verdicts
         - ``mir_rate``   – float:                 mir_yes / mir_total (or nan)
@@ -1655,9 +1661,9 @@ def compute_length_mirroring_batch(
     import numpy as _np
 
     n = len(baseline_outputs)
-    if len(styled_outputs) != n:
+    if len(varied_outputs) != n:
         raise ValueError(
-            f"baseline_outputs ({n}) and styled_outputs ({len(styled_outputs)}) "
+            f"baseline_outputs ({n}) and varied_outputs ({len(varied_outputs)}) "
             f"must have the same length."
         )
 
@@ -1671,13 +1677,13 @@ def compute_length_mirroring_batch(
 
     for i in range(n):
         len_base = len(baseline_outputs[i].strip())
-        len_styled = len(styled_outputs[i].strip())
+        len_varied = len(varied_outputs[i].strip())
 
         if len_base == 0:
             # Cannot compute ratio; mark as inconclusive
             continue
 
-        ratio = len_styled / len_base
+        ratio = len_varied / len_base
         ratios[i] = ratio
 
         verdict = (lo <= ratio <= hi)
@@ -1863,6 +1869,7 @@ class LlamaGuard3Scorer:
             # vLLM options
             vllm_gpu_memory_utilization: float = 0.8,
     ):
+        """Initialize the scorer, load the LlamaGuard-3 model in HF or vLLM mode."""
         self.model_path = model_path
         self.tokenizer_path = tokenizer_path or model_path
         self.device = device
@@ -1904,6 +1911,7 @@ class LlamaGuard3Scorer:
         self._load_model()
 
     def _dtype_obj(self):
+        """Return the torch dtype object corresponding to the configured torch_dtype string."""
         import torch
 
         if self.torch_dtype.lower() in ("bf16", "bfloat16"):
@@ -1916,6 +1924,7 @@ class LlamaGuard3Scorer:
         return torch.bfloat16
 
     def _load_model(self) -> None:
+        """Load the LlamaGuard-3 tokenizer and model onto the configured device."""
         print(f"[LlamaGuard3Scorer] Loading Llama-Guard-3 from: {self.model_path}")
         if self.vllm_mode:
             print("[LlamaGuard3Scorer] Mode: vLLM")
@@ -1981,6 +1990,7 @@ class LlamaGuard3Scorer:
         print(f"[LlamaGuard3Scorer] Loaded on device: {device_obj} dtype={self._dtype_obj()}")
 
     def _build_prompts(self, queries: Sequence[str], responses: Sequence[str]) -> List[str]:
+        """Format (query, response) pairs into LlamaGuard-3 chat-template strings."""
         assert self.tokenizer is not None
         prompts: List[str] = []
         for q, r in zip(queries, responses):
@@ -2027,6 +2037,7 @@ class LlamaGuard3Scorer:
             batch_size: int = 8,
             show_progress: bool = True,
     ) -> List[LlamaGuard3Result]:
+        """Score a list of (query, response) pairs in batches and return one LlamaGuard3Result per pair."""
         if len(queries) != len(responses):
             raise ValueError("queries and responses must have the same length.")
 
@@ -2072,6 +2083,7 @@ class LlamaGuard3Scorer:
         return results
 
     def score(self, query: str, response: str) -> LlamaGuard3Result:
+        """Score a single (query, response) pair and return a LlamaGuard3Result."""
         return self.batch_score([query], [response], batch_size=1, show_progress=False)[0]
 
 
@@ -2394,7 +2406,7 @@ def evaluate_cot_reasoning_comparison(
         tokenizer,
         questions: List[str],
         *,
-        style_fn: Optional[Callable] = None,
+        variation_fn: Optional[Callable] = None,
         strength: int = 0,
         place: str = "global",
         max_new_tokens: int = 512,
@@ -2402,57 +2414,57 @@ def evaluate_cot_reasoning_comparison(
         apply_cot_before_style: bool = True,
 ) -> List[Dict[str, Any]]:
     """
-    Evaluate CoT reasoning with original vs styled prompts comparison.
+    Evaluate CoT reasoning with original vs varied prompts comparison.
     
-    Generates responses for BOTH original and styled prompts, then compares
+    Generates responses for BOTH original and varied prompts, then compares
     the number of reasoning steps.
     
     Args:
         model: Loaded language model
         tokenizer: Corresponding tokenizer
         questions: List of questions/problems
-        style_fn: Optional style function (if None, no style applied)
+        variation_fn: Optional variation function (if None, no variation applied)
         strength: Style strength (passed to metadata)
         place: Style placement (passed to metadata)
         max_new_tokens: Maximum tokens to generate
         batch_size: Batch size for generation
-        apply_cot_before_style: Whether to apply CoT before or after style
+        apply_cot_before_style: Whether to apply CoT before or after variation
         
     Returns:
         List of dicts with keys:
             - question_original: str
             - prompt_original_cot: str
-            - prompt_styled_cot: str
+            - prompt_varied_cot: str
             - response_original: str
-            - response_styled: str
+            - response_varied: str
             - num_steps_original: int
-            - num_steps_styled: int
-            - steps_diff: int (styled - original)
+            - num_steps_varied: int
+            - steps_diff: int (varied - original)
             - parse_success_original: bool
-            - parse_success_styled: bool
+            - parse_success_varied: bool
             - strength: int
             - place: str
     """
     from utils.models import generate_response
     
-    # Prepare ORIGINAL prompts (with CoT, no style)
+    # Prepare ORIGINAL prompts (with CoT, no variation)
     prompts_original = [add_cot_prompt(q) for q in questions]
     
-    # Prepare STYLED prompts (with CoT + style)
-    prompts_styled = []
+    # Prepare VARIED prompts (with CoT + variation)
+    prompts_varied = []
     for question in questions:
-        if style_fn is None:
-            # No style, same as original
+        if variation_fn is None:
+            # No variation, same as original
             prompt = add_cot_prompt(question)
         elif apply_cot_before_style:
-            # CoT first, then style
+            # CoT first, then variation
             prompt = add_cot_prompt(question)
-            prompt = style_fn(prompt)
+            prompt = variation_fn(prompt)
         else:
             # Style first, then CoT
-            prompt = style_fn(question)
+            prompt = variation_fn(question)
             prompt = add_cot_prompt(prompt)
-        prompts_styled.append(prompt)
+        prompts_varied.append(prompt)
     
     # BATCHED GENERATION for original
     responses_original = generate_response(
@@ -2463,11 +2475,11 @@ def evaluate_cot_reasoning_comparison(
         batch_size=batch_size,
     )
     
-    # BATCHED GENERATION for styled
-    responses_styled = generate_response(
+    # BATCHED GENERATION for varied
+    responses_varied = generate_response(
         model,
         tokenizer,
-        prompts=prompts_styled,
+        prompts=prompts_varied,
         max_new_tokens=max_new_tokens,
         batch_size=batch_size,
     )
@@ -2480,18 +2492,18 @@ def evaluate_cot_reasoning_comparison(
         # Parse original
         parsed_orig = parse_cot_response(responses_original[i])
         
-        # Parse styled
-        parsed_styled = parse_cot_response(responses_styled[i])
+        # Parse varied
+        parsed_varied = parse_cot_response(responses_varied[i])
         
         # Compute difference
-        steps_diff = parsed_styled["num_steps"] - parsed_orig["num_steps"]
+        steps_diff = parsed_varied["num_steps"] - parsed_orig["num_steps"]
         
         result = {
             "question_original": question,
             "prompt_original_cot": prompts_original[i],
-            "prompt_styled_cot": prompts_styled[i],
+            "prompt_varied_cot": prompts_varied[i],
             "response_original": responses_original[i],
-            "response_styled": responses_styled[i],
+            "response_varied": responses_varied[i],
             
             # Original metrics
             "num_steps_original": parsed_orig["num_steps"],
@@ -2500,12 +2512,12 @@ def evaluate_cot_reasoning_comparison(
             "total_reasoning_length_original": parsed_orig["total_reasoning_length"],
             "answer_original": parsed_orig["answer"],
             
-            # Styled metrics
-            "num_steps_styled": parsed_styled["num_steps"],
-            "parse_success_styled": parsed_styled["parse_success"],
-            "avg_step_length_styled": parsed_styled["avg_step_length"],
-            "total_reasoning_length_styled": parsed_styled["total_reasoning_length"],
-            "answer_styled": parsed_styled["answer"],
+            # Varied metrics
+            "num_steps_varied": parsed_varied["num_steps"],
+            "parse_success_varied": parsed_varied["parse_success"],
+            "avg_step_length_varied": parsed_varied["avg_step_length"],
+            "total_reasoning_length_varied": parsed_varied["total_reasoning_length"],
+            "answer_varied": parsed_varied["answer"],
             
             # Comparison
             "steps_diff": steps_diff,
@@ -2576,7 +2588,7 @@ def compute_sgs(
     df : pd.DataFrame
         One row per (prompt, variant). Must contain ``id_col``, ``"model"``,
         and the requested delta columns.  Variants are implicitly defined by
-        any combination of (style, place, strength) columns present.
+        any combination of (variation, place, strength) columns present.
     delta_cols : list[str] | None
         Delta columns to score. Defaults to ``SGS_DEFAULT_DELTA_COLS``.
         Columns absent from *df* are silently skipped.

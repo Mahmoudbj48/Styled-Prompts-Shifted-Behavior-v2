@@ -15,7 +15,7 @@ Pipeline (same for both methods, only Step 2 differs):
   Step 1: load delta columns from aggregated_full_results.csv
   Step 2: normalize each delta globally per metric
   Step 3: SGS(m, j, F) = mean_i [ std_{v in V_F} [ delta_norm(i,v) ] ]
-  Step 4: SGS(m, j)    = mean over 6 style families  (equal weight)
+  Step 4: SGS(m, j)    = mean over 6 variation families  (equal weight)
   Step 5: SGS(m)       = mean over 6 datasets         (equal weight)
 """
 
@@ -37,8 +37,8 @@ METRIC_MAP = {
 }
 METRICS = list(METRIC_MAP.keys())
 
-# ── Style family keys (match 'style' column in CSV) ──────────────────────────
-STYLE_FAMILIES = {
+# ── Variation family keys (match 'variation' column in CSV) ──────────────────────────
+VARIATION_FAMILIES = {
     "Polite.": "Politeness",
     "Punct.":  "Punctuation",
     "Spacing": "Spacing",
@@ -46,7 +46,7 @@ STYLE_FAMILIES = {
     "Length":  "Length",
     "Form":    "InterVsImper",
 }
-FAMILY_ORDER = list(STYLE_FAMILIES.keys())
+FAMILY_ORDER = list(VARIATION_FAMILIES.keys())
 
 # ── Model short notations ─────────────────────────────────────────────────────
 MODEL_DISPLAY = {
@@ -85,7 +85,7 @@ df_base = pd.read_csv(AGG_CSV, low_memory=False)
 print(f"  {len(df_base):,} rows")
 print(f"  models:   {sorted(df_base['model'].unique())}")
 print(f"  datasets: {sorted(df_base['dataset'].unique())}")
-print(f"  styles:   {sorted(df_base['style'].unique())}")
+print(f"  variations:   {sorted(df_base['variation'].unique())}")
 
 for col in METRICS:
     if col not in df_base.columns:
@@ -133,18 +133,18 @@ def compute_sgs(df: pd.DataFrame) -> tuple[dict, dict, pd.DataFrame]:
     """
     METRICS_NORM = [m + "_norm" for m in METRICS]
 
-    # ── Step 3: SGS per (model × dataset × style family) ─────────────────────
+    # ── Step 3: SGS per (model × dataset × variation family) ─────────────────────
     family_records = []
     for model in MODEL_ORDER:
         for dataset in DATASET_ORDER:
-            for style_key in FAMILY_ORDER:
+            for variation_key in FAMILY_ORDER:
                 sl = df[
                     (df["model"]   == model)   &
                     (df["dataset"] == dataset) &
-                    (df["style"]   == style_key)
+                    (df["variation"]   == variation_key)
                 ]
                 row = {"model": model, "dataset": dataset,
-                       "family": STYLE_FAMILIES[style_key]}
+                       "family": VARIATION_FAMILIES[variation_key]}
                 for metric, norm_col in zip(METRICS, METRICS_NORM):
                     if sl.empty or norm_col not in sl.columns \
                             or sl[norm_col].isna().all():
@@ -160,7 +160,7 @@ def compute_sgs(df: pd.DataFrame) -> tuple[dict, dict, pd.DataFrame]:
 
     df_family = pd.DataFrame(family_records)
 
-    # ── Step 4: mean over style families (equal weight) ───────────────────────
+    # ── Step 4: mean over variation families (equal weight) ───────────────────────
     sgs4 = {}
     for model in MODEL_ORDER:
         sgs4[model] = {}

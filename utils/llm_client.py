@@ -62,6 +62,7 @@ class BaseLLMClient(ABC):
     """Shared interface for all LLM backends."""
 
     def __init__(self, model: str):
+        """Store the model name and initialize supports_logprobs to False."""
         self.model = model
         self.supports_logprobs = False  # Override in subclasses
 
@@ -89,9 +90,10 @@ class OpenAIClient(BaseLLMClient):
     """OpenAI Chat Completions client (GPT-4o, GPT-5.x, o-series, …)."""
 
     def __init__(self, model: str, api_key_env: str = "OPENAI_API_KEY"):
+        """Initialize OpenAI client with the given model and API key environment variable."""
         super().__init__(model)
         self.supports_logprobs = True
-        
+
         if not _HAS_OPENAI:
             raise ImportError("openai package not installed. Run: pip install openai")
         
@@ -110,6 +112,7 @@ class OpenAIClient(BaseLLMClient):
         max_retries: int = 3,
         retry_delay: float = 2.0,
     ) -> Dict[str, Any]:
+        """Send a chat completion request to OpenAI and return text, token count, and logprobs."""
         # gpt-5.x and o-series require max_completion_tokens; gpt-4.x uses max_tokens
         token_key = (
             "max_completion_tokens"
@@ -165,9 +168,10 @@ class GeminiClient(BaseLLMClient):
     """Google Gemini client (gemini-1.5-pro, gemini-2.0-flash, gemini-2.5-flash, …)."""
 
     def __init__(self, model: str, api_key_env: str = "GEMINI_API_KEY"):
+        """Initialize Gemini client, using the new google.genai API when available."""
         super().__init__(model)
         self.supports_logprobs = _GEMINI_NEW_API  # Only new API supports logprobs
-        
+
         if not _HAS_GEMINI:
             raise ImportError(
                 "google-generativeai not installed. Run: pip install google-generativeai"
@@ -196,7 +200,7 @@ class GeminiClient(BaseLLMClient):
         max_retries: int = 3,
         retry_delay: float = 2.0,
     ) -> Dict[str, Any]:
-        
+        """Send a generation request to Gemini and return text, token count, and logprobs."""
         for attempt in range(1, max_retries + 1):
             try:
                 if _GEMINI_NEW_API:
@@ -292,9 +296,10 @@ class ClaudeClient(BaseLLMClient):
     """Anthropic Claude client (claude-sonnet-4-5, claude-sonnet-4-6, claude-opus-4-6, …)."""
 
     def __init__(self, model: str, api_key_env: str = "ANTHROPIC_API_KEY"):
+        """Initialize Claude client with the given model and Anthropic API key."""
         super().__init__(model)
         self.supports_logprobs = False  # Claude doesn't support logprobs
-        
+
         if not _HAS_CLAUDE:
             raise ImportError(
                 "anthropic package not installed. Run: pip install anthropic"
@@ -315,7 +320,7 @@ class ClaudeClient(BaseLLMClient):
         max_retries: int = 3,
         retry_delay: float = 2.0,
     ) -> Dict[str, Any]:
-        
+        """Send a messages request to Claude and return text and token count (no logprobs)."""
         for attempt in range(1, max_retries + 1):
             try:
                 resp = self._client.messages.create(

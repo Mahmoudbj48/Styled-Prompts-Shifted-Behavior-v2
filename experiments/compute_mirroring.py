@@ -13,7 +13,7 @@ Outputs:
 Run:
     python experiments/compute_mirroring.py \
         --input results/spacing/run_multi_truthful_qa_20260223_221345/full_results_all_models.csv \
-        --style spacing
+        --variation spacing
 """
 
 import argparse
@@ -35,7 +35,7 @@ from utils.surface_mirroring_detector import detect_mirroring
 
 def compute_mirroring_for_csv(
         csv_path: str,
-        style: str) -> str:
+        variation: str) -> str:
     """
     Add mirroring detection to existing CSV.
     
@@ -47,7 +47,7 @@ def compute_mirroring_for_csv(
     run_dir = os.path.dirname(csv_path)
     
     print(f"\n{'='*80}")
-    print(f"Computing Mirroring Rates: {style.upper()}")
+    print(f"Computing Mirroring Rates: {variation.upper()}")
     print(f"{'='*80}")
     print(f"Input CSV: {csv_path}")
     print(f"Run directory: {run_dir}")
@@ -70,7 +70,7 @@ def compute_mirroring_for_csv(
     for idx, row in tqdm(df.iterrows(), total=len(df), desc="Processing"):
         
         original_response = str(row.get('response_orig', ''))
-        styled_response = str(row.get('response_pert', ''))
+        varied_response = str(row.get('response_pert', ''))
         strength = int(row.get('strength', 0))
         place = str(row.get('place', 'global'))
         
@@ -78,8 +78,8 @@ def compute_mirroring_for_csv(
         try:
             is_mirroring, debug_info = detect_mirroring(
                 original_response=original_response,
-                styled_response=styled_response,
-                style=style,
+                varied_response=varied_response,
+                variation=variation,
                 strength=strength,
                 place=place
             )
@@ -138,7 +138,7 @@ def compute_mirroring_for_csv(
 
 def plot_mirroring_rates(
         csv_path: str,
-        style: str):
+        variation: str):
     """
     Create mirroring rate plot (similar to other metric plots).
     Saves in plots_metrics/ subdirectory.
@@ -197,7 +197,7 @@ def plot_mirroring_rates(
         if place_idx == 0:
             ax.legend(loc='best', fontsize=10)
     
-    plt.suptitle(f'Mirroring Rate: {style.title()}', fontsize=16, fontweight='bold', y=1.02)
+    plt.suptitle(f'Mirroring Rate: {variation.title()}', fontsize=16, fontweight='bold', y=1.02)
     plt.tight_layout()
     
     # Save plot with descriptive name
@@ -213,7 +213,7 @@ def main():
     parser = argparse.ArgumentParser(description="Compute mirroring rates for surface noise experiments")
     parser.add_argument("--input", type=str, required=True,
                         help="Path to CSV file (e.g., full_results_all_models.csv)")
-    parser.add_argument("--style", type=str, required=True,
+    parser.add_argument("--variation", type=str, required=True,
                         choices=["spacing", "punctuation", "letter_case"],
                         help="Style type")
     
@@ -222,13 +222,13 @@ def main():
     # Compute mirroring
     updated_csv = compute_mirroring_for_csv(
         csv_path=args.input,
-        style=args.style
+        variation=args.variation
     )
     
     # Create plot
     plot_mirroring_rates(
         csv_path=updated_csv,
-        style=args.style
+        variation=args.variation
     )
     
     run_dir = os.path.dirname(updated_csv)

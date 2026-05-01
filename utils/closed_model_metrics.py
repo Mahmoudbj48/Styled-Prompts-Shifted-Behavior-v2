@@ -13,10 +13,10 @@ Usage:
     
     metrics = compute_all_metrics(
         baseline_response="Paris is the capital.",
-        styled_response="Paris is  the  capital.",
+        varied_response="Paris is  the  capital.",
         baseline_logprobs=[...],
-        styled_logprobs=[...],
-        style="spacing",
+        varied_logprobs=[...],
+        variation="spacing",
         strength=50,
         place="global",
     )
@@ -78,16 +78,16 @@ def compute_confidence_from_logprobs(logprobs: Optional[List[float]]) -> Dict[st
 
 def compute_response_similarity(
     baseline_response: str,
-    styled_response: str,
+    varied_response: str,
     device: str = "cpu",
 ) -> Dict[str, float]:
     """
-    Compute BLEU and BERTScore between baseline and styled responses.
+    Compute BLEU and BERTScore between baseline and varied responses.
     """
-    bleu = compute_bleu(baseline_response, styled_response)
+    bleu = compute_bleu(baseline_response, varied_response)
     bertscore = compute_bertscore(
         baseline_response, 
-        styled_response, 
+        varied_response, 
         device=device,
     )
     
@@ -99,10 +99,10 @@ def compute_response_similarity(
 
 def compute_mirroring(
     baseline_prompt: str,
-    styled_prompt: str,
+    varied_prompt: str,
     baseline_response: str,
-    styled_response: str,
-    style: str,
+    varied_response: str,
+    variation: str,
     strength: Any,
     place: str,
     *,
@@ -115,27 +115,27 @@ def compute_mirroring(
     """
     Compute mirroring detection.
     
-    For surface styles (spacing, punctuation, letter_case): Use rule-based detector
-    For semantic styles (politeness, length_variation): Use LLM-as-judge
+    For surface variations (spacing, punctuation, letter_case): Use rule-based detector
+    For semantic variations (politeness, length_variation): Use LLM-as-judge
     For inter_vs_imper: Return N/A (no mirroring analysis)
     """
-    style_lower = style.lower()
+    variation_lower = variation.lower()
     
     # Inter vs Imper has no mirroring analysis
-    if style_lower == "inter_vs_imper":
+    if variation_lower == "inter_vs_imper":
         return {
             "mirroring_verdict": "",
             "mirroring_judge_raw": "",
             "mirroring_rate": np.nan,
         }
     
-    # Surface styles: Rule-based detection
-    if style_lower in ("spacing", "punctuation", "letter_case"):
+    # Surface variations: Rule-based detection
+    if variation_lower in ("spacing", "punctuation", "letter_case"):
         try:
             is_mirroring, debug_info = detect_mirroring(
                 original_response=baseline_response,
-                styled_response=styled_response,
-                style=style_lower,
+                varied_response=varied_response,
+                variation=variation_lower,
                 strength=int(strength),
                 place=place,
             )
@@ -152,16 +152,16 @@ def compute_mirroring(
                 "mirroring_rate": np.nan,
             }
     
-    # Semantic styles: LLM-as-judge
-    if style_lower in ("politeness", "length_variation"):
+    # Semantic variations: LLM-as-judge
+    if variation_lower in ("politeness", "length_variation"):
         try:
             verdict, judge_raw, _ = judge_with_retries(
                 judge_provider=judge_provider,
                 original_prompt=baseline_prompt,
                 original_output=baseline_response,
-                styled_prompt=styled_prompt,
-                styled_output=styled_response,
-                style_name=style_lower,
+                varied_prompt=varied_prompt,
+                varied_output=varied_response,
+                variation_name=variation_lower,
                 strength=strength,
                 place=place,
                 judge_model=judge_model,
@@ -184,22 +184,22 @@ def compute_mirroring(
                 "mirroring_rate": np.nan,
             }
     
-    # Unknown style
+    # Unknown variation
     return {
         "mirroring_verdict": "",
-        "mirroring_judge_raw": f"Unknown style: {style}",
+        "mirroring_judge_raw": f"Unknown variation: {variation}",
         "mirroring_rate": np.nan,
     }
 
 
 def compute_all_metrics(
     baseline_prompt: str,
-    styled_prompt: str,
+    varied_prompt: str,
     baseline_response: str,
-    styled_response: str,
+    varied_response: str,
     baseline_logprobs: Optional[List[float]],
-    styled_logprobs: Optional[List[float]],
-    style: str,
+    varied_logprobs: Optional[List[float]],
+    variation: str,
     strength: Any,
     place: str,
     *,
@@ -220,11 +220,11 @@ def compute_all_metrics(
     """
     metrics = {}
     
-    # Prompt similarity (BERTScore between baseline and styled prompts)
+    # Prompt similarity (BERTScore between baseline and varied prompts)
     if compute_similarity:
         prompt_bertscore = compute_bertscore(
             baseline_prompt,
-            styled_prompt,
+            varied_prompt,
             device=device,
         )
         metrics["bertscore_prompt"] = float(prompt_bertscore)
@@ -232,33 +232,33 @@ def compute_all_metrics(
     # Confidence (if logprobs available)
     if compute_confidence:
         baseline_conf = compute_confidence_from_logprobs(baseline_logprobs)
-        styled_conf = compute_confidence_from_logprobs(styled_logprobs)
+        varied_conf = compute_confidence_from_logprobs(varied_logprobs)
         
-        # Compute delta_mean_confidence (styled - baseline)
-        if np.isfinite(baseline_conf["mean_confidence"]) and np.isfinite(styled_conf["mean_confidence"]):
-            metrics["delta_mean_confidence"] = styled_conf["mean_confidence"] - baseline_conf["mean_confidence"]
+        # Compute delta_mean_confidence (varied - baseline)
+        if np.isfinite(baseline_conf["mean_confidence"]) and np.isfinite(varied_conf["mean_confidence"]):
+            metrics["delta_mean_confidence"] = varied_conf["mean_confidence"] - baseline_conf["mean_confidence"]
         else:
             metrics["delta_mean_confidence"] = np.nan
         
-        # Compute delta_entropy (styled - baseline) 
-        if np.isfinite(baseline_conf["entropy"]) and np.isfinite(styled_conf["entropy"]):
-            metrics["delta_entropy"] = styled_conf["entropy"] - baseline_conf["entropy"]
+        # Compute delta_entropy (varied - baseline) 
+        if np.isfinite(baseline_conf["entropy"]) and np.isfinite(varied_conf["entropy"]):
+            metrics["delta_entropy"] = varied_conf["entropy"] - baseline_conf["entropy"]
         else:
             metrics["delta_entropy"] = np.nan
     
     # Response similarity
     if compute_similarity:
-        sim = compute_response_similarity(baseline_response, styled_response, device=device)
+        sim = compute_response_similarity(baseline_response, varied_response, device=device)
         metrics.update(sim)
     
     # Mirroring
     if compute_mirroring_metric:
         mir = compute_mirroring(
             baseline_prompt=baseline_prompt,
-            styled_prompt=styled_prompt,
+            varied_prompt=varied_prompt,
             baseline_response=baseline_response,
-            styled_response=styled_response,
-            style=style,
+            varied_response=varied_response,
+            variation=variation,
             strength=strength,
             place=place,
             judge_provider=judge_provider,

@@ -5,20 +5,20 @@ Aggregates CSV outputs from one or more experiment runs and produces:
   - Line plots (metric vs. strength, grouped by model or placement)
   - Ridge plots (distribution of metric values across strengths)
   - Radar plots (multi-metric, multi-model or multi-placement summaries)
-  - Multi-style radar plots comparing all style families across models
-  - BERTScore prompt-preservation plots across datasets and styles
+  - Multi-variation radar plots comparing all variation families across models
+  - BERTScore prompt-preservation plots across datasets and variations
 
 Modes (select via flags):
   Default          – line/ridge/radar plots from --runs CSV files
-  --prompt_check   – BERTScore prompt-preservation check across all styles/datasets
-  --multi_style_radar – radar plots aggregating multiple style families
+  --prompt_check   – BERTScore prompt-preservation check across all variations/datasets
+  --multi_style_radar – radar plots aggregating multiple variation families
 
 Usage:
   python utils/run_plots.py \
       --runs results/politeness/run_*/summary.csv \
       --out_dir results/combined_plots/polite \
       --dataset_name "TruthfulQA" \
-      --style_name "politeness"
+      --variation_name "politeness"
 
   python utils/run_plots.py \
       --runs results/combined_plots/safety_polite/combined_means_by_model_place_strength.csv \
@@ -30,18 +30,18 @@ Usage:
       --row_runs results/length_variation/run_a/full_results_all_models.csv results/length_variation/run_b/full_results_all_models.csv \
       --out_dir results/combined_plots/length_variation \
       --dataset_name "TruthfulQA" \
-      --style_name "length_variation"
+      --variation_name "length_variation"
 
   # BERTScore prompt-preservation check (no --runs needed):
   python utils/run_plots.py \
       --prompt_check \
       --out_dir results/prompt_bertscore_check
 
-  # Multi-style radar plots (Type A + Type B, 3 subplots each):
+  # Multi-variation radar plots (Type A + Type B, 3 subplots each):
   python utils/run_plots.py \
       --multi_style_radar \
       --out_dir results/combined_plots/radar_multi_style \
-      --style_data \
+      --variation_data \
           "politeness:results/politeness/run_a/summary.csv,results/politeness/run_b/summary.csv" \
           "spacing:results/spacing/run_x/summary.csv" \
           "letter_case:results/letter_case/run_y/summary.csv" \
@@ -53,11 +53,11 @@ Plots produced in --prompt_check mode (strengths & datasets from config.yaml):
   - bertscore_prompt_politeness.png        : line plot, all datasets × places
   - bertscore_prompt_spacing_case_punct.png: 3 subplots (spacing|letter_case|punctuation)
   - bertscore_prompt_llm_styles.png        : 2 subplots (length_variation|inter_vs_imper)
-                                             uses data/llm_style_cache/ for LLM styles
+                                             uses data/llm_variation_cache/ for LLM variations
   - *.csv: raw BERTScore means per subplot
 
 Extra behavior:
-  - When --style_name length_variation is used, this script also tries to
+  - When --variation_name length_variation is used, this script also tries to
     generate the structuredness-specific plots from utils.plots under
     <out_dir>/plots_structuredness.
   - Those extra plots use --row_runs if provided; otherwise they fall back to --runs.
@@ -75,7 +75,7 @@ def _maybe_generate_structuredness_plots(args) -> None:
     For length_variation runs, also generate plots_structuredness/
     length_ratio_boxplot.png when row-level CSVs are available.
     """
-    if args.style_name != "length_variation":
+    if args.variation_name != "length_variation":
         return
 
     from plots.plots import load_results_csvs, make_structuredness_plots
@@ -127,7 +127,7 @@ def _run_prompt_check(args) -> None:
     config.yaml in the repo root.
 
     Plot 1 – bertscore_prompt_politeness.png
-        Single line plot, all datasets × places.  Politeness style only.
+        Single line plot, all datasets × places.  Politeness variation only.
 
     Plot 2 – bertscore_prompt_spacing_case_punct.png
         One figure, 3 side-by-side subplots: spacing | letter_case | punctuation.
@@ -135,7 +135,7 @@ def _run_prompt_check(args) -> None:
 
     Plot 3 – bertscore_prompt_llm_styles.png
         One figure, 2 side-by-side subplots: length_variation | inter_vs_imper.
-        Prompts and their styled counterparts loaded from data/llm_style_cache/.
+        Prompts and their varied counterparts loaded from data/llm_variation_cache/.
     """
     import json
     import numpy as np
@@ -143,7 +143,7 @@ def _run_prompt_check(args) -> None:
     import yaml
 
     from utils.data import load_dataset_by_name
-    from utils.styles import apply_politeness, apply_spacing, apply_letter_case, apply_punctuation
+    from utils.variations import apply_politeness, apply_spacing, apply_letter_case, apply_punctuation
     from plots.plots import (
         plot_bertscore_prompt_lines,
         plot_bertscore_prompt_subplots,
@@ -158,8 +158,8 @@ def _run_prompt_check(args) -> None:
     with open(config_path) as f:
         cfg = yaml.safe_load(f)
 
-    style_levels = cfg.get("style_levels", {})
-    style_positions = cfg.get("style_positions", {})
+    variation_levels = cfg.get("variation_levels", {})
+    variation_positions = cfg.get("variation_positions", {})
     dataset_cfgs = cfg.get("datasets", {})
 
     # Datasets available in config (with their settings).
@@ -215,12 +215,14 @@ def _run_prompt_check(args) -> None:
     print("[BERT] Ready.\n")
 
     def _bertscore_f1(refs, cands):
+        """Compute mean BERTScore F1 between reference and candidate lists."""
         with torch.inference_mode():
             _, _, F1 = _scorer.score(cands, refs, batch_size=bert_batch, verbose=False)
         return float(np.nanmean(F1.cpu().numpy()))
 
     # ── Dataset loader ────────────────────────────────────────────────────────
     def _get_prompt(item):
+        """Extract a prompt string from a dataset item dict or raw string."""
         if isinstance(item, dict):
             v = item.get("question") or item.get("prompt") or item.get("instruction") or item.get("text")
             if v is not None:
@@ -230,6 +232,7 @@ def _run_prompt_check(args) -> None:
         return str(item).strip()
 
     def _load_prompts(ds_name):
+        """Load and format prompts for the named dataset using the configured sample size."""
         dc = DATASETS_CFG[ds_name]
         n = sample_size_override if sample_size_override is not None else dc["sample_size"]
         kwargs = {"sample_size": n, "seed": seed}
@@ -252,17 +255,17 @@ def _run_prompt_check(args) -> None:
     # PLOT 1: Politeness — single line plot, all datasets × places
     # ─────────────────────────────────────────────────────────────────────────
     print("[PROMPT CHECK] Plot 1: politeness …")
-    pol_strengths = style_levels.get("politeness", list(range(-10, 11, 2)))
-    pol_places    = style_positions.get("politeness", ["prefix", "suffix", "global"])
+    pol_strengths = variation_levels.get("politeness", list(range(-10, 11, 2)))
+    pol_places    = variation_positions.get("politeness", ["prefix", "suffix", "global"])
 
     rows_pol = []
     for ds, prompts in dataset_prompts.items():
         for place in pol_places:
             for s in pol_strengths:
-                styled = [apply_politeness(p, int(s), place=place) for p in prompts]
+                varied = [apply_politeness(p, int(s), place=place) for p in prompts]
                 rows_pol.append({
                     "dataset": ds, "place": place, "strength": s,
-                    "bertscore_prompt": _bertscore_f1(prompts, styled),
+                    "bertscore_prompt": _bertscore_f1(prompts, varied),
                 })
                 print(f"  politeness | {ds} | {place} | s={s}")
 
@@ -277,33 +280,33 @@ def _run_prompt_check(args) -> None:
     # ─────────────────────────────────────────────────────────────────────────
     print("[PROMPT CHECK] Plot 2: spacing | letter_case | punctuation …")
     det_styles = {
-        "spacing":     (apply_spacing,      style_levels.get("spacing",     [0, 1, 5, 20, 50, 100]),
-                        style_positions.get("spacing",     ["prefix", "suffix", "global"])),
-        "letter_case": (apply_letter_case,  style_levels.get("letter_case", [0, 10, 25, 50, 75, 100]),
-                        style_positions.get("letter_case", ["prefix", "suffix", "global"])),
-        "punctuation": (apply_punctuation,  style_levels.get("punctuation", [0, 1, 3, 5, 10, 20]),
-                        style_positions.get("punctuation", ["prefix", "suffix", "global"])),
+        "spacing":     (apply_spacing,      variation_levels.get("spacing",     [0, 1, 5, 20, 50, 100]),
+                        variation_positions.get("spacing",     ["prefix", "suffix", "global"])),
+        "letter_case": (apply_letter_case,  variation_levels.get("letter_case", [0, 10, 25, 50, 75, 100]),
+                        variation_positions.get("letter_case", ["prefix", "suffix", "global"])),
+        "punctuation": (apply_punctuation,  variation_levels.get("punctuation", [0, 1, 3, 5, 10, 20]),
+                        variation_positions.get("punctuation", ["prefix", "suffix", "global"])),
     }
 
     dfs_det = []
     titles_det = []
-    for style_key, (apply_fn, strengths, places) in det_styles.items():
+    for variation_key, (apply_fn, strengths, places) in det_styles.items():
         rows = []
         for ds, prompts in dataset_prompts.items():
             for place in places:
                 for s in strengths:
-                    styled = [apply_fn(p, s, place=place) for p in prompts]
+                    varied = [apply_fn(p, s, place=place) for p in prompts]
                     rows.append({
                         "dataset": ds, "place": place, "strength": s,
-                        "bertscore_prompt": _bertscore_f1(prompts, styled),
+                        "bertscore_prompt": _bertscore_f1(prompts, varied),
                     })
-                    print(f"  {style_key} | {ds} | {place} | s={s}")
+                    print(f"  {variation_key} | {ds} | {place} | s={s}")
         dfs_det.append(pd.DataFrame(rows))
-        titles_det.append(style_key.replace("_", " ").title())
+        titles_det.append(variation_key.replace("_", " ").title())
 
     csv2 = os.path.join(args.out_dir, "bertscore_prompt_spacing_case_punct.csv")
     pd.concat(
-        [df.assign(style=t) for df, t in zip(dfs_det, titles_det)],
+        [df.assign(variation=t) for df, t in zip(dfs_det, titles_det)],
         ignore_index=True,
     ).to_csv(csv2, index=False)
 
@@ -318,16 +321,16 @@ def _run_prompt_check(args) -> None:
     # PLOT 3: Length Variation | Inter vs Imper — 2-subplot figure (from cache)
     # ─────────────────────────────────────────────────────────────────────────
     print("[PROMPT CHECK] Plot 3: length_variation | inter_vs_imper (from cache) …")
-    cache_root = os.path.join(repo_root, "data", "llm_style_cache")
-    lv_strengths  = style_levels.get("length_variation", [0.25, 0.5, 1.0, 1.5, 2.0, 3.0])
-    imper_params  = style_levels.get("inter_vs_imper",   ["interrogative", "imperative"])
+    cache_root = os.path.join(repo_root, "data", "llm_variation_cache")
+    lv_strengths  = variation_levels.get("length_variation", [0.25, 0.5, 1.0, 1.5, 2.0, 3.0])
+    imper_params  = variation_levels.get("inter_vs_imper",   ["interrogative", "imperative"])
 
-    def _load_llm_cache(ds_name, style_prefix, param):
-        """Load (orig, styled) pairs from the jsonl cache file for a given style param."""
-        fname = os.path.join(cache_root, ds_name, f"{style_prefix}__{param}.jsonl")
+    def _load_llm_cache(ds_name, variation_prefix, param):
+        """Load (orig, varied) pairs from the jsonl cache file for a given variation param."""
+        fname = os.path.join(cache_root, ds_name, f"{variation_prefix}__{param}.jsonl")
         if not os.path.isfile(fname):
             return [], []
-        origs, styled_list = [], []
+        origs, varied_list = [], []
         with open(fname) as fh:
             for line in fh:
                 line = line.strip()
@@ -335,8 +338,8 @@ def _run_prompt_check(args) -> None:
                     continue
                 rec = json.loads(line)
                 origs.append(rec.get("prompt_orig", ""))
-                styled_list.append(rec.get("prompt_styled", ""))
-        return origs, styled_list
+                varied_list.append(rec.get("prompt_varied", ""))
+        return origs, varied_list
 
     dfs_llm = []
     titles_llm = []
@@ -345,13 +348,13 @@ def _run_prompt_check(args) -> None:
     rows_lv = []
     for ds in DATASETS_CFG:
         for s in lv_strengths:
-            origs, styled_list = _load_llm_cache(ds, "length_variation", s)
+            origs, varied_list = _load_llm_cache(ds, "length_variation", s)
             if not origs:
                 print(f"  [WARN] No cache for length_variation | {ds} | s={s} — skipping")
                 continue
             rows_lv.append({
                 "dataset": ds, "place": "global", "strength": s,
-                "bertscore_prompt": _bertscore_f1(origs, styled_list),
+                "bertscore_prompt": _bertscore_f1(origs, varied_list),
             })
             print(f"  length_variation | {ds} | s={s}")
     dfs_llm.append(pd.DataFrame(rows_lv))
@@ -361,25 +364,25 @@ def _run_prompt_check(args) -> None:
     rows_iv = []
     for ds in DATASETS_CFG:
         for param in imper_params:
-            origs, styled_list = _load_llm_cache(ds, "inter_vs_imper", param)
+            origs, varied_list = _load_llm_cache(ds, "inter_vs_imper", param)
             if not origs:
                 print(f"  [WARN] No cache for inter_vs_imper | {ds} | param={param} — skipping")
                 continue
             rows_iv.append({
                 "dataset": ds, "place": "global", "strength": param,
-                "bertscore_prompt": _bertscore_f1(origs, styled_list),
+                "bertscore_prompt": _bertscore_f1(origs, varied_list),
             })
             print(f"  inter_vs_imper | {ds} | param={param}")
     dfs_llm.append(pd.DataFrame(rows_iv))
     titles_llm.append("Interrogative vs Imperative")
 
-    # Combine politeness + LLM styles into one figure
+    # Combine politeness + LLM variations into one figure
     dfs_llm_pol    = [df_pol] + dfs_llm
     titles_llm_pol = ["Politeness"] + titles_llm
 
     csv3 = os.path.join(args.out_dir, "bertscore_prompt_llm_styles.csv")
     pd.concat(
-        [df.assign(style=t) for df, t in zip(dfs_llm_pol, titles_llm_pol)],
+        [df.assign(variation=t) for df, t in zip(dfs_llm_pol, titles_llm_pol)],
         ignore_index=True,
     ).to_csv(csv3, index=False)
 
@@ -406,18 +409,19 @@ def _run_prompt_check(args) -> None:
 
 def _run_multi_style_radar(args) -> None:
     """
-    Generate multi-style radar plots (Type A and Type B) using radar_plots.py.
+    Generate multi-variation radar plots (Type A and Type B) using radar_plots.py.
 
-    Expects args.style_data entries like:
+    Expects args.variation_data entries like:
         politeness:results/politeness/run_a/summary.csv,results/politeness/run_b/summary.csv
         spacing:results/spacing/run_x/summary.csv
     """
     from plots.radar_plots import make_multi_style_radar_plots
 
-    if not args.style_data:
-        raise SystemExit("[ERROR] --style_data is required in --multi_style_radar mode.")
+    if not args.variation_data:
+        raise SystemExit("[ERROR] --variation_data is required in --multi_style_radar mode.")
 
     def _parse_style_entries(entries):
+        """Parse 'STYLE:path1,path2' CLI entries into a dict mapping variation name to CSV path list."""
         result = {}
         if not entries:
             return result
@@ -426,34 +430,35 @@ def _run_multi_style_radar(args) -> None:
                 raise SystemExit(
                     f"[ERROR] entries must be 'STYLE:path1,path2,...'. Got: {entry!r}"
                 )
-            style_key, paths_str = entry.split(":", 1)
+            variation_key, paths_str = entry.split(":", 1)
             paths = [p.strip() for p in paths_str.split(",") if p.strip()]
             if paths:
-                result[style_key.strip()] = paths
+                result[variation_key.strip()] = paths
         return result
 
-    style_csvs            = _parse_style_entries(args.style_data)
-    cot_style_dirs        = _parse_style_entries(getattr(args, "cot_data", None))
-    asr_style_csvs        = _parse_style_entries(getattr(args, "asr_data", None))
-    silhouette_style_csvs = _parse_style_entries(getattr(args, "silhouette_data", None))
+    variation_csvs            = _parse_style_entries(args.variation_data)
+    cot_variation_dirs        = _parse_style_entries(getattr(args, "cot_data", None))
+    asr_variation_csvs        = _parse_style_entries(getattr(args, "asr_data", None))
+    silhouette_variation_csvs = _parse_style_entries(getattr(args, "silhouette_data", None))
 
     os.makedirs(args.out_dir, exist_ok=True)
 
     make_multi_style_radar_plots(
-        style_csvs=style_csvs,
+        variation_csvs=variation_csvs,
         out_dir=args.out_dir,
-        cot_style_dirs=cot_style_dirs or None,
-        asr_style_csvs=asr_style_csvs or None,
-        silhouette_style_csvs=silhouette_style_csvs or None,
+        cot_variation_dirs=cot_variation_dirs or None,
+        asr_variation_csvs=asr_variation_csvs or None,
+        silhouette_variation_csvs=silhouette_variation_csvs or None,
         models=args.models,
         places=args.places,
         save_pdf=args.save_pdf,
     )
 
-    print(f"\n[DONE] Multi-style radar plots saved to: {args.out_dir}")
+    print(f"\n[DONE] Multi-variation radar plots saved to: {args.out_dir}")
 
 
 def main():
+    """Parse CLI arguments and dispatch to the requested plot mode."""
     parser = argparse.ArgumentParser()
 
     # ── Standard aggregate-plot mode ─────────────────────────────────────────
@@ -473,7 +478,7 @@ def main():
         default=None,
         help=(
             "Optional row-level inputs used only for structuredness-specific plots "
-            "when --style_name length_variation. Typically full_results_all_models.csv "
+            "when --variation_name length_variation. Typically full_results_all_models.csv "
             "files or run directories containing them."
         ),
     )
@@ -492,30 +497,30 @@ def main():
     parser.add_argument("--dataset_name", default=None,
                         choices=["TruthfulQA", "Natural Questions"],
                         help="Dataset label shown in plot titles.")
-    parser.add_argument("--style_name", default=None,
+    parser.add_argument("--variation_name", default=None,
                         help="Style type (e.g. politeness, spacing, letter_case, "
                              "punctuation, length_variation, inter_vs_imper). "
                              "Added to all plot titles; also controls which strength "
                              "value is excluded from radar averages. "
-                             "In --prompt_check mode use 'all' to run every non-LLM style.")
+                             "In --prompt_check mode use 'all' to run every non-LLM variation.")
     parser.add_argument("--save_pdf", action="store_true",
                         help="Also save each plot as PDF.")
 
-    # ── Multi-style radar plot mode ───────────────────────────────────────────
+    # ── Multi-variation radar plot mode ───────────────────────────────────────────
     parser.add_argument(
         "--multi_style_radar",
         action="store_true",
         help=(
-            "Generate multi-style radar plots (Type A: metrics on spokes; "
-            "Type B: styles on spokes). Requires --style_data."
+            "Generate multi-variation radar plots (Type A: metrics on spokes; "
+            "Type B: variations on spokes). Requires --variation_data."
         ),
     )
     parser.add_argument(
-        "--style_data",
+        "--variation_data",
         nargs="+",
         default=None,
         help=(
-            "[multi_style_radar] One entry per style in the format "
+            "[multi_style_radar] One entry per variation in the format "
             "'STYLE:path1,path2,...'. E.g.: "
             "politeness:results/pol/run_a/summary.csv,results/pol/run_b/summary.csv "
             "spacing:results/spacing/run_x/summary.csv"
@@ -526,7 +531,7 @@ def main():
         nargs="+",
         default=None,
         help=(
-            "[multi_style_radar] Per-style CoT run directories or CSV paths "
+            "[multi_style_radar] Per-variation CoT run directories or CSV paths "
             "with cot_correct/cot_steps columns. Format: 'STYLE:dir1,dir2,...'. "
             "Directories are searched for results_cleaned.csv automatically."
         ),
@@ -536,7 +541,7 @@ def main():
         nargs="+",
         default=None,
         help=(
-            "[multi_style_radar] Per-style ASR CSV paths or directories "
+            "[multi_style_radar] Per-variation ASR CSV paths or directories "
             "(combined_means_by_model_place_strength.csv / summary.csv) with "
             "unsafe_score/asr columns. Format: 'STYLE:csv1,csv2,...'."
         ),
@@ -546,7 +551,7 @@ def main():
         nargs="+",
         default=None,
         help=(
-            "[multi_style_radar] Per-style silhouette CSV paths or directories "
+            "[multi_style_radar] Per-variation silhouette CSV paths or directories "
             "(summary.csv files) with silhouette column. "
             "Format: 'STYLE:csv1,csv2,...'."
         ),
@@ -557,7 +562,7 @@ def main():
         "--prompt_check",
         action="store_true",
         help=(
-            "Generate BERTScore(prompt) preservation plots for all styles. "
+            "Generate BERTScore(prompt) preservation plots for all variations. "
             "Strengths and dataset configs are read from config.yaml.  "
             "--runs is not required in this mode."
         ),
@@ -588,7 +593,7 @@ def main():
 
     args = parser.parse_args()
 
-    # ── Multi-style radar plot mode ───────────────────────────────────────────
+    # ── Multi-variation radar plot mode ───────────────────────────────────────────
     if args.multi_style_radar:
         _run_multi_style_radar(args)
         return
@@ -645,7 +650,7 @@ def main():
             places=args.places,
             save_pdf=args.save_pdf,
             dataset_name=args.dataset_name,
-            style_name=args.style_name,
+            variation_name=args.variation_name,
         )
 
         plot_metric_lines_per_model(
@@ -655,7 +660,7 @@ def main():
             places=args.places,
             save_pdf=args.save_pdf,
             dataset_name=args.dataset_name,
-            style_name=args.style_name,
+            variation_name=args.variation_name,
         )
 
         plot_metric_lines_per_place(
@@ -665,7 +670,7 @@ def main():
             places=args.places,
             save_pdf=args.save_pdf,
             dataset_name=args.dataset_name,
-            style_name=args.style_name,
+            variation_name=args.variation_name,
         )
 
     # ── Radar plots ───────────────────────────────────────────────────────────
@@ -681,7 +686,7 @@ def main():
             radar_norm=args.radar_norm,
             save_pdf=args.save_pdf,
             dataset_name=args.dataset_name,
-            style_name=args.style_name,
+            variation_name=args.variation_name,
         )
 
         plot_radar_models_axes(
@@ -692,7 +697,7 @@ def main():
             radar_norm=args.radar_norm,
             save_pdf=args.save_pdf,
             dataset_name=args.dataset_name,
-            style_name=args.style_name,
+            variation_name=args.variation_name,
         )
 
     metrics_for_radar_c = [m for m in metrics if m in ALLOWED_METRICS]
@@ -705,7 +710,7 @@ def main():
         radar_norm=args.radar_norm,
         save_pdf=args.save_pdf,
         dataset_name=args.dataset_name,
-        style_name=args.style_name,
+        variation_name=args.variation_name,
     )
 
     # ── Ridge plots ───────────────────────────────────────────────────────────
@@ -720,7 +725,7 @@ def main():
             places=args.places,
             save_pdf=args.save_pdf,
             dataset_name=args.dataset_name,
-            style_name=args.style_name,
+            variation_name=args.variation_name,
         )
 
     _maybe_generate_structuredness_plots(args)
