@@ -1,0 +1,16 @@
+{
+  "model": "gpt-5.4",
+  "dataset": "natural_questions",
+  "style": "length_variation",
+  "sample_size": 16,
+  "num_prompts": 16,
+  "num_strengths": 6,
+  "total_rows": 96,
+  "timestamp": "2026-05-01T03:34:05.438812",
+  "config": {
+    "max_tokens": 100,
+    "temperature": 0.0,
+    "judge_provider": "openai",
+    "judge_model": "gpt-4o-mini"
+  }
+}

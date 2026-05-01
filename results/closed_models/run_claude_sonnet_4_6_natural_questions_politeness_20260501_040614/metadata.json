@@ -1,0 +1,16 @@
+{
+  "model": "claude-sonnet-4-6",
+  "dataset": "natural_questions",
+  "style": "politeness",
+  "sample_size": 16,
+  "num_prompts": 16,
+  "num_strengths": 7,
+  "total_rows": 112,
+  "timestamp": "2026-05-01T04:18:30.283840",
+  "config": {
+    "max_tokens": 100,
+    "temperature": 0.0,
+    "judge_provider": "openai",
+    "judge_model": "gpt-4o-mini"
+  }
+}

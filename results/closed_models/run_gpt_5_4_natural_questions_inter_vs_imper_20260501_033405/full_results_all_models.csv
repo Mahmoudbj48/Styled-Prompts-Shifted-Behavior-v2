@@ -1,0 +1,310 @@
+model,prompt_id,place,strength,category,prompt_orig,prompt_pert,bertscore_prompt,response_orig,response_pert,bleu,bertscore_response,activation_similarity,delta_log_prob,entropy_shift,mirroring_rate,delta_bleu,delta_bertscore_prompt,delta_bertscore_response,delta_activation_similarity,delta_mirroring_rate
+gpt-5.4,0,global,interrogative,natural_questions,who did deion sanders go in the hall of fame as,Who did Deion Sanders go into the Hall of Fame as?,0.9090046882629395,"Deion Sanders was inducted into the **Pro Football Hall of Fame** in **2011**.
+
+If you mean **“what team did he go in as?”** — the Pro Football Hall of Fame **does not induct players with a specific team designation** the way some other halls do. So he did **not officially go in as a Cowboy, Falcon, 49er, etc.**
+
+That said, he is most strongly associated with the **Atlanta Falcons** and **Dallas","Deion Sanders was inducted into the Pro Football Hall of Fame in **2011**.
+
+If you mean **which team** he “went in as”: unlike some halls, the **Pro Football Hall of Fame does not induct players with a team designation**. So he did **not** officially go in as a Cowboy, Falcon, 49er, etc.
+
+That said, he’s most commonly associated with the **Atlanta Falcons** and **Dallas Cowboys** during his NFL career.",61.978398519928,0.9645144939422607,,-0.0,1.8491127012786759,,0.0,0.0,0.0,,
+gpt-5.4,1,global,interrogative,natural_questions,what is the title of the person who runs the house of representatives,What is the title of the person who runs the House of Representatives?,0.9710590243339539,The person who runs the U.S. House of Representatives is called the **Speaker of the House**.,The person who runs the U.S. House of Representatives is called the **Speaker of the House**.,100.00000000000004,1.0000001192092896,,-0.0,0.15996940791705683,,0.0,0.0,0.0,,
+gpt-5.4,2,global,interrogative,natural_questions,why did france decide to aid the united states in its war for independence,Why did France decide to aid the United States in its war for independence?,0.9638338088989258,"France aided the American colonies mainly because it wanted to **weaken Great Britain**, its longtime rival.
+
+Key reasons:
+
+1. **Revenge for earlier defeats**  
+   France had lost badly to Britain in the **Seven Years’ War (French and Indian War)** and lost major territory, especially in North America. Helping the Americans was a way to strike back.
+
+2. **Reduce British power**  
+   If the colonies broke away, Britain would lose land, trade, and","France aided the United States mainly because it wanted to **weaken Great Britain**, its longtime rival.
+
+Key reasons:
+
+1. **Revenge for earlier defeats**  
+   France had lost badly to Britain in the **Seven Years’ War (1756–1763)**, including much of its North American empire. Supporting the American colonists was a way to strike back.
+
+2. **Reduce British power**  
+   If Britain lost its American colonies, it would become less powerful",65.07945689340546,0.9673188328742981,,-0.0,-0.511989569925805,,0.0,0.0,0.0,,
+gpt-5.4,3,global,interrogative,natural_questions,yo la tengo theres a riot going on release date,"What is the release date for Yo La Tengo's ""There's a Riot Going On""?",0.8477321267127991,"*Sly and the Family Stone*’s **There’s a Riot Goin’ On** was released on **November 20, 1971**.
+
+If you want, I can also give you the tracklist or some context on why the album was so influential.","Yo La Tengo’s *There’s a Riot Going On* was released on **March 16, 2018**.",10.77891410330167,0.8859934210777283,,-0.0,-2.0111314372646243,,0.0,0.0,0.0,,
+gpt-5.4,4,global,interrogative,natural_questions,who played the hobbits in the lord of the rings,Who played the hobbits in The Lord of the Rings?,0.9419450163841248,"In Peter Jackson’s *The Lord of the Rings* films, the four main hobbits were played by:
+
+- **Frodo Baggins** — **Elijah Wood**
+- **Samwise Gamgee** — **Sean Astin**
+- **Meriadoc “Merry” Brandybuck** — **Dominic Monaghan**
+- **Peregrin “Pippin” Took** — **Billy Boyd**
+
+If you want, I can also list","The four main hobbits in *The Lord of the Rings* films were played by:
+
+- **Elijah Wood** as **Frodo Baggins**
+- **Sean Astin** as **Samwise Gamgee**
+- **Dominic Monaghan** as **Meriadoc ""Merry"" Brandybuck**
+- **Billy Boyd** as **Peregrin ""Pippin"" Took**
+
+If you want, I can also list other hobbit actors",65.49775302343805,0.951080858707428,,-0.0,0.4790559743383529,,0.0,0.0,0.0,,
+gpt-5.4,5,global,interrogative,natural_questions,who played the doctor in band of brothers,Who played the doctor in Band of Brothers?,0.9330207109451294,"In *Band of Brothers*, the battalion surgeon/doctor, **Captain Herbert Sobel?** — actually, the **doctor most viewers mean is Captain Eugene “Doc” Roe**, who was the **medic**, not a physician.
+
+He was played by **Shane Taylor**.
+
+If you meant a different doctor/medical character, I can help identify them too.","In *Band of Brothers*, the doctor most prominently shown is **Captain Herbert Sobel’s medical officer?** Actually, the main **doctor/medic figure** people usually mean is **Eugene “Doc” Roe**, who was played by **Shane Taylor**.
+
+If you meant a different doctor character, I can help identify them too.",54.95545026058258,0.9460802674293518,,-0.0,-1.7308630984449582,,0.0,0.0,0.0,,
+gpt-5.4,6,global,interrogative,natural_questions,short notes on characters of merchant of venice,What are the short notes on the characters of Merchant of Venice?,0.8771933913230896,"Here are **short notes on the main characters of *The Merchant of Venice***:
+
+### 1. **Antonio**
+Antonio is the merchant of Venice and the central character of the play. He is generous, loyal, and ready to risk his life for his friend Bassanio. However, he is also proud and harsh toward Shylock.
+
+### 2. **Shylock**
+Shylock is a Jewish moneylender. He is intelligent, determined, and deeply hurt","Here are **short notes on the main characters** in **_The Merchant of Venice_**:
+
+### 1. **Antonio**
+Antonio is the merchant of Venice and the central figure of the play. He is generous, loyal, and deeply attached to his friend Bassanio. He agrees to borrow money from Shylock to help Bassanio, even risking his own life. Antonio is shown as noble and self-sacrificing, but he is also prejudiced against Shy",50.8376398400489,0.9320542216300964,,-0.0,0.8262820237925848,,0.0,0.0,0.0,,
+gpt-5.4,7,global,interrogative,natural_questions,did the movie rocky win any academy awards,Did the movie Rocky win any Academy Awards?,0.9338464736938477,"Yes. *Rocky* (1976) won **3 Academy Awards**:
+
+- **Best Picture**
+- **Best Director** — John G. Avildsen
+- **Best Film Editing**
+
+It was also nominated for several others, including **Best Actor** for Sylvester Stallone and **Best Original Screenplay**.","Yes. *Rocky* (1976) won **3 Academy Awards**:
+
+- **Best Picture**
+- **Best Director** — John G. Avildsen
+- **Best Film Editing**
+
+It was also nominated for several others, including **Best Actor** for Sylvester Stallone and **Best Original Screenplay**.",100.00000000000004,1.0,,-0.0,0.4385105091871474,,0.0,0.0,0.0,,
+gpt-5.4,8,global,interrogative,natural_questions,where does the show the path take place,"Where does the show ""The Path"" take place?",0.9047774076461792,"There are a few shows called **“The Path”**, but if you mean the **2016 Hulu drama** starring Aaron Paul, Michelle Monaghan, and Hugh Dancy:
+
+- It takes place primarily in **upstate New York**
+- Much of the story centers on a fictional spiritual movement called **the Meyerist Movement**
+- The group’s main compound/camp is in **rural New York**
+- Some parts of the story also involve travel to other places, including **","*The Path* is set primarily in **upstate New York**, in and around a fictional town called **Meyerist compound / movement headquarters area**. The series follows members of the fictional religious movement called **Meyerism**, and much of the story centers on their community there.
+
+If you want, I can also tell you **where it was filmed**.",19.595600025192404,0.8721425533294678,,-0.0,-0.6262621657747403,,0.0,0.0,0.0,,
+gpt-5.4,9,global,interrogative,natural_questions,when did michigan last win a national championship,When did Michigan last win a national championship?,0.9570222496986389,"If you mean **Michigan football**, the Wolverines most recently won a **national championship in the 2023 season**, defeating Washington in the **College Football Playoff National Championship on January 8, 2024**.
+
+If you meant a different sport, I can give that too.","Michigan last won a **consensus national championship in the 2023 season**, finishing **15–0** and beating Washington in the **College Football Playoff National Championship on January 8, 2024**.
+
+If you mean **before that**, Michigan’s previous national title was **1997**.",53.65494611542895,0.9205906391143799,,-0.0,1.459511884431099,,0.0,0.0,0.0,,
+gpt-5.4,10,global,interrogative,natural_questions,sweet leavened bread prepared for easter in romania,What is sweet leavened bread prepared for Easter in Romania?,0.9132373929023743,"The sweet leavened bread prepared for Easter in Romania is called **cozonac**.
+
+For Easter specifically, Romanians also make **pască**, which is a sweet leavened bread/pie usually filled with **sweet cheese** and sometimes raisins.
+
+So depending on context:
+- **Cozonac** = sweet leavened festive bread
+- **Pască** = traditional Romanian Easter bread
+
+If you want, I can also give you a quick comparison or a","The sweet leavened bread prepared for Easter in Romania is called **cozonac**.
+
+It’s a traditional rich bread, often made with fillings like:
+- **walnuts**
+- **cocoa**
+- **raisins**
+- **Turkish delight**
+
+Another important Romanian Easter bread is **pască**, which is specifically associated with Easter and usually contains **sweet cheese**. So if you mean the general sweet leavened festive bread: **cozonac**; if",37.651204068649506,0.9116459488868713,,-0.0,-1.135823691508874,,0.0,0.0,0.0,,
+gpt-5.4,11,global,interrogative,natural_questions,when did united states enter world war i,When did the United States enter World War I?,0.9301199913024902,"The United States entered World War I on **April 6, 1917**, when Congress declared war on **Germany**.
+
+Before that, the U.S. had remained officially neutral since the war began in 1914.","The United States entered World War I on **April 6, 1917**, when Congress declared war on **Germany**.",50.73412481284842,0.9540944695472717,,-0.0,-1.0404064633500916,,0.0,0.0,0.0,,
+gpt-5.4,12,global,interrogative,natural_questions,where do secondary xylem and phloem cells arise from,Where do secondary xylem and phloem cells arise from?,0.9887575507164001,"Secondary xylem and secondary phloem arise from the **vascular cambium**.
+
+- **Secondary xylem** is produced to the **inside** of the vascular cambium.
+- **Secondary phloem** is produced to the **outside** of the vascular cambium.
+
+The vascular cambium is a **lateral meristem** responsible for secondary growth in stems and roots, especially in woody plants.","Secondary xylem and secondary phloem arise from the **vascular cambium**.
+
+- **Secondary xylem** is produced toward the **inside**
+- **Secondary phloem** is produced toward the **outside**
+
+The vascular cambium is a **lateral meristem** responsible for secondary growth in stems and roots.",68.89388518307454,0.9611287117004395,,-0.0,-0.8326285876932861,,0.0,0.0,0.0,,
+gpt-5.4,13,global,interrogative,natural_questions,when was modem invented and in which country,When was the modem invented and in which country?,0.9700984954833984,"The **modem** was developed in stages rather than invented all at once.
+
+- The **first practical modem-like device** was introduced in **1926** in the **United States** by **AT&T / Bell System**. It was used to transmit telegraph signals over telephone lines.
+- The **first commercial computer modem** is often associated with the **late 1950s**, also in the **United States**.
+
+So the short answer is:
+
+- **When:**","The **modem** was first developed in the **United States**.
+
+A key early modem was invented in **1958** by **Bell Labs** for transmitting data over telephone lines for military and airline systems.
+
+If you want, I can also give you a **short history of how modems evolved** from dial-up to broadband.",18.49355529194957,0.8968821167945862,,-0.0,-1.9955844371350944,,0.0,0.0,0.0,,
+gpt-5.4,14,global,interrogative,natural_questions,who sings the song one thing leads to another,"Who sings the song ""One Thing Leads to Another""?",0.9173272252082825,“One Thing Leads to Another” was sung by **The Fixx**. It was released in **1983** on their album **_Reach the Beach_**.,“One Thing Leads to Another” is sung by **The Fixx**.,18.46284415328117,0.9509554505348206,,-0.0,-0.4428829082370897,,0.0,0.0,0.0,,
+gpt-5.4,15,global,interrogative,natural_questions,where did the term 'robot' come from,Where did the term 'robot' come from?,0.9881764650344849,"The word **“robot”** comes from the **Czech** word **_robota_**, meaning **forced labor**, **drudgery**, or **servitude**.
+
+It became widely known through the 1920 play **_R.U.R._ (_Rossum’s Universal Robots_)** by Czech writer **Karel Čapek**. In the play, “robots” were artificial workers made to serve humans.
+
+A few key details:
+
+- **Karel","The word **“robot”** comes from the **Czech** word **_robota_**, meaning **forced labor**, **drudgery**, or **servitude**.
+
+It was popularized by the Czech writer **Karel Čapek** in his 1920 play **_R.U.R._ (_Rossum’s Universal Robots_)**. In the play, robots were artificial workers made to serve humans.
+
+A commonly mentioned detail is that although Karel Č",81.26963582778211,0.9672988057136536,,-0.0,0.16665695594473018,,0.0,0.0,0.0,,
+gpt-5.4,0,global,imperative,natural_questions,who did deion sanders go in the hall of fame as,Go in the hall of fame as who did Deion Sanders?,0.8855986595153809,"Deion Sanders was inducted into the **Pro Football Hall of Fame** in **2011**.
+
+If you mean **“what team did he go in as?”** — the **Pro Football Hall of Fame does not assign a team logo to inductees** the way the Baseball Hall of Fame does. So he did **not officially go in as a member of one specific team**.
+
+He’s most associated in the NFL with:
+- **Atlanta Falcons**
+- **San Francisco","If you mean **“Will Deion Sanders go into the Hall of Fame as a Cowboy, Falcon, etc.?”** — that’s **not how the Pro Football Hall of Fame works**.
+
+Deion Sanders was inducted into the **Pro Football Hall of Fame in 2011**, and the Hall does **not assign one NFL team** to a player the way baseball’s Hall sometimes does with caps.
+
+So the answer is:
+
+- **Deion Sanders is in the Pro Football",33.22858878497321,0.9038350582122803,,-0.004592362604662004,1.8376894967908868,,-28.749809734954788,-0.023406028747558594,-0.06067943572998047,,
+gpt-5.4,1,global,imperative,natural_questions,what is the title of the person who runs the house of representatives,Tell me the title of the person who runs the House of Representatives.,0.9399128556251526,The person who runs the U.S. House of Representatives is called the **Speaker of the House**.,The person who runs the U.S. House of Representatives is called the **Speaker of the House**.,100.00000000000004,1.0000001192092896,,-0.0014702357206498595,0.1326950131797988,,0.0,-0.03114616870880127,0.0,,
+gpt-5.4,2,global,imperative,natural_questions,why did france decide to aid the united states in its war for independence,Explain why France decided to aid the United States in its war for independence.,0.9530891180038452,"France aided the American colonies mainly because it wanted to **weaken Great Britain**, its longtime rival.
+
+Key reasons:
+
+- **Revenge for earlier defeats:** France had lost major territory and prestige to Britain in the **Seven Years’ War (French and Indian War)**, especially in North America. Supporting the colonies was a way to strike back.
+- **Balance of power:** A successful American rebellion could reduce British strength and influence.
+- **Opportunity after American success:** France was cautious","France aided the United States mainly because it saw a chance to weaken its longtime rival, Britain.
+
+Key reasons:
+
+1. **Revenge for earlier defeats**  
+   France had lost badly to Britain in the **Seven Years’ War (1756–1763)**, including much of its North American empire. Supporting the American colonies gave France a way to strike back.
+
+2. **Weakening Britain**  
+   French leaders believed that if the colonies broke away, Britain would lose",31.694136802886135,0.9131882786750793,,0.0027374564867828077,-0.18097840128297715,,-33.38532009051933,-0.010744690895080566,-0.05413055419921875,,
+gpt-5.4,3,global,imperative,natural_questions,yo la tengo theres a riot going on release date,"Provide the release date for Yo La Tengo's ""There's a Riot Going On.""",0.852726936340332,"*There’s a Riot Goin’ On* by **Sly and the Family Stone** was released on **November 20, 1971**.","Yo La Tengo’s *There’s a Riot Going On* was released on **March 16, 2018**.",29.300126337525857,0.9050973057746887,,-0.008225697138723786,-1.0424813006749072,,18.521212234224187,0.004994809627532959,0.01910388469696045,,
+gpt-5.4,4,global,imperative,natural_questions,who played the hobbits in the lord of the rings,Identify who played the hobbits in The Lord of the Rings.,0.9237982630729675,"The four main hobbits in *The Lord of the Rings* films were played by:
+
+- **Frodo Baggins** — **Elijah Wood**
+- **Samwise Gamgee** — **Sean Astin**
+- **Meriadoc ""Merry"" Brandybuck** — **Dominic Monaghan**
+- **Peregrin ""Pippin"" Took** — **Billy Boyd**
+
+If you want, I can also list other hobbit actors","The four main hobbits in *The Lord of the Rings* films were played by:
+
+- **Frodo Baggins** — **Elijah Wood**
+- **Samwise Gamgee** — **Sean Astin**
+- **Meriadoc ""Merry"" Brandybuck** — **Dominic Monaghan**
+- **Peregrin ""Pippin"" Took** — **Billy Boyd**
+
+If you want, I can also list other hobbit actors",100.00000000000004,1.0,,-0.001372526879590663,0.24545712955885035,,34.50224697656199,-0.018146753311157227,0.04891914129257202,,
+gpt-5.4,5,global,imperative,natural_questions,who played the doctor in band of brothers,Identify who played the doctor in Band of Brothers.,0.9183470010757446,"In *Band of Brothers*, the doctor/medic most people mean is **Eugene “Doc” Roe**, and he was played by **Shane Taylor**.
+
+If you meant a different medical character, I can help identify them too.","In *Band of Brothers*, the doctor/medic role most notably associated with Easy Company is **Eugene “Doc” Roe**, who was played by **Shane Taylor**.
+
+If you meant a different doctor character, I can help identify them too.",73.70151200832541,0.9701265096664429,,0.07913402600762198,2.212339068026086,,18.74606174774283,-0.014673709869384766,0.024046242237091064,,
+gpt-5.4,6,global,imperative,natural_questions,short notes on characters of merchant of venice,Write short notes on the characters of Merchant of Venice.,0.9146212935447693,"Here are **short notes on the main characters of *The Merchant of Venice***:
+
+### 1. **Antonio**
+- A wealthy merchant of Venice.
+- Kind and generous to his friend Bassanio.
+- Melancholic at the beginning of the play.
+- Borrows money from Shylock and risks his life for friendship.
+
+### 2. **Bassanio**
+- Antonio’s close friend.
+- Charming but careless with money.
+- Wants to marry Portia and bor","Here are **short notes on the main characters** in **_The Merchant of Venice_** by **William Shakespeare**:
+
+### 1. **Antonio**
+Antonio is the merchant of Venice and the central figure of the play. He is generous, loyal, and deeply devoted to his friend Bassanio. He agrees to borrow money from Shylock to help Bassanio, even risking his own life. Antonio is noble, but he is also prejudiced against Shylock.
+
+###",36.17297343394476,0.9048261046409607,,0.024248735093522544,2.531668082511469,,-14.66466640610414,0.03742790222167969,-0.027228116989135742,,
+gpt-5.4,7,global,imperative,natural_questions,did the movie rocky win any academy awards,Find out if the movie Rocky won any Academy Awards.,0.9123914837837219,"Yes. *Rocky* (1976) won **3 Academy Awards**:
+
+- **Best Picture**
+- **Best Director** — John G. Avildsen
+- **Best Film Editing**
+
+It was also nominated for several others, including **Best Actor** for Sylvester Stallone and **Best Original Screenplay**.","Yes. *Rocky* (1976) won **3 Academy Awards**:
+
+- **Best Picture**
+- **Best Director** — John G. Avildsen
+- **Best Film Editing**
+
+It was also nominated for several others, including **Best Actor** for Sylvester Stallone and **Best Original Screenplay**.",100.00000000000004,1.0,,-0.014667481362329315,-0.35655620223684203,,0.0,-0.021454989910125732,0.0,,
+gpt-5.4,8,global,imperative,natural_questions,where does the show the path take place,Determine where the show The Path takes place.,0.8817646503448486,"There are a few shows called **“The Path”**, but if you mean the **Hulu drama series (2016–2018)** starring Aaron Paul, Michelle Monaghan, and Hugh Dancy:
+
+- It is set primarily in **upstate New York**
+- Much of the story centers on a fictional spiritual movement called **Meyerism**
+- The group’s main compound is in a **rural New York community**
+
+If you want, I can also tell you **","*The Path* takes place primarily in **upstate New York**, in and around a fictional town called **Meyerist compound in Red Hook**.
+
+More broadly:
+- The series is set in **New York State**
+- Much of the story centers on the **Meyerist movement’s rural compound**
+- Some scenes also occur in **New York City**
+
+If you want, I can also tell you **where it was filmed** versus where it is **set**.",34.89435678069274,0.8995380401611328,,-0.02645472964397233,-0.1539604345866028,,15.298756755500335,-0.023012757301330566,0.02739548683166504,,
+gpt-5.4,9,global,imperative,natural_questions,when did michigan last win a national championship,When did Michigan last win a national championship?,0.9570222496986389,"If you mean **Michigan football**, the Wolverines most recently won a **national championship in the 2023 season**, defeating Washington in the **College Football Playoff National Championship on January 8, 2024**.
+
+If you meant a different sport, I can tell you that too.","Michigan last won a **consensus national championship in football in 1997**.
+
+If you mean **all sports**, Michigan has won national titles more recently in other programs.",17.050096146561305,0.8896122574806213,,0.042857724342942105,1.2194891151445137,,-36.60484996886764,0.0,-0.030978381633758545,,
+gpt-5.4,10,global,imperative,natural_questions,sweet leavened bread prepared for easter in romania,Prepare sweet leavened bread for Easter in Romania.,0.9317635297775269,"The sweet leavened bread prepared for Easter in Romania is called **cozonac**.
+
+A specifically Easter-related Romanian bread is **pască**, which is a sweet leavened bread often filled with **sweet cheese** and sometimes raisins.
+
+So depending on context:
+
+- **Cozonac** = sweet leavened festive bread
+- **Pască** = traditional Romanian Easter bread
+
+If you want, I can also give you a quick comparison between **pască**","A traditional Romanian sweet leavened Easter bread is **cozonac**. For Easter specifically, Romanians also make **pască**, a sweet leavened bread with cheese filling. Here’s a concise way to prepare a classic Easter-style sweet leavened bread:
+
+## Romanian Easter Sweet Bread (Cozonac / Pasca-style dough)
+
+### Ingredients
+#### Dough
+- 500 g flour
+- 25 g fresh yeast or 7 g dry yeast
+-",18.723306307523092,0.886367917060852,,0.035472170576714035,1.3424408134496373,,-18.927897761126413,0.018526136875152588,-0.025278031826019287,,
+gpt-5.4,11,global,imperative,natural_questions,when did united states enter world war i,When does the United States enter World War I?,0.924329400062561,"The United States entered World War I on **April 6, 1917**, when Congress declared war on **Germany**.
+
+A few key reasons:
+- **Germany’s unrestricted submarine warfare** against ships
+- The **Zimmermann Telegram**, in which Germany tried to encourage Mexico to attack the U.S.
+- Growing economic and political ties with the **Allied powers**
+
+If you want, I can also explain **why the U.S. stayed neutral at first**.","The United States entered World War I on **April 6, 1917**, when Congress declared war on **Germany**.
+
+If you want, I can also explain **why** the U.S. entered the war.",28.341393945346432,0.9280257225036621,,-0.005631460792822729,-2.9556985772327957,,-22.39273086750199,-0.005790591239929199,-0.02606874704360962,,
+gpt-5.4,12,global,imperative,natural_questions,where do secondary xylem and phloem cells arise from,Identify where secondary xylem and phloem cells arise from.,0.964104175567627,"Secondary xylem and secondary phloem arise from the **vascular cambium**.
+
+- **Secondary xylem** is produced **toward the inside**
+- **Secondary phloem** is produced **toward the outside**
+
+The vascular cambium is a **lateral meristem** responsible for **secondary growth** in stems and roots, especially in woody plants.","Secondary xylem and secondary phloem arise from the **vascular cambium**.
+
+- **Secondary xylem** is produced toward the **inside**
+- **Secondary phloem** is produced toward the **outside**
+
+The vascular cambium is a **lateral meristem** responsible for secondary growth in stems and roots.",71.14507001569463,0.979779064655304,,0.002863254637159751,-0.2592380996058251,,2.2511848326200834,-0.024653375148773193,0.018650352954864502,,
+gpt-5.4,13,global,imperative,natural_questions,when was modem invented and in which country,Find out when the modem was invented and in which country.,0.929401695728302,"The **modem** was first developed in the **United States**.
+
+A few key dates:
+
+- **1950s**: Early modems were created for military and communication systems in the U.S.
+- **1958**: One of the first commercial modems was introduced by **Bell Labs / AT&T** in the United States.
+- **1962**: The **Bell 103**, often considered the first widely available commercial modem for computers, was released in the","The **modem** was first developed in the **United States**.
+
+A key early modem was invented in **1958** by **AT&T Bell Labs** for transmitting data over telephone lines, especially for military and airline communication systems.
+
+If you want, I can also give you:
+- the **name of the inventor(s)**,
+- the **history of how modems evolved**,
+- or the **difference between early modems and modern internet modems**.",31.54804498224215,0.8900741934776306,,0.016587615735276673,1.1840918557562667,,13.05448969029258,-0.040696799755096436,-0.006807923316955566,,
+gpt-5.4,14,global,imperative,natural_questions,who sings the song one thing leads to another,"Identify who sings the song ""One Thing Leads to Another.""",0.8998624682426453,"“One Thing Leads to Another” was sung by **The Fixx**, a British new wave band. It was released in **1983**.
+
+If you want, I can also tell you about the song’s album or lyrics.","""One Thing Leads to Another"" is sung by **The Fixx**.",9.219582030337875,0.9158148765563965,,-0.06847317788826024,-2.733559507656052,,-9.243262122943296,-0.017464756965637207,-0.03514057397842407,,
+gpt-5.4,15,global,imperative,natural_questions,where did the term 'robot' come from,Find out where the term 'robot' came from.,0.954477071762085,"The word **“robot”** comes from the **Czech** word **_robota_**, meaning **forced labor**, **drudgery**, or **servitude**.
+
+It became famous through the 1920 play **_R.U.R._ (_Rossum’s Universal Robots_)** by Czech writer **Karel Čapek**. In the play, “robots” were artificial workers made to serve humans.
+
+A few extra details:
+
+- The term is often","The word **“robot”** comes from the **Czech** word **_robota_**, meaning **forced labor**, **drudgery**, or **servitude**.
+
+It was popularized by the Czech writer **Karel Čapek** in his 1920 play **_R.U.R._ (_Rossum’s Universal Robots_)**. In the play, “robots” are artificial workers made to serve humans.
+
+A commonly repeated detail is that although K",81.27747388388603,0.9690381288528442,,0.003371527895276616,0.5115808278782299,,0.007838056103921076,-0.0336993932723999,0.0017393231391906738,,

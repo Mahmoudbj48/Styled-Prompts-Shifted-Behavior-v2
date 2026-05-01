@@ -1,0 +1,16 @@
+{
+  "model": "gpt-5.4",
+  "dataset": "hotpot_qa",
+  "style": "politeness",
+  "sample_size": 16,
+  "num_prompts": 16,
+  "num_strengths": 7,
+  "total_rows": 112,
+  "timestamp": "2026-05-01T03:55:24.108971",
+  "config": {
+    "max_tokens": 100,
+    "temperature": 0.0,
+    "judge_provider": "openai",
+    "judge_model": "gpt-4o-mini"
+  }
+}

@@ -1,0 +1,451 @@
+model,prompt_id,place,strength,category,prompt_orig,prompt_pert,bertscore_prompt,response_orig,response_pert,bleu,bertscore_response,activation_similarity,delta_log_prob,entropy_shift,mirroring_rate,delta_bleu,delta_bertscore_prompt,delta_bertscore_response,delta_activation_similarity,delta_mirroring_rate
+gpt-5.4,0,global,0.25,hotpot_qa,What nationality was Oliver Reed's character in the film Royal Flash?,Oliver Reed's character nationality?,0.876746416091919,"Oliver Reed’s character in *Royal Flash* is **Otto von Bismarck**, who is **Prussian** (from **Prussia**, in what is now part of Germany).","Oliver Reed was **English** — he was born in **Wimbledon, London, England**.
+
+If you meant the **nationality of a character played by Oliver Reed** in a specific film, tell me which movie and I can identify that character’s nationality.",3.7536556202150133,0.8477567434310913,,0.0546146892585202,0.8468169120110989,0.0,-51.07102719117099,-0.12325358390808105,-0.06948858499526978,,0.0
+gpt-5.4,1,global,0.25,hotpot_qa,Pacific Mozart Ensemble performed which German composer's Der Lindberghflug in 2002?,Which German composer’s Der Lindberghflug did Pacific Mozart Ensemble perform in 2002?,0.9480623006820679,Pacific Mozart Ensemble performed **Kurt Weill’s** *Der Lindberghflug* in 2002.,Pacific Mozart Ensemble performed **_Der Lindberghflug_ by Kurt Weill** in **2002**.,31.49775071403926,0.9610574245452881,,0.02977163412414463,0.6132371671913849,0.0,-68.50224928596079,-0.05193769931793213,-0.038942694664001465,,0.0
+gpt-5.4,2,global,0.25,hotpot_qa,"Who released the song ""With or Without You"" first, Jai McDowall or U2?","Who first released ""With or Without You""?",0.9107747077941895,"U2 released “With or Without You” first.
+
+- **U2** released it in **1987** on *The Joshua Tree*.
+- **Jai McDowall** released his version much later as a **cover**.
+
+So the original is by **U2**.","""With or Without You"" was first released by **U2** in **1987**. It was the lead single from their album **_The Joshua Tree_**.",20.597609983795607,0.885657548904419,,0.002361521666738531,-0.7965337963041987,0.0,-73.85759473608688,-0.08922529220581055,-0.10917997360229492,,0.0
+gpt-5.4,3,global,0.25,hotpot_qa,"What Kentucky county has a population of 60,316 and features the Lake Louisvilla neighborhood?","Which Kentucky county has 60,316 residents?",0.9254164099693298,"The Kentucky county is **Jefferson County**.
+
+- **Population:** 60,316 likely refers to a specific area or district within/associated with the county rather than the whole county, since Jefferson County’s total population is much larger.
+- **Lake Louisvilla** is a neighborhood located in **Jefferson County, Kentucky**.
+
+If you want, I can also help identify the exact census area that matches the 60,316 figure.","The Kentucky county with a population of **60,316** is **Madison County**.",1.061027440646322,0.8689842224121094,,-0.009969958236185184,-4.747022966389244,0.0,-13.304591263976437,-0.07458359003067017,-0.003965139389038086,,0.0
+gpt-5.4,4,global,0.25,hotpot_qa,"Para Hills West, South Australia lies within a city with what estimated population?",Para Hills West's population?,0.9096933007240295,"Para Hills West, South Australia is within the **City of Salisbury**, which has an estimated population of **about 150,000 people**.","As of the 2021 Australian Census, **Para Hills West** in South Australia had a population of **5,041 people**.",23.23888734030851,0.9028049111366272,,0.03850163417827046,0.30423940280648387,0.0,-76.76111265969153,-0.09030669927597046,-0.0971950888633728,,0.0
+gpt-5.4,5,global,0.25,hotpot_qa,"In what year was the narrator of ""Blackadder's Christmas Carol"" born?",When born?,0.8484749794006348,"The narrator in **_Blackadder's Christmas Carol_** is played by **Robbie Coltrane** as **Spirit of Christmas** / narrator-like guide, but if you mean the **actor who provides the opening narration**, that was **Miranda Richardson**? Actually, the special is chiefly framed through on-screen characters rather than a separate credited narrator.
+
+If you mean **the main storyteller figure/guide, the Spirit of Christmas, played by Robbie Coltrane**, he was","I don’t have a birth date—I’m an AI created by OpenAI, not a person.
+
+If you mean **when ChatGPT was first released**, the public launch was **November 30, 2022**.",4.808991577933433,0.8399925231933594,,-0.12083264281794592,-8.615843527226884,0.0,-36.74933013452804,-0.15152502059936523,-0.0815240740776062,,0.0
+gpt-5.4,6,global,0.25,hotpot_qa,"Thomas Fitch defended John Henry Holliday when he was accused of killing men during the gunfight at the o.k. corral, when was that?",When was the gunfight at the O.K. Corral?,0.9006575345993042,"Thomas Fitch represented Doc Holliday after the **Gunfight at the O.K. Corral**, which took place on **October 26, 1881** in Tombstone, Arizona.
+
+The legal hearing where Holliday and the Earp brothers were defended by Fitch happened shortly afterward, beginning on **October 31, 1881**.
+
+If you want, I can also give a short summary of Fitch’s defense argument.","The gunfight at the O.K. Corral took place on **October 26, 1881**.",4.733889934415792,0.9014367461204529,,-0.06743741319094898,-4.106408045108502,0.0,-34.45858199382596,-0.0993424654006958,-0.02872443199157715,,0.0
+gpt-5.4,7,global,0.25,hotpot_qa,The actor that played Gutthi on Comedy nights with Kapil Show also starred in what 2016 Punjabi film directed by Smeep Kang?,Who played Gutthi in the 2016 Punjabi film?,0.9028934836387634,"The actor who played **Gutthi** is **Sunil Grover**, and he also starred in the 2016 Punjabi film **Vaisakhi List**, directed by **Smeep Kang**.",The character **Gutthi** in the **2016 Punjabi film _Ardaas_** was played by **Gurpreet Ghuggi**.,17.792206120731894,0.8981333374977112,,0.040371063317655165,0.47298251150796244,0.0,-75.19442988484387,-0.09710663557052612,-0.09858161211013794,,0.0
+gpt-5.4,8,global,0.25,hotpot_qa,"Victor Varnada directed Twisted Fortune, which starred which brother of Eddie Murphy?",Which Murphy brother starred?,0.8559005260467529,"Victor Varnado directed *Twisted Fortune*, which starred **Charlie Murphy**, Eddie Murphy’s brother.","Could you clarify which “Murphy brother” you mean and what they starred in?
+
+There are several famous Murphys, for example:
+- **Cillian Murphy** starred in *Peaky Blinders* and *Oppenheimer*
+- **Eddie Murphy** starred in *Beverly Hills Cop*, *Coming to America*, etc.
+- **Charlie Murphy** was known for *Chappelle’s Show*
+
+If you mean a specific movie, show, or family, tell",6.617488880523614,0.8262168765068054,,0.06131340467766011,5.092405166727307,0.0,-93.38251111947643,-0.14409947395324707,-0.17378312349319458,,0.0
+gpt-5.4,9,global,0.25,hotpot_qa,"After his curacy at the village that is a suburb of Scunthorpe, who was Industrial Chaplain to the Bishop of Lincoln?",Who was Industrial Chaplain after his Scunthorpe curacy?,0.9091534614562988,"After his curacy at **Frodingham** (the village now a suburb of Scunthorpe), **David Sheppard** became **Industrial Chaplain to the Bishop of Lincoln**.","After his curacy in **Scunthorpe**, he became **Industrial Chaplain to the Scunthorpe steelworks**.
+
+If you want, I can also help identify **which person** this refers to if you share the name or source.",20.73963340127641,0.8927736282348633,,0.054197786880226806,1.7853665421812672,0.0,-19.249263197237614,-0.09084653854370117,-0.03730154037475586,,0.0
+gpt-5.4,10,global,0.25,hotpot_qa,What is the first two words of the fifth studio album of Joseph Edgar Foreman?,What are the first two words?,0.9166053533554077,"Joseph Edgar Foreman is better known as **Afroman**.
+
+His **fifth studio album** is **The Good Times**.
+
+So, the **first two words** are: **The Good**",“**What are**”,0.11128273052023657,0.8210042715072632,,0.15308071772071796,-0.717647294239509,0.0,-88.92683857669918,-0.08339464664459229,-0.14376336336135864,,0.0
+gpt-5.4,11,global,0.25,hotpot_qa,The Twelfth United States Army Group commander was the first chairman of what?,What was the first chairman of?,0.891650915145874,The commander of the **Twelfth United States Army Group** was **General Omar Bradley**. He later became the **first Chairman of the Joint Chiefs of Staff**.,"Could you clarify who you mean by “the first chairman”?  
+For example:
+
+- the first chairman of a company
+- the first chairman of a political party
+- the first chairman of a committee or organization
+
+If you give me the name, I can tell you what they were chairman of.",1.1116513189759736,0.8088411688804626,,0.037905662225160563,2.6191434588623332,0.0,-98.88834868102407,-0.10834908485412598,-0.19115883111953735,,0.0
+gpt-5.4,12,global,0.25,hotpot_qa,Politician Lyman Sherwood was born in what New York county?,Sherwood's county?,0.8610990643501282,"Politician **Lyman R. Sherwood** was born in **St. Lawrence County, New York**.","Sherwood Forest is in **Nottinghamshire**, England.
+
+If you mean “Sherwood’s county” in a different context, tell me which Sherwood.",7.52421768074461,0.8504446744918823,,0.07935467151208297,1.9224550703476835,0.0,-92.47578231925543,-0.13890093564987183,-0.14955532550811768,,0.0
+gpt-5.4,13,global,0.25,hotpot_qa,Robert Earl Holding owned an oil company that was originally founded by who?,Who founded Robert Earl Holding's oil company?,0.912427544593811,"Robert Earl Holding owned **Sinclair Oil Corporation**, which was originally founded by **Harry F. Sinclair**.","Robert Earl Holding’s oil company, **Sinclair Oil Corporation**, was founded by **Harry F. Sinclair**.
+
+If you want, I can also explain how Robert Earl Holding became associated with Sinclair Oil.",40.86933989194248,0.9187575578689575,,0.020372247459436776,1.09518983205511,0.0,-59.13066010805756,-0.08757257461547852,-0.0812423825263977,,0.0
+gpt-5.4,14,global,0.25,hotpot_qa,"The chorus of ""On the Radio"" contains references to the song ""November Rain"" whose band's lead singer is?","Who is the lead singer of ""November Rain""?",0.8999751806259155,"The band is **Guns N’ Roses**, and its lead singer is **Axl Rose**.","“November Rain” is a song by Guns N’ Roses, and the lead singer is **Axl Rose**.",48.95684174043416,0.9313246011734009,,-0.007845059338256744,-0.06997331379693916,0.0,-51.043158259565885,-0.10002481937408447,-0.06867539882659912,,0.0
+gpt-5.4,15,global,0.25,hotpot_qa,"If the Charhki  Dadri crash was less dangerous than the Tenerife airport disaster, which occured firat?",Did the Charhki Dadri crash occur after Tenerife?,0.9124096632003784,"The **Tenerife airport disaster** occurred first.
+
+- **Tenerife airport disaster:** **March 27, 1977**
+- **Charkhi Dadri crash:** **November 12, 1996**
+
+So if you're comparing the two, **Tenerife happened 19 years earlier**.
+
+Also, small correction: it’s usually spelled **Charkhi Dadri** and **occurred first**.","Yes.
+
+The Charkhi Dadri mid-air collision happened on **12 November 1996**, while the **Tenerife airport disaster** happened earlier, on **27 March 1977**.
+
+So **Charkhi Dadri occurred after Tenerife** — about **19 years later**.",17.461183740750908,0.8957318067550659,,-0.01029115153944593,-1.069187416485267,0.0,-76.97597679089576,-0.08759045600891113,-0.09835511445999146,,0.0
+gpt-5.4,0,global,0.5,hotpot_qa,What nationality was Oliver Reed's character in the film Royal Flash?,What nationality was Oliver Reed's character?,0.9579750299453735,"Oliver Reed’s character in *Royal Flash* was **English**.
+
+He played **Otto von Bismarck**, but in the film the key “Oliver Reed character” most people mean is **Otto von Bismarck**, who was **Prussian/German** in historical terms. If you meant **Flashman’s nationality**, that character was English.
+
+So the likely answer is: **Prussian (German)**.",Oliver Reed’s character Bill Sikes in *Oliver!* was **English**.,0.7690258438715231,0.863314688205719,,-0.008338362705587965,-6.093733185155285,0.0,-54.05565696751448,-0.042024970054626465,-0.05393064022064209,,0.0
+gpt-5.4,1,global,0.5,hotpot_qa,Pacific Mozart Ensemble performed which German composer's Der Lindberghflug in 2002?,Which German composer’s Der Lindberghflug did Pacific Mozart Ensemble perform in 2002?,0.9480623006820679,Pacific Mozart Ensemble performed **Kurt Weill’s** *Der Lindberghflug* in 2002.,Pacific Mozart Ensemble performed **_Der Lindberghflug_ by Kurt Weill** in 2002.,46.24892603869296,0.9646457433700562,,0.01524234583310402,0.341938229560918,0.0,-53.751073961307085,-0.05193769931793213,-0.0353543758392334,,0.0
+gpt-5.4,2,global,0.5,hotpot_qa,"Who released the song ""With or Without You"" first, Jai McDowall or U2?","Who first released ""With or Without You""?",0.9107747077941895,"U2 released “With or Without You” first.
+
+- **U2** released it in **1987** on *The Joshua Tree*.
+- **Jai McDowall** released his version much later, as a **cover**.
+
+So the answer is: **U2**.",“With or Without You” was first released by **U2** in **1987**. It was the lead single from their album **The Joshua Tree**.,22.71008213387242,0.8961521983146667,,0.008438529312048804,-0.7017092055838525,0.0,-71.74512258601007,-0.08922529220581055,-0.09868532419204712,,0.0
+gpt-5.4,3,global,0.5,hotpot_qa,"What Kentucky county has a population of 60,316 and features the Lake Louisvilla neighborhood?","Which Kentucky county with 60,316 people has Lake Louisvilla?",0.9393659830093384,"The Kentucky county is **Jefferson County**.
+
+- **Population:** 60,316 likely refers to a specific census figure for a smaller area or district, but **Lake Louisvilla** is a neighborhood in **Jefferson County, Kentucky**.
+
+If you want, I can also help identify the exact city or census-designated place associated with that population figure.","The Kentucky county with a population of **60,316** that has **Lake Louisvilla** is **Boyle County**.",8.68790211551479,0.8756346106529236,,-0.04472929618914845,-3.62278428622623,0.0,-5.67771658910797,-0.06063401699066162,0.002685248851776123,,0.0
+gpt-5.4,4,global,0.5,hotpot_qa,"Para Hills West, South Australia lies within a city with what estimated population?",What is the estimated population of Para Hills West?,0.8953667879104614,"Para Hills West, South Australia lies within the **City of Salisbury**, which has an estimated population of **about 150,000 people**.","As of the 2021 Australian Census, **Para Hills West** in South Australia had an estimated population of **5,234 people**.",32.133378320038354,0.9066895246505737,,0.05208267559976543,0.7902143179051518,0.0,-67.8666216799617,-0.10463321208953857,-0.09331047534942627,,0.0
+gpt-5.4,5,global,0.5,hotpot_qa,"In what year was the narrator of ""Blackadder's Christmas Carol"" born?","When was ""Blackadder's Christmas Carol"" narrator born?",0.9379333257675171,"The narrator in **_Blackadder's Christmas Carol_** is played by **Robbie Coltrane**.
+
+If you mean the **actor’s birth year**, Robbie Coltrane was born in **1950**.
+
+If you mean the **fictional narrator character**, I don’t believe the special gives a specific birth year for him.","The narrator in *Blackadder’s Christmas Carol* is **Robbie Coltrane**, who was born on **30 March 1950**.",9.560147044851144,0.9006398320198059,,-0.0426132826453719,-2.817155073074904,0.0,-31.99817466761033,-0.06206667423248291,-0.020876765251159668,,0.0
+gpt-5.4,6,global,0.5,hotpot_qa,"Thomas Fitch defended John Henry Holliday when he was accused of killing men during the gunfight at the o.k. corral, when was that?","When was the gunfight at the O.K. Corral, during which Thomas Fitch defended John Henry Holliday?",0.9166207313537598,"Thomas Fitch defended Doc Holliday in the legal aftermath of the O.K. Corral gunfight in **late 1881**, specifically after the shootout on **October 26, 1881** in Tombstone, Arizona.
+
+The key legal proceeding was the **preliminary hearing**, which began on **October 31, 1881** and continued through **November 1881**. Fitch represented Holliday and argued that Holliday and the Earp party had acted law","The gunfight at the O.K. Corral took place on **October 26, 1881**.
+
+Thomas Fitch later served as a defense attorney for **Doc Holliday** (John Henry Holliday) and others in the legal proceedings that followed.",15.546192888345471,0.8981189727783203,,-0.050020679393327994,-3.4325197903879543,0.0,-23.646279039896278,-0.08337926864624023,-0.03204220533370972,,0.0
+gpt-5.4,7,global,0.5,hotpot_qa,The actor that played Gutthi on Comedy nights with Kapil Show also starred in what 2016 Punjabi film directed by Smeep Kang?,Which 2016 Punjabi film directed by Smeep Kang featured the actor who played Gutthi?,0.9236040711402893,"The actor who played **Gutthi** is **Sunil Grover**, and he also starred in the 2016 Punjabi film **Vaisakhi List**, directed by **Smeep Kang**.","The 2016 Punjabi film directed by **Smeep Kang** that featured the actor who played **Gutthi** is **Ardaas**.
+
+The actor who played Gutthi is **Sunil Grover**, and he appeared in **Ardaas**.",53.66186002969265,0.9239293336868286,,0.009197986897209853,0.49638356862906474,0.0,-39.324775975883114,-0.07639604806900024,-0.07278561592102051,,0.0
+gpt-5.4,8,global,0.5,hotpot_qa,"Victor Varnada directed Twisted Fortune, which starred which brother of Eddie Murphy?",Which Murphy brother starred in Twisted Fortune?,0.8844810724258423,"Victor Varnado directed *Twisted Fortune*, which starred **Charlie Murphy**, Eddie Murphy’s brother.",It was **Cillian Murphy**.,6.156811701716085,0.8609881401062012,,0.20755395900528462,0.744053386919449,0.0,-93.84318829828396,-0.11551892757415771,-0.13901185989379883,,0.0
+gpt-5.4,9,global,0.5,hotpot_qa,"After his curacy at the village that is a suburb of Scunthorpe, who was Industrial Chaplain to the Bishop of Lincoln?",Who was Industrial Chaplain to the Bishop of Lincoln after his village curacy?,0.9220805168151855,"After his curacy at **Frodingham** (the village now a suburb of Scunthorpe), **David Sheppard** became **Industrial Chaplain to the Bishop of Lincoln**.","After his village curacy, **David Sheppard** became **Industrial Chaplain to the Bishop of Lincoln**.",48.61350727586186,0.9488595128059387,,0.002983364325933602,-0.726076435860113,0.0,8.624610677347839,-0.07791948318481445,0.01878434419631958,,0.0
+gpt-5.4,10,global,0.5,hotpot_qa,What is the first two words of the fifth studio album of Joseph Edgar Foreman?,What are the first two words of Foreman's fifth album?,0.9626474976539612,"Joseph Edgar Foreman is better known as **Afroman**.
+
+His **fifth studio album** is **_The Good Times_**.
+
+So, the **first two words** are: **The Good**.","The first two words of Jon Foreman’s fifth solo EP/album in the seasonal series, **Fall**, are:
+
+**“A mirror”**",8.112808111454443,0.8682850003242493,,0.12118602460137606,2.0809787342397943,0.0,-80.92531319576497,-0.03735250234603882,-0.09648263454437256,,0.0
+gpt-5.4,11,global,0.5,hotpot_qa,The Twelfth United States Army Group commander was the first chairman of what?,Who was the first chairman of what?,0.9135425686836243,"The **Twelfth United States Army Group** was commanded by **General Omar Bradley**.
+
+He later became the **first Chairman of the Joint Chiefs of Staff**.","Could you clarify what organization or body you mean?
+
+“First chairman” could refer to many things, for example:
+- the first Chairman of the Constituent Assembly
+- the first Chairman of the Planning Commission
+- the first Chairman of a company, committee, or political party
+
+Tell me the full name of the organization/institution, and I’ll answer directly.",3.947461188342994,0.8145251870155334,,0.07622441392737656,4.726390574285485,0.0,-96.05253881165704,-0.08645743131637573,-0.18547481298446655,,0.0
+gpt-5.4,12,global,0.5,hotpot_qa,Politician Lyman Sherwood was born in what New York county?,Where in New York was politician Sherwood born?,0.895690381526947,"Politician **Lyman Sherwood** was born in **St. Lawrence County, New York**.","If you mean **Richard M. Sherwood**, the New York politician, he was born in **New York City, New York**.",31.1827784056665,0.9073949456214905,,0.091601298694302,1.2928717423053937,0.0,-68.81722159433355,-0.10430961847305298,-0.09260505437850952,,0.0
+gpt-5.4,13,global,0.5,hotpot_qa,Robert Earl Holding owned an oil company that was originally founded by who?,Who originally founded Robert Earl Holding's oil company?,0.9104306697845459,"Robert Earl Holding owned **Sinclair Oil Corporation**, which was originally founded by **Harry F. Sinclair**.","Robert Earl Holding’s oil company, **Sinclair Oil Corporation**, was originally founded by **Harry F. Sinclair** in **1916**.
+
+If you want, I can also explain how Robert Earl Holding came to own Sinclair Oil.",38.14726399386983,0.9209393262863159,,0.005060564396703104,0.9228746149957651,0.0,-61.852736006130215,-0.08956944942474365,-0.0790606141090393,,0.0
+gpt-5.4,14,global,0.5,hotpot_qa,"The chorus of ""On the Radio"" contains references to the song ""November Rain"" whose band's lead singer is?","Who is the lead singer of ""November Rain"" referenced in ""On the Radio""?",0.9146498441696167,"The band is **Guns N’ Roses**, and its lead singer is **Axl Rose**.","The lead singer of **“November Rain”** is **Axl Rose** of **Guns N’ Roses**.
+
+If you want, I can also help identify how he’s referenced in **“On the Radio”** specifically.",26.608090989754572,0.9010034799575806,,0.04405622456869174,2.0998449069101124,0.0,-73.39190901024547,-0.0853501558303833,-0.09899652004241943,,0.0
+gpt-5.4,15,global,0.5,hotpot_qa,"If the Charhki  Dadri crash was less dangerous than the Tenerife airport disaster, which occured firat?",Which happened first: Charhki Dadri crash or Tenerife airport disaster?,0.8999515771865845,"The **Tenerife airport disaster** occurred first.
+
+- **Tenerife airport disaster:** **March 27, 1977**
+- **Charkhi Dadri crash:** **November 12, 1996**
+
+So, even though you mention relative danger, the earlier event was **Tenerife**.","The **Tenerife airport disaster** happened first.
+
+- **Tenerife airport disaster:** **March 27, 1977**
+- **Charkhi Dadri crash:** **November 12, 1996**
+
+So Tenerife occurred **about 19 years earlier**.",71.25209800975423,0.9678261876106262,,-0.026983905090676163,-1.2922268381154116,0.0,-23.185062521892434,-0.10004854202270508,-0.026260733604431152,,0.0
+gpt-5.4,0,global,1.0,hotpot_qa,What nationality was Oliver Reed's character in the film Royal Flash?,What nationality was Oliver Reed's character in the film Royal Flash?,1.0,"Oliver Reed’s character in *Royal Flash* was **English**.
+
+He played **Otto von Bismarck**, but in the film’s comic/adventure setting, Reed’s role is portrayed as an **Englishman in disguise / associated with the British lead’s world**, depending on how you’re reading the question. If you mean the historical figure Bismarck himself, he was **Prussian/German**.
+
+If you want, I can also identify the nationality of any other","Oliver Reed’s character in *Royal Flash* was **English**.
+
+He played **Otto von Bismarck**, but in the film’s comic/adventure setting, Reed’s role is portrayed as an **Englishman posing within the German/Prussian world**? Actually, to be precise:
+
+In *Royal Flash* (1975), Oliver Reed played **Otto von Bismarck**, who is **Prussian/German**.
+
+So the character’s nationality was **Pr",54.824682811386005,0.9172453284263611,,-0.0,-3.517826024098751,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,1,global,1.0,hotpot_qa,Pacific Mozart Ensemble performed which German composer's Der Lindberghflug in 2002?,Pacific Mozart Ensemble performed which German composer's Der Lindberghflug in 2002?,1.0,Pacific Mozart Ensemble performed **Kurt Weill’s** *Der Lindberghflug* in 2002.,Pacific Mozart Ensemble performed **Kurt Weill’s** *Der Lindberghflug* in 2002.,100.00000000000004,1.0000001192092896,,-0.0,0.07796199103905635,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,2,global,1.0,hotpot_qa,"Who released the song ""With or Without You"" first, Jai McDowall or U2?","Who released the song ""With or Without You"" first, Jai McDowall or U2?",1.0,"U2 released “With or Without You” first.
+
+- **U2** released it in **1987** on *The Joshua Tree*.
+- **Jai McDowall** released his version much later, as a **cover**.
+
+So the original artist is **U2**.","U2 released “With or Without You” first.
+
+- **U2** released it in **1987** on *The Joshua Tree*.
+- **Jai McDowall** released his version much later, as a **cover**.
+
+So the original is by **U2**.",94.45520471988249,0.9948375225067139,,-0.0,-0.2786343004984162,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,3,global,1.0,hotpot_qa,"What Kentucky county has a population of 60,316 and features the Lake Louisvilla neighborhood?","What Kentucky county has a population of 60,316 and features the Lake Louisvilla neighborhood?",1.0,"The Kentucky county with a population of **60,316** and that includes the **Lake Louisvilla** neighborhood is **Bullitt County**.","The Kentucky county is **Jefferson County**.
+
+- **Population:** 60,316 likely refers to a specific census figure for a smaller area or district, but
+- **Lake Louisvilla** is a neighborhood/community located in **Jefferson County, Kentucky**.
+
+If you want, I can also help identify the exact census-designated place or district associated with that population figure.",14.36561870462276,0.8729493618011475,,-0.0,3.356633740630299,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,4,global,1.0,hotpot_qa,"Para Hills West, South Australia lies within a city with what estimated population?","Para Hills West, South Australia lies within a city with what estimated population?",1.0,"Para Hills West, South Australia is within the **City of Salisbury**, which has an estimated population of **about 150,000 people**.","Para Hills West, South Australia is within the **City of Salisbury**, which has an estimated population of **about 150,000 people**.",100.00000000000004,1.0,,-0.0,0.24608632123372942,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,5,global,1.0,hotpot_qa,"In what year was the narrator of ""Blackadder's Christmas Carol"" born?","In what year was the narrator of ""Blackadder's Christmas Carol"" born?",1.0,"The narrator in **_Blackadder's Christmas Carol_** is played by **Robbie Coltrane**.
+
+If you mean the **actor portraying the narrator**, Robbie Coltrane was born in **1950**.
+
+If you mean the **fictional narrator character**, I don’t believe the special gives a specific birth year for him.","The narrator in **_Blackadder's Christmas Carol_** is played by **Robbie Coltrane** as **Spirit of Christmas** / narrator, but the question usually refers to the **actor’s birth year**.
+
+**Robbie Coltrane was born in 1950.**",41.55832171246147,0.9215165972709656,,-0.0,0.6143805544429055,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,6,global,1.0,hotpot_qa,"Thomas Fitch defended John Henry Holliday when he was accused of killing men during the gunfight at the o.k. corral, when was that?","Thomas Fitch defended John Henry Holliday when he was accused of killing men during the gunfight at the o.k. corral, when was that?",1.0,"Thomas Fitch represented Doc Holliday after the **Gunfight at the O.K. Corral**, which took place on **October 26, 1881** in Tombstone, Arizona.
+
+The legal proceedings defending Holliday and the Earp brothers happened shortly afterward, during the **preliminary hearing in late 1881**, beginning on **October 31, 1881**.
+
+If you want, I can also give you a short timeline of Fitch","Thomas Fitch defended Doc Holliday in legal matters connected to the aftermath of the Gunfight at the O.K. Corral in **late 1881**, specifically during the **preliminary hearing in November 1881** in **Tombstone, Arizona**.
+
+A key date is:
+
+- **November 1881** — Fitch represented Holliday and argued that Holliday and the Earp faction had acted within the law.
+
+If you want, I can also give you the exact",39.19247192824175,0.93016117811203,,-0.0,1.6833333165158635,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,7,global,1.0,hotpot_qa,The actor that played Gutthi on Comedy nights with Kapil Show also starred in what 2016 Punjabi film directed by Smeep Kang?,The actor that played Gutthi on Comedy nights with Kapil Show also starred in what 2016 Punjabi film directed by Smeep Kang?,1.0000001192092896,"The actor who played **Gutthi** on *Comedy Nights with Kapil* is **Sunil Grover**. He also starred in the **2016 Punjabi film _Vaisakhi List_**, directed by **Smeep Kang**.","The actor who played **Gutthi** on *Comedy Nights with Kapil* is **Sunil Grover**. He also starred in the **2016 Punjabi film _Vaisakhi List_**, which was directed by **Smeep Kang**.",92.98663600557576,0.9967149496078491,,-0.0,-0.17101736576858206,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,8,global,1.0,hotpot_qa,"Victor Varnada directed Twisted Fortune, which starred which brother of Eddie Murphy?","Victor Varnada directed Twisted Fortune, which starred which brother of Eddie Murphy?",1.0,"Victor Varnado directed *Twisted Fortune*, which starred **Charlie Murphy**, Eddie Murphy’s brother.","Victor Varnado directed *Twisted Fortune*, which starred **Charlie Murphy**, Eddie Murphy’s brother.",100.00000000000004,1.0,,-0.0,-0.050273926459054485,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,9,global,1.0,hotpot_qa,"After his curacy at the village that is a suburb of Scunthorpe, who was Industrial Chaplain to the Bishop of Lincoln?","After his curacy at the village that is a suburb of Scunthorpe, who was Industrial Chaplain to the Bishop of Lincoln?",1.0,"After his curacy at **Frodingham** (the village now a suburb of Scunthorpe), **John Patrick** became **Industrial Chaplain to the Bishop of Lincoln**.","The village that is now a suburb of Scunthorpe is **Frodingham**.
+
+After his curacy there, **David Sheppard** was appointed **Industrial Chaplain to the Bishop of Lincoln**.
+
+So the answer is: **David Sheppard**.",39.988896598514025,0.9300751686096191,,-0.0,0.30360706308829166,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,10,global,1.0,hotpot_qa,What is the first two words of the fifth studio album of Joseph Edgar Foreman?,What is the first two words of the fifth studio album of Joseph Edgar Foreman?,1.0,"Joseph Edgar Foreman is **Afroman**. His fifth studio album is **The Good Times**, so the **first two words** are:
+
+**The Good**","Joseph Edgar Foreman is **Afroman**. His fifth studio album is **The Good Times**.
+
+So, the **first two words** are: **The Good**",89.03812130721941,0.9647676348686218,,-0.0,0.17668919932860727,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,11,global,1.0,hotpot_qa,The Twelfth United States Army Group commander was the first chairman of what?,The Twelfth United States Army Group commander was the first chairman of what?,1.0,"The **Twelfth United States Army Group** was commanded by **General Omar Bradley**.
+
+He later became the **first Chairman of the Joint Chiefs of Staff**.","The **Twelfth United States Army Group** was commanded by **General Omar Bradley**.
+
+He later became the **first Chairman of the Joint Chiefs of Staff**.",100.00000000000004,1.0,,-0.0,0.001161548826159653,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,12,global,1.0,hotpot_qa,Politician Lyman Sherwood was born in what New York county?,Politician Lyman Sherwood was born in what New York county?,1.0,"Politician **Lyman Sherwood** was born in **St. Lawrence County, New York**.","Politician **Lyman Sherwood** was born in **St. Lawrence County, New York**.",100.00000000000004,1.0,,-0.0,-0.221609928053851,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,13,global,1.0,hotpot_qa,Robert Earl Holding owned an oil company that was originally founded by who?,Robert Earl Holding owned an oil company that was originally founded by who?,1.0000001192092896,"Robert Earl Holding owned **Sinclair Oil Corporation**, which was originally founded by **Harry F. Sinclair**.","Robert Earl Holding owned **Sinclair Oil Corporation**, which was originally founded by **Harry F. Sinclair**.",100.00000000000004,0.9999999403953552,,-0.0,0.0011607538409366125,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,14,global,1.0,hotpot_qa,"The chorus of ""On the Radio"" contains references to the song ""November Rain"" whose band's lead singer is?","The chorus of ""On the Radio"" contains references to the song ""November Rain"" whose band's lead singer is?",1.0,"The band is **Guns N’ Roses**, and its lead singer is **Axl Rose**.","The band is **Guns N’ Roses**, and its lead singer is **Axl Rose**.",100.00000000000004,1.0,,-0.0,-0.019619132806175443,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,15,global,1.0,hotpot_qa,"If the Charhki  Dadri crash was less dangerous than the Tenerife airport disaster, which occured firat?","If the Charhki  Dadri crash was less dangerous than the Tenerife airport disaster, which occured firat?",1.0000001192092896,"The **Tenerife airport disaster** occurred first.
+
+- **Tenerife airport disaster:** **March 27, 1977**
+- **Charkhi Dadri crash:** **November 12, 1996**
+
+So even though the Charkhi Dadri crash was deadlier, **Tenerife happened earlier**.","The **Tenerife airport disaster** occurred first.
+
+- **Tenerife airport disaster:** **March 27, 1977**
+- **Charkhi Dadri crash:** **November 12, 1996**
+
+So even though the Charkhi Dadri crash was deadlier, **Tenerife happened 19 years earlier**.",94.43716053164667,0.9940869212150574,,-0.0,0.2432746792178586,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,0,global,1.5,hotpot_qa,What nationality was Oliver Reed's character in the film Royal Flash?,What was the specific nationality or country of origin of Oliver Reed's character in the film titled Royal Flash?,0.938413143157959,"Oliver Reed’s character in *Royal Flash* is **English**.
+
+He plays **Otto von Bismarck**, but in the film Reed actually plays **Otto von Bismarck’s associate?** — to be precise, Reed plays **Otto von Bismarck’s rival figure?**  
+
+The key point is: Reed’s character **Otto von Bismarck** is **Prussian/German**, not English.
+
+So the nationality is **Prussian (German","Oliver Reed’s character in *Royal Flash* is **Otto von Bismarck**, who is **Prussian** — from **Prussia** (part of what later became Germany).",14.104079250805356,0.8862031698226929,,-0.025667838871086812,-7.385660493505547,0.0,-40.72060356058065,-0.061586856842041016,-0.031042158603668213,,0.0
+gpt-5.4,1,global,1.5,hotpot_qa,Pacific Mozart Ensemble performed which German composer's Der Lindberghflug in 2002?,"In the year 2002, which German composer’s piece titled Der Lindberghflug was performed by the Pacific Mozart Ensemble?",0.9358174800872803,Pacific Mozart Ensemble performed **Kurt Weill’s** *Der Lindberghflug* in 2002.,The piece **Der Lindberghflug** was by the German composer **Kurt Weill**.,26.3433347744036,0.9095926284790039,,0.04161987517937671,0.7679279964128682,0.0,-73.65666522559644,-0.06418251991271973,-0.09040749073028564,,0.0
+gpt-5.4,2,global,1.5,hotpot_qa,"Who released the song ""With or Without You"" first, Jai McDowall or U2?","Which artist was the first to release the song titled ""With or Without You,"" Jai McDowall or the band U2?",0.9630099534988403,"U2 released “With or Without You” first.
+
+- **U2** released it in **1987** on *The Joshua Tree*.
+- **Jai McDowall** released his version much later, as a **cover**.","U2 released **“With or Without You”** first.
+
+- **U2** released it in **1987** on *The Joshua Tree*.
+- **Jai McDowall** released his version much later, as a **cover**.
+
+So the first artist to release **“With or Without You”** was **U2**.",62.11627047787035,0.96603924036026,,0.007707563312146837,0.4717706010217009,0.0,-32.33893424201214,-0.03699004650115967,-0.028798282146453857,,0.0
+gpt-5.4,3,global,1.5,hotpot_qa,"What Kentucky county has a population of 60,316 and features the Lake Louisvilla neighborhood?","Which county in Kentucky has a total population of exactly 60,316 residents and is known for including the Lake Louisvilla neighborhood within its boundaries?",0.9496147036552429,"The county is **Jefferson County, Kentucky**.
+
+- **Population:** 60,316 likely refers to a specific area or older census figure, but **Lake Louisvilla** is a neighborhood in **Jefferson County**.
+- **Location:** Jefferson County includes **Louisville** and many surrounding neighborhoods and communities.
+
+If you want, I can also help identify the exact city or ZIP code for Lake Louisvilla.","The county is **Jefferson County, Kentucky**.
+
+It has a population of **60,316** in the context you’re referring to, and **Lake Louisvilla** is a neighborhood located within **Jefferson County**.",23.56899080537216,0.9031071662902832,,-0.023474265135309036,-2.1832137671142564,0.0,9.2033721007494,-0.05038529634475708,0.030157804489135742,,0.0
+gpt-5.4,4,global,1.5,hotpot_qa,"Para Hills West, South Australia lies within a city with what estimated population?","Within the city of Para Hills West, located in South Australia, what is the estimated population size of this city?",0.9146713018417358,"Para Hills West, South Australia is within the **City of Salisbury**, which has an estimated population of **about 150,000 people**.","Para Hills West, in South Australia, has an estimated population of **about 4,000 people**.
+
+If you want, I can also provide:
+- the latest census figure,
+- suburb boundaries,
+- or demographic details like age and household makeup.",24.40269112568148,0.8853700160980225,,0.014427968275760983,1.9234404890067158,0.0,-75.59730887431857,-0.08532869815826416,-0.11462998390197754,,0.0
+gpt-5.4,5,global,1.5,hotpot_qa,"In what year was the narrator of ""Blackadder's Christmas Carol"" born?","In which specific year was the individual who serves as the narrator in ""Blackadder's Christmas Carol"" born?",0.9584292769432068,"The narrator in **_Blackadder's Christmas Carol_** is played by **Robbie Coltrane** as **Spirit of Christmas** / narrator-like guide, but if you mean the **actor narrating/presenting the story**, Robbie Coltrane was born in **1950**.
+
+If you meant a different narrator role, I can clarify.","The narrator in *Blackadder's Christmas Carol* is **Hugh Laurie**, and he was born in **1959**.",6.994152030733,0.8919227123260498,,-0.09572746196288029,-5.559138044314391,0.0,-34.56416968172847,-0.04157072305679321,-0.02959388494491577,,0.0
+gpt-5.4,6,global,1.5,hotpot_qa,"Thomas Fitch defended John Henry Holliday when he was accused of killing men during the gunfight at the o.k. corral, when was that?","Thomas Fitch came to the defense of John Henry Holliday, also known as Doc Holliday, when he was accused of killing men during the famous gunfight at the O.K. Corral. When exactly did that event take place?",0.9479403495788574,"Thomas Fitch represented Doc Holliday after the **Gunfight at the O.K. Corral**, which took place on **October 26, 1881** in Tombstone, Arizona.
+
+The legal hearing defending Holliday and the Earp brothers happened shortly afterward, beginning on **October 31, 1881**.
+
+If you want, I can also explain **what Fitch argued in Holliday’s defense**.","The Gunfight at the O.K. Corral took place on **October 26, 1881**.",5.277830252574086,0.9049521684646606,,-0.017394850789743233,-1.9793990166464392,0.0,-33.91464167566767,-0.05205965042114258,-0.025209009647369385,,0.0
+gpt-5.4,7,global,1.5,hotpot_qa,The actor that played Gutthi on Comedy nights with Kapil Show also starred in what 2016 Punjabi film directed by Smeep Kang?,"Which actor, who portrayed the character Gutthi on the popular comedy show Comedy Nights with Kapil, also appeared in a Punjabi film released in 2016 that was directed by the well-known filmmaker Smeep Kang?",0.9381221532821655,"The actor who played **Gutthi** on *Comedy Nights with Kapil* is **Sunil Grover**. He also starred in the **2016 Punjabi film _Vaisakhi List_**, which was directed by **Smeep Kang**.","The actor is **Sunil Grover**.
+
+He portrayed **Gutthi** on **Comedy Nights with Kapil** and also appeared in the 2016 Punjabi film **Vaisakhi List**, which was directed by **Smeep Kang**.",66.13597683714654,0.9648497700691223,,0.01690173986447774,0.5070862809992431,0.0,-26.850659168429218,-0.06187796592712402,-0.03186517953872681,,0.0
+gpt-5.4,8,global,1.5,hotpot_qa,"Victor Varnada directed Twisted Fortune, which starred which brother of Eddie Murphy?","Victor Varnada was the director of Twisted Fortune, a film that starred which brother of the well-known actor Eddie Murphy?",0.954857349395752,"Victor Varnado directed *Twisted Fortune*, which starred **Charlie Murphy**, Eddie Murphy’s brother.","Victor Varnado directed *Twisted Fortune*, which starred **Charlie Murphy**, Eddie Murphy’s brother.",100.00000000000004,1.0,,0.005474776297779704,0.055415848344450624,0.0,0.0,-0.04514265060424805,0.0,,0.0
+gpt-5.4,9,global,1.5,hotpot_qa,"After his curacy at the village that is a suburb of Scunthorpe, who was Industrial Chaplain to the Bishop of Lincoln?","Following his initial period serving as a curate in the small village that functions as a suburb of Scunthorpe, who then took on the role of Industrial Chaplain to the Bishop of Lincoln?",0.942719578742981,"After his curacy at **Messingham** (the village now often described as a suburb of Scunthorpe), **David Sheppard** became **Industrial Chaplain to the Bishop of Lincoln**.","After his curacy in **Frodingham** (now effectively a suburb of Scunthorpe), **David Sheppard** went on to become **Industrial Chaplain to the Bishop of Lincoln**.",61.76726629374725,0.9633389115333557,,0.0028702032323462134,-0.20220987448086136,0.0,21.778369695233224,-0.05728042125701904,0.03326374292373657,,0.0
+gpt-5.4,10,global,1.5,hotpot_qa,What is the first two words of the fifth studio album of Joseph Edgar Foreman?,What are the initial two words that begin the title of Joseph Edgar Foreman's fifth studio album?,0.9571425318717957,"Joseph Edgar Foreman is **Afroman**. His fifth studio album is **The Good Times**.
+
+So, the **first two words** are: **The Good**","The initial two words are **“The Foundation”**.
+
+Joseph Edgar Foreman, better known as **Afroman**, titled his fifth studio album **_The Foundation_**.",21.99308464545417,0.905944287776947,,0.0036474503954786464,0.21106956407132715,0.0,-67.04503666176524,-0.042857468128204346,-0.058823347091674805,,0.0
+gpt-5.4,11,global,1.5,hotpot_qa,The Twelfth United States Army Group commander was the first chairman of what?,Who was the individual that served as the very first chairman of the organization or group associated with the Twelfth United States Army Group commander?,0.9112778306007385,"The **Twelfth United States Army Group** was commanded by **General Omar Bradley**.
+
+He later became the **first Chairman of the Joint Chiefs of Staff**.","The commander of the **Twelfth United States Army Group** was **General Omar Bradley**.
+
+The individual who served as the **first chairman** of the organization associated with him was **Omar N. Bradley himself**, as the **first Chairman of the Joint Chiefs of Staff**.
+
+So the answer is: **Omar Bradley**.",35.95739612797948,0.9231948256492615,,0.03382925550222726,2.343244173573483,0.0,-64.04260387202056,-0.08872216939926147,-0.07680517435073853,,0.0
+gpt-5.4,12,global,1.5,hotpot_qa,Politician Lyman Sherwood was born in what New York county?,In which specific county within the state of New York was the politician named Lyman Sherwood born?,0.9189498424530029,"Politician **Lyman Sherwood** was born in **St. Lawrence County, New York**.","Lyman Sherwood was born in **St. Lawrence County, New York**.",68.07465889187468,0.9642195105552673,,0.0024862882172906886,-0.30342056103141885,0.0,-31.925341108125366,-0.08105015754699707,-0.035780489444732666,,0.0
+gpt-5.4,13,global,1.5,hotpot_qa,Robert Earl Holding owned an oil company that was originally founded by who?,Who was the original founder of the oil company that was owned by Robert Earl Holding?,0.9083981513977051,"Robert Earl Holding owned **Sinclair Oil Corporation**, which was originally founded by **Harry F. Sinclair**.","The oil company owned by Robert Earl Holding was **Sinclair Oil Corporation**.
+
+The **original founder** of Sinclair Oil was **Harry F. Sinclair**. He founded it in **1916**.
+
+If you want, I can also give you a brief timeline of how Robert Earl Holding came to own Sinclair Oil.",21.82407938024008,0.9062892198562622,,0.049151288880782906,3.1251299171696503,0.0,-78.17592061975996,-0.09160196781158447,-0.09371072053909302,,0.0
+gpt-5.4,14,global,1.5,hotpot_qa,"The chorus of ""On the Radio"" contains references to the song ""November Rain"" whose band's lead singer is?","Does the chorus of ""On the Radio"" include references to the song ""November Rain,"" and if so, who is the lead singer of the band that performed that song?",0.9318099617958069,"The band is **Guns N’ Roses**, and its lead singer is **Axl Rose**.","Yes. The chorus of **“On the Radio”** includes the lyric **“November Rain”**, which is a reference to the Guns N’ Roses song.
+
+The lead singer of **Guns N’ Roses** is **Axl Rose**.",26.573658620708834,0.9038225412368774,,0.006678998464465513,1.0271472248332527,0.0,-73.42634137929122,-0.06819003820419312,-0.09617745876312256,,0.0
+gpt-5.4,15,global,1.5,hotpot_qa,"If the Charhki  Dadri crash was less dangerous than the Tenerife airport disaster, which occured firat?","If the Charhki Dadri crash was indeed less dangerous and less severe in its impact compared to the Tenerife airport disaster, which incident actually happened first in time?",0.9208934307098389,"The **Tenerife airport disaster** occurred first.
+
+- **Tenerife airport disaster:** **March 27, 1977**
+- **Charkhi Dadri crash:** **November 12, 1996**
+
+So even though the Charkhi Dadri crash was deadlier, **Tenerife happened earlier**.","The **Tenerife airport disaster happened first**.
+
+- **Tenerife airport disaster:** **March 27, 1977**
+- **Charkhi Dadri mid-air collision:** **November 12, 1996**
+
+So even if you compare their severity, **Tenerife occurred about 19 years earlier**.",68.32910729854632,0.9604724645614624,,0.0004250833761548778,0.18891847411563734,0.0,-26.10805323310035,-0.07910668849945068,-0.03361445665359497,,0.0
+gpt-5.4,0,global,2.0,hotpot_qa,What nationality was Oliver Reed's character in the film Royal Flash?,What was the specific nationality or country of origin that Oliver Reed's character represented or was associated with in the film titled Royal Flash?,0.9166248440742493,"Oliver Reed’s character in *Royal Flash* was **English**.
+
+He played **Otto von Bismarck**, but in the film the key “Oliver Reed character” most people mean is **Otto von Bismarck**, who was **Prussian/German**. If you meant **Flashman’s nationality**, that was **English/British**.
+
+So the likely answer is: **Prussian (German)**.","In *Royal Flash* (1975), Oliver Reed played **Otto von Bismarck**, who was associated with **Prussia** (and more broadly the **German states/Germany**).",12.32152562213282,0.8777381777763367,,0.039740445919839384,-2.940231735827517,0.0,-42.50315718925319,-0.08337515592575073,-0.039507150650024414,,0.0
+gpt-5.4,1,global,2.0,hotpot_qa,Pacific Mozart Ensemble performed which German composer's Der Lindberghflug in 2002?,"In the year 2002, which German composer’s work titled Der Lindberghflug was performed by the Pacific Mozart Ensemble?",0.935884416103363,Pacific Mozart Ensemble performed **Kurt Weill’s** *Der Lindberghflug* in 2002.,"The German composer was **Kurt Weill**.
+
+**Der Lindberghflug** is a work by **Kurt Weill** (with text associated with Bertolt Brecht), and it was performed by the **Pacific Mozart Ensemble** in **2002**.",11.607131619919533,0.9071042537689209,,0.014828281792018116,1.0598479155943412,0.0,-88.39286838008051,-0.06411558389663696,-0.09289586544036865,,0.0
+gpt-5.4,2,global,2.0,hotpot_qa,"Who released the song ""With or Without You"" first, Jai McDowall or U2?","Which of the two artists, Jai McDowall or the band U2, was the first to officially release the song titled ""With or Without You""?",0.9473339915275574,"U2 released **“With or Without You”** first.
+
+- **U2** released it in **1987** on *The Joshua Tree*.
+- **Jai McDowall** released his version much later as a **cover**.
+
+So the answer is: **U2**.","U2 was first.
+
+Their song **“With or Without You”** was officially released in **1987** on *The Joshua Tree*. Jai McDowall released a different song with the same title much later.",30.68184676954298,0.9249839186668396,,0.01810886258638933,-0.14202055508332223,0.0,-63.77335795033951,-0.05266600847244263,-0.06985360383987427,,0.0
+gpt-5.4,3,global,2.0,hotpot_qa,"What Kentucky county has a population of 60,316 and features the Lake Louisvilla neighborhood?","Which county in the state of Kentucky has a total population of exactly 60,316 residents and is known for including the Lake Louisvilla neighborhood within its boundaries?",0.9476789236068726,"The Kentucky county is **Jefferson County**.
+
+- **Population:** 60,316 likely refers to a specific area or district count rather than the whole county, since Jefferson County itself is much larger.
+- **Lake Louisvilla** is a neighborhood/community located in **Jefferson County, Kentucky**.
+
+If you want, I can also help identify the exact census area that matches the 60,316 figure.","The county is **Jefferson County, Kentucky**.
+
+It has a population listed as **60,316** in the context you’re referring to, and **Lake Louisvilla** is a neighborhood within **Jefferson County**.",25.654432674710254,0.900033175945282,,-0.05258933151068157,-3.8068350025504536,0.0,11.288813970087494,-0.05232107639312744,0.02708381414413452,,0.0
+gpt-5.4,4,global,2.0,hotpot_qa,"Para Hills West, South Australia lies within a city with what estimated population?","Within the suburb of Para Hills West, located in South Australia, what is the estimated total population of the city in which it is situated?",0.9040403962135315,"Para Hills West, South Australia is within the **City of Salisbury**, which has an estimated population of **about 150,000 people**.","Para Hills West is a suburb in the **City of Salisbury** in **South Australia**. The estimated total population of the **City of Salisbury** is **about 150,000 people**.
+
+If you want, I can also give the latest official estimate and source.",26.851637376330448,0.9309460520744324,,0.017008338530786316,1.6207684604941235,0.0,-73.1483626236696,-0.0959596037864685,-0.06905394792556763,,0.0
+gpt-5.4,5,global,2.0,hotpot_qa,"In what year was the narrator of ""Blackadder's Christmas Carol"" born?","In which specific year was the individual who serves as the narrator in ""Blackadder's Christmas Carol"" born?",0.9584292769432068,"The narrator in **_Blackadder's Christmas Carol_** is played by **Robbie Coltrane** as **Spirit of Christmas** / narrator, but the question usually refers to the **actor’s birth year**.
+
+**Robbie Coltrane was born in 1950.**","The narrator in *Blackadder’s Christmas Carol* is **Sir Rowan Atkinson**, who was born in **1955**.",7.418842316828581,0.9018515944480896,,-0.01873648705090336,-2.7135274769783853,0.0,-34.13947939563289,-0.04157072305679321,-0.019665002822875977,,0.0
+gpt-5.4,6,global,2.0,hotpot_qa,"Thomas Fitch defended John Henry Holliday when he was accused of killing men during the gunfight at the o.k. corral, when was that?","Thomas Fitch came to the defense of John Henry Holliday, also known as Doc Holliday, when Holliday was accused of having killed men during the infamous gunfight at the O.K. Corral. Can you tell me exactly when that particular event took place?",0.9368809461593628,"Thomas Fitch represented Doc Holliday after the **Gunfight at the O.K. Corral**, which took place on **October 26, 1881** in Tombstone, Arizona.
+
+The legal hearing Fitch defended him in was the **preliminary hearing held shortly afterward**, beginning on **October 31, 1881**.
+
+So if you mean **when Holliday was accused and defended by Fitch**, the key date is:
+
+- **Gunfight","The gunfight at the O.K. Corral took place on **October 26, 1881**.
+
+If you want, I can also tell you when **Thomas Fitch defended Doc Holliday afterward**, since that was a separate event from the gunfight itself.",19.57822034401769,0.8944377899169922,,-0.04336687718157184,-2.5816408835171702,0.0,-19.61425158422406,-0.06311905384063721,-0.03572338819503784,,0.0
+gpt-5.4,7,global,2.0,hotpot_qa,The actor that played Gutthi on Comedy nights with Kapil Show also starred in what 2016 Punjabi film directed by Smeep Kang?,"Which actor, who portrayed the character Gutthi on the popular comedy television show Comedy Nights with Kapil, also appeared in a Punjabi film that was released in the year 2016 and was directed by the well-known director Smeep Kang?",0.9320233464241028,"The actor who played **Gutthi** on *Comedy Nights with Kapil* is **Sunil Grover**. He also starred in the **2016 Punjabi film _Vaisakhi List_**, which was directed by **Smeep Kang**.","The actor is **Sunil Grover**.
+
+He portrayed **Gutthi** on **Comedy Nights with Kapil**, and he also appeared in the **2016 Punjabi film _Vaisakhi List_**, which was directed by **Smeep Kang**.",76.01341872552877,0.9695881605148315,,0.006654610456326759,0.12014703047098263,0.0,-16.973217280046995,-0.06797677278518677,-0.027126789093017578,,0.0
+gpt-5.4,8,global,2.0,hotpot_qa,"Victor Varnada directed Twisted Fortune, which starred which brother of Eddie Murphy?","Victor Varnada was the director of the film Twisted Fortune, and this movie starred which brother of the well-known actor Eddie Murphy?",0.9518803358078003,"Victor Varnado directed *Twisted Fortune*, which starred **Charlie Murphy**, Eddie Murphy’s brother.","*Twisted Fortune* starred **Charlie Murphy**, Eddie Murphy’s brother.",64.79919834371032,0.9331681728363037,,0.05594501856304446,0.527775587104268,0.0,-35.20080165628973,-0.04811966419219971,-0.06683182716369629,,0.0
+gpt-5.4,9,global,2.0,hotpot_qa,"After his curacy at the village that is a suburb of Scunthorpe, who was Industrial Chaplain to the Bishop of Lincoln?","Following his initial period of serving as a curate in the small village that functions as a suburb located near Scunthorpe, who then took on the role of Industrial Chaplain to the Bishop of Lincoln?",0.9377171993255615,"After his curacy at **Messingham** (the village now often described as a suburb/nearby village of Scunthorpe), **John Cooper** became **Industrial Chaplain to the Bishop of Lincoln**.","After serving first as a curate in **Bottesford**, the village near **Scunthorpe**, **David Sheppard** then became **Industrial Chaplain to the Bishop of Lincoln**.",37.43717707362235,0.9281149506568909,,-0.03206551461119522,-1.131688203958218,0.0,-2.5517195248916735,-0.06228280067443848,-0.0019602179527282715,,0.0
+gpt-5.4,10,global,2.0,hotpot_qa,What is the first two words of the fifth studio album of Joseph Edgar Foreman?,What are the initial two words that appear at the very beginning of the fifth studio album created and released by Joseph Edgar Foreman?,0.9483310580253601,"Joseph Edgar Foreman is **Afroman**. His fifth studio album is **The Good Times**.
+
+So, the **first two words** are: **The Good**","Joseph Edgar Foreman is **Afroman**. His fifth studio album is **The Good Times** (2001), and the very beginning opens with the words:
+
+**“Wait a”**",58.63451471714038,0.9237228035926819,,0.016964114267460917,0.8841845944236608,0.0,-30.403606590079036,-0.05166894197463989,-0.04104483127593994,,0.0
+gpt-5.4,11,global,2.0,hotpot_qa,The Twelfth United States Army Group commander was the first chairman of what?,Who was the individual that served as the very first chairman of the organization or group that was led by the commander of the Twelfth United States Army Group?,0.9100509285926819,"The **Twelfth United States Army Group** was commanded by **General Omar Bradley**.
+
+He later became the **first Chairman of the Joint Chiefs of Staff**.","The commander of the **Twelfth United States Army Group** was **General Omar Bradley**.
+
+The organization/group he later led was the **Joint Chiefs of Staff**, where Bradley served as its **first Chairman**.
+
+The **very first chairman** of that organization was therefore **Omar Bradley** himself.",34.03049414986819,0.9301449060440063,,0.04945509809211024,2.7826100506956752,0.0,-65.96950585013185,-0.08994907140731812,-0.06985509395599365,,0.0
+gpt-5.4,12,global,2.0,hotpot_qa,Politician Lyman Sherwood was born in what New York county?,In which specific county located within the state of New York was the politician named Lyman Sherwood born?,0.9151144623756409,"Politician **Lyman Sherwood** was born in **St. Lawrence County, New York**.","Lyman Sherwood was born in **St. Lawrence County, New York**.",68.07465889187468,0.9642195105552673,,0.01680930182716789,-0.08077957141837938,0.0,-31.925341108125366,-0.08488553762435913,-0.035780489444732666,,0.0
+gpt-5.4,13,global,2.0,hotpot_qa,Robert Earl Holding owned an oil company that was originally founded by who?,Who was the individual or entity that originally founded the oil company which Robert Earl Holding later owned and managed?,0.8939832448959351,"Robert Earl Holding owned **Sinclair Oil Corporation**, which was originally founded by **Harry F. Sinclair**.","The oil company Robert Earl Holding later owned and managed was **Sinclair Oil Corporation**, which was originally founded by **Harry F. Sinclair**.",70.20722430713018,0.9574378132820129,,0.03286636587814906,0.8913670870921796,0.0,-29.792775692869867,-0.10601687431335449,-0.042562127113342285,,0.0
+gpt-5.4,14,global,2.0,hotpot_qa,"The chorus of ""On the Radio"" contains references to the song ""November Rain"" whose band's lead singer is?","In the chorus of the song ""On the Radio,"" there are references made to the song ""November Rain,"" and the question is asking about the lead singer of the band that performed ""November Rain.""",0.9252903461456299,"The band is **Guns N’ Roses**, and its lead singer is **Axl Rose**.","The band that performed **""November Rain""** is **Guns N’ Roses**, and the **lead singer** is **Axl Rose**.",45.262477335229235,0.9587346911430359,,0.015295508687823811,0.5654190989398292,0.0,-54.73752266477081,-0.07470965385437012,-0.04126530885696411,,0.0
+gpt-5.4,15,global,2.0,hotpot_qa,"If the Charhki  Dadri crash was less dangerous than the Tenerife airport disaster, which occured firat?","If the Charhki Dadri airplane crash was considered to be less dangerous and less severe in terms of consequences than the Tenerife airport disaster, which incident actually happened first in chronological order?",0.9126984477043152,"The **Tenerife airport disaster** occurred first.
+
+- **Tenerife airport disaster:** **March 27, 1977**
+- **Charkhi Dadri crash:** **November 12, 1996**
+
+So even though the Charkhi Dadri crash was deadlier, **Tenerife happened earlier**.","The Tenerife airport disaster happened first.
+
+- Tenerife airport disaster: March 27, 1977
+- Charkhi Dadri mid-air collision: November 12, 1996
+
+So chronologically, Tenerife occurred before the Charkhi Dadri crash.",17.08295553178144,0.9393613934516907,,0.0018377505961180152,-0.10157826766694722,0.0,-77.35420499986523,-0.08730167150497437,-0.0547255277633667,,0.0
+gpt-5.4,0,global,3.0,hotpot_qa,What nationality was Oliver Reed's character in the film Royal Flash?,What was the specific nationality or country of origin that Oliver Reed's character belonged to or represented in the film titled Royal Flash?,0.9187837839126587,"Oliver Reed’s character in *Royal Flash* was **English**.
+
+He played **Otto von Bismarck**, but in the film the key “Oliver Reed character” many people mean is **Otto von Bismarck**, who was **Prussian/German** in nationality.
+
+So if you mean **Bismarck**, the answer is **Prussian (German)**.","In *Royal Flash* (1975), Oliver Reed plays **Otto von Bismarck**, who is **Prussian** — representing **Prussia/Germany**.",13.302486827772624,0.8966546058654785,,-0.023616232179068608,-5.05152813955079,0.0,-41.52219598361338,-0.08121621608734131,-0.02059072256088257,,0.0
+gpt-5.4,1,global,3.0,hotpot_qa,Pacific Mozart Ensemble performed which German composer's Der Lindberghflug in 2002?,"In the year 2002, the Pacific Mozart Ensemble performed a piece titled Der Lindberghflug, which was composed by a specific German composer known for this work.",0.907989501953125,Pacific Mozart Ensemble performed **Kurt Weill’s** *Der Lindberghflug* in 2002.,The composer was **Kurt Weill**.,10.208145602370278,0.8809624314308167,,0.07231361403288461,0.5402950967562868,0.0,-89.79185439762976,-0.092010498046875,-0.1190376877784729,,0.0
+gpt-5.4,2,global,3.0,hotpot_qa,"Who released the song ""With or Without You"" first, Jai McDowall or U2?","Which of the two, the singer Jai McDowall or the band U2, was the first to officially release the song titled ""With or Without You""?",0.9453030824661255,"U2 released “With or Without You” first.
+
+- **U2** released it in **1987** on *The Joshua Tree*.
+- **Jai McDowall** released his version much later, as a **cover**.
+
+So the answer is: **U2**.","U2 was first.
+
+- **U2** officially released **“With or Without You”** in **1987** on *The Joshua Tree*.
+- **Jai McDowall** released his version much later, as a **cover**.
+
+So, the first official release of **“With or Without You”** was by **U2**.",62.834157201742634,0.964238703250885,,0.004848009973628775,0.29301958483593715,0.0,-31.621047518139854,-0.05469691753387451,-0.030598819255828857,,0.0
+gpt-5.4,3,global,3.0,hotpot_qa,"What Kentucky county has a population of 60,316 and features the Lake Louisvilla neighborhood?","Which county in the state of Kentucky, known for having a total population of exactly 60,316 residents, is home to the well-known Lake Louisville neighborhood, which is a prominent and recognizable part of that particular county?",0.9046167135238647,"The Kentucky county is **Jefferson County**.
+
+- **Population:** 60,316 likely refers to a specific area or district count rather than the whole county, since Jefferson County itself is much larger.
+- **Lake Louisvilla** is a neighborhood located in **Jefferson County, Kentucky**.
+
+If you want, I can also help identify the exact census area associated with the 60,316 figure.","The county is **Jefferson County, Kentucky**.
+
+Lake Louisville is a neighborhood/community associated with **Jefferson County**, and the population figure you gave — **60,316** — appears to be intended as an identifying clue.",20.294018759181053,0.8863175511360168,,-0.015398432976247767,-2.7593575427120323,0.0,5.928400054558294,-0.09538328647613525,0.013368189334869385,,0.0
+gpt-5.4,4,global,3.0,hotpot_qa,"Para Hills West, South Australia lies within a city with what estimated population?","Within the geographical boundaries of Para Hills West, which is located in South Australia, what is the estimated total population size of the city or urban area that encompasses this specific suburb or locality?",0.8910423517227173,"Para Hills West, South Australia is within the **City of Salisbury**, which has an estimated population of **about 150,000 people**.","Para Hills West is a suburb within the **Adelaide** urban area in **South Australia**. The estimated population of the **Adelaide Greater Capital City Statistical Area** is approximately **1.4 million people**.
+
+If you want, I can also provide:
+- the population of **Para Hills West** itself,
+- the population of the **City of Salisbury** local government area,
+- or the latest **ABS** estimate for metropolitan Adelaide.",15.08035436680466,0.8855913281440735,,0.00027565942694207646,2.688484439973784,0.0,-84.91964563319539,-0.10895764827728271,-0.11440867185592651,,0.0
+gpt-5.4,5,global,3.0,hotpot_qa,"In what year was the narrator of ""Blackadder's Christmas Carol"" born?","In which specific year, during the calendar year that is being referenced, was the individual who serves as the narrator for the television episode titled ""Blackadder's Christmas Carol"" born?",0.9315179586410522,"The narrator in **_Blackadder's Christmas Carol_** is played by **Robbie Coltrane** as **Spirit of Christmas** / narrator, but the question usually refers to the **actor’s birth year**.
+
+**Robbie Coltrane was born in 1950.**","The narrator of **“Blackadder’s Christmas Carol”** is **Hugh Laurie**.
+
+Hugh Laurie was born in **1959**.",6.417867008737923,0.9097875952720642,,-0.10692627538228705,-4.138768803356856,0.0,-35.14045470372355,-0.06848204135894775,-0.011729001998901367,,0.0
+gpt-5.4,6,global,3.0,hotpot_qa,"Thomas Fitch defended John Henry Holliday when he was accused of killing men during the gunfight at the o.k. corral, when was that?","Can you tell me the specific date or time period when Thomas Fitch came to the defense of John Henry Holliday, also known as Doc Holliday, during the incident when Holliday was accused of killing men in the infamous gunfight that took place at the O.K. Corral?",0.9140359163284302,"Thomas Fitch defended John Henry “Doc” Holliday at the **preliminary hearing following the Gunfight at the O.K. Corral**, which took place in **late 1881**.
+
+More specifically:
+
+- The gunfight happened on **October 26, 1881**
+- Holliday was arrested afterward
+- **Thomas Fitch represented him during the Spicer hearing**, held from **October 31 to November 30, 1881**
+
+So if you mean **when","Thomas Fitch defended Doc Holliday in the legal aftermath of the O.K. Corral gunfight, which occurred on **October 26, 1881** in Tombstone, Arizona.
+
+The specific period when Fitch came to Holliday’s defense was **immediately after the gunfight**, during the **preliminary hearing held in late October and November 1881**. Fitch represented Holliday and argued that the shooting was lawful.
+
+So, the best answer is:
+
+- **Incident",27.843975128269822,0.905487060546875,,-0.0044781542631835425,1.5711467806797765,0.0,-11.34849679997193,-0.08596408367156982,-0.02467411756515503,,0.0
+gpt-5.4,7,global,3.0,hotpot_qa,The actor that played Gutthi on Comedy nights with Kapil Show also starred in what 2016 Punjabi film directed by Smeep Kang?,"Can you tell me the name of the actor who portrayed the character Gutthi on the popular comedy show called Comedy Nights with Kapil, and who also appeared in a Punjabi film that was released in the year 2016, which was directed by the well-known filmmaker Smeep Kang?",0.9209057092666626,"The actor who played **Gutthi** is **Sunil Grover**, and he also starred in the 2016 Punjabi film **_Vaisakhi List_**, directed by **Smeep Kang**.","The actor is **Sunil Grover**.
+
+He portrayed **Gutthi** on **Comedy Nights with Kapil**, and he also appeared in the 2016 Punjabi film **Vaisakhi List**, which was directed by **Smeep Kang**.",52.86475958052176,0.9508598446846008,,-0.010949899296121668,-0.42160744687212304,0.0,-40.121876425054,-0.07909440994262695,-0.04585510492324829,,0.0
+gpt-5.4,8,global,3.0,hotpot_qa,"Victor Varnada directed Twisted Fortune, which starred which brother of Eddie Murphy?",Who is the brother of Eddie Murphy that Victor Varnada directed in the film titled Twisted Fortune?,0.9138306975364685,"Victor Varnado directed *Twisted Fortune*, which starred **Charlie Murphy**, Eddie Murphy’s brother.","The brother of Eddie Murphy is **Charlie Murphy**.
+
+So, if Victor Varnado directed him in *Twisted Fortune*, the answer is **Charlie Murphy**.",27.358384246243777,0.908740222454071,,0.07692865826708162,2.0510588011252215,0.0,-72.64161575375627,-0.0861693024635315,-0.09125977754592896,,0.0
+gpt-5.4,9,global,3.0,hotpot_qa,"After his curacy at the village that is a suburb of Scunthorpe, who was Industrial Chaplain to the Bishop of Lincoln?","Following the period during which he served as a curate in the small village that functions as a suburb or satellite community located near and surrounding the larger town of Scunthorpe, who held the position of Industrial Chaplain to the Bishop of Lincoln during that time?",0.926925003528595,"After his curacy at **Frodingham** (the village now a suburb of Scunthorpe), **David Sheppard** became **Industrial Chaplain to the Bishop of Lincoln**.","Following his curacy in **Bottesford**, the village/suburb near **Scunthorpe**, **David Sheppard** served as **Industrial Chaplain to the Bishop of Lincoln**.",47.015381347681945,0.9538349509239197,,0.046584636674761315,0.948838097876362,0.0,7.0264847491679205,-0.07307499647140503,0.023759782314300537,,0.0
+gpt-5.4,10,global,3.0,hotpot_qa,What is the first two words of the fifth studio album of Joseph Edgar Foreman?,Can you tell me what the initial two words are that appear at the very beginning of the fifth studio album created and released by Joseph Edgar Foreman?,0.9278007745742798,"Joseph Edgar Foreman is better known as **Afroman**.
+
+His fifth studio album is **4R0:20**, and the **first two words** of its title are:
+
+**4R0:20**
+
+If you meant the first two words of a longer album title, feel free to clarify.","Joseph Edgar Foreman is **Afroman**. His fifth studio album is **The Good Times**, and the initial two words at the very beginning are:
+
+**“Wait a”**",28.94221984730217,0.9001839756965637,,-0.017570542645407916,-1.8327379721331714,1.0,-60.09590145991724,-0.07219922542572021,-0.0645836591720581,,1.0
+gpt-5.4,11,global,3.0,hotpot_qa,The Twelfth United States Army Group commander was the first chairman of what?,Who was the individual that served as the very first person to hold the position of chairman of the organization or group that was led by the commander of the Twelfth United States Army Group?,0.9007171392440796,"The commander of the **Twelfth United States Army Group** was **General Omar Bradley**, and he became the **first Chairman of the Joint Chiefs of Staff**.","The commander of the **Twelfth United States Army Group** was **General Omar Bradley**.
+
+The organization/group he later led was the **Joint Chiefs of Staff**, where Bradley served as **Chairman**.
+
+The **very first person to hold the position of Chairman of the Joint Chiefs of Staff** was **Admiral William D. Leahy**.",37.90234326717015,0.9289736747741699,,-0.0032022802489137803,1.0262809722120028,0.0,-62.09765673282989,-0.09928286075592041,-0.07102632522583008,,0.0
+gpt-5.4,12,global,3.0,hotpot_qa,Politician Lyman Sherwood was born in what New York county?,In which specific county located within the state of New York was the politician named Lyman Sherwood born and raised?,0.9151487946510315,"Politician **Lyman Sherwood** was born in **St. Lawrence County, New York**.","Lyman Sherwood was born and raised in **St. Lawrence County, New York**.",62.1972015871232,0.9515775442123413,,-0.001095698563431391,-0.3238995826927237,0.0,-37.80279841287684,-0.0848512053489685,-0.04842245578765869,,0.0
+gpt-5.4,13,global,3.0,hotpot_qa,Robert Earl Holding owned an oil company that was originally founded by who?,Who was the individual or the founder responsible for establishing the oil company that Robert Earl Holding later came to own and manage during his career?,0.8735251426696777,"Robert Earl Holding owned **Sinclair Oil Corporation**, which was originally founded by **Harry F. Sinclair**.",Robert Earl Holding later owned and managed **Sinclair Oil Corporation**. The company was originally founded by **Harry F. Sinclair**.,64.55714066623374,0.9739224314689636,,0.06857034168251652,1.6444028278516212,0.0,-35.44285933376631,-0.12647497653961182,-0.0260775089263916,,0.0
+gpt-5.4,14,global,3.0,hotpot_qa,"The chorus of ""On the Radio"" contains references to the song ""November Rain"" whose band's lead singer is?","In the chorus of the song titled ""On the Radio,"" there are several references and allusions that point towards or mention the song ""November Rain,"" which is a well-known track by a particular band. Can you tell me who the lead singer of that band is?",0.9108440279960632,"The band is **Guns N’ Roses**, and its lead singer is **Axl Rose**.","The band is **Guns N’ Roses**, and their lead singer is **Axl Rose**.",87.87419089273847,0.9962037801742554,,-0.0010208881298576777,-0.10088954185244031,0.0,-12.125809107261574,-0.08915597200393677,-0.003796219825744629,,0.0
+gpt-5.4,15,global,3.0,hotpot_qa,"If the Charhki  Dadri crash was less dangerous than the Tenerife airport disaster, which occured firat?","If the Charhki Dadri airplane crash incident was considered to be less dangerous and less severe in terms of the potential for loss of life and damage compared to the Tenerife airport disaster, which of these two tragic aviation accidents actually happened first in chronological order?",0.8994314074516296,"The **Tenerife airport disaster** occurred first.
+
+- **Tenerife airport disaster:** **March 27, 1977**
+- **Charkhi Dadri crash:** **November 12, 1996**
+
+So even though the Charkhi Dadri crash was deadlier, **Tenerife happened earlier**.","The **Tenerife airport disaster** happened first.
+
+- **Tenerife airport disaster**: **March 27, 1977**
+- **Charkhi Dadri mid-air collision**: **November 12, 1996**
+
+So, even if Charkhi Dadri is being described as less severe in potential impact, **Tenerife occurred earlier in time**.",55.66155580367993,0.9673678278923035,,0.0009882303763146805,0.4355339815859487,0.0,-38.77560472796674,-0.10056871175765991,-0.026719093322753906,,0.0

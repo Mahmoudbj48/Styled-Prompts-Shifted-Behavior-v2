@@ -1,0 +1,399 @@
+model,prompt_id,place,strength,category,prompt_orig,prompt_pert,bertscore_prompt,response_orig,response_pert,bleu,bertscore_response,activation_similarity,delta_log_prob,entropy_shift,mirroring_rate,delta_bleu,delta_bertscore_prompt,delta_bertscore_response,delta_activation_similarity,delta_mirroring_rate
+gpt-5.4,0,global,0.25,trivia_qa,What general name is given to a rotating star which emits a regular beat of radiation?,What is a rotating star's name?,0.9025087952613831,A rotating star that emits a regular beat of radiation is generally called a **pulsar**.,"A rotating star is often called a **pulsar** if it’s a rapidly rotating neutron star that emits beams of radiation.
+
+If you mean just any star that spins, it’s simply a **rotating star** — most stars rotate.",18.298797421687695,0.9058306813240051,,0.05344645817734195,2.4178576586709815,0.0,-81.70120257831235,-0.0974913239479065,-0.09416931867599487,,0.0
+gpt-5.4,1,global,0.25,trivia_qa,"""Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""",Which Gilbert and Sullivan operetta?,0.8975697755813599,"The Gilbert and Sullivan operetta subtitled **“The Witch’s Curse”** is **Ruddigore**.
+
+Its full original title is **Ruddygore; or, The Witch’s Curse** (later revised to **Ruddigore**).","Do you mean **which operetta a particular song/quote/plot point comes from**?
+
+If so, send me any clue you have, for example:
+- a **song title or lyric**
+- a **character name**
+- a **plot detail**
+- a **famous line**
+- or even a **costume/setting description**
+
+I can identify which Gilbert and Sullivan operetta it’s from.
+
+If you want, I can also give you a **quick list of",4.631732527976411,0.8201577663421631,,0.0533371151057509,4.645635655913702,0.0,-82.02049129404206,-0.10243034362792969,-0.17090386152267456,,0.0
+gpt-5.4,2,global,0.25,trivia_qa,Which English cricketer had figures for bowling 10 for 53 against Australia 1956?,Who took 10-53 vs Australia?,0.884784996509552,"That was **Jim Laker**.
+
+He took **10 wickets for 53 runs** against Australia at **Old Trafford in 1956**, one of the most famous bowling performances in Test cricket.","The bowling figures **10–53 against Australia** were taken by **Jim Laker** of England.
+
+He achieved this in the **1956 Ashes Test at Old Trafford**, taking **10 wickets in Australia’s second innings** — still one of the most famous bowling performances in Test cricket history.",31.817854858394764,0.9334321022033691,,0.003969079852952806,1.5120986719330411,0.0,-68.18214514160528,-0.115215003490448,-0.06656789779663086,,0.0
+gpt-5.4,3,global,0.25,trivia_qa,Wolf Mankowitz wrote the 1953 novel ‘A Kid For Two….’what’?,Who wrote?,0.8319758772850037,"Wolf Mankowitz wrote **_A Kid for Two Farthings_** (1953).
+
+So the missing word is: **Farthings**.",Could you paste the text or title you want identified? “Who wrote?” is too broad on its own.,1.6980025774845955,0.8084706664085388,,0.08385167428993523,1.1697795548802759,0.0,-98.30199742251544,-0.16802412271499634,-0.1915292739868164,,0.0
+gpt-5.4,4,global,0.25,trivia_qa,Who is the patron saint of dancers?,Dancer saint?,0.8752443790435791,"The patron saint most commonly associated with dancers is **Saint Vitus**.
+
+He became linked with dancing partly because of the medieval phenomenon called **“St. Vitus’ Dance,”** a term once used for certain involuntary movement disorders.
+
+Some also associate **Saint Genesius of Rome** with actors, performers, and entertainers more broadly, but for **dancers specifically**, **Saint Vitus** is the usual answer.","A likely answer is **Saint Vitus**.
+
+He’s associated with dancing because of **“Saint Vitus’ dance,”** an old name for a movement disorder (historically also linked to dancing mania).
+
+If you want, I can also give:
+- the **patron saint of dancers**
+- saints associated with **music/dance**
+- or help if this is for a **crossword clue**",16.951453631109118,0.8912121057510376,,0.014672621416172649,0.5679715924797737,0.0,-14.526711494317457,-0.1247556209564209,-0.025233149528503418,,0.0
+gpt-5.4,5,global,0.25,trivia_qa,"Published on Feb 21, 1848, which two authors were responsible for the Communist Manifesto?",Who authored the Communist Manifesto?,0.9163097739219666,"The *Communist Manifesto*, published on February 21, 1848, was written by **Karl Marx** and **Friedrich Engels**.",The *Communist Manifesto* was authored by **Karl Marx** and **Friedrich Engels**. It was published in **1848**.,57.25380554774254,0.9731317758560181,,-0.0009669623693792095,-0.1180640088837237,0.0,-42.746194452257505,-0.08369022607803345,-0.026868224143981934,,0.0
+gpt-5.4,6,global,0.25,trivia_qa,The fortified wine drink Sherry is named after what town?,What town?,0.8513315916061401,"Sherry is named after **Jerez de la Frontera** in **Andalusia, Spain**.
+
+The name “Sherry” is an anglicized form of **Jerez**.",Could you share the image or a bit more context? I can help identify the town if you upload the photo or describe what you’re looking at.,1.046231256134215,0.7970651388168335,,0.07367152772432806,1.3778674705474294,0.0,-75.45649283593006,-0.14866822957992554,-0.16527265310287476,,0.0
+gpt-5.4,7,global,0.25,trivia_qa,The nickname for Dumfries became the name of which Scottish football club?,Which club?,0.8658949732780457,"The nickname for **Dumfries** is **“Queen of the South”**, and that became the name of the Scottish football club **Queen of the South F.C.**","Could you clarify what you mean by “Which club?”  
+For example:
+
+- a football/soccer club
+- a golf club
+- a nightclub
+- a school/university club
+- a specific club from a previous message
+
+If you give me the context, I can answer directly.",1.0268160753681452,0.8073114156723022,,0.05976887961080102,3.3886307834300142,0.0,-98.9731839246319,-0.13410502672195435,-0.19268858432769775,,0.0
+gpt-5.4,8,global,0.25,trivia_qa,The revolutionary group the Sandinistas were active in which country?,Nicaragua?,0.8272249698638916,The Sandinistas were active in **Nicaragua**.,"Nicaragua is a country in **Central America**, bordered by **Honduras** to the north, **Costa Rica** to the south, the **Pacific Ocean** to the west, and the **Caribbean Sea** to the east.
+
+A few quick facts:
+- **Capital:** Managua
+- **Official language:** Spanish
+- **Currency:** Córdoba
+- **Known for:** Large lakes, volcanoes, colonial cities like Granada and León, and being the largest country in",1.6291357673348217,0.8156245350837708,,0.025170686233147,2.595295013036333,0.0,-98.37086423266523,-0.1727750301361084,-0.18437546491622925,,0.0
+gpt-5.4,9,global,0.25,trivia_qa,Who was the conservative candidate beaten by Ken Livingstone in the first two elections for Mayor of London?,Who lost to Ken Livingstone?,0.8989313244819641,"Ken Livingstone beat **Steven Norris**, the **Conservative** candidate, in the **2000** and **2004** London mayoral elections.",Ken Livingstone defeated **Steven Norris** in the **2000 London mayoral election**.,23.85246853784382,0.9583466053009033,,0.04962552956949162,-0.0792103853976529,0.0,-3.08397454011185,-0.10106867551803589,0.05677497386932373,,0.0
+gpt-5.4,10,global,0.25,trivia_qa,"""Who said, To err is human but it feels divine?""""""","Who said, ""To err is human but it feels divine""?",0.947991132736206,"The quote **“To err is human, but it feels divine”** is commonly attributed to **Mae West**.
+
+It’s a play on the older proverb **“To err is human; to forgive, divine,”** from **Alexander Pope**.","The quote **“To err is human, but it feels divine”** is commonly attributed to **Mae West**.",31.542127463894783,0.939965009689331,,0.03815349022731751,-0.9188170830874383,0.0,-6.688299825313305,-0.052008867263793945,-0.004538297653198242,,0.0
+gpt-5.4,11,global,0.25,trivia_qa,"When Mr Benn was looking for an adventure, what type of shop did he visit?",What shop did Mr Benn visit?,0.9201651215553284,He visited a **fancy dress costume shop**.,"Mr Benn visited **a fancy-dress costume shop**.
+
+It was run by **the shopkeeper**, who helped him choose different costumes that led to his adventures.",12.107046798719933,0.9150064587593079,,0.031229997008226817,2.344221233774542,0.0,-87.89295320128011,-0.07983487844467163,-0.08499366044998169,,0.0
+gpt-5.4,12,global,0.25,trivia_qa,What was made and repaired by a Wainwright?,Wainwright's work?,0.8689731359481812,"A **wainwright** made and repaired **wagons and carts**.
+
+- **“Wain”** is an old word for **wagon**
+- **“Wright”** means **maker or builder**
+
+So a wainwright was a craftsman who built and fixed horse-drawn wagons, carts, and similar wooden vehicles.","Could you clarify which **Wainwright** you mean?
+
+There are several notable ones, for example:
+- **Martin Wainwright** – journalist and author
+- **Alfred Wainwright** – famous for the *Pictorial Guides to the Lakeland Fells*
+- **Hilary Wainwright** – political writer and activist
+- **Loudon Wainwright III** – songwriter
+- **Rufus Wainwright** – musician/composer",7.3480039263988255,0.8283587098121643,,-0.016390814711626622,1.2905278704301506,0.0,-49.51115407299097,-0.13102680444717407,-0.12403452396392822,,0.0
+gpt-5.4,13,global,0.25,trivia_qa,"The War of the Triple Alliance (1864 - 1870) was fought between the allied countries of Argentina, Brazil, and Uruguay and which other country?","Which country fought against Argentina, Brazil, and Uruguay?",0.8982864618301392,The War of the Triple Alliance was fought against **Paraguay**.,"Paraguay.
+
+It fought against **Argentina, Brazil, and Uruguay** in the **Paraguayan War** (also called the **War of the Triple Alliance**) from **1864 to 1870**.",15.227959823617223,0.8957268595695496,,-0.007602160855518458,0.5709890177564894,0.0,-84.77204017638282,-0.10171365737915039,-0.10427325963973999,,0.0
+gpt-5.4,14,global,0.25,trivia_qa,What city will host the 2016 Olympics?,Which city?,0.8932237029075623,"Rio de Janeiro, Brazil.",Could you share the context or image you’re referring to? “Which city?” by itself isn’t enough for me to identify one.,1.506189323093867,0.8055951595306396,,0.028067210449021274,1.7037148170452523,0.0,-98.49381067690618,-0.10677623748779297,-0.1944047212600708,,0.0
+gpt-5.4,15,global,0.25,trivia_qa,Mount Entoto is the highest peak overlooking which African capital city?,Which African capital?,0.8592451810836792,"Mount Entoto overlooks **Addis Ababa**, the capital of **Ethiopia**.","Could you clarify what you mean by “Which African capital?”  
+
+Do you mean:
+- the capital of a specific African country,
+- a capital city from a clue or quiz,
+- or something like “which African capital starts with…”?
+
+If you want, I can also list all African countries and their capitals.",2.556618771182516,0.8004446029663086,,0.04561975669793006,3.1052989194813994,0.0,-97.44338122881753,-0.1407548189163208,-0.1995553970336914,,0.0
+gpt-5.4,0,global,0.5,trivia_qa,What general name is given to a rotating star which emits a regular beat of radiation?,What is the name for a rotating star emitting regular radiation?,0.945296049118042,A rotating star that emits a regular beat of radiation is generally called a **pulsar**.,"A rotating star that emits regular pulses of radiation is called a **pulsar**.
+
+More specifically, it’s a rapidly rotating **neutron star** whose radiation beam sweeps past Earth like a lighthouse beam.",27.944029942780798,0.917950451374054,,0.03759482338357323,1.6046316955221689,0.0,-72.05597005721924,-0.05470407009124756,-0.08204954862594604,,0.0
+gpt-5.4,1,global,0.5,trivia_qa,"""Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""","Which Gilbert and Sullivan operetta is titled ""The Witches Curse""?",0.9487618207931519,"The Gilbert and Sullivan operetta subtitled **“The Witch’s Curse”** is **Ruddigore**.
+
+Its full original title is **Ruddygore; or, The Witch’s Curse** (later revised to **Ruddigore**).","There isn’t a Gilbert and Sullivan operetta titled **“The Witches Curse.”**
+
+You may be thinking of **_Ruddigore; or, The Witch’s Curse_** (1887).
+
+It’s one of the Savoy operas by **W. S. Gilbert and Arthur Sullivan**. Note that the subtitle is usually **“The Witch’s Curse”** — singular, not plural.",22.237822480437217,0.8936218023300171,,0.011282680191312178,0.9114475345949693,0.0,-64.41440134158125,-0.051238298416137695,-0.09743982553482056,,0.0
+gpt-5.4,2,global,0.5,trivia_qa,Which English cricketer had figures for bowling 10 for 53 against Australia 1956?,Which English cricketer took 10 for 53 versus Australia?,0.9588362574577332,"That was **Jim Laker**.
+
+He took **10 wickets for 53 runs** in an innings against Australia at **Old Trafford in 1956**, one of the most famous bowling performances in Test cricket history.",The English cricketer was **Jim Laker** — he took **10 wickets for 53 runs** against Australia in the **1956 Old Trafford Test**.,36.95849753897488,0.9351612329483032,,0.011877799442715942,0.21789689535308465,0.0,-63.04150246102516,-0.041163742542266846,-0.06483876705169678,,0.0
+gpt-5.4,3,global,0.5,trivia_qa,Wolf Mankowitz wrote the 1953 novel ‘A Kid For Two….’what’?,Who wrote 'A Kid For Two...'?,0.8844449520111084,"Wolf Mankowitz wrote **_A Kid for Two Farthings_** (1953).
+
+So the missing word is: **Farthings**.","I’m not certain which work you mean by **“A Kid For Two...”**.
+
+Could you share any of these?
+- the **full title**
+- whether it’s a **book, movie, song, or article**
+- any **character names** or where you saw it
+
+Then I can identify the author accurately.",3.339780340498963,0.8255546689033508,,0.07049028295593829,3.6981372321871517,0.0,-96.66021965950108,-0.1155550479888916,-0.1744452714920044,,0.0
+gpt-5.4,4,global,0.5,trivia_qa,Who is the patron saint of dancers?,Who is the dancer saint?,0.9427838921546936,"The patron saint most commonly associated with dancers is **Saint Vitus**.
+
+He became linked with dancing partly because of the medieval phenomenon called **“St. Vitus’ dance,”** a term once used for certain involuntary movement disorders.
+
+Some also associate **Saint Genesius** with actors and performers more broadly, but for **dancers specifically**, **Saint Vitus** is the usual answer.","The title **“dancer saint”** most commonly refers to **Saint Vitus**.
+
+He is associated with dancing because of **“Saint Vitus’ Dance,”** a historical name used for certain involuntary movement disorders, especially chorea.
+
+If you meant a saint specifically known for dance as a form of devotion, tell me the tradition or context, and I can narrow it down.",23.165425615127347,0.9117709398269653,,0.01318385615947848,0.7788873444870434,0.0,-8.312739510299227,-0.057216107845306396,-0.004674315452575684,,0.0
+gpt-5.4,5,global,0.5,trivia_qa,"Published on Feb 21, 1848, which two authors were responsible for the Communist Manifesto?",Who authored the Communist Manifesto in 1848?,0.9303169846534729,"The *Communist Manifesto*, published on February 21, 1848, was written by **Karl Marx** and **Friedrich Engels**.",The *Communist Manifesto* was authored by **Karl Marx** and **Friedrich Engels** in **1848**.,59.57441792806796,0.9749025106430054,,-0.010032084743604175,-0.41646186917969974,0.0,-40.425582071932084,-0.0696830153465271,-0.02509748935699463,,0.0
+gpt-5.4,6,global,0.5,trivia_qa,The fortified wine drink Sherry is named after what town?,What town is Sherry named after?,0.9094356298446655,"Sherry is named after **Jerez de la Frontera** in **Andalusia, Spain**.
+
+The name “Sherry” is an anglicized form of **Jerez**.","Sherry is named after **Jerez de la Frontera**, a town in **Andalusia, Spain**.
+
+The name “Sherry” comes from the Arabic/Persian-influenced and later English rendering of **Jerez**. The wine is traditionally produced in the “Sherry Triangle” around **Jerez de la Frontera**, **Sanlúcar de Barrameda**, and **El Puerto de Santa María**.",32.916502788353235,0.9214620590209961,,-0.004689945429726561,2.1690493824082946,0.0,-43.58622130371105,-0.09056419134140015,-0.04087573289871216,,0.0
+gpt-5.4,7,global,0.5,trivia_qa,The nickname for Dumfries became the name of which Scottish football club?,Which Scottish club is named after Dumfries?,0.9194555878639221,"The nickname for **Dumfries** is **“Queen of the South”**, and that became the name of the Scottish football club **Queen of the South FC**.","The Scottish club named after Dumfries is **Queen of the South FC**, based in **Dumfries, Scotland**.",30.45219570421784,0.9097247123718262,,0.023273744854910627,0.42702127350429564,0.0,-69.5478042957822,-0.08054441213607788,-0.09027528762817383,,0.0
+gpt-5.4,8,global,0.5,trivia_qa,The revolutionary group the Sandinistas were active in which country?,In which country were the Sandinistas active?,0.9345132112503052,The Sandinistas were active in **Nicaragua**.,The Sandinistas were active in **Nicaragua**.,100.00000000000004,1.0,,-0.006611956211175607,-0.1170391106386528,0.0,0.0,-0.06548678874969482,0.0,,0.0
+gpt-5.4,9,global,0.5,trivia_qa,Who was the conservative candidate beaten by Ken Livingstone in the first two elections for Mayor of London?,Who was the conservative candidate defeated by Ken Livingstone in early London mayoral elections?,0.9679978489875793,Ken Livingstone beat **Steven Norris** of the Conservative Party in the **2000** and **2004** London mayoral elections.,"Ken Livingstone defeated the Conservative candidate **Steven Norris** in the **2000** London mayoral election, the first election for Mayor of London.",43.77121098094503,0.9512379765510559,,0.030326177952363254,0.2647001499321171,0.0,16.83476790298936,-0.032002151012420654,0.04966634511947632,,0.0
+gpt-5.4,10,global,0.5,trivia_qa,"""Who said, To err is human but it feels divine?""""""","Who said, ""To err is human but divine""?",0.9183029532432556,"The quote **“To err is human, but it feels divine”** is commonly attributed to **Mae West**.
+
+It’s a play on the older proverb **“To err is human; to forgive, divine,”** from **Alexander Pope**.","The full quote is:
+
+**“To err is human; to forgive, divine.”**
+
+It was written by **Alexander Pope** in *An Essay on Criticism* (1711).
+
+If you want, I can also explain the meaning or common misquotations of it.",30.417814076172093,0.8865177035331726,,0.057767457223604546,0.3708003079195763,0.0,-7.812613213035995,-0.08169704675674438,-0.05798560380935669,,0.0
+gpt-5.4,11,global,0.5,trivia_qa,"When Mr Benn was looking for an adventure, what type of shop did he visit?",What kind of shop did Mr Benn visit for adventure?,0.9307590126991272,He visited a **fancy dress costume shop**.,Mr Benn visited a **fancy-dress costume shop** for his adventures.,33.88714363186177,0.9564672708511353,,-0.025920907540150306,0.21884721613516828,0.0,-66.11285636813827,-0.0692409873008728,-0.0435328483581543,,0.0
+gpt-5.4,12,global,0.5,trivia_qa,What was made and repaired by a Wainwright?,What did a Wainwright make?,0.9179081320762634,"A **wainwright** was a craftsman who **made and repaired wagons and carts**.
+
+- **“Wain”** is an old word for **wagon**
+- **“Wright”** means **maker or builder**
+
+So a wainwright specialized in building and fixing **horse-drawn vehicles**, especially **wagons**.","A **wainwright** made or repaired **wagons** and **carts**.
+
+- **“Wain”** is an old word for a wagon.
+- **“Wright”** means a maker or builder.
+
+So a wainwright was a craftsman who built horse-drawn wagons, especially the wooden parts.",47.64437261135792,0.9504415988922119,,-0.014930384672501629,-0.004320616361502161,0.0,-9.21478538803187,-0.0820918083190918,-0.0019516348838806152,,0.0
+gpt-5.4,13,global,0.5,trivia_qa,"The War of the Triple Alliance (1864 - 1870) was fought between the allied countries of Argentina, Brazil, and Uruguay and which other country?","Which other country fought against Argentina, Brazil, and Uruguay in the War of the Triple Alliance?",0.92723149061203,The War of the Triple Alliance was fought against **Paraguay**.,"Paraguay.
+
+The War of the Triple Alliance (1864–1870) was fought between Paraguay and the alliance of Argentina, Brazil, and Uruguay.",21.165084929516937,0.8855545520782471,,0.004020656060861438,0.5977469495018635,0.0,-78.8349150704831,-0.07276862859725952,-0.11444556713104248,,0.0
+gpt-5.4,14,global,0.5,trivia_qa,What city will host the 2016 Olympics?,Which city hosts 2016 Olympics?,0.972292423248291,"Rio de Janeiro, Brazil.",Rio de Janeiro hosted the 2016 Summer Olympics.,19.070828081828378,0.8987550735473633,,0.02379192184159873,0.4053173733500316,0.0,-80.92917191817166,-0.02770751714706421,-0.10124480724334717,,0.0
+gpt-5.4,15,global,0.5,trivia_qa,Mount Entoto is the highest peak overlooking which African capital city?,Which African capital does Mount Entoto overlook?,0.8934146761894226,"Mount Entoto overlooks **Addis Ababa**, the capital of **Ethiopia**.","Mount Entoto overlooks **Addis Ababa**, the capital of **Ethiopia**.",100.00000000000004,1.0,,-0.023550093545491646,-0.3222611552463437,0.0,0.0,-0.10658532381057739,0.0,,0.0
+gpt-5.4,0,global,1.0,trivia_qa,What general name is given to a rotating star which emits a regular beat of radiation?,What general name is given to a rotating star which emits a regular beat of radiation?,1.0000001192092896,A rotating star that emits a regular beat of radiation is generally called a **pulsar**.,A rotating star that emits a regular beat of radiation is generally called a **pulsar**.,100.00000000000004,1.0,,-0.0,0.07346988782088437,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,1,global,1.0,trivia_qa,"""Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""","""Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""",1.0000001192092896,"The Gilbert and Sullivan operetta subtitled **“The Witch’s Curse”** is **_Ruddigore_**.
+
+Its full original title is **_Ruddygore; or, The Witch’s Curse_**, later revised to **_Ruddigore_**.","The Gilbert and Sullivan operetta subtitled **“The Witch’s Curse”** is **_Ruddigore_**.
+
+Its full original title is **_Ruddygore; or, The Witch’s Curse_**, later revised to **_Ruddigore; or, The Witch’s Curse_**.",86.65222382201847,0.9910616278648376,,-0.0,-0.10130288562631895,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,2,global,1.0,trivia_qa,Which English cricketer had figures for bowling 10 for 53 against Australia 1956?,Which English cricketer had figures for bowling 10 for 53 against Australia 1956?,1.0,"That was **Jim Laker**.
+
+He took **10 wickets for 53 runs** against Australia at **Old Trafford in 1956**, one of the most famous bowling performances in Test cricket.","That was **Jim Laker**.
+
+He took **10 wickets for 53 runs** against Australia at **Old Trafford in 1956**, one of the most famous bowling performances in Test cricket.",100.00000000000004,1.0,,-0.0,0.22306152008215463,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,3,global,1.0,trivia_qa,Wolf Mankowitz wrote the 1953 novel ‘A Kid For Two….’what’?,Wolf Mankowitz wrote the 1953 novel ‘A Kid For Two….’what’?,1.0,"Wolf Mankowitz wrote **_A Kid for Two Farthings_** (1953).
+
+So the missing word is **“Farthings.”**","Wolf Mankowitz wrote **_A Kid for Two Farthings_** (1953).
+
+So the missing word is **“Farthings.”**",100.00000000000004,0.9999999403953552,,-0.0,-0.11944646891851474,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,4,global,1.0,trivia_qa,Who is the patron saint of dancers?,Who is the patron saint of dancers?,1.0,"The patron saint of dancers is **Saint Vitus**.
+
+He is also associated with actors, comedians, and people suffering from nervous disorders. If you want, I can also explain **why** he became linked with dancing.","The patron saint most commonly associated with dancers is **Saint Vitus**.
+
+He became linked with dancing partly because of the medieval phenomenon called **“St. Vitus’ Dance,”** a term once used for certain involuntary movement disorders.
+
+If you want, I can also tell you about patron saints of **ballerinas, actors, or musicians**.",31.478165125426575,0.916445255279541,,-0.0,1.4959615581257295,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,5,global,1.0,trivia_qa,"Published on Feb 21, 1848, which two authors were responsible for the Communist Manifesto?","Published on Feb 21, 1848, which two authors were responsible for the Communist Manifesto?",1.0,"The *Communist Manifesto*, published on **February 21, 1848**, was written by **Karl Marx** and **Friedrich Engels**.","The *Communist Manifesto*, published on **February 21, 1848**, was written by **Karl Marx** and **Friedrich Engels**.",100.00000000000004,1.0,,-0.0,-0.10496871700424415,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,6,global,1.0,trivia_qa,The fortified wine drink Sherry is named after what town?,The fortified wine drink Sherry is named after what town?,0.9999998211860657,"Sherry is named after **Jerez de la Frontera** in **Andalusia, Spain**.
+
+The name “Sherry” is an anglicized form of **Jerez**.","Sherry is named after **Jerez de la Frontera** in **Andalusia, Spain**. The name “Sherry” comes from the Arabic/English adaptation of **Jerez**.",76.50272409206428,0.9623377919197083,,-0.0,0.3477110381083335,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,7,global,1.0,trivia_qa,The nickname for Dumfries became the name of which Scottish football club?,The nickname for Dumfries became the name of which Scottish football club?,1.0,"The nickname for **Dumfries** is **“Queen of the South”**, and that became the name of the Scottish football club **Queen of the South F.C.**","The nickname for **Dumfries** is **“Queen of the South”**, and that became the name of the Scottish football club **Queen of the South F.C.**",100.00000000000004,1.0,,-0.0,0.07967654981099048,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,8,global,1.0,trivia_qa,The revolutionary group the Sandinistas were active in which country?,The revolutionary group the Sandinistas were active in which country?,1.0,The Sandinistas were active in **Nicaragua**.,The Sandinistas were active in **Nicaragua**.,100.00000000000004,1.0,,-0.0,-0.04070869645608409,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,9,global,1.0,trivia_qa,Who was the conservative candidate beaten by Ken Livingstone in the first two elections for Mayor of London?,Who was the conservative candidate beaten by Ken Livingstone in the first two elections for Mayor of London?,1.0,Ken Livingstone beat **Steven Norris** of the Conservative Party in the **2000** and **2004** London mayoral elections.,"Ken Livingstone beat the Conservative candidate **Steven Norris** in both of the first two London mayoral elections:
+
+- **2000**: Ken Livingstone defeated **Steven Norris**
+- **2004**: Ken Livingstone again defeated **Steven Norris**",26.93644307795567,0.9015716314315796,,-0.0,-0.19708096226112093,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,10,global,1.0,trivia_qa,"""Who said, To err is human but it feels divine?""""""","""Who said, To err is human but it feels divine?""""""",1.0,"The quote **“To err is human, but it feels divine”** is commonly attributed to **Mae West**.
+
+If you want, I can also tell you about the original phrase “To err is human” and how this version plays off it.","The quote **“To err is human, but it feels divine”** is commonly attributed to **Mae West**.",38.23042728920809,0.9445033073425293,,-0.0,-2.4253218581283797,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,11,global,1.0,trivia_qa,"When Mr Benn was looking for an adventure, what type of shop did he visit?","When Mr Benn was looking for an adventure, what type of shop did he visit?",1.0,He visited a **fancy dress costume shop**.,He visited a **fancy dress costume shop**.,100.00000000000004,1.0000001192092896,,-0.0,0.22896360825551593,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,12,global,1.0,trivia_qa,What was made and repaired by a Wainwright?,What was made and repaired by a Wainwright?,0.9999999403953552,"A **wainwright** was a craftsman who **made and repaired wagons, carts, and other wheeled vehicles** made mainly of wood.
+
+- **“Wain”** is an old word for **wagon**
+- **“Wright”** means **maker or builder**
+
+So a wainwright specialized in building the wooden parts of wagons and carts, often working alongside a **wheelwright** (who focused specifically on wheels) and a **blacksmith** (","A **wainwright** was a craftsman who **made and repaired wagons and carts**.
+
+- **“Wain”** is an old word for **wagon**
+- **“Wright”** means **maker or builder**
+
+So a wainwright specialized in building and fixing **horse-drawn vehicles**, especially **wagons used for transporting goods or farm produce**.",56.859157999389794,0.9523932337760925,,-0.0,-0.004996616255014352,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,13,global,1.0,trivia_qa,"The War of the Triple Alliance (1864 - 1870) was fought between the allied countries of Argentina, Brazil, and Uruguay and which other country?","The War of the Triple Alliance (1864 - 1870) was fought between the allied countries of Argentina, Brazil, and Uruguay and which other country?",1.0000001192092896,The War of the Triple Alliance was fought against **Paraguay**.,The War of the Triple Alliance was fought against **Paraguay**.,100.00000000000004,1.0000001192092896,,-0.0,0.06657707232353319,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,14,global,1.0,trivia_qa,What city will host the 2016 Olympics?,What city will host the 2016 Olympics?,0.9999999403953552,"Rio de Janeiro, Brazil.","Rio de Janeiro, Brazil.",100.00000000000004,0.9999998807907104,,-0.0,0.0603709375527747,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,15,global,1.0,trivia_qa,Mount Entoto is the highest peak overlooking which African capital city?,Mount Entoto is the highest peak overlooking which African capital city?,1.0,"Mount Entoto overlooks **Addis Ababa**, the capital of **Ethiopia**.","Mount Entoto overlooks **Addis Ababa**, the capital of **Ethiopia**.",100.00000000000004,1.0,,-0.0,0.040067715419578265,0.0,0.0,0.0,0.0,,0.0
+gpt-5.4,0,global,1.5,trivia_qa,What general name is given to a rotating star which emits a regular beat of radiation?,"What is the common or general name used to refer to a star that is rotating and emits a consistent, rhythmic pattern or beat of radiation?",0.9368200898170471,A rotating star that emits a regular beat of radiation is generally called a **pulsar**.,"A **pulsar**.
+
+More specifically, a pulsar is a **rapidly rotating neutron star** that emits beams of radiation, which can appear as a regular rhythmic pulse as the star spins.",17.529626369737805,0.894016683101654,,0.047070235052525056,1.9632868686150913,0.0,-82.47037363026223,-0.06318002939224243,-0.10598331689834595,,0.0
+gpt-5.4,1,global,1.5,trivia_qa,"""Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""","Which operetta written by Gilbert and Sullivan has the subtitle that is called ""The Witches Curse""?",0.9276384711265564,"The Gilbert and Sullivan operetta subtitled **“The Witch’s Curse”** is **Ruddigore**.
+
+Its full original title is **Ruddygore; or, The Witch’s Curse** (later revised to **Ruddigore**).","The Gilbert and Sullivan operetta with the subtitle **“The Witch’s Curse”** is **_Ruddigore_**.
+
+Its full original title is:
+
+**_Ruddigore; or, The Witch’s Curse_**
+
+If you want, I can also give you a quick summary of the plot.",42.218023596017176,0.9263104796409607,,0.016210934737261762,0.6949433903360265,1.0,-44.434200226001295,-0.07236164808273315,-0.06475114822387695,,1.0
+gpt-5.4,2,global,1.5,trivia_qa,Which English cricketer had figures for bowling 10 for 53 against Australia 1956?,Which English cricketer achieved the impressive bowling figures of 10 wickets for 53 runs in a match against Australia in the year 1956?,0.9409313797950745,"That was **Jim Laker**.
+
+He took **10 wickets for 53 runs** against Australia at **Old Trafford in 1956**, one of the most famous bowling performances in cricket history.","The English cricketer was **Jim Laker**.
+
+He famously took **10 wickets for 53 runs** in an innings against **Australia** at **Old Trafford in 1956**, one of the greatest bowling performances in Test cricket history.",58.97393424551468,0.9692308902740479,,-0.011761409522028643,0.34807942238972767,0.0,-41.026065754485366,-0.05906862020492554,-0.03076910972595215,,0.0
+gpt-5.4,3,global,1.5,trivia_qa,Wolf Mankowitz wrote the 1953 novel ‘A Kid For Two….’what’?,Who is the author that wrote the 1953 novel titled ‘A Kid For Two…’?,0.8993194103240967,"Wolf Mankowitz wrote **_A Kid for Two Farthings_** (1953).
+
+So the missing word is **“Farthings.”**",The 1953 novel **_A Kid For Two…_** was written by **John Bingham**.,18.795352240160835,0.8733686804771423,,0.10418153329659452,0.8616989669464546,0.0,-81.2046477598392,-0.10068058967590332,-0.1266312599182129,,0.0
+gpt-5.4,4,global,1.5,trivia_qa,Who is the patron saint of dancers?,Who is the specific patron saint that is traditionally associated with dancers?,0.9350506663322449,"The patron saint most commonly associated with dancers is **Saint Vitus**.
+
+He became linked with dancing partly because of the medieval phenomenon called **“St. Vitus’ Dance,”** a term once used for certain involuntary movement disorders.
+
+Some also associate **Saint Genesius** with actors and performers more broadly, but for **dancers specifically**, **Saint Vitus** is the usual answer.","The patron saint traditionally associated with dancers is **Saint Vitus**.
+
+He is also connected with actors, entertainers, and people suffering from nervous disorders.",8.43278854399292,0.9059948325157166,,0.0400980994093425,-1.3006100717282503,0.0,-23.045376581433654,-0.06494933366775513,-0.010450422763824463,,0.0
+gpt-5.4,5,global,1.5,trivia_qa,"Published on Feb 21, 1848, which two authors were responsible for the Communist Manifesto?","Which two authors were responsible for writing and publishing the influential Communist Manifesto on February 21, 1848?",0.9459398984909058,"The *Communist Manifesto*, published on **February 21, 1848**, was written by **Karl Marx** and **Friedrich Engels**.","The *Communist Manifesto* was written and published by **Karl Marx** and **Friedrich Engels** on **February 21, 1848**.",76.39266120684243,0.9813551306724548,,0.008937793430452201,0.16918290883203918,0.0,-23.60733879315761,-0.05406010150909424,-0.018644869327545166,,0.0
+gpt-5.4,6,global,1.5,trivia_qa,The fortified wine drink Sherry is named after what town?,The fortified wine known as Sherry is named after which specific town or city?,0.9526675939559937,"Sherry is named after **Jerez de la Frontera** in **Andalusia, Spain**. The name “Sherry” is the English form of “Jerez.”","Sherry is named after **Jerez de la Frontera** in **Andalusia, Spain**. The name “Sherry” is the English adaptation of “Jerez.”",91.57103753711765,0.992125391960144,,-0.021565343178623686,-0.3614705249198509,0.0,15.068313445053363,-0.04733222723007202,0.02978760004043579,,0.0
+gpt-5.4,7,global,1.5,trivia_qa,The nickname for Dumfries became the name of which Scottish football club?,The nickname that was given to Dumfries eventually became the official name of which Scottish football club?,0.960625171661377,"The nickname for **Dumfries** is **“Queen of the South”**, and that became the name of the Scottish football club **Queen of the South F.C.**","The nickname was **“Queen of the South”**, and it eventually became the official name of the Scottish football club **Queen of the South F.C.**",68.05964666521363,0.9644367694854736,,-0.009832866409354435,-0.23358966779360069,0.0,-31.94035333478641,-0.03937482833862305,-0.03556323051452637,,0.0
+gpt-5.4,8,global,1.5,trivia_qa,The revolutionary group the Sandinistas were active in which country?,In which country did the revolutionary organization known as the Sandinistas carry out their activities?,0.9216931462287903,The Sandinistas were active in **Nicaragua**.,The Sandinistas carried out their activities in **Nicaragua**.,52.055103630534376,0.9756208658218384,,0.011262578319193306,0.11529537531608146,0.0,-47.94489636946567,-0.07830685377120972,-0.02437913417816162,,0.0
+gpt-5.4,9,global,1.5,trivia_qa,Who was the conservative candidate beaten by Ken Livingstone in the first two elections for Mayor of London?,Who was the candidate representing the conservative political party who was defeated by Ken Livingstone in the initial two elections held for the position of Mayor of London?,0.9544663429260254,"Ken Livingstone beat the Conservative candidate **Steven Norris** in both of the first two London mayoral elections:
+
+- **2000**: Ken Livingstone defeated **Steven Norris**
+- **2004**: Ken Livingstone again defeated **Steven Norris**","Ken Livingstone defeated the Conservative candidate **Steven Norris** in the first two London mayoral elections, in **2000** and **2004**.",33.830338849893884,0.9157713055610657,,0.048047004803228655,0.11982324751375173,0.0,6.893895771938215,-0.04553365707397461,0.014199674129486084,,0.0
+gpt-5.4,10,global,1.5,trivia_qa,"""Who said, To err is human but it feels divine?""""""","Who is the person that famously said, ""To err is human, but it feels divine""?",0.9187530279159546,"The quote **“To err is human, but it feels divine”** is commonly attributed to **Mae West**.","The quote **“To err is human, but it feels divine”** is commonly attributed to **Mae West**.",100.00000000000004,1.0,,0.05146985049910047,-0.05678784146051946,0.0,61.769572710791955,-0.08124697208404541,0.0554966926574707,,0.0
+gpt-5.4,11,global,1.5,trivia_qa,"When Mr Benn was looking for an adventure, what type of shop did he visit?","When Mr. Benn was searching and seeking out an exciting adventure, what specific type of shop did he decide to visit?",0.9602817893028259,He visited a **fancy dress costume shop**.,Mr. Benn decided to visit a **costume shop**.,35.55670235668696,0.9476135969161987,,0.04547248645205226,0.763711760010646,0.0,-64.44329764331309,-0.03971821069717407,-0.05238652229309082,,0.0
+gpt-5.4,12,global,1.5,trivia_qa,What was made and repaired by a Wainwright?,What specific items or objects were both made and repaired by a skilled Wainwright?,0.9214141964912415,"A **wainwright** made and repaired **wagons** and **carts**.
+
+- **“Wain”** is an old word for a **wagon**
+- **“Wright”** means a **maker or builder**
+
+So a wainwright was a craftsman who built and fixed horse-drawn wagons and similar vehicles.","A **Wainwright** was a craftsman who **made and repaired wagons and carts**.
+
+Specific items they worked on included:
+- **Wagons**
+- **Carts**
+- Often their **wooden parts**, such as:
+  - **Wheels**
+  - **Axles**
+  - **Frames**
+  - **Bodies**
+
+So, the main objects both made and repaired by a skilled wainwright were **wagons and carts**.",19.065240215166977,0.8814321160316467,,-0.0362779032584003,-0.2939044081223905,0.0,-37.79391778422281,-0.07858574390411377,-0.0709611177444458,,0.0
+gpt-5.4,13,global,1.5,trivia_qa,"The War of the Triple Alliance (1864 - 1870) was fought between the allied countries of Argentina, Brazil, and Uruguay and which other country?","The War of the Triple Alliance, which took place from 1864 to 1870, was a conflict fought between the allied nations of Argentina, Brazil, and Uruguay, along with which other country that was involved in this war?",0.9510260224342346,The War of the Triple Alliance was fought against **Paraguay**.,"The other country was **Paraguay**.
+
+The **War of the Triple Alliance (1864–1870)** was fought between **Paraguay** and the **Triple Alliance** of **Argentina, Brazil, and Uruguay**.",16.90653646485627,0.9073536396026611,,-0.014490377490883555,0.06055900986827428,0.0,-83.09346353514377,-0.04897409677505493,-0.09264647960662842,,0.0
+gpt-5.4,14,global,1.5,trivia_qa,What city will host the 2016 Olympics?,Which city is scheduled to be the host for the 2016 Olympic Games?,0.9632850289344788,"Rio de Janeiro, Brazil.","Rio de Janeiro, Brazil.",100.00000000000004,0.9999998807907104,,-0.05418813529664812,-0.20398851685731673,0.0,0.0,-0.036714911460876465,0.0,,0.0
+gpt-5.4,15,global,1.5,trivia_qa,Mount Entoto is the highest peak overlooking which African capital city?,Mount Entoto is the tallest mountain that overlooks and provides a view of which specific African capital city?,0.9524005651473999,"Mount Entoto overlooks **Addis Ababa**, the capital city of **Ethiopia**.","Mount Entoto overlooks **Addis Ababa**, the capital city of **Ethiopia**.",100.00000000000004,0.9999999403953552,,-0.020957488576285765,-0.2323534554453609,0.0,0.0,-0.0475994348526001,-5.960464477539063e-08,,0.0
+gpt-5.4,0,global,2.0,trivia_qa,What general name is given to a rotating star which emits a regular beat of radiation?,"What is the common or general name that is typically used to refer to a star that is rotating and emitting a consistent, regular pattern or beat of radiation?",0.9310916662216187,A rotating star that emits a regular beat of radiation is generally called a **pulsar**.,"A star like that is typically called a **pulsar**.
+
+More specifically, a pulsar is a **rapidly rotating neutron star** that emits beams of radiation; if those beams sweep past Earth at regular intervals, we detect them like a steady pulse or beat.",15.822329543217453,0.9074686765670776,,0.025179945281848193,1.644487700835054,0.0,-84.1776704567826,-0.0689084529876709,-0.09253132343292236,,0.0
+gpt-5.4,1,global,2.0,trivia_qa,"""Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""","Which specific operetta composed by Gilbert and Sullivan has the subtitle that is known as ""The Witches Curse""?",0.9206183552742004,"The Gilbert and Sullivan operetta subtitled **“The Witch’s Curse”** is **Ruddigore**.
+
+Its full original title is **Ruddygore; or, The Witch’s Curse** (later revised to **Ruddigore**).","The Gilbert and Sullivan operetta with the subtitle **“The Witches’ Curse”** is **_Ruddigore_**.
+
+Its full original title is:
+
+**_Ruddygore; or, The Witch’s Curse_**
+
+Later, the spelling **_Ruddigore_** was adopted.",42.103682478626915,0.9396480917930603,,0.020157763412528618,0.8557792476656594,0.0,-44.548541343391555,-0.07938176393508911,-0.051413536071777344,,0.0
+gpt-5.4,2,global,2.0,trivia_qa,Which English cricketer had figures for bowling 10 for 53 against Australia 1956?,Which English cricketer was the player that achieved bowling figures of 10 wickets for 53 runs in a match against Australia during the year 1956?,0.9329419136047363,"That was **Jim Laker**.
+
+He took **10 wickets for 53 runs** against Australia at **Old Trafford in 1956**, one of the most famous bowling performances in Test cricket.","The English cricketer was **Jim Laker**.
+
+He famously took **10 wickets for 53 runs** in an innings against **Australia** at **Old Trafford in 1956**, one of the most celebrated bowling performances in cricket history.",59.14798611586914,0.9684291481971741,,-0.02387651963560089,-0.3452151312835503,0.0,-40.852013884130905,-0.06705808639526367,-0.03157085180282593,,0.0
+gpt-5.4,3,global,2.0,trivia_qa,Wolf Mankowitz wrote the 1953 novel ‘A Kid For Two….’what’?,Who is the author that wrote the novel titled ‘A Kid For Two…’ in the year 1953?,0.8910909295082092,"Wolf Mankowitz wrote the 1953 novel **_A Kid for Two Farthings_**.
+
+So the missing word is: **Farthings**.",The 1953 novel **_A Kid for Two Farthings_** was written by **Wolf Mankowitz**.,48.513646829519885,0.9203101992607117,,-0.008302619646175846,-0.45441565497457465,0.0,-51.48635317048016,-0.10890907049179077,-0.07968974113464355,,0.0
+gpt-5.4,4,global,2.0,trivia_qa,Who is the patron saint of dancers?,Who is the specific saint that is traditionally regarded as the patron protector and guide of dancers?,0.9297885298728943,"The patron saint most commonly associated with dancers is **Saint Vitus**.
+
+He became linked with dancing partly because of the medieval phenomenon called **“St. Vitus’ Dance,”** a term once used for certain involuntary movement disorders.
+
+If you want, I can also tell you about patron saints of **ballerinas, actors, or musicians**.","The saint most traditionally regarded as the patron of dancers is **Saint Vitus**.
+
+He is also associated with actors, entertainers, and people suffering from nervous disorders. In some traditions, dancers have invoked him for protection and guidance.",15.29275964308334,0.8994628190994263,,0.02387843360212394,-0.35793119805793117,0.0,-16.185405482343235,-0.07021147012710571,-0.016982436180114746,,0.0
+gpt-5.4,5,global,2.0,trivia_qa,"Published on Feb 21, 1848, which two authors were responsible for the Communist Manifesto?","Which two authors are credited with being responsible for writing and publishing the influential political document known as the Communist Manifesto on February 21, 1848?",0.9307806491851807,"The *Communist Manifesto*, published on **February 21, 1848**, was written by **Karl Marx** and **Friedrich Engels**.",The two authors were **Karl Marx** and **Friedrich Engels**.,31.6322022757372,0.9185671806335449,,0.02430024606301484,0.05616996769820165,0.0,-68.36779772426284,-0.06921935081481934,-0.08143281936645508,,0.0
+gpt-5.4,6,global,2.0,trivia_qa,The fortified wine drink Sherry is named after what town?,The type of fortified wine known as Sherry gets its name from which specific town?,0.9306889772415161,"Sherry is named after **Jerez de la Frontera** in **Andalusia, Spain**. The name “Sherry” comes from the Arabic/English adaptation of **Jerez**.","Sherry gets its name from **Jerez de la Frontera** in **Andalusia, Spain**. The English word “Sherry” is derived from “Jerez.”",48.60848622378172,0.9606539011001587,,-0.030207926855559064,-0.7556465227293665,0.0,-27.894237868282566,-0.06931084394454956,-0.0016838908195495605,,0.0
+gpt-5.4,7,global,2.0,trivia_qa,The nickname for Dumfries became the name of which Scottish football club?,The nickname that was given to Dumfries eventually became the official name of which Scottish football club?,0.960625171661377,"The nickname for **Dumfries** is **“Queen of the South”**, and that became the name of the Scottish football club **Queen of the South FC**.","The nickname was **“Queen of the South”**, and it eventually became the official name of **Queen of the South F.C.** based in Dumfries.",42.23168921919615,0.9430755376815796,,-0.001601220105734269,0.03938536570249185,0.0,-57.768310780803894,-0.03937482833862305,-0.05692446231842041,,0.0
+gpt-5.4,8,global,2.0,trivia_qa,The revolutionary group the Sandinistas were active in which country?,In which country was the revolutionary political and military group known as the Sandinistas actively involved and engaged in their activities?,0.9134387969970703,The Sandinistas were active in **Nicaragua**.,The Sandinistas were active in **Nicaragua**.,100.00000000000004,1.0,,-0.00278650347754672,-0.07280943090949685,0.0,0.0,-0.08656120300292969,0.0,,0.0
+gpt-5.4,9,global,2.0,trivia_qa,Who was the conservative candidate beaten by Ken Livingstone in the first two elections for Mayor of London?,Who was the candidate representing the conservative political party who was defeated by Ken Livingstone in the initial two electoral contests held for the position of Mayor of London?,0.9494237899780273,"Ken Livingstone beat the Conservative candidate **Steven Norris** in both of the first two London mayoral elections:
+
+- **2000**: Ken Livingstone defeated **Steven Norris**
+- **2004**: Ken Livingstone again defeated **Steven Norris**","The Conservative Party candidate defeated by Ken Livingstone in the first two London mayoral elections was **Steven Norris**.
+
+He lost to Livingstone in:
+- **2000** – the first election for Mayor of London
+- **2004** – the second mayoral election",37.71118593090415,0.9122796058654785,,0.05239447675500386,0.9799430633287579,0.0,10.774742852948481,-0.050576210021972656,0.010707974433898926,,0.0
+gpt-5.4,10,global,2.0,trivia_qa,"""Who said, To err is human but it feels divine?""""""","Who is the person that famously said, ""To err is human, but it feels divine"" in a well-known quote?",0.9029426574707031,"The quote **“To err is human, but it feels divine”** is commonly attributed to **Mae West**.
+
+If you want, I can also tell you whether that attribution is considered reliable or if it’s one of those quotes often misattributed.","The quote **“To err is human, but it feels divine”** is commonly attributed to **Mae West**.",38.23042728920809,0.9396482110023499,,-0.020056640867102682,-2.762658423952968,0.0,0.0,-0.09705734252929688,-0.004855096340179443,,0.0
+gpt-5.4,11,global,2.0,trivia_qa,"When Mr Benn was looking for an adventure, what type of shop did he visit?","When Mr. Benn was in search of an exciting and new adventure to embark upon, what specific kind of shop did he decide to visit during his quest?",0.9453796744346619,He visited a **fancy dress costume shop**.,"Mr. Benn chose to visit a **fancy dress costume shop**.
+
+That’s where he would find a costume that led him into a new adventure.",28.582347148150316,0.9169438481330872,,0.015687260863016195,1.8753753872236751,0.0,-71.41765285184972,-0.054620325565338135,-0.08305627107620239,,0.0
+gpt-5.4,12,global,2.0,trivia_qa,What was made and repaired by a Wainwright?,What specific items or objects were created and repaired by a skilled Wainwright?,0.9272812008857727,"A **wainwright** was a craftsman who **made and repaired wagons, carts, and other wheeled vehicles**.
+
+- **“Wain”** is an old word for **wagon**
+- **“Wright”** means **maker or builder**
+
+So a wainwright specialized in building and fixing **wooden wagon bodies and parts**, often working closely with wheelwrights and blacksmiths.","A **wainwright** was a craftsman who **made and repaired wagons and carts**, especially the wooden parts.
+
+Specific items or objects a skilled wainwright created or repaired included:
+
+- **Wagons**
+- **Carts**
+- **Wheels**
+- **Axles**
+- **Wagon bodies**
+- **Spokes**
+- **Rims/felloes**
+- **Shafts and poles**
+- **Wooden frames and undercarriages**
+
+In",25.953546013812094,0.8696783185005188,,-0.013803673351133527,0.8390056635111285,0.0,-30.9056119855777,-0.07271873950958252,-0.08271491527557373,,0.0
+gpt-5.4,13,global,2.0,trivia_qa,"The War of the Triple Alliance (1864 - 1870) was fought between the allied countries of Argentina, Brazil, and Uruguay and which other country?","The War of the Triple Alliance, which took place from the year 1864 to 1870, was a conflict that involved the allied nations of Argentina, Brazil, and Uruguay. Can you tell me which other country was also a participant in this war?",0.9374932646751404,The War of the Triple Alliance was fought against **Paraguay**.,"The other country was **Paraguay**.
+
+The **War of the Triple Alliance (1864–1870)** was fought between **Paraguay** and the **Triple Alliance** of **Argentina, Brazil, and Uruguay**.",16.90653646485627,0.9073536396026611,,-0.005522455700245232,0.43306520036585494,0.0,-83.09346353514377,-0.06250685453414917,-0.09264647960662842,,0.0
+gpt-5.4,14,global,2.0,trivia_qa,What city will host the 2016 Olympics?,Which city is scheduled to be the host for the 2016 Olympic Games?,0.9632850289344788,"Rio de Janeiro, Brazil.","Rio de Janeiro, Brazil.",100.00000000000004,0.9999998807907104,,0.013651443439792521,0.1144214904463208,0.0,0.0,-0.036714911460876465,0.0,,0.0
+gpt-5.4,15,global,2.0,trivia_qa,Mount Entoto is the highest peak overlooking which African capital city?,Mount Entoto is the tallest mountain peak that provides an overlooking view of which specific African capital city?,0.9548519849777222,"Mount Entoto overlooks **Addis Ababa**, the capital of **Ethiopia**.","Mount Entoto overlooks **Addis Ababa**, the capital city of **Ethiopia**.",85.78928092681438,0.9964505434036255,,-0.023802707234595433,-0.32447802912527923,0.0,-14.210719073185658,-0.04514801502227783,-0.0035494565963745117,,0.0
+gpt-5.4,0,global,3.0,trivia_qa,What general name is given to a rotating star which emits a regular beat of radiation?,"What is the common or general name that is typically used to refer to a star that is rotating and, as a result, emits a consistent and regular pattern of radiation or signals, often in the form of pulses or beats?",0.9184107184410095,A rotating star that emits a regular beat of radiation is generally called a **pulsar**.,"The common name is a **pulsar**.
+
+A pulsar is a rapidly rotating **neutron star** that emits beams of radiation from its poles. As it spins, those beams sweep past Earth at regular intervals, so they appear like pulses or beats.",14.026114426319284,0.8887720108032227,,0.05574281555581129,2.7476385391433844,0.0,-85.97388557368076,-0.08158940076828003,-0.11122798919677734,,0.0
+gpt-5.4,1,global,3.0,trivia_qa,"""Which Gilbert and Sullivan operetta is sub titled 'The Witches Curse""""?""","Which specific Gilbert and Sullivan operetta, among their many theatrical works, is the one that has been given the subtitle 'The Witches Curse' to describe or identify it?",0.8999158143997192,"The Gilbert and Sullivan operetta subtitled **“The Witch’s Curse”** is **Ruddigore**.
+
+Its full original title is **Ruddygore; or, The Witch’s Curse** (later revised to **Ruddigore**).","The Gilbert and Sullivan operetta subtitled **“The Witch’s Curse”** is **_Ruddigore_**.
+
+Its full original title is:
+
+**_Ruddigore; or, The Witch’s Curse_**
+
+If you want, I can also give a quick summary of the operetta or explain why it was later sometimes spelled **_Ruddygore_**.",41.19899038491037,0.9343966841697693,,0.013343489322675373,1.0086768505826817,0.0,-45.4532334371081,-0.10008430480957031,-0.05666494369506836,,0.0
+gpt-5.4,2,global,3.0,trivia_qa,Which English cricketer had figures for bowling 10 for 53 against Australia 1956?,"Which talented and well-known English cricketer, during a match against Australia in the year 1956, achieved remarkable bowling figures by taking a total of 10 wickets while conceding only 53 runs?",0.916473925113678,"That was **Jim Laker**.
+
+He took **10 wickets for 53 runs** against Australia at **Old Trafford in 1956**, one of the most famous bowling performances in Test cricket history.","The cricketer was **Jim Laker**.
+
+In the **1956 Ashes Test at Old Trafford**, he famously took **10 wickets for 53 runs** in Australia’s second innings — one of the most legendary bowling performances in cricket history.",45.63383383150496,0.9558147192001343,,-0.03250578501672974,-0.38799433677284734,0.0,-54.366166168495084,-0.08352607488632202,-0.04418528079986572,,0.0
+gpt-5.4,3,global,3.0,trivia_qa,Wolf Mankowitz wrote the 1953 novel ‘A Kid For Two….’what’?,"Who is the author that wrote the novel titled ‘A Kid For Two…’ which was published in the year 1953, and what is the full title of that particular book?",0.8760718107223511,"Wolf Mankowitz wrote **_A Kid for Two Farthings_** (1953).
+
+So the missing word is: **Farthings**.","The author is **John Braine**.
+
+The full title of the 1953 novel is **_A Girl for Two Pennies_**.",17.71672685027266,0.8841684460639954,,0.1077824318595082,1.8072008600508993,0.0,-82.28327314972738,-0.12392818927764893,-0.11583149433135986,,0.0
+gpt-5.4,4,global,3.0,trivia_qa,Who is the patron saint of dancers?,Who is the specific saint that is traditionally recognized as the patron or protector of dancers and those who perform dance as an art form?,0.9140443205833435,"The patron saint of dancers is **Saint Vitus**.
+
+He is also associated with actors, comedians, and people suffering from nervous disorders. In Christian tradition, dancers have often looked to him as their patron.
+
+If you want, I can also explain **why** Saint Vitus became associated with dancing.","The saint most traditionally recognized as the patron of dancers is **Saint Vitus**.
+
+He is also associated with actors, entertainers, and people suffering from nervous disorders. In some traditions, **Saint Genesius of Rome** is also connected with performers, especially actors and comedians, but for **dancers specifically**, **Saint Vitus** is the usual answer.",37.297087750435516,0.9179053902626038,,0.012729835408421875,1.2063976443242468,0.0,5.818922625008941,-0.0859556794166565,0.0014601349830627441,,0.0
+gpt-5.4,5,global,3.0,trivia_qa,"Published on Feb 21, 1848, which two authors were responsible for the Communist Manifesto?","Which two authors are credited with being the primary writers and creators behind the influential political document known as the Communist Manifesto, which was officially published on February 21, in the year 1848?",0.9126393795013428,"The *Communist Manifesto*, published on February 21, 1848, was written by **Karl Marx** and **Friedrich Engels**.",The two authors were **Karl Marx** and **Friedrich Engels**.,39.503840036086835,0.9213393330574036,,0.022565282992366265,-0.023584573600941572,0.0,-60.49615996391321,-0.08736062049865723,-0.07866066694259644,,0.0
+gpt-5.4,6,global,3.0,trivia_qa,The fortified wine drink Sherry is named after what town?,The type of fortified wine that is known as Sherry is named after which specific town or city that it originates from or is associated with?,0.9122239947319031,"Sherry is named after **Jerez de la Frontera** in **Andalusia, Spain**. The name “Sherry” is an anglicized form of **Jerez**.","Sherry is named after **Jerez de la Frontera**, a city in **Andalusia, Spain**. The name “Sherry” is the English form of “Jerez.”",67.96460892787728,0.9761210083961487,,-0.032619736422523804,-0.7452942859212033,0.0,-8.538115164187005,-0.0877758264541626,0.01378321647644043,,0.0
+gpt-5.4,7,global,3.0,trivia_qa,The nickname for Dumfries became the name of which Scottish football club?,The nickname that was given to the town of Dumfries eventually became the official name of which specific Scottish football club that is based in or associated with that area?,0.9289578199386597,"The nickname for **Dumfries** is **“Queen of the South”**, and that became the name of the Scottish football club **Queen of the South F.C.**","The nickname was **“Queen of the South”**, and it eventually became the official name of the football club **Queen of the South F.C.** based in **Dumfries, Scotland**.",58.31136221109365,0.9563085436820984,,0.012409616179249738,0.5329554994030223,0.0,-41.68863778890639,-0.07104218006134033,-0.04369145631790161,,0.0
+gpt-5.4,8,global,3.0,trivia_qa,The revolutionary group the Sandinistas were active in which country?,In which country was the revolutionary political and military organization known as the Sandinistas actively involved in their efforts to bring about significant change?,0.9026314616203308,The Sandinistas were active in **Nicaragua**.,The Sandinistas were active in **Nicaragua**.,100.00000000000004,1.0,,-0.002581258379110163,-0.06299304236886691,0.0,0.0,-0.09736853837966919,0.0,,0.0
+gpt-5.4,9,global,3.0,trivia_qa,Who was the conservative candidate beaten by Ken Livingstone in the first two elections for Mayor of London?,"Who was the candidate representing the Conservative Party, who participated in the first two elections held for the position of Mayor of London, and was ultimately defeated by Ken Livingstone in both of those initial electoral contests?",0.9359455704689026,"Ken Livingstone beat the Conservative candidate **Steven Norris** in both of the first two London mayoral elections:
+
+- **2000**: Ken Livingstone defeated **Steven Norris**
+- **2004**: Ken Livingstone again defeated **Steven Norris**",The Conservative Party candidate was **Steven Norris**. He ran in the **2000** and **2004** London mayoral elections and was defeated by **Ken Livingstone** both times.,26.25381208832305,0.8947499990463257,,0.016571186143507943,-0.5586621639593344,0.0,-0.6826309896326208,-0.06405442953109741,-0.006821632385253906,,0.0
+gpt-5.4,10,global,3.0,trivia_qa,"""Who said, To err is human but it feels divine?""""""","Who is the person that originally said the famous phrase, ""To err is human, but it feels divine,"" implying that making mistakes is a natural part of being human, yet there is a certain pleasure or almost divine feeling associated with it?",0.8877406716346741,"The quote **“To err is human, but it feels divine”** is commonly attributed to **Mae West**.","The phrase **“To err is human, but it feels divine”** is commonly attributed to **Mae West**.
+
+It’s a play on the older proverb **“To err is human; to forgive, divine,”** which comes from **Alexander Pope**. Mae West’s version gives it a witty, more mischievous twist.",33.14703932414223,0.9190453886985779,,0.07805778739784985,2.3914218879245963,0.0,-5.08338796506586,-0.11225932836532593,-0.025457918643951416,,0.0
+gpt-5.4,11,global,3.0,trivia_qa,"When Mr Benn was looking for an adventure, what type of shop did he visit?","When Mr. Benn was in search of an exciting and new adventure to embark upon, what specific kind of shop did he decide to visit in order to find that adventure?",0.9427504539489746,He visited a **fancy dress costume shop**.,Mr. Benn went to a **fancy dress costume shop** to find his adventure.,43.59493824807389,0.9437605738639832,,-0.006077730920663216,0.5609740880493632,0.0,-56.405061751926155,-0.05724954605102539,-0.056239545345306396,,0.0
+gpt-5.4,12,global,3.0,trivia_qa,What was made and repaired by a Wainwright?,"What specific items or objects were created, constructed, or repaired by a Wainwright during their work or profession?",0.9031287431716919,"A **wainwright** made and repaired **wagons** (also called **wains**), especially the wooden parts.
+
+So the answer is: **wagons/carts**.","A **wainwright** was a craftsman who **made and repaired wagons and carts**.
+
+Specific things a wainwright typically created or worked on included:
+
+- **Wagons**
+- **Carts**
+- **Wains** (large wagons, especially for carrying goods)
+- **Wheelbarrows** in some cases
+- **Wagon bodies**
+- **Cart frames**
+- **Axles**
+- **Wheels** and wheel components
+- **S",13.48467834522606,0.8620542883872986,,-0.05178605522099833,1.9336213818966854,0.0,-43.374479654163736,-0.09687119722366333,-0.09033894538879395,,0.0
+gpt-5.4,13,global,3.0,trivia_qa,"The War of the Triple Alliance (1864 - 1870) was fought between the allied countries of Argentina, Brazil, and Uruguay and which other country?","The War of the Triple Alliance, which took place between the years 1864 and 1870, was a significant conflict involving a coalition of three countries—namely Argentina, Brazil, and Uruguay—who united against a common adversary. Can you tell me which other country was involved in this war, making it a four-nation conflict?",0.9153963327407837,The War of the Triple Alliance was fought against **Paraguay**.,"The other country was **Paraguay**.
+
+The **War of the Triple Alliance (1864–1870)** was fought between **Paraguay** and the **Triple Alliance** of **Argentina, Brazil, and Uruguay**.",16.90653646485627,0.9073536396026611,,-0.011094642684963407,0.14300918188348988,0.0,-83.09346353514377,-0.08460378646850586,-0.09264647960662842,,0.0
+gpt-5.4,14,global,3.0,trivia_qa,What city will host the 2016 Olympics?,Which city is scheduled to be the one that will serve as the host location for the 2016 Olympic Games?,0.9406633377075195,"Rio de Janeiro, Brazil.","Rio de Janeiro, Brazil.",100.00000000000004,0.9999998807907104,,-0.021703601009658735,-0.05691269594248585,0.0,0.0,-0.05933660268783569,0.0,,0.0
+gpt-5.4,15,global,3.0,trivia_qa,Mount Entoto is the highest peak overlooking which African capital city?,Mount Entoto is the tallest and highest mountain peak that majestically overlooks and provides a commanding view of which specific African capital city?,0.9358257055282593,"Mount Entoto overlooks **Addis Ababa**, the capital of **Ethiopia**.","Mount Entoto overlooks **Addis Ababa**, the capital city of **Ethiopia**.",85.78928092681438,0.9964505434036255,,-0.01789637278071554,-0.21240067069279658,0.0,-14.210719073185658,-0.06417429447174072,-0.0035494565963745117,,0.0

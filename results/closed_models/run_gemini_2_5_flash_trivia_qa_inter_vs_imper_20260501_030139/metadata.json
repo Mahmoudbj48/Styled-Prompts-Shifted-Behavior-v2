@@ -1,0 +1,16 @@
+{
+  "model": "gemini-2.5-flash",
+  "dataset": "trivia_qa",
+  "style": "inter_vs_imper",
+  "sample_size": 16,
+  "num_prompts": 16,
+  "num_strengths": 2,
+  "total_rows": 32,
+  "timestamp": "2026-05-01T03:03:23.517904",
+  "config": {
+    "max_tokens": 100,
+    "temperature": 0.0,
+    "judge_provider": "openai",
+    "judge_model": "gpt-4o-mini"
+  }
+}
