@@ -11,8 +11,12 @@ commands/
 *.xlsx
 
 data/
-results/
-
+results/inter_vs_imper
+results/length_variation
+results/letter_case
+results/politeness
+results/punctuation
+results/spacing
 # IDE
 .idea/
 .claude/
