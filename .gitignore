@@ -9,9 +9,10 @@ venv/
 results/
 commands/
 *.sh
-#*.xlsx
+*.xlsx
 
 data/
+results/
 ## Result-generation and utility scripts
 #aggregate_results.py
 #aggregate_closed_models.py

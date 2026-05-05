@@ -1,35 +1,30 @@
 """
 aggregate_results.py
 --------------------
+Aggregates all open-source model results.
+
 Run from project root:
     python aggregate_results.py
 
-Produces one file in results/:
-    aggregated_full_results.csv  — all full_results_all_models.csv files combined
-
-Each row gains three leading columns:  variation | dataset | run_path
-Missing columns across files are unioned and left NaN where absent.
-Dataset is derived from the run folder name (not the 'category' column).
+Scans: results/<style_folder>/run_multi_<dataset>_<timestamp>/full_results_all_models.csv
+Writes: results/aggregated_full_results.csv
 """
 
 import re
-import shutil
 import pandas as pd
 from pathlib import Path
 
 RESULTS_DIR = Path("results")
 
-# ── Style folder name -> checklist label ───────────────────────────────────────
-VARIATION_MAP = {
+STYLE_MAP = {
+    "inter_vs_imper":   "Form",
+    "length_variation": "Length",
+    "letter_case":      "Casing",
     "politeness":       "Polite.",
     "punctuation":      "Punct.",
     "spacing":          "Spacing",
-    "letter_case":      "Casing",
-    "length_variation": "Length",
-    "inter_vs_imper":   "Form",
 }
 
-# ── Dataset slug (from folder name) -> checklist label ─────────────────────────
 DATASET_MAP = {
     "truthful_qa":       "TruthfulQA",
     "natural_questions": "Natural Questions",
@@ -39,121 +34,74 @@ DATASET_MAP = {
     "hotpot_qa":         "HotpotQA",
 }
 
-
-def extract_dataset_slug(folder_name: str) -> str:
-    """Extract dataset slug from run folder name.
-
-    run_multi_hotpot_qa_20260416_152829  ->  hotpot_qa
-    run_multi_natural_questions_20260303_125434  ->  natural_questions
-    """
-    m = re.match(r"run_multi_(.+?)_\d{8}_\d+$", folder_name)
-    if m:
-        return m.group(1)
-    # fallback
-    slug = re.sub(r"^run_multi_", "", folder_name)
-    slug = re.sub(r"_\d{8}_\d+$", "", slug)
-    return slug
-
-
-def read_with_meta(csv_path: Path, variation_label: str,
-                   dataset_label: str, run_path: str) -> pd.DataFrame:
-    df = pd.read_csv(csv_path)
-    # Drop any pre-existing meta columns to avoid duplicates
-    for col in ("variation", "dataset", "run_path"):
-        if col in df.columns:
-            df = df.drop(columns=[col])
-    df.insert(0, "variation",    variation_label)
-    df.insert(1, "dataset",  dataset_label)
-    df.insert(2, "run_path", run_path)
-    return df
-
-
-# ── Desired output columns (in order) ────────────────────────────────────────
-# variation / dataset / run_path are prepended by read_with_meta;
-# all other columns below come from the CSV itself.
-# Columns absent in a given file are added as NaN automatically by pd.concat.
 OUTPUT_COLS = [
-    "variation", "dataset", "run_path",
+    "style", "dataset", "run_path",
     "model", "prompt_id", "place", "strength", "category",
-    "prompt_orig", "prompt_pert",
-    "bertscore_prompt",
+    "prompt_orig", "prompt_pert", "bertscore_prompt",
     "response_orig", "response_pert",
     "bleu", "bertscore_response", "activation_similarity",
-    "delta_log_prob", "entropy_shift",
-    "mirroring_rate",
+    "delta_log_prob", "entropy_shift", "mirroring_rate",
     "delta_bleu", "delta_bertscore_prompt", "delta_bertscore_response",
-    "delta_activation_similarity", "delta_mirroring_rate", "delta_entropy",
+    "delta_activation_similarity", "delta_mirroring_rate",
 ]
+
+SKIP_DIRS = {"trash", "empty_results", "closed_models"}
 
 frames = []
 
-for variation_dir in sorted(RESULTS_DIR.iterdir()):
-    if not variation_dir.is_dir() or variation_dir.name == "trash":
+for style_dir in sorted(RESULTS_DIR.iterdir()):
+    if not style_dir.is_dir() or style_dir.name in SKIP_DIRS:
         continue
-    variation_label = VARIATION_MAP.get(variation_dir.name)
-    if variation_label is None:
-        print(f"[WARN] Unknown variation folder: {variation_dir.name!r} — skipping")
+    style_label = STYLE_MAP.get(style_dir.name)
+    if style_label is None:
+        print(f"[SKIP] Unknown style folder: {style_dir.name!r}")
         continue
 
-    print(f"\n  {variation_dir.name}  ->  '{variation_label}'")
-
-    for run_dir in sorted(variation_dir.iterdir()):
+    for run_dir in sorted(style_dir.iterdir()):
         if not run_dir.is_dir():
             continue
+        csv_path = run_dir / "full_results_all_models.csv"
+        if not csv_path.exists():
+            print(f"  [NO CSV] {run_dir.name}")
+            continue
 
-        dataset_slug  = extract_dataset_slug(run_dir.name)
-        dataset_label = DATASET_MAP.get(dataset_slug)
+        m = re.match(r"run_multi_(.+?)_\d{8}_\d+$", run_dir.name)
+        if not m:
+            print(f"  [SKIP] Cannot parse folder name: {run_dir.name}")
+            continue
+        dataset_label = DATASET_MAP.get(m.group(1))
         if dataset_label is None:
-            print(f"    [WARN] Unknown dataset slug {dataset_slug!r} "
-                  f"(from {run_dir.name}) — using slug as-is")
-            dataset_label = dataset_slug
-
-        rel_path = str(run_dir.relative_to(Path(".")))
-
-        full_csv = run_dir / "full_results_all_models.csv"
-        if not full_csv.exists():
-            empty_dir = RESULTS_DIR / "empty_results" / variation_dir.name
-            empty_dir.mkdir(parents=True, exist_ok=True)
-            dest = empty_dir / run_dir.name
-            if not dest.exists():
-                import shutil
-                shutil.move(str(run_dir), str(dest))
-                print(f"    [MOVED-EMPTY]  {run_dir.name}  ->  empty_results/{variation_dir.name}/")
-            else:
-                print(f"    [MISS]  {run_dir.name}  (already in empty_results, skipping move)")
+            print(f"  [SKIP] Unknown dataset slug '{m.group(1)}' in {run_dir.name}")
             continue
 
         try:
-            df = read_with_meta(full_csv, variation_label, dataset_label, rel_path)
+            df = pd.read_csv(csv_path, low_memory=False)
         except Exception as exc:
-            print(f"    [ERR]   {run_dir.name}: {exc}")
+            print(f"  [ERR] {run_dir.name}: {exc}")
             continue
 
-        frames.append(df)
-        print(f"    [OK]    {run_dir.name}  "
-              f"->  {len(df):,} rows  "
-              f"{df['model'].nunique()} model(s)  "
-              f"cols={df.shape[1]}")
+        for col in ("style", "dataset", "run_path"):
+            if col in df.columns:
+                df = df.drop(columns=[col])
+        df.insert(0, "style",    style_label)
+        df.insert(1, "dataset",  dataset_label)
+        df.insert(2, "run_path", run_dir.as_posix())
 
-print()
+        for col in OUTPUT_COLS:
+            if col not in df.columns:
+                df[col] = float("nan")
+        df = df[OUTPUT_COLS]
+        frames.append(df)
+        print(f"  [OK] {style_label} | {dataset_label} | {run_dir.name} | {len(df):,} rows")
 
 if not frames:
-    print("[WARN] No full_results_all_models.csv files found — nothing to write.")
-else:
-    agg = pd.concat(frames, ignore_index=True, sort=False)
+    raise SystemExit("[WARN] No CSV files found.")
 
-    # Keep only the desired columns, in order.
-    # Columns present in OUTPUT_COLS but absent from the data are added as NaN.
-    # Columns in the data but not in OUTPUT_COLS are silently dropped.
-    for col in OUTPUT_COLS:
-        if col not in agg.columns:
-            agg[col] = float("nan")
-    agg = agg[OUTPUT_COLS]
-
-    out = RESULTS_DIR / "aggregated_full_results.csv"
-    agg.to_csv(out, index=False)
-    print(f"[OK]  aggregated_full_results.csv")
-    print(f"      {len(agg):,} rows  x  {agg.shape[1]} cols")
-    print(f"      variations:   {sorted(agg['variation'].unique())}")
-    print(f"      datasets: {sorted(agg['dataset'].unique())}")
-    print(f"      models:   {sorted(agg['model'].unique())}")
+agg = pd.concat(frames, ignore_index=True, sort=False)
+out = RESULTS_DIR / "aggregated_full_results.csv"
+agg.to_csv(out, index=False)
+print(f"\n[OK] {out}")
+print(f"     {len(agg):,} rows x {agg.shape[1]} cols")
+print(f"     models:   {sorted(agg['model'].unique())}")
+print(f"     datasets: {sorted(agg['dataset'].unique())}")
+print(f"     styles:   {sorted(agg['style'].unique())}")

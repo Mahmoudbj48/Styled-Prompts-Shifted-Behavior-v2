@@ -1,83 +1,122 @@
 """
 fill_checklist_closed.py
 ------------------------
+Fills experiment_checklist_to_fill_closed_models.xlsx for closed-source models.
+
 Run from project root:
     python fill_checklist_closed.py
 
-Fills the checklist for closed-model results only.
-Reads  results/closed_models/aggregated_closed_models.csv
-and fills  experiment_checklist_to_fill.xlsx  rows where the model column
-matches one of the three closed models.
+Scans: results/closed_models/run_<model>_<dataset>_<style>_<timestamp>/full_results_all_models.csv
+Reads:  experiment_checklist_to_fill_closed_models.xlsx
+Writes: experiment_checklist_closed_filled.xlsx
 
-Writes:  experiment_checklist_closed_filled.xlsx
-
-Closed model labels in the checklist must match MODEL_ALIASES below.
-Adjust if your checklist uses different notation.
+For each (model x dataset x style) row in the checklist:
+- Finds the matching run folder (most rows wins if duplicates exist)
+- Fills col E (path) and col F (# prompts) with green formatting
+- Marks missing combinations in orange
+Does NOT move or delete any folders.
 """
 
 import sys
-import numpy as np
 import pandas as pd
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment
 from pathlib import Path
 from collections import defaultdict
 
-AGG_CSV       = Path("results/closed_models/aggregated_closed_models.csv")
-CHECKLIST_IN  = Path("experiment_checklist_to_fill.xlsx")
+CLOSED_DIR    = Path("results/closed_models")
+CHECKLIST_IN  = Path("experiment_checklist_to_fill_closed_models.xlsx")
 CHECKLIST_OUT = Path("experiment_checklist_closed_filled.xlsx")
 
-# Map CSV model strings → checklist labels (adjust to match your checklist)
-MODEL_ALIASES = {
-    "GPT-5.4":             ["gpt-5.4", "gpt5.4"],
-    "Gemini-2.5-Flash":    ["gemini-2.5-flash", "gemini-flash-2.5"],
-    "Claude-Sonnet-4.6":   ["claude-sonnet-4-6", "claude-sonnet-4.6",
-                            "claude-sonnet-46"],
+STYLE_MAP = {
+    "inter_vs_imper":   "Form",
+    "length_variation": "Length",
+    "letter_case":      "Casing",
+    "politeness":       "Polite.",
+    "punctuation":      "Punct.",
+    "spacing":          "Spacing",
 }
 
-def normalise_model(raw: str) -> str:
-    r = raw.strip().lower()
-    for label, aliases in MODEL_ALIASES.items():
-        if r == label.lower() or r in [a.lower() for a in aliases]:
-            return label
-    return raw  # return as-is if unrecognised
+DATASET_MAP = {
+    "truthful_qa":       "TruthfulQA",
+    "natural_questions": "Natural Questions",
+    "alpaca":            "Alpaca",
+    "simpleqa_verified": "SimpleQA Verified",
+    "trivia_qa":         "TriviaQA",
+    "hotpot_qa":         "HotpotQA",
+}
 
-VARIATION_LABELS = {"Polite.", "Punct.", "Spacing", "Casing", "Length", "Form"}
+MODEL_ALIASES = {
+    "GPT-5.4":           ["gpt-5.4", "gpt5.4", "gpt-5_4"],
+    "Gemini-2.5-Flash":  ["gemini-2.5-flash", "gemini-flash-2.5"],
+    "Claude-Sonnet-4.6": ["claude-sonnet-4-6", "claude-sonnet-4.6", "claude-sonnet-46"],
+}
 
-# ── Load aggregated data ──────────────────────────────────────────────────────
-if not AGG_CSV.exists():
-    sys.exit(f"[ERROR] {AGG_CSV} not found. Run aggregate_closed_models.py first.")
+_MODEL_LOOKUP = {}
+for label, aliases in MODEL_ALIASES.items():
+    _MODEL_LOOKUP[label.lower()] = label
+    for a in aliases:
+        _MODEL_LOOKUP[a.lower()] = label
 
-print(f"Loading {AGG_CSV} ...")
-agg = pd.read_csv(AGG_CSV, low_memory=False)
-agg["model_norm"] = agg["model"].apply(normalise_model)
+def normalise_model(raw):
+    return _MODEL_LOOKUP.get(raw.strip().lower(), raw.strip())
 
-# ── Build lookup: (model_norm, dataset, variation) → best run ────────────────────
+ALL_STYLES = set(STYLE_MAP.values())
+
+# ── Scan results/closed_models/ ───────────────────────────────────────────────
+# candidates[(style, model, dataset)] = list of {run_dir, n_rows, n_prompts}
 candidates = defaultdict(list)
 
-for _, row in agg.groupby(["model_norm", "dataset", "variation", "run_path"]).size()\
-                  .reset_index(name="n_rows").iterrows():
-    key = (row["model_norm"], row["dataset"], row["variation"])
-    sub = agg[
-        (agg["model_norm"] == row["model_norm"]) &
-        (agg["dataset"]    == row["dataset"])    &
-        (agg["variation"]      == row["variation"])      &
-        (agg["run_path"]   == row["run_path"])
-    ]
-    candidates[key].append({
-        "run_path":  row["run_path"],
-        "n_rows":    row["n_rows"],
-        "n_prompts": sub["prompt_id"].nunique(),
-    })
+if not CLOSED_DIR.is_dir():
+    sys.exit(f"[ERROR] {CLOSED_DIR} not found.")
 
-# Keep best (most rows) per combination
+for run_dir in sorted(CLOSED_DIR.iterdir()):
+    if not run_dir.is_dir() or run_dir.name in {"trash", "empty_results"}:
+        continue
+    csv_path = run_dir / "full_results_all_models.csv"
+    if not csv_path.exists():
+        continue
+
+    # Detect style (longest match first)
+    style_label = None
+    for slug in sorted(STYLE_MAP, key=len, reverse=True):
+        if f"_{slug}_" in run_dir.name:
+            style_label = STYLE_MAP[slug]
+            break
+    if style_label is None:
+        print(f"  [SKIP] Cannot detect style from {run_dir.name}")
+        continue
+
+    # Detect dataset (longest match first)
+    dataset_label = None
+    for slug in sorted(DATASET_MAP, key=len, reverse=True):
+        if f"_{slug}_" in run_dir.name:
+            dataset_label = DATASET_MAP[slug]
+            break
+    if dataset_label is None:
+        print(f"  [SKIP] Cannot detect dataset from {run_dir.name}")
+        continue
+
+    try:
+        df = pd.read_csv(csv_path, usecols=["model", "prompt_id"], low_memory=False)
+    except Exception as exc:
+        print(f"  [ERR] {run_dir.name}: {exc}")
+        continue
+
+    for model_raw, grp in df.groupby("model"):
+        key = (style_label, normalise_model(model_raw), dataset_label)
+        candidates[key].append({
+            "run_dir":   run_dir,
+            "n_rows":    len(grp),
+            "n_prompts": grp["prompt_id"].nunique(),
+        })
+
+# Pick best (most rows, tie → newest folder name) per key
 best = {}
 for key, cands in candidates.items():
-    best[key] = sorted(cands, key=lambda c: c["n_rows"], reverse=True)[0]
+    best[key] = sorted(cands, key=lambda c: (c["n_rows"], c["run_dir"].name), reverse=True)[0]
 
-print(f"  {len(best)} (model x dataset x variation) combinations found")
-
-# ── Load checklist ────────────────────────────────────────────────────────────
+# ── Fill checklist ────────────────────────────────────────────────────────────
 if not CHECKLIST_IN.exists():
     sys.exit(f"[ERROR] {CHECKLIST_IN} not found.")
 
@@ -86,66 +125,51 @@ ws = wb.active
 
 DONE_BG  = PatternFill("solid", fgColor="C6EFCE")
 DONE_FT  = Font(name="Arial", size=9, color="276221")
+DONE_NUM = Font(name="Arial", size=9, bold=True, color="276221")
 MISS_BG  = PatternFill("solid", fgColor="FCE4D6")
 MISS_FT  = Font(name="Arial", size=9, color="C55A11", italic=True)
-NUM_FT   = Font(name="Arial", size=9, bold=True, color="276221")
 CENTER   = Alignment(horizontal="center", vertical="center")
 LEFT     = Alignment(horizontal="left",   vertical="center", wrap_text=False)
 
 cur_model = cur_dataset = None
-filled = not_found = 0
+filled = missing = 0
 
-for r in range(3, ws.max_row + 1):
-    v_model   = ws.cell(r, 2).value
-    v_dataset = ws.cell(r, 3).value
-    v_variation   = ws.cell(r, 4).value
+for row in range(3, ws.max_row + 1):
+    v2 = ws.cell(row, 2).value
+    v3 = ws.cell(row, 3).value
+    v4 = ws.cell(row, 4).value
 
-    if v_model   is not None: cur_model   = str(v_model).strip()
-    if v_dataset is not None:
-        ds = str(v_dataset).strip()
-        if ds.startswith("▶"):
+    if v2 is not None: cur_model   = str(v2).strip()
+    if v3 is not None:
+        v3s = str(v3).strip()
+        if v3s.startswith("▶"):
             continue
-        cur_dataset = ds
+        cur_dataset = v3s
 
-    if v_variation is None or str(v_variation).strip() not in VARIATION_LABELS:
+    if v4 is None or str(v4).strip() not in ALL_STYLES:
         continue
     if cur_model is None or cur_dataset is None:
         continue
 
-    variation = str(v_variation).strip()
-    key   = (cur_model, cur_dataset, variation)
-    info  = best.get(key)
-
-    path_cell  = ws.cell(r, 5)
-    count_cell = ws.cell(r, 6)
+    key  = (str(v4).strip(), cur_model, cur_dataset)
+    info = best.get(key)
+    pc   = ws.cell(row, 5)
+    nc   = ws.cell(row, 6)
 
     if info:
-        path_cell.value     = Path(info["run_path"]).as_posix()
-        path_cell.fill      = DONE_BG
-        path_cell.font      = DONE_FT
-        path_cell.alignment = LEFT
-        count_cell.value     = info["n_prompts"]
-        count_cell.fill      = DONE_BG
-        count_cell.font      = NUM_FT
-        count_cell.alignment = CENTER
+        pc.value = info["run_dir"].as_posix()
+        pc.fill  = DONE_BG; pc.font = DONE_FT; pc.alignment = LEFT
+        nc.value = info["n_prompts"]
+        nc.fill  = DONE_BG; nc.font = DONE_NUM; nc.alignment = CENTER
         filled += 1
     else:
-        # Only mark as missing if this row belongs to a closed model
-        closed_labels = {k.lower() for k in MODEL_ALIASES}
-        if cur_model.lower() in closed_labels or \
-                any(cur_model.lower() in [a.lower() for a in v]
-                    for v in MODEL_ALIASES.values()):
-            path_cell.value     = "NOT FOUND"
-            path_cell.fill      = MISS_BG
-            path_cell.font      = MISS_FT
-            path_cell.alignment = CENTER
-            count_cell.value    = "—"
-            count_cell.fill     = MISS_BG
-            count_cell.font     = MISS_FT
-            count_cell.alignment = CENTER
-            not_found += 1
+        pc.value = "NOT FOUND"
+        pc.fill  = MISS_BG; pc.font = MISS_FT; pc.alignment = CENTER
+        nc.value = "—"
+        nc.fill  = MISS_BG; nc.font = MISS_FT; nc.alignment = CENTER
+        missing += 1
 
 wb.save(CHECKLIST_OUT)
-print(f"\n[OK]  Saved → {CHECKLIST_OUT}")
+print(f"[OK]  {CHECKLIST_OUT}")
 print(f"      Filled:    {filled}")
-print(f"      Not found: {not_found}")
+print(f"      Not found: {missing}")
