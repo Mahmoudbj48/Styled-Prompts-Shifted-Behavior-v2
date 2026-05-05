@@ -8,15 +8,10 @@ venv/
 # Results, commands, and data files
 commands/
 *.sh
-
+results/aggregated_full_results.csv
+results/closed_models/aggregated_closed_models.csv
 
 data/
-results/inter_vs_imper
-results/length_variation
-results/letter_case
-results/politeness
-results/punctuation
-results/spacing
 # IDE
 .idea/
 .claude/

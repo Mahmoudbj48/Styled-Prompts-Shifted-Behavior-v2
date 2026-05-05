@@ -1,0 +1,577 @@
+model,prompt_id,place,strength,category,prompt_orig,prompt_pert,bertscore_prompt,response_orig,response_pert,bleu,bertscore_response,activation_similarity,delta_log_prob,entropy_shift,mirroring_rate,delta_bleu,delta_bertscore_prompt,delta_bertscore_response,delta_activation_similarity,delta_mirroring_rate
+L3.1-8B,0,global,0.25,simpleqa_verified,"How much (in USD) was Frida's self-portrait with loose hair sold for in an auction by Christie's, New York, in May of 1991?",What was Frida's self-portrait auction price?,0.9154253602027892,I am unable to verify the price of Frida Kahlo's self-portrait with loose hair sold at an auction by Christie's in New York in May 1991.,"assistant
+
+I am unable to verify the price of Frida Kahlo's self-portraits at auction.",30.048438849849045,0.9204260110855104,0.8203125,-57.6484375,0.43896484375,0.0,-69.951561150151,-0.08457446098327637,-0.07957422733306874,-0.1796875,-1.0
+L3.1-8B,1,global,0.25,simpleqa_verified,"During whose papacy did Gian Lorenzo Bernini create the ""Ecstasy of Saint Teresa""?","Whose papacy saw Bernini's ""Ecstasy of Saint Teresa""?",0.9436704516410828,"Lorenzo Bernini create the ""Ecstasy of Saint Teresa""?assistant
+
+Gian Lorenzo Bernini created the ""Ecstasy of Saint Teresa"" during the papacy of Pope Urban VIII.","The papacy of Pope Urban VIII (1623-1644) saw the creation of Bernini's ""Ecstasy of Saint Teresa"".",26.804070116397853,0.8856395483016968,0.919921875,-20.53125,0.22119140625,0.0,-73.19592988360219,-0.056329429149627686,-0.11436039209365845,-0.0791015625,-1.0
+L3.1-8B,2,global,0.25,simpleqa_verified,What was the name of the venue where the 1992 Scandinavian Masters golf tournament happened?,What was the venue for the 1992 Scandinavian Masters?,0.9552062749862672,"venue where the 1992 Scandinavian Masters golf tournament happened?assistant
+
+I am unable to verify the venue of the 1992 Scandinavian Masters golf tournament.","assistant
+
+I am unable to verify the venue for the 1992 Scandinavian Masters.",30.29579856774073,0.9498007893562316,0.96630859375,-18.125,0.052734375,0.0,-69.70420143225931,-0.04479360580444325,-0.05019944906234752,-0.03369140625,-1.0
+L3.1-8B,3,global,0.25,simpleqa_verified,What is the boiling point of the element cerium in Fahrenheit?,Cerium's boiling point?,0.8898628950119019,"user
+
+What is the boiling point of the element cerium in Fahrenheit?assistant
+
+The boiling point of cerium is 3443 degrees Celsius. To convert this to Fahrenheit, we multiply by 9/5 and add 32. 
+
+3443 * (9/5) = 6181.4 
+6181.4 + 32 = 6213.4 
+
+So, the boiling point of cerium is approximately 6213.4 degrees Fahrenheit.","boiling point?assistant
+
+Cerium's boiling point is 3716 K or 3443°C or 6229.4°F.",0.3054148407221171,0.8486192226409912,0.912109375,-24.875,0.00390625,1.0,-99.69458515927792,-0.1101369857788086,-0.1513807773590088,-0.08740234375,0.0
+L3.1-8B,4,global,0.25,simpleqa_verified,What was the title of chemist Mary Letitia Caldwell's Ph.D. thesis?,Caldwell's Ph.D. thesis title?,0.924388587474823,"of chemist Mary Letitia Caldwell's Ph.D. thesis?assistant
+
+I do not have information on a chemist named Mary Letitia Caldwell.","assistant
+
+I do not have information on Caldwell's Ph.D. thesis title.",37.874742572129016,0.9220975637435912,0.54248046875,-22.375,0.3310546875,0.0,-62.12525742787103,-0.07561153173446655,-0.07790237665176403,-0.45751953125,-1.0
+L3.1-8B,5,global,0.25,simpleqa_verified,"For how many scudi did the Florentine authorities buy the ""Pitti Tondo"" from the dealer Fedele Acciai in 1823?","How many scudi for ""Pitti Tondo""?",0.898868978023529,"assistant
+
+I do not have information on the price of the ""Pitti Tondo"" in scudi.","assistant
+
+I'm not aware of any information about ""Pitti Tondo"" being associated with a monetary unit called ""scudi."" However, I do know that ""Pitti Tondo"" is a painting by the Italian artist Michelangelo Buonarroti, created around 1505.",7.423447100714539,0.9043943881988524,0.6279296875,1.828125,-0.001953125,0.0,-92.5765528992855,-0.1011309027671814,-0.0956055521965028,-0.3720703125,-1.0
+L3.1-8B,6,global,0.25,simpleqa_verified,What team came second in Group C in the 2018–19 UEFA Champions League?,Which team was second?,0.8954055309295654,"C in the 2018–19 UEFA Champions League?assistant
+
+In the 2018-19 UEFA Champions League, Group C consisted of Paris Saint-Germain, Liverpool, Napoli, and Red Star Belgrade. 
+
+Liverpool came second in Group C with 10 points, behind Paris Saint-Germain who topped the group with 11 points.","Which team was second?assistant
+
+I can try to help you with that, but I need more information about what you are referring to. Could you please provide more context or specify the sport, competition, or event you are interested in?",1.9607617140978832,0.8088776469230652,0.27978515625,-52.75,0.529296875,0.0,-98.03923828590216,-0.10459470748901367,-0.19112223386764526,-0.7197265625,-1.0
+L3.1-8B,7,global,0.25,simpleqa_verified,At which university did the mathematician William Prager study civil engineering and receive his diploma in 1925?,Which university did Prager attend?,0.919556736946106,"receive his diploma in 1925?assistant
+
+I am unable to verify the university where William Prager studied civil engineering and received his diploma in 1925.","ager attend?assistant
+
+I don't have enough information to determine which university you are referring to. There are several notable individuals named Prager. Could you please provide more context or specify which Prager you are referring to?",4.119566303102715,0.8648945093154907,0.489990234375,-62.5,0.60107421875,0.0,-95.88043369689733,-0.08044326305389404,-0.13510549068450928,-0.510009765625,-1.0
+L3.1-8B,8,global,0.25,simpleqa_verified,"Which streamer won the ""Best Variety Streamer"" award at The Streamer Awards in 2022?","Who won ""Best Variety Streamer"" in 2022?",0.9482367038726808,"Streamer Awards in 2022?assistant
+
+I do not have information on the winner of the ""Best Variety Streamer"" award at The Streamer Awards in 2022.","I do not have information on the 2022 award for ""Best Variety Streamer"".",28.27471266051182,0.9219499230384828,0.88671875,-10.875,0.1494140625,0.0,-71.72528733948822,-0.051763296127319225,-0.07805001735687245,-0.11279296875,-1.0
+L3.1-8B,9,global,0.25,simpleqa_verified,What is the name of the naturalist who first described the sharpbill under the binomial name *Oxyrhuncus cristatus* in 1821?,Who named the sharpbill *Oxyrhuncus cristatus*?,0.9252051115036012,I am unable to verify who the naturalist was that first described the sharpbill under the binomial name *Oxyrhuncus cristatus* in 1821.,I am unable to verify who named the sharpbill *Oxyrhuncus cristatus*.,26.65057400807504,0.938681960105896,0.82080078125,-45.046875,0.58349609375,0.0,-73.349425991925,-0.07479470968246438,-0.06131792068481445,-0.18017578125,-1.0
+L3.1-8B,10,global,0.25,simpleqa_verified,How many symphonies did the Estonian composer Els Aarne write?,How many symphonies did Els Aarne compose?,0.9670893549919128,"ies did the Estonian composer Els Aarne write?assistant
+
+I am unable to verify how many symphonies the Estonian composer Els Aarne wrote.",I am unable to verify how many symphonies Els Aarne composed.,23.23866539944741,0.9251604080200196,0.96630859375,-8.21875,0.12109375,0.0,-76.76133460055263,-0.03291064500808716,-0.07483959197998036,-0.03369140625,-1.0
+L3.1-8B,11,global,0.25,simpleqa_verified,"What was the first and last name of the person who designed the historic Emil J. Oberhoffer House in Lakeville, Minnesota, United States?",Who designed the Emil J. Oberhoffer House?,0.9257892966270448,"assistant
+
+I do not have information on the person who designed the historic Emil J. Oberhoffer House in Lakeville, Minnesota.","assistant
+
+I do not have information on who designed the Emil J. Oberhoffer House.",45.06602506118606,0.96270751953125,0.91943359375,-26.703125,0.3125,0.0,-54.93397493881398,-0.07421070337295521,-0.03729236125946045,-0.080078125,-1.0
+L3.1-8B,12,global,0.25,simpleqa_verified,Which two architects built the Pizzurno Palace?,Which architects built Pizzurno Palace?,0.9801009893417358,"2024
+
+user
+
+Which two architects built the Pizzurno Palace?assistant
+
+I am unable to verify who the architects of the Pizzurno Palace are.","?assistant
+
+I am unable to verify who built Pizzurno Palace.",23.74971066091434,0.9375911355018616,0.984375,-12.1875,0.15673828125,0.0,-76.2502893390857,-0.01989924907684326,-0.06240886449813843,-0.01513671875,-1.0
+L3.1-8B,13,global,0.25,simpleqa_verified,In what year did Leo Tolstoy come to Ilya Repin's studio to introduce himself?,When did Tolstoy visit Repin?,0.9215297102928162,"Ilya Repin's studio to introduce himself?assistant
+
+I am unable to verify when Leo Tolstoy came to Ilya Repin's studio to introduce himself.","?assistant
+
+I am unable to verify when Tolstoy visited Repin.",21.94648764081637,0.92303866147995,0.7626953125,-32.5,0.330078125,0.0,-78.05351235918367,-0.07847017049789429,-0.07696133852005005,-0.2373046875,-1.0
+L3.1-8B,14,global,0.25,simpleqa_verified,"What was the population of Spring Rock Township, Clinton County, Iowa, at the time of the 2000 Census?",Spring Rock Township's 2000 Census population?,0.9022462964057922,"the 2000 Census?assistant
+
+I am unable to verify the population of Spring Rock Township, Clinton County, Iowa, at the time of the 2000 Census.","assistant
+
+I am unable to verify Spring Rock Township's 2000 Census population.",13.314113622355377,0.9459202885627748,0.8740234375,-27.40625,0.27197265625,0.0,-86.68588637764466,-0.09775382280349731,-0.054079651832580455,-0.12548828125,-1.0
+L3.1-8B,15,global,0.25,simpleqa_verified,"In what city in England was James Brain, an English football manager and player born in 1900, born?",Which English city was James Brain born in?,0.9270541667938232,"in 1900, born?assistant
+
+I am unable to verify the birthplace of James Brain.","?assistant
+
+I am unable to verify the birthplace of James Brain.",73.51414805916848,0.9429887533187866,0.93310546875,-12.15625,0.0849609375,0.0,-26.485851940831566,-0.07294583320617676,-0.05701136589050293,-0.06689453125,-1.0
+L3.1-8B,0,global,0.5,simpleqa_verified,"How much (in USD) was Frida's self-portrait with loose hair sold for in an auction by Christie's, New York, in May of 1991?",What was the auction price in USD for Frida's self-portrait in May 1991?,0.937688171863556,I am unable to verify the price of Frida Kahlo's self-portrait with loose hair sold at an auction by Christie's in New York in May 1991.,I am unable to verify the price of Frida Kahlo's self-portrait in May 1991.,39.36823030769577,0.9504188299179076,0.7900390625,-35.8046875,0.33154296875,1.0,-60.631769692304275,-0.062311649322509544,-0.0495814085006715,-0.2099609375,0.0
+L3.1-8B,1,global,0.5,simpleqa_verified,"During whose papacy did Gian Lorenzo Bernini create the ""Ecstasy of Saint Teresa""?","Whose papacy saw Bernini's ""Ecstasy of Saint Teresa""?",0.9436704516410828,"Lorenzo Bernini create the ""Ecstasy of Saint Teresa""?assistant
+
+Gian Lorenzo Bernini created the ""Ecstasy of Saint Teresa"" during the papacy of Pope Urban VIII.","assistant
+
+The papacy of Pope Urban VIII (1623-1644) saw the creation of Bernini's ""Ecstasy of Saint Teresa"".",27.56042852876168,0.8980494737625122,0.919921875,-20.53125,0.22119140625,0.0,-72.43957147123837,-0.056329429149627686,-0.10195046663284302,-0.0791015625,-1.0
+L3.1-8B,2,global,0.5,simpleqa_verified,What was the name of the venue where the 1992 Scandinavian Masters golf tournament happened?,What was the venue for the 1992 Scandinavian Masters?,0.9552062749862672,"venue where the 1992 Scandinavian Masters golf tournament happened?assistant
+
+I am unable to verify the venue of the 1992 Scandinavian Masters golf tournament.","Scandinavian Masters?assistant
+
+I am unable to verify the venue for the 1992 Scandinavian Masters.",39.952392054745175,0.9389671087265016,0.96630859375,-18.125,0.052734375,1.0,-60.04760794525487,-0.04479360580444325,-0.061033129692077526,-0.03369140625,0.0
+L3.1-8B,3,global,0.5,simpleqa_verified,What is the boiling point of the element cerium in Fahrenheit?,What is cerium's boiling point in Fahrenheit?,0.961036503314972,"user
+
+What is the boiling point of the element cerium in Fahrenheit?assistant
+
+The boiling point of cerium is 3443 degrees Celsius. To convert this to Fahrenheit, we multiply by 9/5 and add 32. 
+
+3443 * (9/5) = 6181.4 
+6181.4 + 32 = 6213.4 
+
+So, the boiling point of cerium is approximately 6213.4 degrees Fahrenheit.","boiling point in Fahrenheit?assistant
+
+Cerium's boiling point is 3443 degrees Celsius. To convert it to Fahrenheit, we multiply by 9/5 and add 32. 
+
+3443 * (9/5) = 6181.4 
+6181.4 + 32 = 6213.4 
+
+So, cerium's boiling point is approximately 6213.4 degrees Fahrenheit.",62.67661270822216,0.9696208238601683,0.9482421875,-15.3125,0.02197265625,0.0,-37.323387291777884,-0.038963377475738414,-0.030379176139831654,-0.05126953125,-1.0
+L3.1-8B,4,global,0.5,simpleqa_verified,What was the title of chemist Mary Letitia Caldwell's Ph.D. thesis?,What was Mary Letitia Caldwell's thesis title?,0.9599995613098145,"of chemist Mary Letitia Caldwell's Ph.D. thesis?assistant
+
+I do not have information on a chemist named Mary Letitia Caldwell.","Caldwell's thesis title?assistant
+
+I do not have information on Mary Letitia Caldwell's thesis title.",32.321577799410484,0.9261491894721984,0.95751953125,-16.125,0.255859375,0.0,-67.67842220058955,-0.0400005578994751,-0.07385075092315685,-0.04248046875,-1.0
+L3.1-8B,5,global,0.5,simpleqa_verified,"For how many scudi did the Florentine authorities buy the ""Pitti Tondo"" from the dealer Fedele Acciai in 1823?","How many scudi did Florence pay for the ""Pitti Tondo"" in 1823?",0.9298630952835084,"assistant
+
+I do not have information on the price of the ""Pitti Tondo"" in scudi.","I am unable to verify how much Florence paid for the ""Pitti Tondo"" in 1823.",28.43329181530769,0.905448317527771,0.93505859375,0.4375,-0.0791015625,0.0,-71.56670818469235,-0.07013678550720204,-0.09455162286758423,-0.06494140625,-1.0
+L3.1-8B,6,global,0.5,simpleqa_verified,What team came second in Group C in the 2018–19 UEFA Champions League?,Which team was second in Group C?,0.925223469734192,"C in the 2018–19 UEFA Champions League?assistant
+
+In the 2018-19 UEFA Champions League, Group C consisted of Paris Saint-Germain, Liverpool, Napoli, and Red Star Belgrade. 
+
+Liverpool came second in Group C with 10 points, behind Paris Saint-Germain who topped the group with 11 points.","team was second in Group C?assistant
+
+I can't confirm which team was second in Group C. Can you provide more context or information about the competition or event you are referring to?",5.540466639404334,0.8269484043121338,0.3095703125,-29.4375,0.21533203125,0.0,-94.45953336059571,-0.0747767686843871,-0.17305147647857666,-0.68994140625,-1.0
+L3.1-8B,7,global,0.5,simpleqa_verified,At which university did the mathematician William Prager study civil engineering and receive his diploma in 1925?,Which university did William Prager study civil engineering?,0.9507455229759216,"receive his diploma in 1925?assistant
+
+I am unable to verify the university where William Prager studied civil engineering and received his diploma in 1925.","ager study civil engineering?assistant
+
+I do not have information on a person named William Prager studying civil engineering.",7.720172580306095,0.91163170337677,0.94677734375,-27.0,0.32080078125,0.0,-92.27982741969394,-0.04925447702407837,-0.08836829662322998,-0.05322265625,-1.0
+L3.1-8B,8,global,0.5,simpleqa_verified,"Which streamer won the ""Best Variety Streamer"" award at The Streamer Awards in 2022?","Who won the ""Best Variety Streamer"" award in 2022?",0.9622392058372498,"Streamer Awards in 2022?assistant
+
+I do not have information on the winner of the ""Best Variety Streamer"" award at The Streamer Awards in 2022.","assistant
+
+I do not have information on the 2022 ""Best Variety Streamer"" award winner.",36.09293323535943,0.9413755536079408,0.91943359375,-9.78125,0.0791015625,1.0,-63.90706676464061,-0.037760794162750244,-0.05862438678741444,-0.080078125,0.0
+L3.1-8B,9,global,0.5,simpleqa_verified,What is the name of the naturalist who first described the sharpbill under the binomial name *Oxyrhuncus cristatus* in 1821?,Who first named the sharpbill *Oxyrhuncus cristatus* in 1821?,0.9415206909179688,I am unable to verify who the naturalist was that first described the sharpbill under the binomial name *Oxyrhuncus cristatus* in 1821.,I am unable to verify who named the sharpbill *Oxyruncus cristatus* in 1821.,32.975221124651284,0.9469584822654724,0.96337890625,-28.359375,0.3720703125,1.0,-67.02477887534876,-0.05847913026809681,-0.05304139852523804,-0.03759765625,0.0
+L3.1-8B,10,global,0.5,simpleqa_verified,How many symphonies did the Estonian composer Els Aarne write?,How many symphonies did Els Aarne compose?,0.9670893549919128,"ies did the Estonian composer Els Aarne write?assistant
+
+I am unable to verify how many symphonies the Estonian composer Els Aarne wrote.","compose?assistant
+
+I am unable to verify how many symphonies Els Aarne composed.",35.25065709675943,0.9382354021072388,0.96630859375,-8.21875,0.12109375,1.0,-64.7493429032406,-0.03291064500808716,-0.06176459789276123,-0.03369140625,0.0
+L3.1-8B,11,global,0.5,simpleqa_verified,"What was the first and last name of the person who designed the historic Emil J. Oberhoffer House in Lakeville, Minnesota, United States?","Who designed the historic Emil J. Oberhoffer House in Lakeville, Minnesota?",0.9549425840377808,"assistant
+
+I do not have information on the person who designed the historic Emil J. Oberhoffer House in Lakeville, Minnesota.","assistant
+
+I do not have information on who designed the historic Emil J. Oberhoffer House in Lakeville, Minnesota.",83.40614345461115,0.9900617599487304,0.9453125,-1.953125,-0.05224609375,0.0,-16.59385654538889,-0.04505741596221924,-0.009938120841980091,-0.05419921875,-1.0
+L3.1-8B,12,global,0.5,simpleqa_verified,Which two architects built the Pizzurno Palace?,Which architects designed Pizzurno Palace?,0.9745357036590576,"2024
+
+user
+
+Which two architects built the Pizzurno Palace?assistant
+
+I am unable to verify who the architects of the Pizzurno Palace are.","Pizzurno Palace?assistant
+
+I am unable to verify who designed Pizzurno Palace.",33.81739392056953,0.938305914402008,0.97802734375,-17.125,0.22998046875,1.0,-66.18260607943051,-0.025464534759521484,-0.061694085597992054,-0.021484375,0.0
+L3.1-8B,13,global,0.5,simpleqa_verified,In what year did Leo Tolstoy come to Ilya Repin's studio to introduce himself?,What year did Tolstoy visit Repin's studio?,0.9458950757980348,"Ilya Repin's studio to introduce himself?assistant
+
+I am unable to verify when Leo Tolstoy came to Ilya Repin's studio to introduce himself.","'s studio?assistant
+
+I am unable to verify the year that Tolstoy visited Repin's studio.",25.86761549975673,0.933491349220276,0.83251953125,-32.375,0.2216796875,1.0,-74.13238450024332,-0.05410480499267567,-0.06650865077972401,-0.16748046875,0.0
+L3.1-8B,14,global,0.5,simpleqa_verified,"What was the population of Spring Rock Township, Clinton County, Iowa, at the time of the 2000 Census?",What was Spring Rock Township's population in the 2000 Census?,0.9490576982498168,"the 2000 Census?assistant
+
+I am unable to verify the population of Spring Rock Township, Clinton County, Iowa, at the time of the 2000 Census.","?assistant
+
+I am unable to verify Spring Rock Township's population in the 2000 Census.",24.125187142766336,0.950976014137268,0.86865234375,-26.09375,0.32958984375,1.0,-75.8748128572337,-0.05094242095947277,-0.04902392625808727,-0.130859375,0.0
+L3.1-8B,15,global,0.5,simpleqa_verified,"In what city in England was James Brain, an English football manager and player born in 1900, born?",In which English city was football manager James Brain born?,0.9374033808708192,"in 1900, born?assistant
+
+I am unable to verify the birthplace of James Brain.","James Brain born?assistant
+
+I am unable to verify the birthplace of James Brain.",80.89976633967794,0.958636462688446,0.94287109375,-10.90625,0.1337890625,0.0,-19.100233660322104,-0.0625966191291808,-0.041363656520843506,-0.05712890625,-1.0
+L3.1-8B,0,global,1.0,simpleqa_verified,"How much (in USD) was Frida's self-portrait with loose hair sold for in an auction by Christie's, New York, in May of 1991?","How much (in USD) was Frida's self-portrait with loose hair sold for in an auction by Christie's, New York, in May of 1991?",0.9999998211860656,I am unable to verify the price of Frida Kahlo's self-portrait with loose hair sold at an auction by Christie's in New York in May 1991.,I am unable to verify the price of Frida Kahlo's self-portrait with loose hair sold at an auction by Christie's in New York in May 1991.,100.00000000000004,1.000000238418579,1.0,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+L3.1-8B,1,global,1.0,simpleqa_verified,"During whose papacy did Gian Lorenzo Bernini create the ""Ecstasy of Saint Teresa""?","During whose papacy did Gian Lorenzo Bernini create the ""Ecstasy of Saint Teresa""?",0.9999998807907104,"Lorenzo Bernini create the ""Ecstasy of Saint Teresa""?assistant
+
+Gian Lorenzo Bernini created the ""Ecstasy of Saint Teresa"" during the papacy of Pope Urban VIII.","Lorenzo Bernini create the ""Ecstasy of Saint Teresa""?assistant
+
+Gian Lorenzo Bernini created the ""Ecstasy of Saint Teresa"" during the papacy of Pope Urban VIII.",100.00000000000004,0.9999999403953552,0.9990234375,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+L3.1-8B,2,global,1.0,simpleqa_verified,What was the name of the venue where the 1992 Scandinavian Masters golf tournament happened?,What was the name of the venue where the 1992 Scandinavian Masters golf tournament happened?,0.9999998807907104,"venue where the 1992 Scandinavian Masters golf tournament happened?assistant
+
+I am unable to verify the venue of the 1992 Scandinavian Masters golf tournament.","venue where the 1992 Scandinavian Masters golf tournament happened?assistant
+
+I am unable to verify the venue of the 1992 Scandinavian Masters golf tournament.",100.00000000000004,1.000000238418579,1.0,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+L3.1-8B,3,global,1.0,simpleqa_verified,What is the boiling point of the element cerium in Fahrenheit?,What is the boiling point of the element cerium in Fahrenheit?,0.9999998807907104,"user
+
+What is the boiling point of the element cerium in Fahrenheit?assistant
+
+The boiling point of cerium is 3443 degrees Celsius. To convert this to Fahrenheit, we multiply by 9/5 and add 32. 
+
+3443 * (9/5) = 6181.4 
+6181.4 + 32 = 6213.4 
+
+So, the boiling point of cerium is approximately 6213.4 degrees Fahrenheit.","user
+
+What is the boiling point of the element cerium in Fahrenheit?assistant
+
+The boiling point of cerium is 3443 degrees Celsius. To convert this to Fahrenheit, we multiply by 9/5 and add 32. 
+
+3443 * (9/5) = 6181.4 
+6181.4 + 32 = 6213.4 
+
+So, the boiling point of cerium is approximately 6213.4 degrees Fahrenheit.",100.00000000000004,1.0,0.99951171875,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+L3.1-8B,4,global,1.0,simpleqa_verified,What was the title of chemist Mary Letitia Caldwell's Ph.D. thesis?,What was the title of chemist Mary Letitia Caldwell's Ph.D. thesis?,1.0000001192092896,"of chemist Mary Letitia Caldwell's Ph.D. thesis?assistant
+
+I do not have information on a chemist named Mary Letitia Caldwell.","of chemist Mary Letitia Caldwell's Ph.D. thesis?assistant
+
+I do not have information on a chemist named Mary Letitia Caldwell.",100.00000000000004,0.9999999403953552,1.0,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+L3.1-8B,5,global,1.0,simpleqa_verified,"For how many scudi did the Florentine authorities buy the ""Pitti Tondo"" from the dealer Fedele Acciai in 1823?","For how many scudi did the Florentine authorities buy the ""Pitti Tondo"" from the dealer Fedele Acciai in 1823?",0.9999998807907104,"assistant
+
+I do not have information on the price of the ""Pitti Tondo"" in scudi.","assistant
+
+I do not have information on the price of the ""Pitti Tondo"" in scudi.",100.00000000000004,0.9999999403953552,1.0,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+L3.1-8B,6,global,1.0,simpleqa_verified,What team came second in Group C in the 2018–19 UEFA Champions League?,What team came second in Group C in the 2018–19 UEFA Champions League?,1.000000238418579,"C in the 2018–19 UEFA Champions League?assistant
+
+In the 2018-19 UEFA Champions League, Group C consisted of Paris Saint-Germain, Liverpool, Napoli, and Red Star Belgrade. 
+
+Liverpool came second in Group C with 10 points, behind Paris Saint-Germain who topped the group with 11 points.","C in the 2018–19 UEFA Champions League?assistant
+
+In the 2018-19 UEFA Champions League, Group C consisted of Paris Saint-Germain, Liverpool, Napoli, and Red Star Belgrade. 
+
+Liverpool came second in Group C with 10 points, behind Paris Saint-Germain who topped the group with 11 points.",100.00000000000004,0.9999998807907104,0.99951171875,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+L3.1-8B,7,global,1.0,simpleqa_verified,At which university did the mathematician William Prager study civil engineering and receive his diploma in 1925?,At which university did the mathematician William Prager study civil engineering and receive his diploma in 1925?,1.0,"receive his diploma in 1925?assistant
+
+I am unable to verify the university where William Prager studied civil engineering and received his diploma in 1925.","receive his diploma in 1925?assistant
+
+I am unable to verify the university where William Prager studied civil engineering and received his diploma in 1925.",100.00000000000004,1.0,1.0,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+L3.1-8B,8,global,1.0,simpleqa_verified,"Which streamer won the ""Best Variety Streamer"" award at The Streamer Awards in 2022?","Which streamer won the ""Best Variety Streamer"" award at The Streamer Awards in 2022?",1.0,"Streamer Awards in 2022?assistant
+
+I do not have information on the winner of the ""Best Variety Streamer"" award at The Streamer Awards in 2022.","Streamer Awards in 2022?assistant
+
+I do not have information on the winner of the ""Best Variety Streamer"" award at The Streamer Awards in 2022.",100.00000000000004,0.9999999403953552,0.99951171875,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+L3.1-8B,9,global,1.0,simpleqa_verified,What is the name of the naturalist who first described the sharpbill under the binomial name *Oxyrhuncus cristatus* in 1821?,What is the name of the naturalist who first described the sharpbill under the binomial name *Oxyrhuncus cristatus* in 1821?,0.9999998211860656,I am unable to verify who the naturalist was that first described the sharpbill under the binomial name *Oxyrhuncus cristatus* in 1821.,I am unable to verify who the naturalist was that first described the sharpbill under the binomial name *Oxyrhuncus cristatus* in 1821.,100.00000000000004,0.9999998807907104,1.0009765625,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+L3.1-8B,10,global,1.0,simpleqa_verified,How many symphonies did the Estonian composer Els Aarne write?,How many symphonies did the Estonian composer Els Aarne write?,1.0,"ies did the Estonian composer Els Aarne write?assistant
+
+I am unable to verify how many symphonies the Estonian composer Els Aarne wrote.","ies did the Estonian composer Els Aarne write?assistant
+
+I am unable to verify how many symphonies the Estonian composer Els Aarne wrote.",100.00000000000004,1.0,1.0,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+L3.1-8B,11,global,1.0,simpleqa_verified,"What was the first and last name of the person who designed the historic Emil J. Oberhoffer House in Lakeville, Minnesota, United States?","What was the first and last name of the person who designed the historic Emil J. Oberhoffer House in Lakeville, Minnesota, United States?",1.0,"assistant
+
+I do not have information on the person who designed the historic Emil J. Oberhoffer House in Lakeville, Minnesota.","assistant
+
+I do not have information on the person who designed the historic Emil J. Oberhoffer House in Lakeville, Minnesota.",100.00000000000004,0.9999998807907104,0.99951171875,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+L3.1-8B,12,global,1.0,simpleqa_verified,Which two architects built the Pizzurno Palace?,Which two architects built the Pizzurno Palace?,1.000000238418579,"2024
+
+user
+
+Which two architects built the Pizzurno Palace?assistant
+
+I am unable to verify who the architects of the Pizzurno Palace are.","2024
+
+user
+
+Which two architects built the Pizzurno Palace?assistant
+
+I am unable to verify who the architects of the Pizzurno Palace are.",100.00000000000004,1.0,0.99951171875,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+L3.1-8B,13,global,1.0,simpleqa_verified,In what year did Leo Tolstoy come to Ilya Repin's studio to introduce himself?,In what year did Leo Tolstoy come to Ilya Repin's studio to introduce himself?,0.9999998807907104,"Ilya Repin's studio to introduce himself?assistant
+
+I am unable to verify when Leo Tolstoy came to Ilya Repin's studio to introduce himself.","Ilya Repin's studio to introduce himself?assistant
+
+I am unable to verify when Leo Tolstoy came to Ilya Repin's studio to introduce himself.",100.00000000000004,1.0,1.0,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+L3.1-8B,14,global,1.0,simpleqa_verified,"What was the population of Spring Rock Township, Clinton County, Iowa, at the time of the 2000 Census?","What was the population of Spring Rock Township, Clinton County, Iowa, at the time of the 2000 Census?",1.0000001192092896,"the 2000 Census?assistant
+
+I am unable to verify the population of Spring Rock Township, Clinton County, Iowa, at the time of the 2000 Census.","the 2000 Census?assistant
+
+I am unable to verify the population of Spring Rock Township, Clinton County, Iowa, at the time of the 2000 Census.",100.00000000000004,0.9999999403953552,0.99951171875,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+L3.1-8B,15,global,1.0,simpleqa_verified,"In what city in England was James Brain, an English football manager and player born in 1900, born?","In what city in England was James Brain, an English football manager and player born in 1900, born?",1.0,"in 1900, born?assistant
+
+I am unable to verify the birthplace of James Brain.","in 1900, born?assistant
+
+I am unable to verify the birthplace of James Brain.",100.00000000000004,1.0000001192092896,1.0,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+L3.1-8B,0,global,1.5,simpleqa_verified,"How much (in USD) was Frida's self-portrait with loose hair sold for in an auction by Christie's, New York, in May of 1991?","What was the amount, expressed in USD, for which Frida's self-portrait featuring loose hair was sold during an auction conducted by Christie's in New York City in the month of May in 1991?",0.9554075598716736,I am unable to verify the price of Frida Kahlo's self-portrait with loose hair sold at an auction by Christie's in New York in May 1991.,"assistant
+
+I am unable to verify the amount for which Frida's self-portrait featuring loose hair was sold during an auction conducted by Christie's in New York City in the month of May in 1991.",29.28298013714698,0.9445908665657043,0.95849609375,-4.2265625,0.03466796875,1.0,-70.71701986285306,-0.04459226131439198,-0.055409371852874756,-0.04150390625,0.0
+L3.1-8B,1,global,1.5,simpleqa_verified,"During whose papacy did Gian Lorenzo Bernini create the ""Ecstasy of Saint Teresa""?","During the papacy of which individual did the artist Gian Lorenzo Bernini create the renowned work titled ""Ecstasy of Saint Teresa""?",0.9534478783607484,"Lorenzo Bernini create the ""Ecstasy of Saint Teresa""?assistant
+
+Gian Lorenzo Bernini created the ""Ecstasy of Saint Teresa"" during the papacy of Pope Urban VIII.","Lorenzo Bernini create the renowned work titled ""Ecstasy of Saint Teresa""?assistant
+
+The artist Gian Lorenzo Bernini created the renowned work titled ""Ecstasy of Saint Teresa"" during the papacy of Pope Urban VIII.",65.60902994944341,0.9548853635787964,0.96826171875,-6.15625,0.0126953125,1.0,-34.39097005055663,-0.04655200242996205,-0.04511457681655884,-0.03076171875,0.0
+L3.1-8B,2,global,1.5,simpleqa_verified,What was the name of the venue where the 1992 Scandinavian Masters golf tournament happened?,What is the name of the specific venue where the golf tournament known as the 1992 Scandinavian Masters took place?,0.9729203581809998,"venue where the 1992 Scandinavian Masters golf tournament happened?assistant
+
+I am unable to verify the venue of the 1992 Scandinavian Masters golf tournament.","the specific venue where the golf tournament known as the 1992 Scandinavian Masters took place?assistant
+
+I do not have information on the venue of the 1992 Scandinavian Masters.",35.48246582531539,0.9580212831497192,0.92822265625,-11.1875,0.0439453125,1.0,-64.51753417468466,-0.027079522609710693,-0.04197895526885986,-0.07177734375,0.0
+L3.1-8B,3,global,1.5,simpleqa_verified,What is the boiling point of the element cerium in Fahrenheit?,What is the specific boiling point temperature of the element cerium when measured in Fahrenheit?,0.9604608416557312,"user
+
+What is the boiling point of the element cerium in Fahrenheit?assistant
+
+The boiling point of cerium is 3443 degrees Celsius. To convert this to Fahrenheit, we multiply by 9/5 and add 32. 
+
+3443 * (9/5) = 6181.4 
+6181.4 + 32 = 6213.4 
+
+So, the boiling point of cerium is approximately 6213.4 degrees Fahrenheit.","4
+
+user
+
+What is the specific boiling point temperature of the element cerium when measured in Fahrenheit?assistant
+
+The boiling point of cerium is 3443 degrees Celsius. To convert this to Fahrenheit, we multiply by 9/5 and add 32. 
+
+3443 * (9/5) = 6194.2 
+6194.2 + 32 = 6226.2 
+
+So, the boiling point of cerium is approximately 6226.2 degrees Fahrenheit.",74.07365663132877,0.9670964479446412,0.98193359375,-9.3125,0.0498046875,1.0,-25.92634336867127,-0.03953903913497925,-0.032903552055358776,-0.017578125,0.0
+L3.1-8B,4,global,1.5,simpleqa_verified,What was the title of chemist Mary Letitia Caldwell's Ph.D. thesis?,What is the specific title of the Ph.D. thesis written by chemist Mary Letitia Caldwell?,0.9714150428771972,"of chemist Mary Letitia Caldwell's Ph.D. thesis?assistant
+
+I do not have information on a chemist named Mary Letitia Caldwell.","What is the specific title of the Ph.D. thesis written by chemist Mary Letitia Caldwell?assistant
+
+I do not have information on a chemist named Mary Letitia Caldwell or her Ph.D. thesis.",45.601545803186816,0.9434431195259094,0.97509765625,-2.4375,-0.0810546875,1.0,-54.398454196813226,-0.028585076332092396,-0.0565568208694458,-0.02490234375,0.0
+L3.1-8B,5,global,1.5,simpleqa_verified,"For how many scudi did the Florentine authorities buy the ""Pitti Tondo"" from the dealer Fedele Acciai in 1823?","For what total number of scudi did the authorities in Florence purchase the renowned ""Pitti Tondo"" from the dealer named Fedele Acciai in the year 1823?",0.9628649353981018,"assistant
+
+I do not have information on the price of the ""Pitti Tondo"" in scudi.","1823?assistant
+
+I do not have information on the total number of scudi the authorities in Florence purchased the ""Pitti Tondo"" from the dealer named Fedele Acciai in the year 1823.",31.116648864423915,0.915457546710968,0.9873046875,-1.71875,0.044921875,0.0,-68.88335113557613,-0.03713494539260864,-0.08454239368438721,-0.0126953125,-1.0
+L3.1-8B,6,global,1.5,simpleqa_verified,What team came second in Group C in the 2018–19 UEFA Champions League?,Which team finished in second place in Group C during the 2018–19 UEFA Champions League tournament?,0.974152684211731,"C in the 2018–19 UEFA Champions League?assistant
+
+In the 2018-19 UEFA Champions League, Group C consisted of Paris Saint-Germain, Liverpool, Napoli, and Red Star Belgrade. 
+
+Liverpool came second in Group C with 10 points, behind Paris Saint-Germain who topped the group with 11 points.","team finished in second place in Group C during the 2018–19 UEFA Champions League tournament?assistant
+
+In the 2018-19 UEFA Champions League, Group C consisted of Paris Saint-Germain, Liverpool, Napoli, and Red Star Belgrade. 
+
+Liverpool finished in second place in Group C with 10 points.",66.25567240977364,0.958721399307251,0.98291015625,-15.1875,0.10546875,0.0,-33.744327590226405,-0.025847554206848145,-0.04127848148345947,-0.0166015625,-1.0
+L3.1-8B,7,global,1.5,simpleqa_verified,At which university did the mathematician William Prager study civil engineering and receive his diploma in 1925?,At which specific university did the renowned mathematician William Prager pursue his studies in civil engineering and ultimately obtain his diploma in the year 1925?,0.9638864398002625,"receive his diploma in 1925?assistant
+
+I am unable to verify the university where William Prager studied civil engineering and received his diploma in 1925.","ultimately obtain his diploma in the year 1925?assistant
+
+I do not have information on the specific university where William Prager pursued his studies in civil engineering and obtained his diploma in 1925.",29.92694690475121,0.9636455178260804,0.97509765625,-11.125,0.29248046875,1.0,-70.07305309524884,-0.03611356019973755,-0.03635448217391957,-0.02490234375,0.0
+L3.1-8B,8,global,1.5,simpleqa_verified,"Which streamer won the ""Best Variety Streamer"" award at The Streamer Awards in 2022?","Which individual streamer was awarded the title of ""Best Variety Streamer"" at The Streamer Awards event that took place in 2022?",0.9604395627975464,"Streamer Awards in 2022?assistant
+
+I do not have information on the winner of the ""Best Variety Streamer"" award at The Streamer Awards in 2022.","Streamer Awards event that took place in 2022?assistant
+
+I do not have information on the winner of the ""Best Variety Streamer"" award at The Streamer Awards in 2022.",83.16518087941053,0.9816325306892396,0.98095703125,-4.21875,0.0556640625,1.0,-16.834819120589515,-0.03956043720245361,-0.01836740970611561,-0.0185546875,0.0
+L3.1-8B,9,global,1.5,simpleqa_verified,What is the name of the naturalist who first described the sharpbill under the binomial name *Oxyrhuncus cristatus* in 1821?,What is the full name of the naturalist who was the first to describe the sharpbill using the binomial name *Oxyrhuncus cristatus* back in the year 1821?,0.9746364951133728,I am unable to verify who the naturalist was that first described the sharpbill under the binomial name *Oxyrhuncus cristatus* in 1821.,"?assistant
+
+I am unable to verify the full name of the naturalist who was the first to describe the sharpbill using the binomial name *Oxyrhuncus cristatus* back in the year 1821.",32.329508170352376,0.9519109725952148,0.98095703125,-9.140625,0.21435546875,1.0,-67.67049182964766,-0.02536332607269276,-0.048088908195495605,-0.02001953125,0.0
+L3.1-8B,10,global,1.5,simpleqa_verified,How many symphonies did the Estonian composer Els Aarne write?,What is the total number of symphonies that the Estonian composer Els Aarne composed?,0.9688785076141356,"ies did the Estonian composer Els Aarne write?assistant
+
+I am unable to verify how many symphonies the Estonian composer Els Aarne wrote.","is the total number of symphonies that the Estonian composer Els Aarne composed?assistant
+
+I do not have information on the number of symphonies composed by Els Aarne.",18.23990545200188,0.9517259001731871,0.986328125,-12.28125,0.1728515625,1.0,-81.76009454799816,-0.03112149238586437,-0.048274099826812855,-0.013671875,0.0
+L3.1-8B,11,global,1.5,simpleqa_verified,"What was the first and last name of the person who designed the historic Emil J. Oberhoffer House in Lakeville, Minnesota, United States?","What is the full name, including both the first name and the last name, of the individual who was responsible for designing the historically significant Emil J. Oberhoffer House located in Lakeville, Minnesota, in the United States?",0.9587781429290771,"assistant
+
+I do not have information on the person who designed the historic Emil J. Oberhoffer House in Lakeville, Minnesota.","I am unable to verify the full name of the individual who designed the Emil J. Oberhoffer House in Lakeville, Minnesota.",44.93252867042008,0.9435030221939088,0.9609375,-5.9375,0.0703125,0.0,-55.06747132957996,-0.04122185707092285,-0.05649685859680165,-0.03857421875,-1.0
+L3.1-8B,12,global,1.5,simpleqa_verified,Which two architects built the Pizzurno Palace?,Which two architects were responsible for the construction of the Pizzurno Palace?,0.9773168563842772,"2024
+
+user
+
+Which two architects built the Pizzurno Palace?assistant
+
+I am unable to verify who the architects of the Pizzurno Palace are.","2024
+
+user
+
+Which two architects were responsible for the construction of the Pizzurno Palace?assistant
+
+I am unable to verify the architects responsible for the construction of the Pizzurno Palace.",48.71873548007023,0.9823816418647766,0.99169921875,-7.875,0.09716796875,1.0,-51.28126451992981,-0.02268338203430187,-0.01761835813522339,-0.0078125,0.0
+L3.1-8B,13,global,1.5,simpleqa_verified,In what year did Leo Tolstoy come to Ilya Repin's studio to introduce himself?,In which specific year did the renowned author Leo Tolstoy visit the studio of Ilya Repin in order to introduce himself?,0.9582006931304932,"Ilya Repin's studio to introduce himself?assistant
+
+I am unable to verify when Leo Tolstoy came to Ilya Repin's studio to introduce himself.","oy visit the studio of Ilya Repin in order to introduce himself?assistant
+
+I am unable to verify the year that Leo Tolstoy visited the studio of Ilya Repin.",33.50807606544567,0.9484955668449402,0.98779296875,-15.125,0.1875,0.0,-66.49192393455436,-0.041799187660217285,-0.051504433155059814,-0.01220703125,-1.0
+L3.1-8B,14,global,1.5,simpleqa_verified,"What was the population of Spring Rock Township, Clinton County, Iowa, at the time of the 2000 Census?","What was the total population count of Spring Rock Township, which is located in Clinton County, Iowa, during the time when the 2000 Census was conducted?",0.9595208168029784,"the 2000 Census?assistant
+
+I am unable to verify the population of Spring Rock Township, Clinton County, Iowa, at the time of the 2000 Census.","when the 2000 Census was conducted?assistant
+
+I am unable to verify the population of Spring Rock Township in Clinton County, Iowa, during the 2000 census.",59.435931692508895,0.9704323410987854,0.95166015625,-7.5,0.26318359375,0.0,-40.56406830749115,-0.040479302406311146,-0.029567599296569824,-0.0478515625,-1.0
+L3.1-8B,15,global,1.5,simpleqa_verified,"In what city in England was James Brain, an English football manager and player born in 1900, born?","In which specific city located in England was James Brain, who was both an English football manager and player, born in the year 1900?",0.9561713337898254,"in 1900, born?assistant
+
+I am unable to verify the birthplace of James Brain.","manager and player, born in the year 1900?assistant
+
+I am unable to verify the birthplace of James Brain.",61.00140623040719,0.9559711217880248,0.9736328125,-2.71875,0.1494140625,1.0,-38.99859376959285,-0.04382866621017456,-0.04402899742126476,-0.0263671875,0.0
+L3.1-8B,0,global,2.0,simpleqa_verified,"How much (in USD) was Frida's self-portrait with loose hair sold for in an auction by Christie's, New York, in May of 1991?","What was the selling price, expressed in United States dollars, of Frida's self-portrait featuring loose hair when it was auctioned by Christie's in New York during the month of May in the year 1991?",0.946781039237976,I am unable to verify the price of Frida Kahlo's self-portrait with loose hair sold at an auction by Christie's in New York in May 1991.,I am unable to verify the selling price of Frida Kahlo's self-portrait featuring loose hair when it was auctioned by Christie's in New York during the month of May in the year 1991.,37.95568753467154,0.9690628051757812,0.9453125,-3.9296875,0.021484375,0.0,-62.0443124653285,-0.0532187819480896,-0.03093743324279785,-0.0546875,-1.0
+L3.1-8B,1,global,2.0,simpleqa_verified,"During whose papacy did Gian Lorenzo Bernini create the ""Ecstasy of Saint Teresa""?","During the papacy of which individual did the renowned artist Gian Lorenzo Bernini create his famous work known as the ""Ecstasy of Saint Teresa""?",0.9488490223884584,"Lorenzo Bernini create the ""Ecstasy of Saint Teresa""?assistant
+
+Gian Lorenzo Bernini created the ""Ecstasy of Saint Teresa"" during the papacy of Pope Urban VIII.","his famous work known as the ""Ecstasy of Saint Teresa""?assistant
+
+The ""Ecstasy of Saint Teresa"" was created by Gian Lorenzo Bernini during the papacy of Pope Urban VIII.",58.74812720260251,0.9329536557197572,0.96875,-7.28125,0.02392578125,0.0,-41.25187279739753,-0.051150858402252086,-0.06704628467559803,-0.0302734375,-1.0
+L3.1-8B,2,global,2.0,simpleqa_verified,What was the name of the venue where the 1992 Scandinavian Masters golf tournament happened?,What is the name of the specific venue where the golf tournament known as the 1992 Scandinavian Masters took place?,0.972920298576355,"venue where the 1992 Scandinavian Masters golf tournament happened?assistant
+
+I am unable to verify the venue of the 1992 Scandinavian Masters golf tournament.","of the specific venue where the golf tournament known as the 1992 Scandinavian Masters took place?assistant
+
+I do not have information on the venue of the 1992 Scandinavian Masters.",34.317512963405235,0.9543650150299072,0.92822265625,-11.1875,0.0439453125,0.0,-65.68248703659481,-0.02707958221435547,-0.045635223388671875,-0.07177734375,-1.0
+L3.1-8B,3,global,2.0,simpleqa_verified,What is the boiling point of the element cerium in Fahrenheit?,What is the specific temperature at which the element cerium reaches its boiling point when measured in degrees Fahrenheit?,0.9308314323425292,"user
+
+What is the boiling point of the element cerium in Fahrenheit?assistant
+
+The boiling point of cerium is 3443 degrees Celsius. To convert this to Fahrenheit, we multiply by 9/5 and add 32. 
+
+3443 * (9/5) = 6181.4 
+6181.4 + 32 = 6213.4 
+
+So, the boiling point of cerium is approximately 6213.4 degrees Fahrenheit.","What is the specific temperature at which the element cerium reaches its boiling point when measured in degrees Fahrenheit?assistant
+
+The boiling point of cerium is 3443 degrees Celsius. To convert this to degrees Fahrenheit, we multiply by 9/5 and add 32. 
+
+3443 * (9/5) = 6194.2 
+6194.2 + 32 = 6226.2 
+
+So, the boiling point of cerium is approximately 6226.2 degrees Fahrenheit.",64.86490851240514,0.9641805291175842,0.978515625,-13.5625,0.0283203125,0.0,-35.135091487594906,-0.06916844844818126,-0.03581947088241577,-0.02099609375,-1.0
+L3.1-8B,4,global,2.0,simpleqa_verified,What was the title of chemist Mary Letitia Caldwell's Ph.D. thesis?,What is the specific title of the Ph.D. thesis that was written by the chemist Mary Letitia Caldwell?,0.9647375345230104,"of chemist Mary Letitia Caldwell's Ph.D. thesis?assistant
+
+I do not have information on a chemist named Mary Letitia Caldwell.","title of the Ph.D. thesis that was written by the chemist Mary Letitia Caldwell?assistant
+
+I do not have information on a chemist named Mary Letitia Caldwell or the title of her Ph.D. thesis.",43.34785460773373,0.9478625655174256,0.9736328125,-4.46875,-0.0634765625,1.0,-56.65214539226631,-0.035262584686279186,-0.052137374877929576,-0.0263671875,0.0
+L3.1-8B,5,global,2.0,simpleqa_verified,"For how many scudi did the Florentine authorities buy the ""Pitti Tondo"" from the dealer Fedele Acciai in 1823?","For what total number of scudi did the authorities of Florence purchase the renowned artwork known as the ""Pitti Tondo"" from the dealer named Fedele Acciai during the year 1823?",0.9498605132102966,"assistant
+
+I do not have information on the price of the ""Pitti Tondo"" in scudi.","?assistant
+
+I do not have information on the total number of scudi the authorities of Florence purchased the ""Pitti Tondo"" for in 1823.",40.89530470169088,0.9357556700706482,0.97900390625,-1.390625,0.0712890625,1.0,-59.10469529830916,-0.05013936758041382,-0.06424427032470703,-0.02099609375,0.0
+L3.1-8B,6,global,2.0,simpleqa_verified,What team came second in Group C in the 2018–19 UEFA Champions League?,Which team finished in the second position in Group C during the 2018–19 UEFA Champions League tournament?,0.9703531861305236,"C in the 2018–19 UEFA Champions League?assistant
+
+In the 2018-19 UEFA Champions League, Group C consisted of Paris Saint-Germain, Liverpool, Napoli, and Red Star Belgrade. 
+
+Liverpool came second in Group C with 10 points, behind Paris Saint-Germain who topped the group with 11 points.","finished in the second position in Group C during the 2018–19 UEFA Champions League tournament?assistant
+
+In the 2018-19 UEFA Champions League, Group C consisted of teams: 
+
+1. Atletico Madrid 
+2. Borussia Dortmund 
+3. Club Brugge 
+4. Monaco 
+
+Borussia Dortmund finished in the second position in Group C.",34.54102101844923,0.8972115516662598,0.9765625,-14.75,0.10498046875,0.0,-65.45897898155081,-0.02964705228805553,-0.10278832912445068,-0.02294921875,-1.0
+L3.1-8B,7,global,2.0,simpleqa_verified,At which university did the mathematician William Prager study civil engineering and receive his diploma in 1925?,At which specific university did the renowned mathematician William Prager pursue his studies in civil engineering and ultimately obtain his diploma in the year 1925?,0.9638864398002625,"receive his diploma in 1925?assistant
+
+I am unable to verify the university where William Prager studied civil engineering and received his diploma in 1925.","and ultimately obtain his diploma in the year 1925?assistant
+
+I do not have information on the specific university where William Prager pursued his studies in civil engineering and obtained his diploma in 1925.",29.058572949157327,0.9575209021568298,0.97412109375,-11.125,0.29248046875,0.0,-70.94142705084272,-0.03611356019973755,-0.042479097843170166,-0.02587890625,-1.0
+L3.1-8B,8,global,2.0,simpleqa_verified,"Which streamer won the ""Best Variety Streamer"" award at The Streamer Awards in 2022?","Which individual streamer was awarded the title of ""Best Variety Streamer"" at the prestigious event known as The Streamer Awards in the year 2022?",0.960171639919281,"Streamer Awards in 2022?assistant
+
+I do not have information on the winner of the ""Best Variety Streamer"" award at The Streamer Awards in 2022.","Streamer Awards in the year 2022?assistant
+
+I do not have information on the winner of the ""Best Variety Streamer"" award at The Streamer Awards in 2022.",87.87142254774355,0.9909588098526,0.978515625,-3.8125,0.068359375,0.0,-12.128577452256494,-0.039828360080718994,-0.009041130542755238,-0.02099609375,-1.0
+L3.1-8B,9,global,2.0,simpleqa_verified,What is the name of the naturalist who first described the sharpbill under the binomial name *Oxyrhuncus cristatus* in 1821?,"What is the full name of the naturalist who was the first to describe the bird known as the sharpbill, using the binomial nomenclature *Oxyrhuncus cristatus*, in the year 1821?",0.9494211077690125,I am unable to verify who the naturalist was that first described the sharpbill under the binomial name *Oxyrhuncus cristatus* in 1821.,"I am unable to verify the full name of the naturalist who was the first to describe the bird known as the sharpbill, using the binomial nomenclature *Oxyrhuncus cristatus*, in the year 1821.",21.275887723519048,0.9435961842536926,0.95166015625,-15.65625,0.25537109375,0.0,-78.724112276481,-0.05057871341705311,-0.05640369653701782,-0.04931640625,-1.0
+L3.1-8B,10,global,2.0,simpleqa_verified,How many symphonies did the Estonian composer Els Aarne write?,What is the total number of symphonies that the Estonian composer known as Els Aarne composed and wrote?,0.9542402029037476,"ies did the Estonian composer Els Aarne write?assistant
+
+I am unable to verify how many symphonies the Estonian composer Els Aarne wrote.","ies that the Estonian composer known as Els Aarne composed and wrote?assistant
+
+I do not have information on the number of symphonies that the Estonian composer Els Aarne composed and wrote.",19.769063576089067,0.9575875401496888,0.986328125,-10.15625,0.263671875,0.0,-80.23093642391098,-0.04575979709625244,-0.04241245985031117,-0.013671875,-1.0
+L3.1-8B,11,global,2.0,simpleqa_verified,"What was the first and last name of the person who designed the historic Emil J. Oberhoffer House in Lakeville, Minnesota, United States?","What is the complete first name and the last name of the individual who was responsible for the design of the historically significant Emil J. Oberhoffer House, which is located in Lakeville, Minnesota, within the United States of America?",0.9575904607772828,"assistant
+
+I do not have information on the person who designed the historic Emil J. Oberhoffer House in Lakeville, Minnesota.","I am unable to verify the first name and last name of the individual who was responsible for the design of the historically significant Emil J. Oberhoffer House, which is located in Lakeville, Minnesota, within the United States of America.",14.23913474025136,0.914129912853241,0.9580078125,-8.28125,0.18359375,1.0,-85.76086525974868,-0.042409539222717174,-0.08586996793746948,-0.04150390625,0.0
+L3.1-8B,12,global,2.0,simpleqa_verified,Which two architects built the Pizzurno Palace?,Which two architects were responsible for the construction of the Pizzurno Palace?,0.9773169755935668,"2024
+
+user
+
+Which two architects built the Pizzurno Palace?assistant
+
+I am unable to verify who the architects of the Pizzurno Palace are.","Jul 2024
+
+user
+
+Which two architects were responsible for the construction of the Pizzurno Palace?assistant
+
+I am unable to verify the architects responsible for the construction of the Pizzurno Palace.",47.1701244372691,0.9722991585731506,0.99169921875,-7.875,0.09716796875,1.0,-52.82987556273094,-0.022683262825012318,-0.027700841426849365,-0.0078125,0.0
+L3.1-8B,13,global,2.0,simpleqa_verified,In what year did Leo Tolstoy come to Ilya Repin's studio to introduce himself?,In which specific year did the renowned author Leo Tolstoy visit the studio of Ilya Repin in order to formally introduce himself?,0.9569104313850404,"Ilya Repin's studio to introduce himself?assistant
+
+I am unable to verify when Leo Tolstoy came to Ilya Repin's studio to introduce himself.","visit the studio of Ilya Repin in order to formally introduce himself?assistant
+
+I am unable to verify the year that Leo Tolstoy visited the studio of Ilya Repin.",30.37214299106901,0.9465256929397584,0.98583984375,-18.3125,0.2373046875,0.0,-69.62785700893103,-0.043089449405670055,-0.05347430706024159,-0.01416015625,-1.0
+L3.1-8B,14,global,2.0,simpleqa_verified,"What was the population of Spring Rock Township, Clinton County, Iowa, at the time of the 2000 Census?","What was the total population count of Spring Rock Township, which is located in Clinton County, Iowa, during the time when the 2000 Census was conducted and recorded?",0.9536566734313964,"the 2000 Census?assistant
+
+I am unable to verify the population of Spring Rock Township, Clinton County, Iowa, at the time of the 2000 Census.","2000 Census was conducted and recorded?assistant
+
+I am unable to verify the population of Spring Rock Township in Clinton County, Iowa, during the 2000 census.",57.02524287955773,0.9624956846237184,0.94287109375,-8.15625,0.29150390625,0.0,-42.97475712044231,-0.04634344577789318,-0.03750425577163685,-0.056640625,-1.0
+L3.1-8B,15,global,2.0,simpleqa_verified,"In what city in England was James Brain, an English football manager and player born in 1900, born?","In which specific city located in England was James Brain, who was both an English football manager and player, born in the year 1900?",0.9561713337898254,"in 1900, born?assistant
+
+I am unable to verify the birthplace of James Brain.","football manager and player, born in the year 1900?assistant
+
+I am unable to verify the birthplace of James Brain.",58.1562356837876,0.954936683177948,0.9736328125,-2.71875,0.1494140625,1.0,-41.84376431621244,-0.04382866621017456,-0.04506343603134155,-0.0263671875,0.0
+L3.1-8B,0,global,3.0,simpleqa_verified,"How much (in USD) was Frida's self-portrait with loose hair sold for in an auction by Christie's, New York, in May of 1991?","What was the total amount, expressed in United States dollars, that Frida Kahlo's self-portrait featuring her with loose hair was sold for during an auction that took place at Christie's in New York City in the month of May in the year 1991?",0.9400444626808168,I am unable to verify the price of Frida Kahlo's self-portrait with loose hair sold at an auction by Christie's in New York in May 1991.,I am unable to verify the total amount that Frida Kahlo's self-portrait featuring her with loose hair was sold for during an auction that took place at Christie's in New York City in the month of May in the year 1991.,25.41060874625104,0.9574121236801147,0.9501953125,-6.6796875,-0.03662109375,0.0,-74.589391253749,-0.0599553585052488,-0.042588114738464355,-0.0498046875,-1.0
+L3.1-8B,1,global,3.0,simpleqa_verified,"During whose papacy did Gian Lorenzo Bernini create the ""Ecstasy of Saint Teresa""?","During the papacy of which individual did the renowned artist Gian Lorenzo Bernini create his famous work titled ""Ecstasy of Saint Teresa,"" which is celebrated for its remarkable artistic expression and profound emotional depth?",0.925037920475006,"Lorenzo Bernini create the ""Ecstasy of Saint Teresa""?assistant
+
+Gian Lorenzo Bernini created the ""Ecstasy of Saint Teresa"" during the papacy of Pope Urban VIII.","its remarkable artistic expression and profound emotional depth?assistant
+
+The renowned artist Gian Lorenzo Bernini created his famous work titled ""Ecstasy of Saint Teresa"" during the papacy of Pope Urban VIII.",46.17366309441026,0.9020708799362184,0.9462890625,-11.34375,0.14892578125,0.0,-53.826336905589784,-0.07496196031570446,-0.09792906045913685,-0.052734375,-1.0
+L3.1-8B,2,global,3.0,simpleqa_verified,What was the name of the venue where the 1992 Scandinavian Masters golf tournament happened?,What is the name of the specific venue or location where the golf tournament known as the 1992 Scandinavian Masters took place and was held?,0.9542421102523804,"venue where the 1992 Scandinavian Masters golf tournament happened?assistant
+
+I am unable to verify the venue of the 1992 Scandinavian Masters golf tournament.","venue or location where the golf tournament known as the 1992 Scandinavian Masters took place and was held?assistant
+
+I do not have information on the venue of the 1992 Scandinavian Masters.",30.69467955975388,0.9555708765983582,0.93408203125,-12.40625,0.10009765625,0.0,-69.30532044024616,-0.04575777053833008,-0.04442936182022095,-0.06591796875,-1.0
+L3.1-8B,3,global,3.0,simpleqa_verified,What is the boiling point of the element cerium in Fahrenheit?,What is the specific temperature at which the element cerium reaches its boiling point when measured in degrees Fahrenheit?,0.9308314323425292,"user
+
+What is the boiling point of the element cerium in Fahrenheit?assistant
+
+The boiling point of cerium is 3443 degrees Celsius. To convert this to Fahrenheit, we multiply by 9/5 and add 32. 
+
+3443 * (9/5) = 6181.4 
+6181.4 + 32 = 6213.4 
+
+So, the boiling point of cerium is approximately 6213.4 degrees Fahrenheit.","4
+
+user
+
+What is the specific temperature at which the element cerium reaches its boiling point when measured in degrees Fahrenheit?assistant
+
+The boiling point of cerium is 3443 degrees Celsius. To convert this to Fahrenheit, we use the formula: 
+
+°F = (°C × 9/5) + 32
+
+Substituting the value of the boiling point of cerium in Celsius into the formula, we get:
+
+°F = (3443 × 9/5) + 32
+= 6218.4 + 32
+= 6250.4 degrees Fahrenheit
+
+So, the boiling point",37.34302870411646,0.9093514680862428,0.97900390625,-13.5625,0.0283203125,0.0,-62.65697129588358,-0.06916844844818126,-0.09064853191375721,-0.0205078125,-1.0
+L3.1-8B,4,global,3.0,simpleqa_verified,What was the title of chemist Mary Letitia Caldwell's Ph.D. thesis?,What is the specific title that was given to the Ph.D. thesis written by the chemist Mary Letitia Caldwell during her doctoral studies?,0.949759304523468,"of chemist Mary Letitia Caldwell's Ph.D. thesis?assistant
+
+I do not have information on a chemist named Mary Letitia Caldwell.","given to the Ph.D. thesis written by the chemist Mary Letitia Caldwell during her doctoral studies?assistant
+
+I do not have information on the title of the Ph.D. thesis written by Mary Letitia Caldwell.",33.10268270333974,0.9375082850456238,0.97705078125,-6.28125,0.0087890625,0.0,-66.8973172966603,-0.05024081468582153,-0.062491655349731445,-0.02294921875,-1.0
+L3.1-8B,5,global,3.0,simpleqa_verified,"For how many scudi did the Florentine authorities buy the ""Pitti Tondo"" from the dealer Fedele Acciai in 1823?","For what total amount, measured in scudi, did the authorities of Florence make the purchase of the renowned artwork known as the ""Pitti Tondo"" from the dealer named Fedele Acciai during the year 1823?",0.942851722240448,"assistant
+
+I do not have information on the price of the ""Pitti Tondo"" in scudi.","3?assistant
+
+I do not have information on the purchase price of the ""Pitti Tondo"" in scudi.",76.1827408333416,0.9714787602424622,0.966796875,0.34375,0.001953125,0.0,-23.817259166658445,-0.05714815855026245,-0.028521180152893066,-0.033203125,-1.0
+L3.1-8B,6,global,3.0,simpleqa_verified,What team came second in Group C in the 2018–19 UEFA Champions League?,Which specific team finished in the second position in Group C during the 2018–19 season of the UEFA Champions League tournament?,0.9558746814727784,"C in the 2018–19 UEFA Champions League?assistant
+
+In the 2018-19 UEFA Champions League, Group C consisted of Paris Saint-Germain, Liverpool, Napoli, and Red Star Belgrade. 
+
+Liverpool came second in Group C with 10 points, behind Paris Saint-Germain who topped the group with 11 points.","finished in the second position in Group C during the 2018–19 season of the UEFA Champions League tournament?assistant
+
+In the 2018-19 UEFA Champions League, Group C consisted of teams: 
+
+1. Paris Saint-Germain 
+2. Liverpool 
+3. Napoli 
+4. Red Star Belgrade 
+
+Liverpool finished in the second position in Group C during the 2018-19 season of the UEFA Champions League tournament.",28.82664200270341,0.9131447076797484,0.97265625,-18.0,0.1416015625,0.0,-71.17335799729663,-0.04412555694580067,-0.08685517311096203,-0.02685546875,-1.0
+L3.1-8B,7,global,3.0,simpleqa_verified,At which university did the mathematician William Prager study civil engineering and receive his diploma in 1925?,At which specific university institution did the renowned mathematician William Prager pursue his studies in the field of civil engineering and ultimately obtain his diploma or degree in the year 1925?,0.9515576362609864,"receive his diploma in 1925?assistant
+
+I am unable to verify the university where William Prager studied civil engineering and received his diploma in 1925.","ultimately obtain his diploma or degree in the year 1925?assistant
+
+I do not have information on the specific university institution where William Prager pursued his studies in the field of civil engineering and obtained his diploma or degree in the year 1925.",12.230008607350015,0.9509135484695436,0.94384765625,-12.625,0.36181640625,0.0,-87.76999139265003,-0.04844236373901356,-0.04908645153045643,-0.05615234375,-1.0
+L3.1-8B,8,global,3.0,simpleqa_verified,"Which streamer won the ""Best Variety Streamer"" award at The Streamer Awards in 2022?","Which individual streamer was awarded the prestigious title of ""Best Variety Streamer"" during the event known as The Streamer Awards that took place in the year 2022?",0.9482502341270448,"Streamer Awards in 2022?assistant
+
+I do not have information on the winner of the ""Best Variety Streamer"" award at The Streamer Awards in 2022.","The Streamer Awards that took place in the year 2022?assistant
+
+I do not have information on the winner of the ""Best Variety Streamer"" award at The Streamer Awards in 2022.",75.86210443912022,0.9699808359146118,0.96435546875,-4.71875,0.0810546875,0.0,-24.137895560879826,-0.05174976587295521,-0.030019104480743408,-0.03515625,-1.0
+L3.1-8B,9,global,3.0,simpleqa_verified,What is the name of the naturalist who first described the sharpbill under the binomial name *Oxyrhuncus cristatus* in 1821?,"What is the full name of the naturalist who was the very first to describe the species known as the sharpbill, and who did so using the binomial nomenclature *Oxyrhuncus cristatus* in the year 1821?",0.9445915222167968,I am unable to verify who the naturalist was that first described the sharpbill under the binomial name *Oxyrhuncus cristatus* in 1821.,"assistant
+
+I am unable to verify the full name of the naturalist who was the first to describe the species known as the sharpbill, and who did so using the binomial nomenclature *Oxyrhuncus cristatus* in the year 1821.",22.037603032822503,0.9332560300827026,0.9541015625,-15.015625,0.27880859375,0.0,-77.96239696717754,-0.0554082989692688,-0.06674385070800781,-0.046875,-1.0
+L3.1-8B,10,global,3.0,simpleqa_verified,How many symphonies did the Estonian composer Els Aarne write?,What is the total number of symphonies that were composed by the Estonian composer known as Els Aarne throughout her musical career?,0.9442131519317628,"ies did the Estonian composer Els Aarne write?assistant
+
+I am unable to verify how many symphonies the Estonian composer Els Aarne wrote.","that were composed by the Estonian composer known as Els Aarne throughout her musical career?assistant
+
+I am unable to verify the total number of symphonies composed by Els Aarne.",26.221486578975902,0.941079318523407,0.97509765625,-14.5625,0.279296875,0.0,-73.77851342102414,-0.055786848068237194,-0.05892068147659302,-0.02490234375,-1.0
+L3.1-8B,11,global,3.0,simpleqa_verified,"What was the first and last name of the person who designed the historic Emil J. Oberhoffer House in Lakeville, Minnesota, United States?","What is the complete first name and the complete last name of the individual who was responsible for the design of the historically significant Emil J. Oberhoffer House, which is located in Lakeville, Minnesota, in the United States of America?",0.9565142393112184,"assistant
+
+I do not have information on the person who designed the historic Emil J. Oberhoffer House in Lakeville, Minnesota.","?assistant
+
+I am unable to verify the first name and the last name of the individual who was responsible for the design of the historically significant Emil J. Oberhoffer House, which is located in Lakeville, Minnesota, in the United States of America.",14.011697931222916,0.93520188331604,0.95458984375,-8.25,0.15625,0.0,-85.98830206877713,-0.04348576068878163,-0.06479799747467041,-0.044921875,-1.0
+L3.1-8B,12,global,3.0,simpleqa_verified,Which two architects built the Pizzurno Palace?,"Which two architects are credited with the construction and design of the notable Pizzurno Palace, a significant architectural landmark?",0.949267566204071,"2024
+
+user
+
+Which two architects built the Pizzurno Palace?assistant
+
+I am unable to verify who the architects of the Pizzurno Palace are.","Which two architects are credited with the construction and design of the notable Pizzurno Palace, a significant architectural landmark?assistant
+
+I am unable to verify the architects credited with the construction and design of the Pizzurno Palace.",26.563064684234536,0.9417006969451904,0.97314453125,-12.375,0.23876953125,0.0,-73.43693531576551,-0.05073267221450806,-0.05829930305480957,-0.0263671875,-1.0
+L3.1-8B,13,global,3.0,simpleqa_verified,In what year did Leo Tolstoy come to Ilya Repin's studio to introduce himself?,In which specific year did the renowned author Leo Tolstoy visit the studio of the famous artist Ilya Repin in order to formally introduce himself and establish a connection with the artist?,0.9393275380134584,"Ilya Repin's studio to introduce himself?assistant
+
+I am unable to verify when Leo Tolstoy came to Ilya Repin's studio to introduce himself.","to formally introduce himself and establish a connection with the artist?assistant
+
+I am unable to verify the year that Leo Tolstoy visited the studio of Ilya Repin.",24.57777411084979,0.9216485023498536,0.978515625,-26.5625,0.2392578125,0.0,-75.42222588915025,-0.060672342777252086,-0.07835149765014637,-0.021484375,-1.0
+L3.1-8B,14,global,3.0,simpleqa_verified,"What was the population of Spring Rock Township, Clinton County, Iowa, at the time of the 2000 Census?","What was the total number of people living in Spring Rock Township, which is located in Clinton County, Iowa, at the specific time when the 2000 Census was conducted and recorded?",0.9478986859321594,"the 2000 Census?assistant
+
+I am unable to verify the population of Spring Rock Township, Clinton County, Iowa, at the time of the 2000 Census.","time when the 2000 Census was conducted and recorded?assistant
+
+I am unable to verify the population of Spring Rock Township in Clinton County, Iowa, at the time of the 2000 census.",65.10651028008022,0.9667935371398926,0.935546875,-4.34375,0.28076171875,0.0,-34.89348971991983,-0.05210143327713013,-0.033206403255462646,-0.06396484375,-1.0
+L3.1-8B,15,global,3.0,simpleqa_verified,"In what city in England was James Brain, an English football manager and player born in 1900, born?","In which specific city located in England was James Brain, who was both an English football manager and player, born in the year 1900?",0.9561713337898254,"in 1900, born?assistant
+
+I am unable to verify the birthplace of James Brain.","Brain, who was both an English football manager and player, born in the year 1900?assistant
+
+I am unable to verify the birthplace of James Brain.",43.8466055731096,0.9367719292640686,0.97412109375,-2.71875,0.1494140625,0.0,-56.15339442689044,-0.04382866621017456,-0.06322818994522095,-0.02587890625,-1.0
