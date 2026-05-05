@@ -1,719 +1,516 @@
 """
-SGS heatmap — publication-ready figure.
+plot_individual_figures.py
+--------------------------
+Publication-ready figures driven by the canonical CSVs produced by
+``utils/compute_sgs_table``:
 
-Usage:
+    results/sgs/sgs_total_per_model.csv
+    results/sgs/sgs_per_dataset.csv
+    results/sgs/per_prompt_s.csv
+
+Outputs (under results/sgs/figures/):
+
+  Main paper:
+    heatmap_open_models.pdf         (Figure 2 -- open-only Total-SGS heatmap)
+    pareto_bleu_vs_mirroring.pdf    (Figure 3 -- BLEU vs MR scatter)
+
+  Appendix:
+    per_axis_bar_chart.pdf          (Figure 10 -- open-only grouped bars)
+
+All figures use Times Roman (ACL/EMNLP camera-ready compatible) with
+TrueType-embedded fonts via ``apply_neurips_style`` from ``plots.plots``.
+
+Run:
     python plots/plot_individual_figures.py
-    python plots/plot_individual_figures.py --out_dir results/individual_plots
 """
+from __future__ import annotations
 
 import argparse
-import os
-import re as _re
 import sys
+from pathlib import Path
 
 import matplotlib
+
 matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-import numpy as np
+import matplotlib.pyplot as plt  # noqa: E402
+import numpy as np  # noqa: E402
+import pandas as pd  # noqa: E402
 
-# ── repo root on path ──────────────────────────────────────────────────────
-_THIS = os.path.abspath(__file__)
-_ROOT = os.path.dirname(os.path.dirname(_THIS))
-sys.path.insert(0, _ROOT)
+_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(_ROOT))
 
-from plots.plots import apply_neurips_style
+from plots.plots import apply_neurips_style  # noqa: E402
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Display config (mirrors utils/compute_sgs_table.py)
+# ─────────────────────────────────────────────────────────────────────────────
+
+SGS_AXES = [
+    "delta_activation_similarity",
+    "delta_bleu",
+    "delta_bertscore_response",
+    "delta_log_prob",
+    "delta_entropy",
+    "delta_mirroring_rate",
+]
+AXIS_LABEL = {
+    "delta_activation_similarity": r"$\Delta$-Cos",
+    "delta_bleu":                  r"$\Delta$-BLEU",
+    "delta_bertscore_response":    r"$\Delta$-BERT",
+    "delta_log_prob":              r"$\Delta$-Prob",
+    "delta_entropy":               r"$\Delta$-Ent",
+    "delta_mirroring_rate":        r"$\Delta$-MR",
+}
+
+# (key, short_label, family). Open first, then closed.
+MODEL_DISPLAY = [
+    ("L3.2-3B",            "L-3B",              "Llama"),
+    ("L3.1-8B",            "L-8B",              "Llama"),
+    ("G-2B",               "G-2B",              "Gemma"),
+    ("G-7B",               "G-7B",              "Gemma"),
+    ("G4-E4B",             "G4-E4B",            "Gemma"),
+    ("Q2.5-1.5B",          "Q-1.5B",            "Qwen"),
+    ("Q2.5-7B",            "Q-7B",              "Qwen"),
+    ("Q3.5-9B",            "Q3.5-9B",           "Qwen"),
+    ("gpt-5.4",            "GPT-5.4",           "Closed"),
+    ("gemini-2.5-flash",   "Gemini-2.5-Flash",  "Closed"),
+    ("claude-sonnet-4-6",  "Claude-Sonnet-4.6", "Closed"),
+]
+
+# Family colours (color-blind-friendly base palette)
+FAMILY_COLOR = {
+    "Llama":  (0.85, 0.33, 0.24),    # red
+    "Gemma":  (0.20, 0.63, 0.17),    # green
+    "Qwen":   (0.22, 0.70, 0.85),    # cyan
+    "Closed": (0.45, 0.45, 0.45),    # gray (Pareto plot uses this)
+}
+
+METRIC_GROUPS = [
+    ("Activation",                [0]),
+    ("Generation Consistency",    [1, 2]),
+    ("Confidence",                [3, 4]),
+    ("Mirroring",                 [5]),
+]
 
 
-def _apply_style():
-    """Apply the NeurIPS rcParams."""
+# ─────────────────────────────────────────────────────────────────────────────
+# Data loading
+# ─────────────────────────────────────────────────────────────────────────────
+
+def load_totals(only_open: bool = False) -> tuple[list[str], list[str], dict, np.ndarray]:
+    """Return (keys, short_labels, fam_map, totals_2d)."""
+    df = pd.read_csv(_ROOT / "results" / "sgs" / "sgs_total_per_model.csv")
+    keys, labels, fams = [], [], {}
+    for k, lbl, fam in MODEL_DISPLAY:
+        if k not in df["model"].unique():
+            continue
+        if only_open and fam == "Closed":
+            continue
+        keys.append(k); labels.append(lbl); fams[lbl] = fam
+    piv = (df[df["model"].isin(keys)]
+           .pivot_table(index="model", columns="axis", values="sgs")
+           .reindex(keys)[SGS_AXES])
+    return keys, labels, fams, piv.to_numpy()
+
+
+def load_per_prompt_std(only_open: bool = False) -> tuple[list[str], np.ndarray]:
+    """Return (short_labels, std_2d) where std_2d[i, j] = std over prompts
+    of s_X(i,j) for model i and axis j. Rows aligned with `load_totals`."""
+    df = pd.read_csv(_ROOT / "results" / "sgs" / "per_prompt_s.csv")
+    keys, labels, _, _ = load_totals(only_open=only_open)
+    out = np.full((len(keys), len(SGS_AXES)), np.nan)
+    for i, k in enumerate(keys):
+        for j, ax in enumerate(SGS_AXES):
+            sub = df[(df["model"] == k) & (df["axis"] == ax)]["s_X"].dropna()
+            if len(sub) >= 2:
+                out[i, j] = float(sub.std(ddof=1))
+    return labels, out
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Figure 2 — Heatmap (open models)
+# ─────────────────────────────────────────────────────────────────────────────
+
+def plot_heatmap_open(out_path: Path) -> None:
+    """Figure 2: Total-SGS heatmap, 8 open models x 6 axes. Single sequential
+    colormap (Oranges) normalised across all cells; values shown to 3
+    decimal places; family brackets on the left; axis-group brackets on top."""
     apply_neurips_style()
+    keys, labels, fams, totals = load_totals(only_open=True)
+    n_rows, n_cols = totals.shape
 
-
-def _extract_row_vals(parts: list) -> list:
-    """Extract 6 numeric values from a split LaTeX table row, ignoring text/ding cells."""
-    vals = []
-    for p in parts:
-        p = p.strip()
-        # bare number (dataset rows): starts with digit or is \ding
-        if _re.match(r"^[\d]", p):
-            clean = p.split("$")[0].strip()
-            try:
-                vals.append(float(clean))
-            except ValueError:
-                vals.append(float("nan"))
-        # \textbf{<digit>...} (Total SGS rows)
-        elif _re.search(r"\\textbf\{[\d.]", p):
-            inner = _re.sub(r"\\textbf\{([^}]+)\}", r"\1", p).strip()
-            clean = inner.split("$")[0].strip()
-            try:
-                vals.append(float(clean))
-            except ValueError:
-                vals.append(float("nan"))
-        # \ding{55} = not applicable → NaN
-        elif r"\ding" in p:
-            vals.append(float("nan"))
-    return vals
-
-
-def _parse_sgs_tex(tex_path: str):
-    """
-    Parse sgs_table.tex and return (model_labels, data_matrix) for Total SGS rows only.
-    One row per model (the bold \\rowcolor summary line), 6 metric columns.
-    """
-    with open(tex_path, encoding="utf-8") as f:
-        text = f.read()
-
-    model_labels, rows = [], []
-    current_model = None
-
-    for line in text.split("\n"):
-        s = line.strip()
-        m = _re.match(r"\\multirow\{\d+\}\{\*\}\{\\textbf\{(.+?)\}\}", s)
-        if m:
-            current_model = m.group(1)
-            continue
-        if "\\rowcolor" in s and current_model is not None:
-            parts = s.rstrip("\\").split("&")
-            vals = _extract_row_vals(parts)
-            if len(vals) == 6:
-                model_labels.append(current_model)
-                rows.append(vals)
-
-    return model_labels, (np.array(rows) if rows else np.empty((0, 6)))
-
-
-def _parse_sgs_tex_full(tex_path: str):
-    """
-    Parse sgs_table.tex and return per-dataset SGS values.
-
-    Returns
-    -------
-    model_labels  : list of model name strings
-    dataset_labels: list of dataset name strings (cleaned of citations)
-    data          : ndarray of shape (n_models, n_datasets, 6)
-    """
-    with open(tex_path, encoding="utf-8") as f:
-        text = f.read()
-
-    # strip \cite{...} for clean dataset labels
-    def _clean_ds(s):
-        return _re.sub(r"\\cite\{[^}]+\}", "", s).strip()
-
-    model_labels = []
-    dataset_labels_ordered = []
-    # records: list of (model, dataset, [6 vals])
-    records = []
-    current_model = None
-
-    for line in text.split("\n"):
-        s = line.strip()
-        # model heading
-        m = _re.match(r"\\multirow\{\d+\}\{\*\}\{\\textbf\{(.+?)\}\}", s)
-        if m:
-            current_model = m.group(1)
-            if current_model not in model_labels:
-                model_labels.append(current_model)
-            continue
-        # skip Total SGS row
-        if "\\rowcolor" in s:
-            continue
-        # dataset row: starts with & <dataset label> & ...
-        if s.startswith("&") and current_model is not None:
-            parts = s.rstrip("\\").split("&")
-            if len(parts) < 3:
-                continue
-            ds_raw = parts[1].strip()
-            ds = _clean_ds(ds_raw)
-            if not ds:
-                continue
-            vals = _extract_row_vals(parts[2:])
-            if len(vals) == 6:
-                if ds not in dataset_labels_ordered:
-                    dataset_labels_ordered.append(ds)
-                records.append((current_model, ds, vals))
-
-    n_models = len(model_labels)
-    n_ds = len(dataset_labels_ordered)
-    data = np.full((n_models, n_ds, 6), np.nan)
-    for model, ds, vals in records:
-        mi = model_labels.index(model)
-        di = dataset_labels_ordered.index(ds)
-        data[mi, di, :] = vals
-
-    return model_labels, dataset_labels_ordered, data
-
-
-def plot_sgs_heatmap(tex_path: str, out_path: str) -> None:
-    """
-    Plot a Total SGS heatmap (Oranges colormap) from sgs_table.tex.
-
-    Rows = models (one row per model, Total SGS only), columns = 6 metrics + Mean.
-    No per-dataset rows. No colored separators between models.
-    """
-    _apply_style()
-
-    model_labels, data = _parse_sgs_tex(tex_path)
-    if data.size == 0:
-        print(f"  [SKIP] No data parsed from {tex_path}")
-        return
-
-    METRIC_LABELS = ["Δ-Cos", "Δ-BLEU", "Δ-BERT", "Δ-Prob", "Δ-Ent", "Δ-MR"]
-
-    data_plot = data
-    col_labels = METRIC_LABELS
-    n_rows, n_cols = data_plot.shape
-
-    # per-column min/max for independent color scales
-    col_vmin = np.nanmin(data_plot, axis=0)
-    col_vmax = np.nanmax(data_plot, axis=0)
-    for j in range(n_cols):
-        if col_vmin[j] == col_vmax[j]:
-            col_vmax[j] = col_vmin[j] + 1e-6
-
+    vmin = float(np.nanmin(totals))
+    vmax = float(np.nanmax(totals))
+    if vmin == vmax:
+        vmax = vmin + 1e-6
     cmap = plt.get_cmap("Oranges")
 
-    fig_w = max(10, n_cols * 1.8 + 3.0)
-    fig_h = max(5, n_rows * 0.65 + 2.0)
-    fig, ax = plt.subplots(figsize=(fig_w, fig_h))
+    fig, ax = plt.subplots(figsize=(7.5, 4.0))
     ax.grid(False)
-    for spine in ax.spines.values():
-        spine.set_visible(True)
-        spine.set_linewidth(1.2)
-        spine.set_edgecolor("gray")
+    for sp in ax.spines.values():
+        sp.set_visible(True); sp.set_linewidth(0.8); sp.set_edgecolor("gray")
 
-    # draw each cell as a colored rectangle, normalized per column
     from matplotlib.patches import Rectangle
     for i in range(n_rows):
         for j in range(n_cols):
-            v = data_plot[i, j]
+            v = totals[i, j]
             if np.isnan(v):
-                color = "#f5f5f5"
-                norm_v = 0.0
+                color = "#f0f0f0"
             else:
-                norm_v = (v - col_vmin[j]) / (col_vmax[j] - col_vmin[j])
-                color = cmap(0.1 + 0.85 * norm_v)  # avoid pure white at 0
-            rect = Rectangle((j - 0.5, i - 0.5), 1, 1, facecolor=color, edgecolor="gray", linewidth=0.5)
-            ax.add_patch(rect)
+                t = (v - vmin) / (vmax - vmin)
+                color = cmap(0.10 + 0.85 * t)
+            ax.add_patch(Rectangle((j - 0.5, i - 0.5), 1, 1,
+                                    facecolor=color, edgecolor="gray", linewidth=0.4))
 
     ax.set_xlim(-0.5, n_cols - 0.5)
     ax.set_ylim(n_rows - 0.5, -0.5)
 
-    # Metric column labels on top
+    # column labels (top)
     ax.set_xticks(range(n_cols))
-    ax.set_xticklabels(col_labels, fontsize=16, fontweight="bold")
+    ax.set_xticklabels([AXIS_LABEL[a] for a in SGS_AXES],
+                       fontsize=10, fontweight="bold")
     ax.xaxis.set_ticks_position("top")
     ax.xaxis.set_label_position("top")
     ax.tick_params(axis="x", which="both", length=0)
 
-    # Metric family brackets on top
-    metric_families = [
-        ("Activation\nGeometry", 0, 0),  # Δ-Cos
-        ("Generation Q.", 1, 2),          # Δ-BLEU, Δ-BERT
-        ("Confidence", 3, 4),             # Δ-Prob, Δ-Ent
-        ("Mirroring", 5, 5),              # Δ-MR
-    ]
-    y_brack = -1.1
-    for mf_name, col_start, col_end in metric_families:
-        mid = (col_start + col_end) / 2.0
-        ax.plot(
-            [col_start - 0.4, col_end + 0.4], [y_brack, y_brack],
-            color="black", lw=1.5, clip_on=False,
-        )
-        # small ticks at left and right of bracket
-        ax.plot([col_start - 0.4, col_start - 0.4], [y_brack, y_brack + 0.1],
-                color="black", lw=1.5, clip_on=False)
-        ax.plot([col_end + 0.4, col_end + 0.4], [y_brack, y_brack + 0.1],
-                color="black", lw=1.5, clip_on=False)
-        # family name
-        ax.text(
-            mid, y_brack - 0.15, mf_name,
-            ha="center", va="bottom",
-            fontsize=12, fontweight="bold", fontstyle="italic",
-            clip_on=False,
-        )
+    # axis-group brackets above
+    y_brack = -1.05
+    for axis_name, indices in METRIC_GROUPS:
+        cs, ce = indices[0], indices[-1]
+        mid = (cs + ce) / 2.0
+        ax.plot([cs - 0.4, ce + 0.4], [y_brack, y_brack],
+                color="black", lw=0.9, clip_on=False)
+        ax.plot([cs - 0.4, cs - 0.4], [y_brack, y_brack + 0.07],
+                color="black", lw=0.9, clip_on=False)
+        ax.plot([ce + 0.4, ce + 0.4], [y_brack, y_brack + 0.07],
+                color="black", lw=0.9, clip_on=False)
+        ax.text(mid, y_brack - 0.10, axis_name,
+                ha="center", va="bottom",
+                fontsize=9, fontweight="bold", fontstyle="italic",
+                clip_on=False)
 
-    # Model labels on y-axis
+    # model labels (left)
     ax.set_yticks(range(n_rows))
-    ax.set_yticklabels(model_labels, fontsize=14, fontweight="bold")
+    ax.set_yticklabels(labels, fontsize=9, fontweight="bold")
     ax.tick_params(axis="y", which="both", length=0)
 
-    # Family brackets on the left side
-    def _get_family(name):
-        if name.startswith("L"):
-            return "Llama"
-        elif name.startswith("G"):
-            return "Gemma"
-        elif name.startswith("Q"):
-            return "Qwen"
-        return "Other"
-
-    # group consecutive models by family
-    families = []
-    cur_fam, cur_start = _get_family(model_labels[0]), 0
+    # family brackets (left)
+    runs = []; cur = fams[labels[0]]; cs = 0
     for idx in range(1, n_rows):
-        fam = _get_family(model_labels[idx])
-        if fam != cur_fam:
-            families.append((cur_fam, cur_start, idx - 1))
-            cur_fam, cur_start = fam, idx
-    families.append((cur_fam, cur_start, n_rows - 1))
+        f = fams[labels[idx]]
+        if f != cur:
+            runs.append((cur, cs, idx - 1)); cur, cs = f, idx
+    runs.append((cur, cs, n_rows - 1))
+    x_brack = -0.95
+    for fam_name, rs, re in runs:
+        mid = (rs + re) / 2.0
+        ax.plot([x_brack, x_brack], [rs - 0.4, re + 0.4],
+                color="black", lw=0.9, clip_on=False)
+        ax.plot([x_brack, x_brack + 0.06], [rs - 0.4, rs - 0.4],
+                color="black", lw=0.9, clip_on=False)
+        ax.plot([x_brack, x_brack + 0.06], [re + 0.4, re + 0.4],
+                color="black", lw=0.9, clip_on=False)
+        ax.text(x_brack - 0.10, mid, fam_name,
+                ha="right", va="center",
+                fontsize=9, fontweight="bold", fontstyle="italic",
+                rotation=90, clip_on=False)
 
-    for fam_name, row_start, row_end in families:
-        mid = (row_start + row_end) / 2.0
-        # draw bracket line
-        x_brack = -1.1
-        ax.plot(
-            [x_brack, x_brack], [row_start - 0.4, row_end + 0.4],
-            color="black", lw=1.5, clip_on=False,
-        )
-        # small ticks at top and bottom of bracket
-        ax.plot([x_brack, x_brack + 0.1], [row_start - 0.4, row_start - 0.4],
-                color="black", lw=1.5, clip_on=False)
-        ax.plot([x_brack, x_brack + 0.1], [row_end + 0.4, row_end + 0.4],
-                color="black", lw=1.5, clip_on=False)
-        # family name
-        ax.text(
-            x_brack - 0.15, mid, fam_name,
-            ha="right", va="center",
-            fontsize=13, fontweight="bold", fontstyle="italic",
-            rotation=90, clip_on=False,
-        )
-
-    # Cell value annotations
+    # cell values
     for i in range(n_rows):
         for j in range(n_cols):
-            v = data_plot[i, j]
+            v = totals[i, j]
             if np.isnan(v):
-                ax.text(j, i, "—", ha="center", va="center", fontsize=12, color="#aaa")
+                ax.text(j, i, r"$\times$", ha="center", va="center",
+                        fontsize=8, color="#999")
             else:
-                norm_v = (v - col_vmin[j]) / (col_vmax[j] - col_vmin[j])
-                text_color = "white" if norm_v > 0.55 else "black"
+                t = (v - vmin) / (vmax - vmin)
                 ax.text(j, i, f"{v:.3f}", ha="center", va="center",
-                        fontsize=12, color=text_color)
+                        fontsize=8,
+                        color="white" if t > 0.55 else "black")
 
-    # colorbar showing normalized scale (0 = column min, 1 = column max)
+    # colour bar
     import matplotlib.cm as mcm
     import matplotlib.colors as mcolors
-    norm = mcolors.Normalize(vmin=0, vmax=1)
-    sm = mcm.ScalarMappable(cmap=cmap, norm=norm)
-    sm.set_array([])
-    cbar = plt.colorbar(sm, ax=ax, fraction=0.03, pad=0.04)
-    cbar.set_ticks([0, 1])
-    cbar.set_ticklabels(["Best\ngeneralization", "Worst\ngeneralization"])
-    cbar.ax.tick_params(labelsize=14)
+    norm = mcolors.Normalize(vmin=vmin, vmax=vmax)
+    sm = mcm.ScalarMappable(cmap=cmap, norm=norm); sm.set_array([])
+    cbar = plt.colorbar(sm, ax=ax, fraction=0.025, pad=0.04)
+    cbar.set_label(r"Total $\mathrm{SGS}_X$", fontsize=10, fontweight="bold",
+                   rotation=90, labelpad=8)
+    cbar.ax.tick_params(labelsize=8)
 
     plt.tight_layout()
-
-    # place "SGS" manually between the heatmap and the colorbar (after layout)
-    cbar_pos = cbar.ax.get_position()
-    ax_pos = ax.get_position()
-    x_mid = (ax_pos.x1 + cbar_pos.x0) / 2
-    fig.text(
-        x_mid, 0.5, "Total $SGS_X$",
-        ha="center", va="center",
-        fontsize=16, fontweight="bold", rotation=90,
-    )
-
-    os.makedirs(os.path.dirname(out_path) if os.path.dirname(out_path) else ".", exist_ok=True)
+    out_path = Path(out_path); out_path.parent.mkdir(parents=True, exist_ok=True)
     plt.savefig(out_path, dpi=300, bbox_inches="tight")
-    plt.savefig(out_path.replace(".png", ".pdf"), bbox_inches="tight")
+    plt.savefig(out_path.with_suffix(".png"), dpi=300, bbox_inches="tight")
     plt.close()
-    print(f"  [SAVE] {out_path}")
+    print(f"  [SAVE] {out_path.relative_to(_ROOT)}  +  {out_path.with_suffix('.png').name}")
 
 
-def plot_sgs_barplot(tex_path: str, out_path: str) -> None:
-    """
-    Grouped bar chart: x = models, one bar group per metric.
-    Bar height = mean SGS across datasets; error bar = std across datasets.
-    One subplot per metric (2 rows × 3 cols).
-    """
-    _apply_style()
+# ─────────────────────────────────────────────────────────────────────────────
+# Figure 3 — Pareto plot (BLEU vs Mirroring)
+# ─────────────────────────────────────────────────────────────────────────────
 
-    model_labels, dataset_labels, data = _parse_sgs_tex_full(tex_path)
-    if data.size == 0:
-        print(f"  [SKIP] No data parsed from {tex_path}")
-        return
+def plot_pareto_bleu_vs_mr(out_path: Path) -> None:
+    """Figure 3: scatter of all 11 models in (SGS_BLEU, SGS_MR) plane.
+    Open models are circles colored by family; closed models are gray
+    squares. Pareto frontier (non-dominated set, both axes minimised) drawn
+    as a dashed black line."""
+    apply_neurips_style()
+    keys, labels, fams, totals = load_totals(only_open=False)
+    bleu_idx = SGS_AXES.index("delta_bleu")
+    mr_idx   = SGS_AXES.index("delta_mirroring_rate")
+    xs = totals[:, bleu_idx]
+    ys = totals[:, mr_idx]
 
-    METRIC_LABELS = ["Δ-Cos", "Δ-BLEU", "Δ-BERT", "Δ-Prob", "Δ-Ent", "Δ-MR"]
-    n_models = len(model_labels)
-    x = np.arange(n_models)
+    # keep only points where both coords are defined
+    valid = ~(np.isnan(xs) | np.isnan(ys))
+    xs, ys = xs[valid], ys[valid]
+    labels = [labels[i] for i, ok in enumerate(valid) if ok]
+    fam_for = [fams[lbl] for lbl in labels]
 
-    # mean and std per (model, metric) across datasets
-    means = np.nanmean(data, axis=1)   # (n_models, 6)
-    stds  = np.nanstd(data, axis=1, ddof=1)   # (n_models, 6)
+    # Pareto front (non-dominated under both-axes-minimised)
+    order = np.argsort(xs)
+    front_idx = []
+    cur_min_y = np.inf
+    for k in order:
+        if ys[k] < cur_min_y:
+            front_idx.append(k); cur_min_y = ys[k]
 
-    cmap = plt.get_cmap("Oranges")
-    colors = [cmap(0.35 + 0.5 * i / max(n_models - 1, 1)) for i in range(n_models)]
+    fig, ax = plt.subplots(figsize=(5.2, 4.6))
+    ax.grid(True, which="major", linestyle=":", alpha=0.45)
+    ax.set_axisbelow(True)
 
-    fig, axes = plt.subplots(2, 3, figsize=(18, 9), sharey=False)
-    axes = axes.flatten()
+    # ideal point at origin
+    ax.scatter([0], [0], marker="*", s=180, color="gold",
+               edgecolors="black", linewidths=0.8, zorder=4,
+               label="Ideal")
+    ax.annotate("Ideal", xy=(0, 0), xytext=(6, 6),
+                textcoords="offset points",
+                fontsize=8, fontstyle="italic", color="black")
 
-    for k, (metric_label, ax) in enumerate(zip(METRIC_LABELS, axes)):
-        ax.grid(False)
-        bars = ax.bar(
-            x,
-            means[:, k],
-            yerr=stds[:, k],
-            color=colors,
-            edgecolor="gray",
-            linewidth=0.8,
-            capsize=4,
-            error_kw=dict(elinewidth=1.2, ecolor="black"),
-        )
-        ax.set_xticks(x)
-        ax.set_xticklabels(model_labels, fontsize=12, fontweight="bold", rotation=30, ha="right")
-        ax.set_ylabel("SGS", fontsize=13)
-        ax.set_title(metric_label, fontsize=14, fontweight="bold", pad=6)
-        ax.tick_params(axis="y", labelsize=11)
-        for spine in ["top", "right"]:
-            ax.spines[spine].set_visible(False)
+    # Pareto frontier line
+    fx = xs[front_idx]; fy = ys[front_idx]
+    sort_idx = np.argsort(fx)
+    ax.plot(fx[sort_idx], fy[sort_idx],
+            "k--", lw=1.0, alpha=0.55, zorder=2,
+            label="Pareto frontier")
 
-    plt.suptitle("SGS per metric — mean ± std across datasets", fontsize=15, fontweight="bold", y=1.01)
-    plt.tight_layout()
-    os.makedirs(os.path.dirname(out_path) if os.path.dirname(out_path) else ".", exist_ok=True)
-    plt.savefig(out_path, dpi=300, bbox_inches="tight")
-    plt.savefig(out_path.replace(".png", ".pdf"), bbox_inches="tight")
-    plt.close()
-    print(f"  [SAVE] {out_path}")
+    # data points
+    for i, lbl in enumerate(labels):
+        fam = fam_for[i]
+        is_closed = (fam == "Closed")
+        marker = "s" if is_closed else "o"
+        face   = FAMILY_COLOR[fam]
+        ax.scatter(xs[i], ys[i], marker=marker, s=70,
+                   facecolors=face, edgecolors="black", linewidths=0.6,
+                   zorder=3)
 
-
-def _build_sgs_total_data():
-    """
-    Return hardcoded Total SGS values and per-dataset values from the paper tables.
-
-    Returns (model_names, family_map, metric_labels, totals_dict, per_dataset_dict)
-    where totals_dict[model] = [val_per_metric] (NaN if unavailable)
-    and   per_dataset_dict[model] = list of [6 vals] per dataset (for std computation).
-    """
-    METRICS = ["Δ-Cos", "Δ-BLEU", "Δ-BERT", "Δ-Prob", "Δ-Ent", "Δ-MR"]
-    nan = float("nan")
-
-    # ── open-source totals ──
-    open_totals = {
-        "L-3B":    [0.041, 0.147, 0.082, 0.017, 0.023, 0.089],
-        "L-8B":    [0.050, 0.139, 0.076, 0.014, 0.023, 0.089],
-        "G-2B":    [0.026, 0.160, 0.092, 0.024, 0.016, 0.081],
-        "G-7B":    [0.026, 0.150, 0.085, 0.026, 0.018, 0.085],
-        "G4-E4B":  [0.032, 0.189, 0.146, 0.023, 0.024, 0.087],
-        "Q-1.5B":  [0.022, 0.170, 0.098, 0.014, 0.015, 0.084],
-        "Q-7B":    [0.044, 0.150, 0.081, 0.026, 0.012, 0.098],
-        "Q3.5-9B": [0.016, 0.120, 0.068, 0.028, 0.012, 0.117],
+    # per-model label offsets (tuned to avoid overlap)
+    label_offsets = {
+        "GPT-5.4":           (8, -2),
+        "Gemini-2.5-Flash":  (-65, -2),    # to the left of its marker
+        "Claude-Sonnet-4.6": (-90,  6),    # above-left to avoid overlap
+        "L-3B":              (-30, -12),
+        "L-8B":              (-32, -12),
+        "G-2B":              (8,  -12),
+        "G-7B":              (-30,  6),
+        "G4-E4B":            (8,    0),
+        "Q-1.5B":            (8,   -2),
+        "Q-7B":              (8,   -2),
+        "Q3.5-9B":           (-50,  4),
     }
-    # ── per-dataset values (6 datasets × 6 metrics) for open-source ──
-    open_datasets = {
-        "L-3B": [
-            [0.102, 0.158, 0.083, 0.017, 0.014, 0.042],
-            [0.030, 0.156, 0.083, 0.014, 0.014, 0.070],
-            [0.033, 0.146, 0.086, 0.021, 0.024, 0.101],
-            [0.024, 0.128, 0.070, 0.015, 0.027, 0.098],
-            [0.025, 0.144, 0.084, 0.016, 0.027, 0.116],
-            [0.030, 0.150, 0.084, 0.018, 0.030, 0.107],
-        ],
-        "L-8B": [
-            [0.097, 0.149, 0.072, 0.013, 0.014, 0.040],
-            [0.096, 0.137, 0.068, 0.011, 0.023, 0.069],
-            [0.032, 0.141, 0.082, 0.021, 0.022, 0.096],
-            [0.022, 0.126, 0.067, 0.011, 0.020, 0.106],
-            [0.026, 0.139, 0.083, 0.012, 0.028, 0.116],
-            [0.028, 0.145, 0.082, 0.014, 0.031, 0.107],
-        ],
-        "G-2B": [
-            [0.058, 0.174, 0.096, 0.020, 0.016, 0.052],
-            [0.023, 0.169, 0.096, 0.021, 0.013, 0.050],
-            [0.020, 0.151, 0.095, 0.029, 0.015, 0.105],
-            [0.014, 0.146, 0.078, 0.020, 0.014, 0.084],
-            [0.023, 0.155, 0.092, 0.026, 0.016, 0.102],
-            [0.020, 0.164, 0.094, 0.027, 0.022, 0.091],
-        ],
-        "G-7B": [
-            [0.070, 0.160, 0.081, 0.020, 0.022, 0.045],
-            [0.047, 0.162, 0.082, 0.020, 0.020, 0.051],
-            [0.004, 0.147, 0.092, 0.029, 0.012, 0.113],
-            [0.008, 0.133, 0.074, 0.028, 0.015, 0.091],
-            [0.009, 0.141, 0.085, 0.022, 0.017, 0.110],
-            [0.014, 0.154, 0.092, 0.034, 0.020, 0.099],
-        ],
-        "G4-E4B": [
-            [0.029, 0.193, 0.147, 0.022, 0.024, 0.085],
-            [0.033, 0.188, 0.152, 0.022, 0.034, 0.069],
-            [0.039, 0.181, 0.141, 0.029, 0.026, 0.096],
-            [0.023, 0.190, 0.143, 0.017, 0.020, 0.084],
-            [0.035, 0.186, 0.144, 0.026, 0.020, 0.100],
-            [0.032, 0.194, 0.148, 0.020, 0.018, 0.087],
-        ],
-        "Q-1.5B": [
-            [0.095, 0.176, 0.093, 0.011, 0.009, 0.044],
-            [0.009, 0.181, 0.102, 0.010, 0.011, 0.041],
-            [0.010, 0.154, 0.096, 0.018, 0.020, 0.123],
-            [0.005, 0.169, 0.098, 0.013, 0.015, 0.095],
-            [0.008, 0.161, 0.095, 0.014, 0.018, 0.105],
-            [0.006, 0.180, 0.105, 0.017, 0.017, 0.097],
-        ],
-        "Q-7B": [
-            [0.096, 0.158, 0.078, 0.022, 0.011, 0.075],
-            [0.093, 0.154, 0.074, 0.021, 0.011, 0.066],
-            [0.020, 0.142, 0.088, 0.033, 0.012, 0.132],
-            [0.013, 0.141, 0.077, 0.019, 0.011, 0.094],
-            [0.018, 0.142, 0.080, 0.029, 0.013, 0.117],
-            [0.021, 0.162, 0.090, 0.034, 0.013, 0.103],
-        ],
-        "Q3.5-9B": [
-            [0.014, 0.120, 0.066, 0.025, 0.010, 0.115],
-            [0.014, 0.126, 0.068, 0.033, 0.012, 0.126],
-            [0.015, 0.122, 0.076, 0.032, 0.017, 0.128],
-            [0.020, 0.110, 0.059, 0.023, 0.009, 0.109],
-            [0.017, 0.122, 0.073, 0.026, 0.012, 0.118],
-            [0.018, 0.119, 0.066, 0.029, 0.015, 0.103],
-        ],
-    }
-    # ── closed-source totals & per-dataset (3 datasets) ──
-    closed_totals = {
-        "GPT-5.4":           [nan, 0.098, 0.023, 0.033, 0.063, 0.003],
-        "Gemini-2.5-Flash":  [nan, 0.063, 0.046, nan,   nan,   0.001],
-        "Claude-Sonnet-4.6": [nan, 0.118, 0.043, nan,   nan,   0.004],
-    }
-    closed_datasets = {
-        "GPT-5.4": [
-            [nan, 0.086, 0.023, 0.034, 0.094, 0.003],
-            [nan, 0.107, 0.028, 0.035, 0.061, 0.004],
-            [nan, 0.102, 0.019, 0.031, 0.034, 0.003],
-        ],
-        "Gemini-2.5-Flash": [
-            [nan, 0.069, 0.046, nan, nan, 0.000],
-            [nan, 0.060, 0.045, nan, nan, 0.004],
-            [nan, 0.060, 0.046, nan, nan, 0.000],
-        ],
-        "Claude-Sonnet-4.6": [
-            [nan, 0.110, 0.057, nan, nan, 0.000],
-            [nan, 0.131, 0.044, nan, nan, 0.013],
-            [nan, 0.114, 0.028, nan, nan, 0.000],
-        ],
-    }
+    for i, lbl in enumerate(labels):
+        dx, dy = label_offsets.get(lbl, (6, 6))
+        ax.annotate(lbl, xy=(xs[i], ys[i]), xytext=(dx, dy),
+                    textcoords="offset points",
+                    fontsize=7.5)
 
-    # family assignment
-    family_map = {}
-    for m in open_totals:
-        if m.startswith("L"):
-            family_map[m] = "Llama"
-        elif m.startswith("G"):
-            family_map[m] = "Gemma"
-        elif m.startswith("Q"):
-            family_map[m] = "Qwen"
-    for m in closed_totals:
-        family_map[m] = "Closed"
+    # axis range with headroom; closed-model corner at origin shows empty space
+    x_lo = min(0, np.nanmin(xs)) - 0.03
+    x_hi = np.nanmax(xs) * 1.05
+    y_lo = min(0, np.nanmin(ys)) - 0.03
+    y_hi = np.nanmax(ys) * 1.10
+    ax.set_xlim(x_lo, x_hi)
+    ax.set_ylim(y_lo, y_hi)
 
-    all_totals = {**open_totals, **closed_totals}
-    all_datasets = {**open_datasets, **closed_datasets}
-    return list(all_totals.keys()), family_map, METRICS, all_totals, all_datasets
-
-
-def plot_sgs_sorted_bars(out_path: str, include_closed: bool = True) -> None:
-    """
-    Bar plot: x = metrics, y = Total SGS, one bar per model per metric,
-    sorted smallest→largest within each metric.  Family-based colour shading.
-
-    Parameters
-    ----------
-    out_path : str
-        Output PNG path.
-    include_closed : bool
-        If False, drop the closed-source models.
-    """
-    _apply_style()
-
-    all_names, family_map, metrics, totals, per_ds = _build_sgs_total_data()
-
-    # filter
-    if not include_closed:
-        names = [n for n in all_names if family_map[n] != "Closed"]
-    else:
-        names = list(all_names)
-
-    # compute std across datasets for each (model, metric)
-    model_std = {}
-    for n in names:
-        ds_arr = np.array(per_ds[n])  # (n_datasets, 6)
-        model_std[n] = np.nanstd(ds_arr, axis=0, ddof=1)  # (6,)
-
-    # ── family colours (base hue) with shades per member ──
-    family_bases = {
-        "Llama":  (0.85, 0.33, 0.24),   # red-ish
-        "Gemma":  (0.20, 0.63, 0.17),   # green
-        "Qwen":   (0.22, 0.46, 0.87),   # blue
-        "Closed": (0.55, 0.34, 0.70),   # purple
-    }
-
-    def _shade(base_rgb, idx, total):
-        """Lighten/darken base colour: idx=0 lightest, idx=total-1 darkest."""
-        if total <= 1:
-            return base_rgb
-        t = 0.35 + 0.65 * idx / (total - 1)          # 0.35 … 1.0
-        return tuple(b * t + (1 - t) * 1.0 for b in base_rgb)   # lerp to white
-
-    # count members per family among active names
-    from collections import Counter
-    fam_counts = Counter(family_map[n] for n in names)
-    fam_seen = {f: 0 for f in fam_counts}
-
-    model_color = {}
-    for n in names:
-        f = family_map[n]
-        model_color[n] = _shade(family_bases[f], fam_seen[f], fam_counts[f])
-        fam_seen[f] += 1
-
-    n_metrics = len(metrics)
-    fig, ax = plt.subplots(figsize=(14, 5.5))
-    ax.grid(False)
-
-    bar_width = 0.7 / max(len(names), 1)
-    group_gap = 1.0      # spacing between metric groups
-
-    xtick_positions = []
-    legend_handles = {}
-
-    for mi, metric in enumerate(metrics):
-        # gather (model, value, std) triples that are not NaN
-        triples = []
-        for n in names:
-            v = totals[n][mi]
-            if not np.isnan(v):
-                s = model_std[n][mi] if not np.isnan(model_std[n][mi]) else 0.0
-                triples.append((n, v, s))
-        # sort smallest → largest
-        triples.sort(key=lambda p: p[1])
-
-        group_left = mi * (len(names) + 2) * bar_width * group_gap
-        for bi, (model_name, val, std) in enumerate(triples):
-            xpos = group_left + bi * bar_width
-            bar = ax.bar(
-                xpos, val, width=bar_width * 0.9,
-                yerr=std,
-                color=model_color[model_name],
-                edgecolor="gray", linewidth=0.6,
-                capsize=2,
-                error_kw=dict(elinewidth=0.8, ecolor="black"),
-            )
-            if model_name not in legend_handles:
-                legend_handles[model_name] = bar[0]
-        # tick at centre of group
-        centre = group_left + (len(triples) - 1) * bar_width / 2 if triples else group_left
-        xtick_positions.append((centre, metric))
-
-    ax.set_xticks([p for p, _ in xtick_positions])
-    ax.set_xticklabels([l for _, l in xtick_positions], fontsize=13, fontweight="bold")
-    ax.set_ylabel("Total SGS", fontsize=14, fontweight="bold")
-    ax.tick_params(axis="y", labelsize=12)
+    ax.set_xlabel(r"$\mathrm{SGS}_{\mathrm{BLEU}}$  (generation consistency)",
+                  fontsize=10, fontweight="bold")
+    ax.set_ylabel(r"$\mathrm{SGS}_{\mathrm{MR}}$  (response mirroring)",
+                  fontsize=10, fontweight="bold")
+    ax.tick_params(labelsize=8)
     for spine in ["top", "right"]:
         ax.spines[spine].set_visible(False)
 
-    # Metric axis family brackets below the x-axis
-    # metrics order: 0=Δ-Cos, 1=Δ-BLEU, 2=Δ-BERT, 3=Δ-Prob, 4=Δ-Ent, 5=Δ-MR
-    metric_axes = [
-        ("Activation\nGeometry", [0]),        # Δ-Cos
-        ("Generation Q.", [1, 2]),             # Δ-BLEU, Δ-BERT
-        ("Confidence", [3, 4]),                # Δ-Prob, Δ-Ent
-        ("Mirroring", [5]),                    # Δ-MR
+    # legend in the lower-right empty region (closed models cluster bottom-left,
+    # open models upper-half, so bottom-right is uncluttered)
+    from matplotlib.lines import Line2D
+    handles = [
+        Line2D([0], [0], marker="o", linestyle="",
+               markerfacecolor=FAMILY_COLOR["Llama"], markeredgecolor="black",
+               markersize=8, label="Llama (open)"),
+        Line2D([0], [0], marker="o", linestyle="",
+               markerfacecolor=FAMILY_COLOR["Gemma"], markeredgecolor="black",
+               markersize=8, label="Gemma (open)"),
+        Line2D([0], [0], marker="o", linestyle="",
+               markerfacecolor=FAMILY_COLOR["Qwen"], markeredgecolor="black",
+               markersize=8, label="Qwen (open)"),
+        Line2D([0], [0], marker="s", linestyle="",
+               markerfacecolor=FAMILY_COLOR["Closed"], markeredgecolor="black",
+               markersize=8, label="Closed"),
+        Line2D([0], [0], marker="*", linestyle="",
+               markerfacecolor="gold", markeredgecolor="black",
+               markersize=11, label="Ideal"),
+        Line2D([0], [0], color="black", linestyle="--", lw=1.0,
+               label="Pareto frontier"),
     ]
-    # get the x positions of metric group centres
-    tick_xs = [p for p, _ in xtick_positions]
-    y_base = ax.get_ylim()[0]
-    # use axes transform for y offset below the axis
-    from matplotlib.transforms import blended_transform_factory
-    trans = blended_transform_factory(ax.transData, ax.transAxes)
-
-    for axis_name, metric_indices in metric_axes:
-        x_left = tick_xs[metric_indices[0]]
-        x_right = tick_xs[metric_indices[-1]]
-        # half-width of one metric group for bracket extent
-        half_group = (len(names) - 1) * bar_width / 2 + bar_width
-        x_start = x_left - half_group
-        x_end = x_right + half_group
-        x_mid = (x_start + x_end) / 2
-
-        # bracket line
-        y_brack = -0.12
-        ax.plot([x_start, x_end], [y_brack, y_brack],
-                color="black", lw=1.5, clip_on=False, transform=trans)
-        ax.plot([x_start, x_start], [y_brack, y_brack + 0.02],
-                color="black", lw=1.5, clip_on=False, transform=trans)
-        ax.plot([x_end, x_end], [y_brack, y_brack + 0.02],
-                color="black", lw=1.5, clip_on=False, transform=trans)
-        # axis family label
-        ax.text(x_mid, y_brack - 0.02, axis_name,
-                ha="center", va="top",
-                fontsize=11, fontweight="bold", fontstyle="italic",
-                clip_on=False, transform=trans)
-
-    # legend — vertical list grouped by family, placed to the right of the plot
-    from matplotlib.patches import Patch
-    family_order = ["Llama", "Gemma", "Qwen"] + (["Closed"] if include_closed else [])
-
-    ordered_handles, ordered_labels = [], []
-    for fi, fam in enumerate(family_order):
-        if fi > 0:
-            # spacer between families
-            ordered_handles.append(Patch(facecolor="none", edgecolor="none"))
-            ordered_labels.append("")
-        # family header (bold, no patch)
-        ordered_handles.append(Patch(facecolor="none", edgecolor="none"))
-        ordered_labels.append(f"$\\bf{{{fam}}}$")
-        # models in this family
-        for n in names:
-            if family_map[n] == fam and n in legend_handles:
-                ordered_handles.append(legend_handles[n])
-                ordered_labels.append(n)
-
-    ax.legend(
-        ordered_handles, ordered_labels,
-        fontsize=9, ncol=1,
-        loc="center left", bbox_to_anchor=(1.01, 0.5),
-        framealpha=0.95, borderaxespad=0,
-        handletextpad=0.5, handlelength=1.2,
-        labelspacing=0.3,
-    )
+    ax.legend(handles=handles, loc="lower right", fontsize=7.5,
+              framealpha=0.92, handlelength=1.3, borderpad=0.4)
 
     plt.tight_layout()
-    os.makedirs(os.path.dirname(out_path) if os.path.dirname(out_path) else ".", exist_ok=True)
+    out_path = Path(out_path); out_path.parent.mkdir(parents=True, exist_ok=True)
     plt.savefig(out_path, dpi=300, bbox_inches="tight")
-    plt.savefig(out_path.replace(".png", ".pdf"), bbox_inches="tight")
+    plt.savefig(out_path.with_suffix(".png"), dpi=300, bbox_inches="tight")
     plt.close()
-    print(f"  [SAVE] {out_path}")
+    print(f"  [SAVE] {out_path.relative_to(_ROOT)}  +  {out_path.with_suffix('.png').name}")
 
 
-# ══════════════════════════════════════════════════════════════════════════
+# ─────────────────────────────────────────────────────────────────────────────
+# Figure 10 — Per-axis grouped bar chart (open models)
+# ─────────────────────────────────────────────────────────────────────────────
+
+def plot_per_axis_bars(out_path: Path) -> None:
+    """Figure 10: 6 axis groups on x; one bar per open model in each group.
+    Bars colored by family, error bars = std of s_X(i) across prompts."""
+    apply_neurips_style()
+    keys, labels, fams, totals = load_totals(only_open=True)
+    _, stds = load_per_prompt_std(only_open=True)
+    n_models = len(keys)
+
+    # family-shaded colours for distinct bars within a family
+    family_count = {}
+    family_seen = {}
+    for lbl in labels:
+        family_count[fams[lbl]] = family_count.get(fams[lbl], 0) + 1
+    for f in family_count:
+        family_seen[f] = 0
+    color_for: dict[str, tuple] = {}
+    for lbl in labels:
+        f = fams[lbl]
+        idx = family_seen[f]; tot = family_count[f]
+        base = FAMILY_COLOR[f]
+        if tot <= 1:
+            color_for[lbl] = base
+        else:
+            t = 0.45 + 0.55 * idx / (tot - 1)
+            color_for[lbl] = tuple(b * t + (1 - t) * 1.0 for b in base)
+        family_seen[f] += 1
+
+    bar_width = 0.8 / n_models
+    fig, ax = plt.subplots(figsize=(11, 4.2))
+    ax.grid(False)
+
+    xtick_centres = []
+    legend_handles = {}
+    for mi, ax_col in enumerate(SGS_AXES):
+        group_left = mi * (n_models + 2) * bar_width
+        for bi, lbl in enumerate(labels):
+            v = totals[bi, mi]; s = stds[bi, mi]
+            if np.isnan(v):
+                continue
+            err = 0.0 if np.isnan(s) else s
+            xpos = group_left + bi * bar_width
+            bar = ax.bar(xpos, v, width=bar_width * 0.92,
+                         yerr=err,
+                         color=color_for[lbl],
+                         edgecolor="gray", linewidth=0.4,
+                         capsize=2,
+                         error_kw=dict(elinewidth=0.7, ecolor="black"))
+            if lbl not in legend_handles:
+                legend_handles[lbl] = bar[0]
+        centre = group_left + (n_models - 1) * bar_width / 2
+        xtick_centres.append(centre)
+
+    ax.set_xticks(xtick_centres)
+    ax.set_xticklabels([AXIS_LABEL[a] for a in SGS_AXES],
+                       fontsize=10, fontweight="bold")
+    ax.set_ylabel(r"Total $\mathrm{SGS}_X$", fontsize=11, fontweight="bold")
+    ax.tick_params(axis="y", labelsize=9)
+    for spine in ["top", "right"]:
+        ax.spines[spine].set_visible(False)
+
+    # axis-family brackets below the x-axis
+    from matplotlib.transforms import blended_transform_factory
+    trans = blended_transform_factory(ax.transData, ax.transAxes)
+    for axis_name, indices in METRIC_GROUPS:
+        x_left  = xtick_centres[indices[0]]
+        x_right = xtick_centres[indices[-1]]
+        half = (n_models - 1) * bar_width / 2 + bar_width
+        x_start = x_left  - half
+        x_end   = x_right + half
+        x_mid   = (x_start + x_end) / 2
+        y_brack = -0.12
+        ax.plot([x_start, x_end], [y_brack, y_brack],
+                color="black", lw=1.0, clip_on=False, transform=trans)
+        ax.plot([x_start, x_start], [y_brack, y_brack + 0.025],
+                color="black", lw=1.0, clip_on=False, transform=trans)
+        ax.plot([x_end, x_end], [y_brack, y_brack + 0.025],
+                color="black", lw=1.0, clip_on=False, transform=trans)
+        ax.text(x_mid, y_brack - 0.025, axis_name,
+                ha="center", va="top",
+                fontsize=9, fontweight="bold", fontstyle="italic",
+                clip_on=False, transform=trans)
+
+    # legend grouped by family
+    from matplotlib.patches import Patch
+    family_order = ["Llama", "Gemma", "Qwen"]
+    handles, leg_labels = [], []
+    for fi, fam in enumerate(family_order):
+        if fi > 0:
+            handles.append(Patch(facecolor="none", edgecolor="none"))
+            leg_labels.append("")
+        handles.append(Patch(facecolor="none", edgecolor="none"))
+        leg_labels.append(rf"$\mathbf{{{fam}}}$")
+        for lbl in labels:
+            if fams[lbl] == fam and lbl in legend_handles:
+                handles.append(legend_handles[lbl])
+                leg_labels.append(lbl)
+    ax.legend(handles, leg_labels,
+              fontsize=8, ncol=1,
+              loc="center left", bbox_to_anchor=(1.01, 0.5),
+              framealpha=0.95, borderaxespad=0,
+              handletextpad=0.5, handlelength=1.2,
+              labelspacing=0.3)
+
+    plt.tight_layout()
+    out_path = Path(out_path); out_path.parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(out_path, dpi=300, bbox_inches="tight")
+    plt.savefig(out_path.with_suffix(".png"), dpi=300, bbox_inches="tight")
+    plt.close()
+    print(f"  [SAVE] {out_path.relative_to(_ROOT)}  +  {out_path.with_suffix('.png').name}")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Main
-# ══════════════════════════════════════════════════════════════════════════
+# ─────────────────────────────────────────────────────────────────────────────
 
-def main():
-    """Generate the SGS heatmap figure."""
+def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--out_dir",
-        default=os.path.join(_ROOT, "results", "individual_plots"),
-    )
+    parser.add_argument("--out_dir",
+                        default=str(_ROOT / "results" / "sgs" / "figures"))
     args = parser.parse_args()
-    out = args.out_dir
+    out_dir = Path(args.out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
 
-    sgs_tex = os.path.join(_ROOT, "results", "sgs_table_minmax.tex")
+    print("\n[Figure 2]  Heatmap (open models)")
+    plot_heatmap_open(out_dir / "heatmap_open_models.pdf")
 
-    print("\n[1] SGS heatmap (Oranges)")
-    if os.path.exists(sgs_tex):
-        plot_sgs_heatmap(sgs_tex, os.path.join(out, "sgs_heatmap.png"))
-    else:
-        print(f"  [SKIP] {sgs_tex} not found — run utils/significance_test.py first")
+    print("\n[Figure 3]  Pareto plot (BLEU vs Mirroring)")
+    plot_pareto_bleu_vs_mr(out_dir / "pareto_bleu_vs_mirroring.pdf")
 
-    print("\n[2] SGS bar plots (mean ± std across datasets)")
-    if os.path.exists(sgs_tex):
-        plot_sgs_barplot(sgs_tex, os.path.join(out, "sgs_barplot.png"))
-    else:
-        print(f"  [SKIP] {sgs_tex} not found — run utils/significance_test.py first")
+    print("\n[Figure 10] Per-axis bar chart (open models)")
+    plot_per_axis_bars(out_dir / "per_axis_bar_chart.pdf")
 
-    print("\n[3] SGS sorted bar plot — all models (incl. closed)")
-    plot_sgs_sorted_bars(os.path.join(out, "sgs_sorted_bars_all.png"), include_closed=True)
-
-    print("\n[4] SGS sorted bar plot — open-source only")
-    plot_sgs_sorted_bars(os.path.join(out, "sgs_sorted_bars_open.png"), include_closed=False)
-
-    print("\nDone.")
+    print("\n[done]")
 
 
 if __name__ == "__main__":

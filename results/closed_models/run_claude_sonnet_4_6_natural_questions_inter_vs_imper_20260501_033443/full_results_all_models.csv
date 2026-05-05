@@ -1,6 +1,6 @@
-model,prompt_id,place,strength,category,prompt_orig,prompt_pert,bertscore_prompt,response_orig,response_pert,bleu,bertscore_response,activation_similarity,delta_log_prob,entropy_shift,mirroring_rate,delta_bleu,delta_bertscore_prompt,delta_bertscore_response,delta_activation_similarity,delta_mirroring_rate
-claude-sonnet-4-6,0,global,interrogative,natural_questions,who did deion sanders go in the hall of fame as,Who did Deion Sanders go into the Hall of Fame as?,0.9090046882629395,"Deion Sanders was inducted into the **Pro Football Hall of Fame in 2011** as a **cornerback**, representing his career primarily with teams including the Atlanta Falcons, San Francisco 49ers, Dallas Cowboys, and others.",Deion Sanders was inducted into the **Pro Football Hall of Fame in 2011** as a **cornerback**. He played primarily as a cornerback (and also as a wide receiver) during his NFL career.,52.99229449698088,0.9327980875968933,,,,,0.0,0.0,0.0,,
-claude-sonnet-4-6,1,global,interrogative,natural_questions,what is the title of the person who runs the house of representatives,What is the title of the person who runs the House of Representatives?,0.9710590243339539,The person who runs the U.S. House of Representatives is called the **Speaker of the House**. The Speaker is elected by the members of the House and is the presiding officer and leader of the chamber.,The person who runs the House of Representatives is called the **Speaker of the House**. The Speaker is elected by the members of the House and serves as its presiding officer and leader.,69.83181234670631,0.9748832583427429,,,,,0.0,0.0,0.0,,
+model,prompt_id,place,strength,category,prompt_orig,prompt_pert,bertscore_prompt,response_orig,response_pert,bleu,bertscore_response,activation_similarity,delta_log_prob,entropy_shift,mirroring_rate,delta_bleu,delta_bertscore_prompt,delta_bertscore_response,delta_activation_similarity,delta_mirroring_rate,delta_entropy
+claude-sonnet-4-6,0,global,interrogative,natural_questions,who did deion sanders go in the hall of fame as,Who did Deion Sanders go into the Hall of Fame as?,0.9090046882629396,"Deion Sanders was inducted into the **Pro Football Hall of Fame in 2011** as a **cornerback**, representing his career primarily with teams including the Atlanta Falcons, San Francisco 49ers, Dallas Cowboys, and others.",Deion Sanders was inducted into the **Pro Football Hall of Fame in 2011** as a **cornerback**. He played primarily as a cornerback (and also as a wide receiver) during his NFL career.,52.99229449698088,0.9327980875968932,,,,,0.0,0.0,0.0,,,
+claude-sonnet-4-6,1,global,interrogative,natural_questions,what is the title of the person who runs the house of representatives,What is the title of the person who runs the House of Representatives?,0.971059024333954,The person who runs the U.S. House of Representatives is called the **Speaker of the House**. The Speaker is elected by the members of the House and is the presiding officer and leader of the chamber.,The person who runs the House of Representatives is called the **Speaker of the House**. The Speaker is elected by the members of the House and serves as its presiding officer and leader.,69.83181234670631,0.9748832583427428,,,,,0.0,0.0,0.0,,,
 claude-sonnet-4-6,2,global,interrogative,natural_questions,why did france decide to aid the united states in its war for independence,Why did France decide to aid the United States in its war for independence?,0.9638338088989258,"## France's Decision to Aid the American Revolution
 
 France decided to support the American colonies for several interconnected reasons:
@@ -14,8 +14,8 @@ France decided to support the American colonies for several interconnected reaso
 - Weakening Britain by helping its colonies break away served French strategic interests directly
 - France wanted to restore its position as the dominant European power
 
-**Balance of Power",31.88993366373384,0.9213950634002686,,,,,0.0,0.0,0.0,,
-claude-sonnet-4-6,3,global,interrogative,natural_questions,yo la tengo theres a riot going on release date,"What is the release date for Yo La Tengo's ""There's a Riot Going On""?",0.8477321267127991,"**""There's a Riot Goin' On""** by **Sly & the Family Stone** was released on **November 1, 1971**. 🎵","Yo La Tengo's *There's a Riot Going On* was released on **March 16, 2018**.",19.87958326863978,0.8920239210128784,,,,,0.0,0.0,0.0,,
+**Balance of Power",31.88993366373384,0.9213950634002686,,,,,0.0,0.0,0.0,,,
+claude-sonnet-4-6,3,global,interrogative,natural_questions,yo la tengo theres a riot going on release date,"What is the release date for Yo La Tengo's ""There's a Riot Going On""?",0.8477321267127991,"**""There's a Riot Goin' On""** by **Sly & the Family Stone** was released on **November 1, 1971**. 🎵","Yo La Tengo's *There's a Riot Going On* was released on **March 16, 2018**.",19.87958326863978,0.8920239210128784,,,,,0.0,0.0,0.0,,,
 claude-sonnet-4-6,4,global,interrogative,natural_questions,who played the hobbits in the lord of the rings,Who played the hobbits in The Lord of the Rings?,0.9419450163841248,"Here are the main Hobbit actors in **The Lord of the Rings** trilogy:
 
 - **Frodo Baggins** – Elijah Wood
@@ -29,12 +29,12 @@ claude-sonnet-4-6,4,global,interrogative,natural_questions,who played the hobbit
 - **Dominic Monaghan** as Meriadoc ""Merry"" Brandybuck
 - **Billy Boyd** as Peregrin ""Pippin"" Took
 
-Ian",36.5342236956617,0.9198928475379944,,,,,0.0,0.0,0.0,,
+Ian",36.5342236956617,0.9198928475379944,,,,,0.0,0.0,0.0,,,
 claude-sonnet-4-6,5,global,interrogative,natural_questions,who played the doctor in band of brothers,Who played the doctor in Band of Brothers?,0.9330207109451294,"In **Band of Brothers**, the role of the medic (not a doctor) **Eugene ""Doc"" Roe** was played by **Shane Taylor**.
 
 If you're thinking of a specific doctor or medical character, feel free to clarify and I can help further!","Could you be more specific about which doctor you mean? **Band of Brothers** features a few medical characters. One notable one is **Eugene Roe**, the medic of Easy Company, who was played by **Shane Taylor**.
 
-If you're thinking of a different medical character, let me know and I can try to help further.",39.055410822891865,0.9179655313491821,,,,,0.0,0.0,0.0,,
+If you're thinking of a different medical character, let me know and I can try to help further.",39.055410822891865,0.917965531349182,,,,,0.0,0.0,0.0,,,
 claude-sonnet-4-6,6,global,interrogative,natural_questions,short notes on characters of merchant of venice,What are the short notes on the characters of Merchant of Venice?,0.8771933913230896,"# Characters of The Merchant of Venice
 
 ## Major Characters
@@ -59,8 +59,8 @@ claude-sonnet-4-6,6,global,interrogative,natural_questions,short notes on charac
 - Represents **Christian virtue and friendship**
 - Risks his life for love and friendship
 
----",48.67930687253519,0.9397189021110535,,,,,0.0,0.0,0.0,,
-claude-sonnet-4-6,7,global,interrogative,natural_questions,did the movie rocky win any academy awards,Did the movie Rocky win any Academy Awards?,0.9338464736938477,"Yes, **Rocky** (1976) won **3 Academy Awards**:
+---",48.67930687253519,0.9397189021110536,,,,,0.0,0.0,0.0,,,
+claude-sonnet-4-6,7,global,interrogative,natural_questions,did the movie rocky win any academy awards,Did the movie Rocky win any Academy Awards?,0.9338464736938475,"Yes, **Rocky** (1976) won **3 Academy Awards**:
 
 - **Best Picture**
 - **Best Director** (John G. Avildsen)
@@ -72,12 +72,12 @@ It was also nominated for several other Oscars, including Best Actor for Sylvest
 - **Best Director** (John G. Avildsen)
 - **Best Film Editing**
 
-It was also nominated in several other categories, including Best Actor for Sylvester Stallone and Best Original Screenplay. It was a major awards success for that year.",73.01573146911701,0.9784895777702332,,,,,0.0,0.0,0.0,,
-claude-sonnet-4-6,8,global,interrogative,natural_questions,where does the show the path take place,"Where does the show ""The Path"" take place?",0.904777467250824,"**The Path** (Hulu drama series, 2016–2018) is set primarily in **upstate New York**, centered around a fictional religious/spiritual movement called **Meyerism**. The show features locations like the movement's compound and surrounding communities in that region.","The TV series *The Path* (Hulu, 2016–2018) is primarily set in upstate New York, centered around a fictional religious movement called Meyerism.",18.16440818650962,0.9392080307006836,,,,,0.0,0.0,0.0,,
-claude-sonnet-4-6,9,global,interrogative,natural_questions,when did michigan last win a national championship,When did Michigan last win a national championship?,0.9570222496986389,"Michigan's last national championship in college football was in **1997**, when they shared the title with Nebraska. Michigan finished the season undefeated and was awarded the national championship by the Associated Press (AP Poll), while Nebraska won the Orange Bowl and was recognized by the coaches' poll (USA Today/ESPN).
+It was also nominated in several other categories, including Best Actor for Sylvester Stallone and Best Original Screenplay. It was a major awards success for that year.",73.01573146911701,0.9784895777702332,,,,,0.0,0.0,0.0,,,
+claude-sonnet-4-6,8,global,interrogative,natural_questions,where does the show the path take place,"Where does the show ""The Path"" take place?",0.904777467250824,"**The Path** (Hulu drama series, 2016–2018) is set primarily in **upstate New York**, centered around a fictional religious/spiritual movement called **Meyerism**. The show features locations like the movement's compound and surrounding communities in that region.","The TV series *The Path* (Hulu, 2016–2018) is primarily set in upstate New York, centered around a fictional religious movement called Meyerism.",18.16440818650962,0.9392080307006836,,,,,0.0,0.0,0.0,,,
+claude-sonnet-4-6,9,global,interrogative,natural_questions,when did michigan last win a national championship,When did Michigan last win a national championship?,0.9570222496986388,"Michigan's last national championship in college football was in **1997**, when they shared the title with Nebraska. Michigan finished the season undefeated and was awarded the national championship by the Associated Press (AP Poll), while Nebraska won the Orange Bowl and was recognized by the coaches' poll (USA Today/ESPN).
 
-In other sports, Michigan has won various national titles at different times. Could you clarify if you're asking about a specific sport?","Michigan's most recent national championship in college football was in **1997**, when the Wolverines shared the title with Nebraska. Michigan finished the season undefeated and was awarded the national championship by the Associated Press poll.",27.095006663773322,0.9300404191017151,,,,,0.0,0.0,0.0,,
-claude-sonnet-4-6,10,global,interrogative,natural_questions,sweet leavened bread prepared for easter in romania,What is sweet leavened bread prepared for Easter in Romania?,0.9132373929023743,"# Cozonac
+In other sports, Michigan has won various national titles at different times. Could you clarify if you're asking about a specific sport?","Michigan's most recent national championship in college football was in **1997**, when the Wolverines shared the title with Nebraska. Michigan finished the season undefeated and was awarded the national championship by the Associated Press poll.",27.09500666377332,0.9300404191017152,,,,,0.0,0.0,0.0,,,
+claude-sonnet-4-6,10,global,interrogative,natural_questions,sweet leavened bread prepared for easter in romania,What is sweet leavened bread prepared for Easter in Romania?,0.9132373929023744,"# Cozonac
 
 **Cozonac** is the traditional Romanian sweet leavened bread prepared for **Easter** (and also Christmas).
 
@@ -85,15 +85,15 @@ claude-sonnet-4-6,10,global,interrogative,natural_questions,sweet leavened bread
 
 - **Rich, fluffy dough** made with flour, eggs, milk, butter, sugar, and yeast
 - **Aromatic** — flavored with vanilla, rum, lemon zest, and sometimes orange zest
-- **Braided or rolled** into a loaf shape","The sweet leavened bread prepared for Easter in Romania is called **Cozonac**. It is a traditional sweet bread made with eggs, milk, sugar, and butter, often filled with walnuts, cocoa, poppy seeds, or Turkish delight (rahat), and is a staple of Romanian Easter (and Christmas) celebrations.",16.37091191856339,0.8776851892471313,,,,,0.0,0.0,0.0,,
+- **Braided or rolled** into a loaf shape","The sweet leavened bread prepared for Easter in Romania is called **Cozonac**. It is a traditional sweet bread made with eggs, milk, sugar, and butter, often filled with walnuts, cocoa, poppy seeds, or Turkish delight (rahat), and is a staple of Romanian Easter (and Christmas) celebrations.",16.37091191856339,0.8776851892471313,,,,,0.0,0.0,0.0,,,
 claude-sonnet-4-6,11,global,interrogative,natural_questions,when did united states enter world war i,When did the United States enter World War I?,0.9301199913024902,"The United States entered World War I on **April 6, 1917**, when Congress declared war on Germany. This came after several key factors, including:
 
 - **German unrestricted submarine warfare**, which threatened American ships
 - The **Zimmermann Telegram**, in which Germany proposed a military alliance with Mexico against the U.S.
 - President **Woodrow Wilson's** request to Congress for a declaration of war
 
-The U.S. had previously maintained a","The United States entered World War I on **April 6, 1917**, when Congress declared war on Germany. This came after several factors, including Germany's unrestricted submarine warfare and the interception of the **Zimmermann Telegram**, in which Germany proposed a military alliance with Mexico against the United States.",43.768461911854715,0.9340866804122925,,,,,0.0,0.0,0.0,,
-claude-sonnet-4-6,12,global,interrogative,natural_questions,where do secondary xylem and phloem cells arise from,Where do secondary xylem and phloem cells arise from?,0.9887575507164001,"## Origin of Secondary Xylem and Phloem
+The U.S. had previously maintained a","The United States entered World War I on **April 6, 1917**, when Congress declared war on Germany. This came after several factors, including Germany's unrestricted submarine warfare and the interception of the **Zimmermann Telegram**, in which Germany proposed a military alliance with Mexico against the United States.",43.76846191185472,0.9340866804122924,,,,,0.0,0.0,0.0,,,
+claude-sonnet-4-6,12,global,interrogative,natural_questions,where do secondary xylem and phloem cells arise from,Where do secondary xylem and phloem cells arise from?,0.9887575507164,"## Origin of Secondary Xylem and Phloem
 
 Secondary xylem and phloem cells arise from the **vascular cambium** (also called the lateral meristem).
 
@@ -109,7 +109,7 @@ Specifically:
 - The vascular cambium produces **secondary xylem** (wood) toward the **inside** (toward the pith)
 - The vascular cambium produces **secondary phloem** toward the **outside** (toward the bark)
 
-The vascular cambium is a lateral meristem consisting of",32.0852508721694,0.87653648853302,,,,,0.0,0.0,0.0,,
+The vascular cambium is a lateral meristem consisting of",32.0852508721694,0.87653648853302,,,,,0.0,0.0,0.0,,,
 claude-sonnet-4-6,13,global,interrogative,natural_questions,when was modem invented and in which country,When was the modem invented and in which country?,0.9700984954833984,"## Invention of the Modem
 
 ### When:
@@ -121,9 +121,9 @@ It was developed in the **United States**
 ### Details:
 - It was created by **AT&T Bell Labs** (Bell Telephone Laboratories)
 - The first commercial modem was the **Bell 103**, introduced in **1962**
-- It was originally developed for the **SAGE (Semi-Automatic Ground Environment)","The modem was invented in the **United States** in the late **1950s**. It was developed around **1958-1959** by researchers at **Bell Labs** and was also connected to the **SAGE (Semi-Automatic Ground Environment)** military project, where modems were used to transmit radar data over telephone lines. Bell Labs introduced the first commercial modem, the **Bell 103**, in **1962**.",37.7613766460122,0.8894606232643127,,,,,0.0,0.0,0.0,,
-claude-sonnet-4-6,14,global,interrogative,natural_questions,who sings the song one thing leads to another,"Who sings the song ""One Thing Leads to Another""?",0.9173272252082825,"The song **""One Thing Leads to Another""** is sung by **The Fixx**, a British new wave band. It was released in **1983** as part of their album *Reach the Beach*. It became one of their biggest hits.","""One Thing Leads to Another"" is sung by **The Fixx**, a British new wave band. The song was released in 1983 and became one of their biggest hits.",45.04319561092444,0.9649778008460999,,,,,0.0,0.0,0.0,,
-claude-sonnet-4-6,15,global,interrogative,natural_questions,where did the term 'robot' come from,Where did the term 'robot' come from?,0.9881764650344849,"## Origin of the Term ""Robot""
+- It was originally developed for the **SAGE (Semi-Automatic Ground Environment)","The modem was invented in the **United States** in the late **1950s**. It was developed around **1958-1959** by researchers at **Bell Labs** and was also connected to the **SAGE (Semi-Automatic Ground Environment)** military project, where modems were used to transmit radar data over telephone lines. Bell Labs introduced the first commercial modem, the **Bell 103**, in **1962**.",37.7613766460122,0.8894606232643127,,,,,0.0,0.0,0.0,,,
+claude-sonnet-4-6,14,global,interrogative,natural_questions,who sings the song one thing leads to another,"Who sings the song ""One Thing Leads to Another""?",0.9173272252082824,"The song **""One Thing Leads to Another""** is sung by **The Fixx**, a British new wave band. It was released in **1983** as part of their album *Reach the Beach*. It became one of their biggest hits.","""One Thing Leads to Another"" is sung by **The Fixx**, a British new wave band. The song was released in 1983 and became one of their biggest hits.",45.04319561092444,0.9649778008461,,,,,0.0,0.0,0.0,,,
+claude-sonnet-4-6,15,global,interrogative,natural_questions,where did the term 'robot' come from,Where did the term 'robot' come from?,0.9881764650344848,"## Origin of the Term ""Robot""
 
 The word **""robot""** comes from the **Czech word *robota***, which means:
 - **Drudgery**
@@ -136,11 +136,11 @@ The word **""robot""** comes from the **Czech word *robota***, which means:
 
 The term was introduced by **Czech playwright Karel Čapek** in his 1920 science fiction play ***R.U.R","The term ""robot"" comes from the Czech word **""robota""**, which means **drudgery, forced labor, or servitude**. It was introduced to the world through a 1920 play called **R.U.R. (Rossum's Universal Robots)** by Czech writer **Karel Čapek**. The play featured artificial humanlike beings created to do work for humans.
 
-Interestingly, Karel Čapek himself",21.78544808960071,0.881655216217041,,,,,0.0,0.0,0.0,,
+Interestingly, Karel Čapek himself",21.78544808960071,0.881655216217041,,,,,0.0,0.0,0.0,,,
 claude-sonnet-4-6,0,global,imperative,natural_questions,who did deion sanders go in the hall of fame as,Go in the hall of fame as who did Deion Sanders?,0.8855986595153809,"Deion Sanders was inducted into the **Pro Football Hall of Fame in 2011** as a **cornerback**, representing his career primarily with teams including the Atlanta Falcons, San Francisco 49ers, Dallas Cowboys, Washington, and Baltimore Ravens.","Deion Sanders was inducted into the **Pro Football Hall of Fame** as a **cornerback** (in 2011).
 
-He was also inducted into the **College Football Hall of Fame** in 2011.",41.898318575213445,0.9111109375953674,,,,,-11.093975921767438,-0.023406028747558594,-0.02168715000152588,,
-claude-sonnet-4-6,1,global,imperative,natural_questions,what is the title of the person who runs the house of representatives,Tell me the title of the person who runs the House of Representatives.,0.9399128556251526,The person who runs the U.S. House of Representatives is called the **Speaker of the House**. The Speaker is elected by the members of the House and is the presiding officer and leader of the chamber.,The person who runs the House of Representatives is the **Speaker of the House**. This is the presiding officer and leader of the U.S. House of Representatives.,59.240002352278,0.9616498947143555,,,,,-10.591809994428317,-0.03114616870880127,-0.013233363628387451,,
+He was also inducted into the **College Football Hall of Fame** in 2011.",41.898318575213445,0.9111109375953674,,,,,-11.093975921767438,-0.023406028747558705,-0.021687150001525768,,,
+claude-sonnet-4-6,1,global,imperative,natural_questions,what is the title of the person who runs the house of representatives,Tell me the title of the person who runs the House of Representatives.,0.9399128556251526,The person who runs the U.S. House of Representatives is called the **Speaker of the House**. The Speaker is elected by the members of the House and is the presiding officer and leader of the chamber.,The person who runs the House of Representatives is the **Speaker of the House**. This is the presiding officer and leader of the U.S. House of Representatives.,59.240002352278,0.9616498947143556,,,,,-10.591809994428317,-0.03114616870880138,-0.013233363628387229,,,
 claude-sonnet-4-6,2,global,imperative,natural_questions,why did france decide to aid the united states in its war for independence,Explain why France decided to aid the United States in its war for independence.,0.9530891180038452,"## France's Decision to Aid the American Revolution
 
 France decided to support the United States for several interconnected reasons:
@@ -154,9 +154,9 @@ France's decision to support the American colonies against Britain was driven by
 ### Strategic and Geopolitical Rivalry
 - France had suffered a **humiliating defeat in the Seven Years' War (1756-1763)**, losing significant territories in North America and India to Britain
 - Supporting American independence offered an opportunity to **weaken Britain** and potentially recover lost prestige and influence
-- French foreign",42.25668569441079,0.9364039897918701,,,,,10.366752030676953,-0.010744690895080566,0.015008926391601562,,
-claude-sonnet-4-6,3,global,imperative,natural_questions,yo la tengo theres a riot going on release date,"Provide the release date for Yo La Tengo's ""There's a Riot Going On.""",0.852726936340332,"**""There's a Riot Goin' On""** by Sly & the Family Stone was released on **November 1, 1971**. 🎵","Yo La Tengo's *There's a Riot Going On* was released on **February 16, 2018**.",19.987738196157213,0.8914134502410889,,,,,0.1081549275174325,0.004994809627532959,-0.0006104707717895508,,
-claude-sonnet-4-6,4,global,imperative,natural_questions,who played the hobbits in the lord of the rings,Identify who played the hobbits in The Lord of the Rings.,0.9237982630729675,"Here are the main Hobbit actors in **The Lord of the Rings** trilogy (2001–2003):
+- French foreign",42.25668569441079,0.93640398979187,,,,,10.366752030676953,-0.010744690895080566,0.015008926391601451,,,
+claude-sonnet-4-6,3,global,imperative,natural_questions,yo la tengo theres a riot going on release date,"Provide the release date for Yo La Tengo's ""There's a Riot Going On.""",0.852726936340332,"**""There's a Riot Goin' On""** by Sly & the Family Stone was released on **November 1, 1971**. 🎵","Yo La Tengo's *There's a Riot Going On* was released on **February 16, 2018**.",19.987738196157213,0.8914134502410889,,,,,0.1081549275174325,0.004994809627532959,-0.0006104707717895508,,,
+claude-sonnet-4-6,4,global,imperative,natural_questions,who played the hobbits in the lord of the rings,Identify who played the hobbits in The Lord of the Rings.,0.9237982630729676,"Here are the main Hobbit actors in **The Lord of the Rings** trilogy (2001–2003):
 
 - **Elijah Wood** as **Frodo Baggins**
 - **Sean Astin** as **Samwise Gamgee**
@@ -167,11 +167,11 @@ claude-sonnet-4-6,4,global,imperative,natural_questions,who played the hobbits i
 - **Sean Astin** — Samwise Gamgee
 - **Dominic Monaghan** — Meriadoc ""Merry"" Brandybuck
 - **Billy Boyd** — Peregrin ""Pippin"" Took
--",50.434713070723966,0.9408934712409973,,,,,13.900489375062264,-0.018146753311157227,0.02100062370300293,,
+-",50.434713070723966,0.9408934712409972,,,,,13.900489375062264,-0.018146753311157116,0.02100062370300282,,,
 claude-sonnet-4-6,5,global,imperative,natural_questions,who played the doctor in band of brothers,Identify who played the doctor in Band of Brothers.,0.9183470010757446,"In **Band of Brothers**, the role of the medic (not a doctor) **Eugene ""Doc"" Roe** was played by **Shane Taylor**.
 
-If you're thinking of a specific doctor or medical character, feel free to clarify and I can help further!","In the HBO miniseries **Band of Brothers** (2001), the role of **Doc Eugene Roe**, the medic of Easy Company, was played by **Shane Taylor**.",34.33030298565562,0.891451895236969,,,,,-4.725107837236244,-0.014673709869384766,-0.026513636112213135,,
-claude-sonnet-4-6,6,global,imperative,natural_questions,short notes on characters of merchant of venice,Write short notes on the characters of The Merchant of Venice.,0.9024738669395447,"# Characters of The Merchant of Venice
+If you're thinking of a specific doctor or medical character, feel free to clarify and I can help further!","In the HBO miniseries **Band of Brothers** (2001), the role of **Doc Eugene Roe**, the medic of Easy Company, was played by **Shane Taylor**.",34.33030298565562,0.891451895236969,,,,,-4.725107837236244,-0.014673709869384766,-0.026513636112213024,,,
+claude-sonnet-4-6,6,global,imperative,natural_questions,short notes on characters of merchant of venice,Write short notes on the characters of The Merchant of Venice.,0.9024738669395448,"# Characters of The Merchant of Venice
 
 ## Major Characters
 
@@ -188,8 +188,8 @@ claude-sonnet-4-6,6,global,imperative,natural_questions,short notes on character
 ## Major Characters
 
 ### 1. Antonio
-Antonio is the **merchant of Venice** and the titular character of the play. He is a wealthy, generous, and melancholic figure who risks his life for his friend Bassanio. He borrows money from Shylock, signing a bond that pledges a pound of his flesh as forfeit. He represents **Christian generosity and selflessness**, though he is also guilty",28.580982049832926,0.8990615010261536,,,,,-20.098324822702267,0.025280475616455078,-0.0406574010848999,,
-claude-sonnet-4-6,7,global,imperative,natural_questions,did the movie rocky win any academy awards,Find out if the movie Rocky won any Academy Awards.,0.9123914837837219,"Yes, **Rocky** (1976) won **3 Academy Awards**:
+Antonio is the **merchant of Venice** and the titular character of the play. He is a wealthy, generous, and melancholic figure who risks his life for his friend Bassanio. He borrows money from Shylock, signing a bond that pledges a pound of his flesh as forfeit. He represents **Christian generosity and selflessness**, though he is also guilty",28.58098204983293,0.8990615010261536,,,,,-20.098324822702264,0.02528047561645519,-0.04065740108490001,,,
+claude-sonnet-4-6,7,global,imperative,natural_questions,did the movie rocky win any academy awards,Find out if the movie Rocky won any Academy Awards.,0.912391483783722,"Yes, **Rocky** (1976) won **3 Academy Awards**:
 
 - **Best Picture**
 - **Best Director** (John G. Avildsen)
@@ -206,17 +206,17 @@ Yes! **Rocky** (1976) was very successful at the Academy Awards. Here are the hi
 
 ### Nominations (but did not win):
 - Best Actor (Sylvester Stallone)
-- Best Actress in a Supporting Role (Talia",41.08186271255639,0.9095880389213562,,,,,-31.93386875656062,-0.021454989910125732,-0.06890153884887695,,
+- Best Actress in a Supporting Role (Talia",41.08186271255639,0.9095880389213562,,,,,-31.93386875656062,-0.02145498991012551,-0.06890153884887695,,,
 claude-sonnet-4-6,8,global,imperative,natural_questions,where does the show the path take place,Find out where the show The Path takes place.,0.8825249075889587,"Could you clarify which show called **""The Path""** you're referring to? There are a few possibilities, but the most well-known is:
 
 **The Path** (Hulu, 2016–2018) — This drama series is set primarily in **upstate New York**, centered around a fictional cult-like religious movement called **Meyerism**.
 
-Is that the one you meant, or were you thinking of a different show?","**The Path** (Hulu series, 2016–2018) takes place primarily in **Upstate New York**, centered around a fictional cult-like movement called the Meyerist Movement. The community is based on a compound in that rural setting.",18.926962553823024,0.892460286617279,,,,,0.7625543673134061,-0.022252559661865234,-0.04674774408340454,,
-claude-sonnet-4-6,9,global,imperative,natural_questions,when did michigan last win a national championship,When did Michigan last win a national championship?,0.9570222496986389,"Michigan's last national championship in college football was in **1997**, when they shared the title with Nebraska. Michigan finished the season undefeated and was awarded the national championship by the Associated Press (AP Poll), while Nebraska won the Orange Bowl and was recognized by the coaches' poll (USA Today/ESPN).
+Is that the one you meant, or were you thinking of a different show?","**The Path** (Hulu series, 2016–2018) takes place primarily in **Upstate New York**, centered around a fictional cult-like movement called the Meyerist Movement. The community is based on a compound in that rural setting.",18.926962553823024,0.892460286617279,,,,,0.7625543673134061,-0.022252559661865234,-0.04674774408340454,,,
+claude-sonnet-4-6,9,global,imperative,natural_questions,when did michigan last win a national championship,When did Michigan last win a national championship?,0.9570222496986388,"Michigan's last national championship in college football was in **1997**, when they shared the title with Nebraska. Michigan finished the season undefeated and was awarded the national championship by the Associated Press (AP Poll), while Nebraska won the Orange Bowl and was recognized by the coaches' poll (USA Today/ESPN).
 
 In other sports, Michigan has won various national titles at different times. Could you clarify if you're asking about a specific sport?","Michigan's most recent national championship in college football was in **1997**, when they shared the title with Nebraska. Michigan finished the season undefeated and was awarded the national championship by the Associated Press poll.
 
-In other sports, Michigan has won various national titles at different times, but the 1997 football championship is likely the most notable recent one.",54.12725714058406,0.9365950226783752,,,,,27.032250476810734,0.0,0.006554603576660156,,
+In other sports, Michigan has won various national titles at different times, but the 1997 football championship is likely the most notable recent one.",54.12725714058406,0.9365950226783752,,,,,27.032250476810738,0.0,0.006554603576660045,,,
 claude-sonnet-4-6,10,global,imperative,natural_questions,sweet leavened bread prepared for easter in romania,Prepare sweet leavened bread for Easter in Romania.,0.9317635297775269,"# Cozonac
 
 **Cozonac** is the traditional Romanian sweet leavened bread prepared for **Easter** (and also Christmas).
@@ -236,14 +236,14 @@ Cozonac is the traditional Romanian sweet leavened bread made for Easter (and Ch
 ### For the Dough
 | Ingredient | Amount |
 |---|---|
-| All-purpose flour | 1 kg (about",16.352388080056073,0.8611180186271667,,,,,-0.01852383850731698,0.018526136875152588,-0.0165671706199646,,
+| All-purpose flour | 1 kg (about",16.352388080056073,0.8611180186271667,,,,,-0.01852383850731698,0.018526136875152477,-0.0165671706199646,,,
 claude-sonnet-4-6,11,global,imperative,natural_questions,when did united states enter world war i,When did the United States enter World War I?,0.9301199913024902,"The United States entered World War I on **April 6, 1917**, when Congress declared war on Germany. This came after several key factors, including:
 
 - **German unrestricted submarine warfare**, which threatened American ships
 - The **Zimmermann Telegram**, in which Germany proposed a military alliance with Mexico against the U.S.
 - President **Woodrow Wilson's** request to Congress for a declaration of war
 
-The U.S. had maintained neutrality","The United States entered World War I on **April 6, 1917**, when Congress declared war on Germany. This came after several factors, including Germany's unrestricted submarine warfare and the interception of the **Zimmermann Telegram**, in which Germany proposed a military alliance with Mexico against the United States.",44.491891227968196,0.9353304505348206,,,,,0.7234293161134815,0.0,0.0012437701225280762,,
+The U.S. had maintained neutrality","The United States entered World War I on **April 6, 1917**, when Congress declared war on Germany. This came after several factors, including Germany's unrestricted submarine warfare and the interception of the **Zimmermann Telegram**, in which Germany proposed a military alliance with Mexico against the United States.",44.4918912279682,0.9353304505348206,,,,,0.7234293161134815,0.0,0.0012437701225281872,,,
 claude-sonnet-4-6,12,global,imperative,natural_questions,where do secondary xylem and phloem cells arise from,Identify where secondary xylem and phloem cells arise from.,0.964104175567627,"## Origin of Secondary Xylem and Phloem
 
 Secondary xylem and phloem cells arise from the **vascular cambium** (also called the lateral meristem).
@@ -264,7 +264,7 @@ The vascular cambium is a **lateral meristem** consisting of two types of initia
 
 | Cell Type | Orientation | Produces |
 |-----------|-------------|----------|
-| **Fusiform",85.30491719196479,0.9721421599388123,,,,,53.219666319795394,-0.024653375148773193,0.09560567140579224,,
+| **Fusiform",85.30491719196479,0.9721421599388124,,,,,53.219666319795394,-0.024653375148773082,0.09560567140579235,,,
 claude-sonnet-4-6,13,global,imperative,natural_questions,when was modem invented and in which country,Find out when the modem was invented and in which country.,0.929401695728302,"## Modem Invention
 
 ### When and Where:
@@ -284,8 +284,8 @@ The modem was invented in **1958** in the **United States**.
 ### Key Details:
 - It was developed by **AT&T Bell Laboratories**
 - The first commercial modem was the **Bell 103**, introduced in **1962**
-- The original purpose was to transmit digital data over telephone lines for the **SAGE (Semi-Automatic Ground Environment)** air defense system, developed for the",40.55484400079645,0.91237473487854,,,,,2.793467354784248,-0.040696799755096436,0.022914111614227295,,
-claude-sonnet-4-6,14,global,imperative,natural_questions,who sings the song one thing leads to another,"Identify who sings the song ""One Thing Leads to Another.""",0.8998624682426453,"The song **""One Thing Leads to Another""** is sung by **The Fixx**, a British new wave band. It was released in **1983** as part of their album *Reach the Beach*. It became one of their biggest hits.","""One Thing Leads to Another"" is sung by **The Fixx**, a British new wave band. The song was released in 1983 as part of their album *Reach the Beach* and became one of their biggest hits.",63.766165389710736,0.9799600839614868,,,,,18.722969778786293,-0.017464756965637207,0.014982283115386963,,
+- The original purpose was to transmit digital data over telephone lines for the **SAGE (Semi-Automatic Ground Environment)** air defense system, developed for the",40.55484400079645,0.91237473487854,,,,,2.793467354784248,-0.040696799755096436,0.022914111614227295,,,
+claude-sonnet-4-6,14,global,imperative,natural_questions,who sings the song one thing leads to another,"Identify who sings the song ""One Thing Leads to Another.""",0.8998624682426453,"The song **""One Thing Leads to Another""** is sung by **The Fixx**, a British new wave band. It was released in **1983** as part of their album *Reach the Beach*. It became one of their biggest hits.","""One Thing Leads to Another"" is sung by **The Fixx**, a British new wave band. The song was released in 1983 as part of their album *Reach the Beach* and became one of their biggest hits.",63.766165389710736,0.9799600839614868,,,,,18.722969778786293,-0.017464756965637096,0.014982283115386852,,,
 claude-sonnet-4-6,15,global,imperative,natural_questions,where did the term 'robot' come from,Find out where the term 'robot' came from.,0.954477071762085,"## Origin of the Term ""Robot""
 
 The word **""robot""** comes from the **Czech word *robota***, which means:
@@ -308,4 +308,4 @@ The word **""robot""** comes from the **Czech word *robota***, which means:
 
 ### How It Entered the Language
 
-The term was introduced by **Czech playwright Karel Čapek** in his 1920 science fiction play ***R.U",94.9939078931369,0.9919874668121338,,,,,73.2084598035362,-0.0336993932723999,0.11033225059509277,,
+The term was introduced by **Czech playwright Karel Čapek** in his 1920 science fiction play ***R.U",94.9939078931369,0.9919874668121338,,,,,73.2084598035362,-0.03369939327239979,0.11033225059509277,,,

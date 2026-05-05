@@ -516,7 +516,7 @@ CONTINUOUS_METRICS: dict[str, str] = {
     "delta_bleu":                  "Δ BLEU",
     "delta_activation_similarity": "Δ Cos. Sim (Activation)",
     "delta_log_prob":              "Δ Log-Prob",
-    "entropy_shift":               "Δ Entropy",
+    "delta_entropy":               "Δ Entropy",
 }
 
 COT_METRICS: dict[str, str] = {

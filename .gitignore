@@ -9,17 +9,17 @@ venv/
 results/
 commands/
 *.sh
-*.xlsx
+#*.xlsx
 
 data/
-# Result-generation and utility scripts
-aggregate_results.py
-aggregate_closed_models.py
-fill_checklist.py
-fill_checklist_closed.py
-fill_intervsimper_mirroring.py
-diagnose_missing_deltas.py
-normalize_csvs.py
+## Result-generation and utility scripts
+#aggregate_results.py
+#aggregate_closed_models.py
+#fill_checklist.py
+#fill_checklist_closed.py
+#fill_intervsimper_mirroring.py
+#diagnose_missing_deltas.py
+#normalize_csvs.py
 experiments/safety_full.py
 
 # IDE

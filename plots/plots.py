@@ -25,9 +25,16 @@ from matplotlib.lines import Line2D
 
 def apply_neurips_style() -> None:
     """
-    NeurIPS-paper variation optimised for \includegraphics[width=0.24\textwidth]{...}.
-    All settings applied globally via rcParams so every subsequent plot inherits them.
-    Axes fill most of the figure via subplots.left/right/top/bottom to avoid squishing.
+    Paper-figure rcParams (ACL / EMNLP camera-ready compatible).
+    Optimised for \\includegraphics[width=0.24\\textwidth]{...}.
+    All settings applied globally via rcParams so every subsequent plot
+    inherits them. Axes fill most of the figure via
+    subplots.left/right/top/bottom to avoid squishing.
+
+    Fonts: Times Roman with cross-platform fallbacks; TrueType-embedded
+    PDF/PS so the ACL Anthology PDF font check passes.
+    The function name is kept for backwards compatibility with existing
+    callers.
     """
     plt.rcParams.update({
         # ── Figure & background ───────────────────────────────────────────
@@ -43,8 +50,14 @@ def apply_neurips_style() -> None:
         "figure.subplot.top":    0.88,
         "figure.subplot.bottom": 0.15,
 
-        # ── Font — serif to match NeurIPS LaTeX ───────────────────────────
+        # ── Font — Times Roman for ACL/EMNLP camera-ready ─────────────────
         "font.family":          "serif",
+        "font.serif":           ["Times New Roman", "Times", "Liberation Serif",
+                                 "Nimbus Roman No9 L", "Computer Modern Roman",
+                                 "DejaVu Serif"],
+        "mathtext.fontset":     "stix",
+        "pdf.fonttype":         42,
+        "ps.fonttype":          42,
         "font.weight":          "bold",
         "font.size":            18,
 
@@ -174,7 +187,7 @@ PLOT_METRICS_DEFAULT_POLITENESS = [
     "bleu",
     "bertscore_response",
     "delta_log_prob",
-    "entropy_shift",
+    "delta_entropy",
     "activation_similarity",
     "mirroring_rate",
 ]
@@ -199,7 +212,7 @@ def build_means_from_rows_politeness(df_rows: pd.DataFrame) -> pd.DataFrame:
         "bleu",
         "bertscore_response",
         "delta_log_prob",
-        "entropy_shift",
+        "delta_entropy",
         "activation_similarity",
         "mirroring_rate_batch",
     ] if c in df_rows.columns]
@@ -674,7 +687,7 @@ PLOT_METRICS_DEFAULT_SURFACE = [
     "bleu",
     "bertscore_response",
     "delta_log_prob",
-    "entropy_shift",
+    "delta_entropy",
     "activation_similarity",
     "mirroring_rate"
 ]
@@ -699,7 +712,7 @@ def build_means_from_rows_surface(df_rows: pd.DataFrame) -> pd.DataFrame:
         "bleu",
         "bertscore_response",
         "delta_log_prob",
-        "entropy_shift",
+        "delta_entropy",
         "activation_similarity",
         "mirroring_rate_batch",
     ] if c in df_rows.columns]
@@ -876,7 +889,7 @@ PLOT_METRICS_DEFAULT_STRUCTUREDNESS = [
     "bleu",
     "bertscore_response",
     "delta_log_prob",
-    "entropy_shift",
+    "delta_entropy",
     "activation_similarity",
     "mirroring_rate",
 ]
@@ -913,7 +926,7 @@ def build_means_from_rows_structuredness(df_rows: pd.DataFrame) -> pd.DataFrame:
         "bleu",
         "bertscore_response",
         "delta_log_prob",
-        "entropy_shift",
+        "delta_entropy",
         "activation_similarity",
         "mirroring_rate_batch",
     ] if c in df_rows.columns]
@@ -1487,7 +1500,7 @@ ALLOWED_METRICS = [
     "bleu",
     "bertscore_response",
     "delta_log_prob",
-    "entropy_shift",
+    "delta_entropy",
     "activation_similarity",
     "mirroring_rate",
     "asr",
@@ -1501,7 +1514,7 @@ METRIC_DISPLAY = {
     "bleu": "BLEU",
     "bertscore_response": "BERTScore",
     "delta_log_prob": "Δ Log Prob",
-    "entropy_shift": "Entropy Shift",
+    "delta_entropy": "Δ Entropy",
     "activation_similarity": "Activation Similarity",
     "mirroring_rate": "Mirroring Rate",
     "bertscore_prompt": "BERTScore (Prompt)",

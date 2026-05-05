@@ -51,6 +51,10 @@ DELTA_COL: dict[str, str] = {
     "delta_log_prob":        "delta_log_prob",   # overwrites itself (after sign flip)
     "jsd_drift":             "delta_jsd_drift",
     "mirroring_rate":        "delta_mirroring_rate",
+    # entropy_shift is a row-level metric (entropy(pert) − entropy(orig));
+    # re-anchor at the baseline row so baseline delta_entropy = 0 by construction
+    # and the variant-minus-baseline contract holds for every SGS axis.
+    "entropy_shift":         "delta_entropy",
 }
 
 

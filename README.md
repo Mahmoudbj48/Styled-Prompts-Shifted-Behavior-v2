@@ -5,7 +5,7 @@
 
 We formalize **stylistic generalization** as the ability of an instruction-tuned LLM to maintain consistent per-instance behavior under semantic-preserving variation in prompt formulation, and introduce the **Stability-Aware Generalization Objective (SAGO)** framework for evaluating it. SAGO has three components: (1) a benchmark of controlled input variations applied to each prompt, (2) the **Stability Generalization Score (SGS)** that quantifies how much a chosen behavioral property changes across variations, computed per axis, and (3) a set of axes — concrete model properties along which generalization may fail — over which the score is evaluated.
 
-We evaluate eight open-source and three closed-source instruction-tuned LLMs across six benchmark datasets and three families of semantic-preserving variations along four behavioral axes: activation geometry, generation quality, confidence and uncertainty, and response mirroring. **No model achieves uniform stylistic generalization** (p < 0.001 for all SGS values). Generation quality is consistently the most sensitive axis; confidence remains largely stable. Content stability and response mirroring are independent failure modes — the model with the lowest generation sensitivity records the highest mirroring instability, a dissociation that a single aggregate robustness score would conflate.
+We evaluate eight open-source and three closed-source instruction-tuned LLMs across six benchmark datasets and three families of semantic-preserving variations along four behavioral axes: activation geometry, generation consistency, confidence and uncertainty, and response mirroring. **No model achieves uniform stylistic generalization** (p < 0.001 for all SGS values). Generation consistency is consistently the most sensitive axis; confidence remains largely stable. Content stability and response mirroring are independent failure modes — the model with the lowest generation sensitivity records the highest mirroring instability, a dissociation that a single aggregate robustness score would conflate.
 
 ---
 
@@ -44,7 +44,7 @@ Activation geometry is unavailable for all closed-source models (no internal-sta
 | Axis | Δ definition | Description |
 |------|--------------|-------------|
 | **Activation Geometry** (Δ-Cos) | Mean cosine similarity (variant, baseline) − 1 across all layers | Representational drift in hidden states under variation |
-| **Generation Quality** (Δ-BLEU, Δ-BERT) | BLEU(variant, baseline) − 1, BERTScore-F1(variant, baseline) − 1 | Lexical and semantic dissimilarity between baseline and variant outputs |
+| **Generation Consistency** (Δ-BLEU, Δ-BERT) | BLEU(variant, baseline) − 1, BERTScore-F1(variant, baseline) − 1 | Lexical and semantic dissimilarity between baseline and variant outputs |
 | **Confidence & Uncertainty** (Δ-Prob, Δ-Ent) | log p(variant) − log p(baseline), entropy analog | Shift in token-level predictive confidence and distributional sharpness |
 | **Response Mirroring** (Δ-MR) | Binary detector m(i,v) ∈ {0,1} | Whether the model's response adapts to match the variant's framing |
 
