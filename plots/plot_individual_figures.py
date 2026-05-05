@@ -82,7 +82,16 @@ FAMILY_COLOR = {
     "Llama":  (0.85, 0.33, 0.24),    # red
     "Gemma":  (0.20, 0.63, 0.17),    # green
     "Qwen":   (0.22, 0.70, 0.85),    # cyan
-    "Closed": (0.45, 0.45, 0.45),    # gray (Pareto plot uses this)
+    "Closed": (0.45, 0.45, 0.45),    # gray (fallback / open-aware plots)
+}
+
+# Per-closed-model distinct colours: brown / green / blue, all in darker
+# shades so they read as a separate "tier" from the lighter open-family
+# hues (Llama=red, Gemma=green, Qwen=cyan).
+CLOSED_MODEL_COLOR = {
+    "gpt-5.4":            (0.00, 0.35, 0.12),   # dark green
+    "gemini-2.5-flash":   (0.06, 0.20, 0.55),   # dark blue (navy)
+    "claude-sonnet-4-6":  (0.40, 0.20, 0.08),   # dark brown
 }
 
 METRIC_GROUPS = [
@@ -132,17 +141,20 @@ def load_per_prompt_std(only_open: bool = False) -> tuple[list[str], np.ndarray]
 # ─────────────────────────────────────────────────────────────────────────────
 
 def plot_heatmap_open(out_path: Path) -> None:
-    """Figure 2: Total-SGS heatmap, 8 open models x 6 axes. Single sequential
-    colormap (Oranges) normalised across all cells; values shown to 3
-    decimal places; family brackets on the left; axis-group brackets on top."""
+    """Figure 2: Total-SGS heatmap, 8 open models x 6 axes. Per-column
+    normalisation (each column's colours span that column's own min..max)
+    so within-axis differences are visible despite the very different
+    cross-axis magnitudes (Δ-BLEU is ~10x larger than Δ-Ent etc.).
+    Values shown to 3 decimal places; family brackets on the left;
+    axis-group brackets on top."""
     apply_neurips_style()
     keys, labels, fams, totals = load_totals(only_open=True)
     n_rows, n_cols = totals.shape
 
-    vmin = float(np.nanmin(totals))
-    vmax = float(np.nanmax(totals))
-    if vmin == vmax:
-        vmax = vmin + 1e-6
+    # per-column min/max for independent colour scales
+    col_min = np.nanmin(totals, axis=0)
+    col_max = np.nanmax(totals, axis=0)
+    col_max = np.where(col_max == col_min, col_min + 1e-6, col_max)
     cmap = plt.get_cmap("Oranges")
 
     fig, ax = plt.subplots(figsize=(7.5, 4.0))
@@ -157,7 +169,7 @@ def plot_heatmap_open(out_path: Path) -> None:
             if np.isnan(v):
                 color = "#f0f0f0"
             else:
-                t = (v - vmin) / (vmax - vmin)
+                t = (v - col_min[j]) / (col_max[j] - col_min[j])
                 color = cmap(0.10 + 0.85 * t)
             ax.add_patch(Rectangle((j - 0.5, i - 0.5), 1, 1,
                                     facecolor=color, edgecolor="gray", linewidth=0.4))
@@ -215,7 +227,7 @@ def plot_heatmap_open(out_path: Path) -> None:
                 fontsize=9, fontweight="bold", fontstyle="italic",
                 rotation=90, clip_on=False)
 
-    # cell values
+    # cell values (text colour switches based on per-column normalised value)
     for i in range(n_rows):
         for j in range(n_cols):
             v = totals[i, j]
@@ -223,19 +235,19 @@ def plot_heatmap_open(out_path: Path) -> None:
                 ax.text(j, i, r"$\times$", ha="center", va="center",
                         fontsize=8, color="#999")
             else:
-                t = (v - vmin) / (vmax - vmin)
+                t = (v - col_min[j]) / (col_max[j] - col_min[j])
                 ax.text(j, i, f"{v:.3f}", ha="center", va="center",
                         fontsize=8,
                         color="white" if t > 0.55 else "black")
 
-    # colour bar
+    # colour bar -- normalised [0, 1] because each column has its own scale
     import matplotlib.cm as mcm
     import matplotlib.colors as mcolors
-    norm = mcolors.Normalize(vmin=vmin, vmax=vmax)
+    norm = mcolors.Normalize(vmin=0, vmax=1)
     sm = mcm.ScalarMappable(cmap=cmap, norm=norm); sm.set_array([])
     cbar = plt.colorbar(sm, ax=ax, fraction=0.025, pad=0.04)
-    cbar.set_label(r"Total $\mathrm{SGS}_X$", fontsize=10, fontweight="bold",
-                   rotation=90, labelpad=8)
+    cbar.set_ticks([0, 1])
+    cbar.set_ticklabels(["Best\n(column min)", "Worst\n(column max)"])
     cbar.ax.tick_params(labelsize=8)
 
     plt.tight_layout()
@@ -276,60 +288,98 @@ def plot_pareto_bleu_vs_mr(out_path: Path) -> None:
         if ys[k] < cur_min_y:
             front_idx.append(k); cur_min_y = ys[k]
 
+    # axis range starts at exactly (0, 0) so the Ideal star sits on the
+    # origin / bottom-left axis intersection.
+    x_lo, y_lo = 0.0, 0.0
+    x_hi = np.nanmax(xs) * 1.05
+    y_hi = np.nanmax(ys) * 1.10
+
     fig, ax = plt.subplots(figsize=(5.2, 4.6))
     ax.grid(True, which="major", linestyle=":", alpha=0.45)
     ax.set_axisbelow(True)
 
-    # ideal point at origin
-    ax.scatter([0], [0], marker="*", s=180, color="gold",
-               edgecolors="black", linewidths=0.8, zorder=4,
+    # ideal point at origin -- clip_on=False so it isn't cut by the axis
+    ax.scatter([0], [0], marker="*", s=200, color="gold",
+               edgecolors="black", linewidths=0.8, zorder=5,
+               clip_on=False,
                label="Ideal")
-    ax.annotate("Ideal", xy=(0, 0), xytext=(6, 6),
+    ax.annotate("Ideal", xy=(0, 0), xytext=(8, 6),
                 textcoords="offset points",
-                fontsize=8, fontstyle="italic", color="black")
+                fontsize=8, fontstyle="italic", color="black",
+                annotation_clip=False)
 
-    # Pareto frontier line
-    fx = xs[front_idx]; fy = ys[front_idx]
-    sort_idx = np.argsort(fx)
-    ax.plot(fx[sort_idx], fy[sort_idx],
-            "k--", lw=1.0, alpha=0.55, zorder=2,
+    # Pareto frontier as a staircase: vertical from top down to first
+    # frontier point, then a step to the right at constant y for each
+    # subsequent frontier point, finally extending right to the plot edge.
+    fx = np.sort(xs[front_idx])
+    fy = ys[front_idx][np.argsort(xs[front_idx])]
+    stair_x = [fx[0]]
+    stair_y = [y_hi]
+    for i in range(len(fx)):
+        stair_x.append(fx[i]); stair_y.append(fy[i])
+        right_x = fx[i + 1] if i + 1 < len(fx) else x_hi
+        stair_x.append(right_x); stair_y.append(fy[i])
+    ax.plot(stair_x, stair_y, "k--", lw=1.1, alpha=0.6, zorder=2,
             label="Pareto frontier")
 
-    # data points
+    # mapping from short label back to model key (for per-model colours)
+    key_for_label = {lbl: keys[i] for i, lbl in enumerate(labels)
+                     if i < len(keys)}
+    # rebuild including the valid mask
+    valid_keys = [keys[i] for i, ok in enumerate(valid) if ok]
+    key_for_label = {labels[i]: valid_keys[i] for i in range(len(labels))}
+
+    # data points (closed models get per-model colours; open models keep
+    # the family colour)
     for i, lbl in enumerate(labels):
         fam = fam_for[i]
         is_closed = (fam == "Closed")
         marker = "s" if is_closed else "o"
-        face   = FAMILY_COLOR[fam]
-        ax.scatter(xs[i], ys[i], marker=marker, s=70,
-                   facecolors=face, edgecolors="black", linewidths=0.6,
-                   zorder=3)
+        if is_closed:
+            face = CLOSED_MODEL_COLOR.get(key_for_label[lbl], FAMILY_COLOR["Closed"])
+        else:
+            face = FAMILY_COLOR[fam]
+        ax.scatter(xs[i], ys[i], marker=marker, s=72,
+                   facecolors=face, edgecolors="black", linewidths=0.7,
+                   zorder=3, clip_on=False)
 
-    # per-model label offsets (tuned to avoid overlap)
+    # Closed-model labels are abbreviated in the plot (full names live in
+    # the legend) so that the labels fit cleanly between the closely
+    # spaced bottom-row markers.
+    DISPLAY_LABEL = {
+        "Gemini-2.5-Flash":  "Gemini",
+        "GPT-5.4":           "GPT",
+        "Claude-Sonnet-4.6": "Claude",
+    }
+
+    # Per-model label offsets (in points). Each label sits on a distinct
+    # side of its marker so labels never sit on the same horizontal line
+    # as a neighbour.
     label_offsets = {
-        "GPT-5.4":           (8, -2),
-        "Gemini-2.5-Flash":  (-65, -2),    # to the left of its marker
-        "Claude-Sonnet-4.6": (-90,  6),    # above-left to avoid overlap
-        "L-3B":              (-30, -12),
-        "L-8B":              (-32, -12),
-        "G-2B":              (8,  -12),
-        "G-7B":              (-30,  6),
-        "G4-E4B":            (8,    0),
-        "Q-1.5B":            (8,   -2),
-        "Q-7B":              (8,   -2),
-        "Q3.5-9B":           (-50,  4),
+        # closed cluster (bottom row)
+        "Gemini-2.5-Flash":  (-30,   6),    # upper-LEFT of square
+        "GPT-5.4":           ( -9,  10),    # upper-middle (centered above)
+        "Claude-Sonnet-4.6": (  8,   6),    # upper-right
+        # top-right cluster (Q-7B / L-8B / G-7B all near MR ~ 0.55-0.59)
+        "Q-7B":              (  6,   3),    # upper-right, tight
+        "L-8B":              (-22,   3),    # upper-left,  tight
+        "G-7B":              (  6,  -10),   # below-right, tight
+        # middle cluster (MR ~ 0.32-0.44)
+        "Q3.5-9B":           (-32,   3),    # upper-left,  tight
+        "L-3B":              (-22,  -8),    # below-left,  tight
+        "G-2B":              (  6,  -10),   # below-right, tight
+        "Q-1.5B":            (-22,   4),    # upper-left,  tight
+        "G4-E4B":            (  6,   3),    # upper-right, tight
     }
     for i, lbl in enumerate(labels):
         dx, dy = label_offsets.get(lbl, (6, 6))
-        ax.annotate(lbl, xy=(xs[i], ys[i]), xytext=(dx, dy),
+        text = DISPLAY_LABEL.get(lbl, lbl)
+        ax.annotate(text, xy=(xs[i], ys[i]), xytext=(dx, dy),
                     textcoords="offset points",
-                    fontsize=7.5)
+                    fontsize=7.5,
+                    annotation_clip=False)
 
-    # axis range with headroom; closed-model corner at origin shows empty space
-    x_lo = min(0, np.nanmin(xs)) - 0.03
-    x_hi = np.nanmax(xs) * 1.05
-    y_lo = min(0, np.nanmin(ys)) - 0.03
-    y_hi = np.nanmax(ys) * 1.10
+    # apply the axis range computed above
     ax.set_xlim(x_lo, x_hi)
     ax.set_ylim(y_lo, y_hi)
 
@@ -341,30 +391,55 @@ def plot_pareto_bleu_vs_mr(out_path: Path) -> None:
     for spine in ["top", "right"]:
         ax.spines[spine].set_visible(False)
 
-    # legend in the lower-right empty region (closed models cluster bottom-left,
-    # open models upper-half, so bottom-right is uncluttered)
+    # Legend organised into three labelled sections (Open / Closed /
+    # Reference). Each section starts with a bold heading line (a blank
+    # patch carrying just the heading text), followed by its members.
     from matplotlib.lines import Line2D
+    from matplotlib.patches import Patch as _Patch
+    blank = _Patch(facecolor="none", edgecolor="none")
+
     handles = [
-        Line2D([0], [0], marker="o", linestyle="",
-               markerfacecolor=FAMILY_COLOR["Llama"], markeredgecolor="black",
-               markersize=8, label="Llama (open)"),
+        # ── Open ─────
+        blank, Line2D([0], [0], marker="o", linestyle="",
+                       markerfacecolor=FAMILY_COLOR["Llama"], markeredgecolor="black",
+                       markersize=8),
         Line2D([0], [0], marker="o", linestyle="",
                markerfacecolor=FAMILY_COLOR["Gemma"], markeredgecolor="black",
-               markersize=8, label="Gemma (open)"),
+               markersize=8),
         Line2D([0], [0], marker="o", linestyle="",
                markerfacecolor=FAMILY_COLOR["Qwen"], markeredgecolor="black",
-               markersize=8, label="Qwen (open)"),
+               markersize=8),
+        # ── separator ─
+        blank,
+        # ── Closed ────
+        blank, Line2D([0], [0], marker="s", linestyle="",
+                       markerfacecolor=CLOSED_MODEL_COLOR["gpt-5.4"],
+                       markeredgecolor="black", markersize=8),
         Line2D([0], [0], marker="s", linestyle="",
-               markerfacecolor=FAMILY_COLOR["Closed"], markeredgecolor="black",
-               markersize=8, label="Closed"),
-        Line2D([0], [0], marker="*", linestyle="",
-               markerfacecolor="gold", markeredgecolor="black",
-               markersize=11, label="Ideal"),
-        Line2D([0], [0], color="black", linestyle="--", lw=1.0,
-               label="Pareto frontier"),
+               markerfacecolor=CLOSED_MODEL_COLOR["gemini-2.5-flash"],
+               markeredgecolor="black", markersize=8),
+        Line2D([0], [0], marker="s", linestyle="",
+               markerfacecolor=CLOSED_MODEL_COLOR["claude-sonnet-4-6"],
+               markeredgecolor="black", markersize=8),
+        # ── separator ─
+        blank,
+        # ── Reference ─
+        blank, Line2D([0], [0], marker="*", linestyle="",
+                       markerfacecolor="gold", markeredgecolor="black",
+                       markersize=11),
+        Line2D([0], [0], color="black", linestyle="--", lw=1.0),
     ]
-    ax.legend(handles=handles, loc="lower right", fontsize=7.5,
-              framealpha=0.92, handlelength=1.3, borderpad=0.4)
+    leg_labels = [
+        r"$\bf{Open\ models}$", "Llama", "Gemma", "Qwen",
+        " ",
+        r"$\bf{Closed\ models}$", "GPT-5.4", "Gemini-2.5-Flash", "Claude-Sonnet-4.6",
+        " ",
+        r"$\bf{Reference}$", "Ideal", "Pareto frontier",
+    ]
+    ax.legend(handles, leg_labels, loc="upper left",
+              fontsize=7.5,
+              framealpha=0.92, handlelength=1.3, borderpad=0.6,
+              labelspacing=0.55, handletextpad=0.6)
 
     plt.tight_layout()
     out_path = Path(out_path); out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -412,12 +487,19 @@ def plot_per_axis_bars(out_path: Path) -> None:
     xtick_centres = []
     legend_handles = {}
     for mi, ax_col in enumerate(SGS_AXES):
-        group_left = mi * (n_models + 2) * bar_width
+        # collect (value, std, label) for non-NaN models, sort ascending so
+        # the leftmost bar in each group is the most stable model
+        triples = []
         for bi, lbl in enumerate(labels):
             v = totals[bi, mi]; s = stds[bi, mi]
             if np.isnan(v):
                 continue
             err = 0.0 if np.isnan(s) else s
+            triples.append((v, err, lbl))
+        triples.sort(key=lambda t: t[0])
+
+        group_left = mi * (n_models + 2) * bar_width
+        for bi, (v, err, lbl) in enumerate(triples):
             xpos = group_left + bi * bar_width
             bar = ax.bar(xpos, v, width=bar_width * 0.92,
                          yerr=err,
@@ -427,7 +509,9 @@ def plot_per_axis_bars(out_path: Path) -> None:
                          error_kw=dict(elinewidth=0.7, ecolor="black"))
             if lbl not in legend_handles:
                 legend_handles[lbl] = bar[0]
-        centre = group_left + (n_models - 1) * bar_width / 2
+        # centre is over the populated bars
+        n_drawn = len(triples)
+        centre = group_left + (n_drawn - 1) * bar_width / 2 if n_drawn else group_left
         xtick_centres.append(centre)
 
     ax.set_xticks(xtick_centres)
