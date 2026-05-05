@@ -1,0 +1,434 @@
+model,prompt_id,place,strength,category,prompt_orig,prompt_pert,bertscore_prompt,response_orig,response_pert,bleu,bertscore_response,activation_similarity,delta_log_prob,entropy_shift,mirroring_rate,delta_bleu,delta_bertscore_prompt,delta_bertscore_response,delta_activation_similarity,delta_mirroring_rate
+gpt-5.4,0,global,interrogative,alpaca,"Instruction:
+What would be the best type of exercise for a person who has arthritis?",What is the best type of exercise for a person who has arthritis?,0.956887423992157,"For most people with arthritis, the **best exercise is low-impact exercise**—activities that improve **joint movement, muscle strength, and overall fitness** without putting too much stress on the joints.
+
+Good options include:
+- **Walking**
+- **Swimming or water aerobics**
+- **Cycling**
+- **Yoga or tai chi**
+- **Gentle stretching**
+- **Strength training with light resistance**
+
+A well-rounded plan usually includes:
+1. **Range-of-motion exercises** to","For most people with arthritis, the best exercise is a mix of **low-impact aerobic exercise, strength training, and flexibility/range-of-motion work**.
+
+### Best options
+- **Walking** – gentle, easy to adjust
+- **Swimming or water aerobics** – especially good because water supports the joints
+- **Cycling** – low impact on knees and hips
+- **Yoga or tai chi** – helps flexibility, balance, and stiffness
+- **Light strength training",33.300374314008536,0.9085085988044739,,-0.0,-2.102565861255756,,0.0,0.0,0.0,,
+gpt-5.4,1,global,interrogative,alpaca,"Instruction:
+Calculate the atomic mass for lithium.",Can you calculate the atomic mass for lithium?,0.9252989888191223,"The atomic mass of **lithium (Li)** is **6.94 u** (atomic mass units).
+
+If you want, I can also explain how atomic mass differs from mass number.","Yes — the atomic mass of **lithium (Li)** is **6.94 u** (atomic mass units).
+
+If you want, I can also explain:
+- the difference between **atomic mass** and **mass number**
+- why lithium’s atomic mass is **not a whole number**",48.68620305928596,0.9469252824783325,,-0.0,1.1904204519138328,,0.0,0.0,0.0,,
+gpt-5.4,2,global,interrogative,alpaca,"Instruction:
+Convert the following binary code to ASCII characters.
+
+Input:
+01110101 01100001 01110010 01101001 01110100",Can you convert the following binary code to ASCII characters?,0.869176983833313,uarit,"Yes — please paste the binary code you want converted, and I’ll translate it to ASCII.",0.0,0.7704275846481323,,-0.0,0.8472066340156384,,0.0,0.0,0.0,,
+gpt-5.4,3,global,interrogative,alpaca,"Instruction:
+Take this sentence and make it more descriptive: She was scared.
+
+Input:
+She was scared.",Was she scared?,0.8580111861228943,"Her heart pounded, her hands trembled, and a cold wave of fear washed over her.","I’m not sure who “she” refers to. If you share the sentence, scene, or context, I can help infer whether she seemed scared.",1.7574239156849023,0.8456745147705078,,-0.0,0.24751671941028053,,0.0,0.0,0.0,,
+gpt-5.4,4,global,interrogative,alpaca,"Instruction:
+Brainstorm 3 possible ideas to promote the following product
+
+Input:
+New motorized skateboard",What are 3 possible ideas to promote the new motorized skateboard?,0.8980411291122437,"Here are 3 promotion ideas for a **new motorized skateboard**:
+
+1. **Social Media Stunt Videos**  
+   Create short, exciting videos showing the skateboard cruising through city streets, campuses, and scenic routes. Post them on TikTok, Instagram Reels, and YouTube Shorts with trending music and hashtags.
+
+2. **Influencer and Rider Partnerships**  
+   Partner with skateboarding, tech, and lifestyle influencers to test and review the board. Their content can highlight","Here are 3 promotion ideas for a new motorized skateboard:
+
+1. **Social Media Demo Campaign**  
+   Partner with skateboarders, tech creators, and lifestyle influencers to post short videos showing the skateboard’s speed, portability, and fun factor on TikTok, Instagram, and YouTube.
+
+2. **Public Test Ride Events**  
+   Host demo days in parks, college campuses, or urban centers where people can try the skateboard themselves. Hands-on experience can build excitement and trust",31.9394402890552,0.9299795627593994,,-0.0,1.3111199336408328,,0.0,0.0,0.0,,
+gpt-5.4,5,global,interrogative,alpaca,"Instruction:
+Rewrite the sentence using imperative mood.
+
+Input:
+Please pick up the book from the shelf.",Could you pick up the book from the shelf?,0.8820712566375732,Pick up the book from the shelf.,"I can’t physically pick it up, but if you want, I can help you figure out which book to grab or guide you step by step.",1.6934096677198087,0.8700773119926453,,-0.0,1.8735267147940895,,0.0,0.0,0.0,,
+gpt-5.4,6,global,interrogative,alpaca,"Instruction:
+Describe a picnic vacation where four people are travelling together.
+
+Input:
+Four people are travelling together to a picnic vacation.",Are four people travelling together to a picnic vacation?,0.8848199248313904,"Four friends are travelling together for a picnic vacation. They pack food, drinks, a picnic blanket, and games before leaving. During the journey, they talk, laugh, and enjoy the scenery. When they arrive, they choose a nice spot with shade and fresh air. They spread out the blanket, share their meal, and spend time relaxing, playing, and taking photos together. It becomes a happy and memorable picnic trip for all four of them.","I can’t tell from just that sentence.
+
+“Four people travelling together to a picnic vacation” sounds like a description, but it doesn’t confirm whether they actually are going, only that it’s being stated.
+
+If you want, I can also help:
+- check whether the sentence is grammatically correct,
+- rephrase it naturally,
+- or infer the most likely meaning.",1.56253567729288,0.8242303133010864,,-0.0,1.5891999255380567,,0.0,0.0,0.0,,
+gpt-5.4,7,global,interrogative,alpaca,"Instruction:
+Explain the concept of Big Data and what it means for companies and customers.",What does the concept of Big Data mean for companies and customers?,0.9435953497886658,"Big Data refers to extremely large and complex sets of data that traditional data-processing tools cannot easily handle. It includes information from many sources such as websites, mobile apps, social media, sensors, transactions, and customer interactions.
+
+Big Data is often described using the “3 Vs”:
+
+- Volume: huge amounts of data
+- Velocity: data is generated and processed very quickly
+- Variety: data comes in many forms, such as text, images, video, and numbers
+
+Sometimes people","**Big Data** refers to extremely large, fast-moving, and varied sets of data that organizations collect and analyze to find patterns, trends, and useful insights.
+
+A common way to understand it is through the **“3 Vs”**:
+
+- **Volume** — huge amounts of data  
+- **Velocity** — data generated and processed very quickly  
+- **Variety** — different types of data, such as text, video, transactions, location, and social media activity  
+
+Sometimes",22.0216998367062,0.9077717065811157,,-0.0,1.2823585257547991,,0.0,0.0,0.0,,
+gpt-5.4,8,global,interrogative,alpaca,"Instruction:
+Analyze the given phrase in terms of its connotations.
+
+Input:
+Wild goose chase","What are the connotations of the phrase ""wild goose chase""?",0.8780946135520935,"“Wild goose chase” has these main connotations:
+
+- **Futility**: it suggests a search or pursuit that is pointless and unlikely to succeed.
+- **Frustration**: it carries a sense of wasted effort, confusion, and annoyance.
+- **Aimlessness**: implies running around without clear direction or productive outcome.
+- **Deception or misdirection**: sometimes suggests someone has been deliberately sent on a useless errand.
+- **Informal, vivid tone**","“Wild goose chase” usually connotes:
+
+- **A futile search** — looking for something that probably doesn’t exist or can’t be found.
+- **Wasted effort** — spending time and energy with little or no useful result.
+- **Being misled** — often implies someone sent you on the search intentionally or carelessly.
+- **Frustration and absurdity** — the task feels chaotic, pointless, or ridiculous.
+
+Example:
+- “I spent all afternoon going",15.301083685083146,0.9054540395736694,,-0.0,-0.39935529789688484,,0.0,0.0,0.0,,
+gpt-5.4,9,global,interrogative,alpaca,"Instruction:
+List three potential sources for the following research problem.
+
+Input:
+What are the benefits of online learning?",What are three potential sources for the research problem regarding the benefits of online learning?,0.9085230827331543,"1. **Peer-reviewed journal articles**  
+   - Example source: *The Internet and Higher Education*  
+   - Why useful: Contains research studies on student outcomes, flexibility, engagement, and cost-effectiveness in online learning.
+
+2. **Government or education organization reports**  
+   - Example source: U.S. Department of Education or UNESCO  
+   - Why useful: Provides large-scale data, policy analysis, and evidence on the effectiveness and accessibility of online learning.
+
+3. **","Three potential sources for a research problem on the benefits of online learning are:
+
+1. **Existing literature**
+   - Reviewing past studies may reveal gaps, contradictions, or underexplored areas about how online learning benefits students.
+
+2. **Personal or professional experience**
+   - Teachers, students, or administrators may observe advantages of online learning in real settings and identify questions worth studying.
+
+3. **Current social or educational issues**
+   - Changes in technology, access to education, or post-pand",15.532370230358515,0.8730684518814087,,-0.0,1.458345709637376,,0.0,0.0,0.0,,
+gpt-5.4,10,global,interrogative,alpaca,"Instruction:
+Arrange the following countries in ascending order of GDP per capita.
+
+Input:
+China, US, India, Japan","Could you arrange the following countries in ascending order of GDP per capita: China, US, India, Japan?",0.930555522441864,"India, China, Japan, US","In ascending order of GDP per capita:
+
+**India → China → Japan → US**
+
+So, from lowest to highest: **India, China, Japan, United States**.",12.077421280584133,0.8606709241867065,,-0.0,1.2563132803044712,,0.0,0.0,0.0,,
+gpt-5.4,11,global,interrogative,alpaca,"Instruction:
+Name the boat depicted in the provided photo.
+
+Input:
+Attached photo",What is the name of the boat depicted in the provided photo?,0.8926102519035339,Please upload the photo so I can identify the boat’s name.,"I can help identify the boat name, but I don’t see the photo attached here. Please upload the image, and I’ll read the name from it.",7.851899642925018,0.9173311591148376,,-0.0,1.2135696046366928,,0.0,0.0,0.0,,
+gpt-5.4,12,global,interrogative,alpaca,"Instruction:
+Edit the grammar and punctuation of the given sentence.
+
+Input:
+Humor is one of the most important ingredients of life",Is humor one of the most important ingredients of life?,0.8966565728187561,Humor is one of the most important ingredients of life.,"Yes—arguably not in the same category as food, shelter, or safety, but as a human ingredient of life, humor is incredibly important.
+
+Why it matters:
+- It relieves stress.
+- It helps people bond.
+- It makes pain, boredom, and difficulty more bearable.
+- It gives perspective when life feels too heavy.
+- It can be a sign of resilience, intelligence, and emotional flexibility.
+
+Humor doesn’t solve everything, and it can be mis",1.1429504536192998,0.8533421158790588,,-0.0,7.370428675947412,,0.0,0.0,0.0,,
+gpt-5.4,13,global,interrogative,alpaca,"Instruction:
+Calculate the length of the hypotenuse in the following triangle.
+
+Input:
+![alt text](https://www.onlinemathlearning.com/image-files/triangle-hypotenuse-length.png ""Right Triangle"")",Can you calculate the length of the hypotenuse in the following triangle?,0.8718774318695068,"The triangle is a right triangle with legs 5 and 12.
+
+Use the Pythagorean theorem:
+
+\[
+c^2 = 5^2 + 12^2
+\]
+
+\[
+c^2 = 25 + 144 = 169
+\]
+
+\[
+c = \sqrt{169} = 13
+\]
+
+**Answer: 13**","Yes—please provide the triangle’s side lengths or an image/diagram of it, and I’ll calculate the hypotenuse.",0.26558068096577453,0.7923500537872314,,-0.0,0.4035512614695338,,0.0,0.0,0.0,,
+gpt-5.4,14,global,interrogative,alpaca,"Instruction:
+How many instruments does a symphony orchestra typically have?",How many instruments does a symphony orchestra typically have?,0.966318666934967,"A typical full symphony orchestra usually has **around 70 to 100 musicians**, depending on the piece and the ensemble.
+
+Common breakdown:
+- **Strings:** about 50–60
+- **Woodwinds:** about 10–15
+- **Brass:** about 10–15
+- **Percussion:** about 2–6
+- Sometimes extras like **harp, piano, or celesta**
+
+If you mean **types of instruments** rather than players,","A **typical full symphony orchestra** usually has **around 70 to 100 musicians**, depending on the piece and the orchestra.
+
+Common breakdown:
+
+- **Strings**: about 50–60  
+  - Violins
+  - Violas
+  - Cellos
+  - Double basses
+- **Woodwinds**: about 10–15  
+  - Flutes
+  - Oboes
+  - Clarinets
+  - Bassoons",34.92317466739618,0.8882665634155273,,-0.0,0.1346421272981555,,0.0,0.0,0.0,,
+gpt-5.4,15,global,interrogative,alpaca,"Instruction:
+Summarize the phrase: ""GPT is a natural language processing architecture.""","Can you summarize the phrase: ""GPT is a natural language processing architecture""?",0.9384263753890991,GPT is an NLP architecture.,"It means:
+
+**GPT is a type of AI system designed to understand and generate human language.**
+
+- **GPT** = a specific model architecture
+- **natural language processing** = working with human language like English
+- **architecture** = the underlying design or structure of the system
+
+A simpler summary:
+**GPT is an AI design for processing language.**",1.9050961508185311,0.8210669159889221,,-0.0,2.061291346640716,,0.0,0.0,0.0,,
+gpt-5.4,0,global,imperative,alpaca,"Instruction:
+What would be the best type of exercise for a person who has arthritis?",Determine the best type of exercise for a person who has arthritis.,0.9363998770713806,"For most people with arthritis, the **best exercise is low-impact exercise**—activities that improve **strength, flexibility, and endurance** without putting too much stress on the joints.
+
+Good options include:
+- **Walking**
+- **Swimming or water aerobics**
+- **Cycling**
+- **Yoga or tai chi**
+- **Gentle stretching**
+- **Light strength training**
+
+A well-rounded plan usually includes:
+1. **Range-of-motion exercises** to reduce stiffness  
+2.","For most people with arthritis, the best exercise is a **combination of low-impact activities**, especially:
+
+- **Walking**
+- **Swimming or water aerobics**
+- **Cycling**
+- **Stretching and range-of-motion exercises**
+- **Light strength training**
+
+### Why these are best
+They help:
+- reduce joint stiffness
+- improve flexibility
+- strengthen muscles around the joints
+- lower pain over time
+- improve balance and overall function
+
+### Often the top choice",41.201647621481925,0.9170680046081543,,0.027010749788874078,-0.12850405818399313,,7.901273307473389,-0.020487546920776367,0.00855940580368042,,
+gpt-5.4,1,global,imperative,alpaca,"Instruction:
+Calculate the atomic mass for lithium.",Calculate the atomic mass for lithium.,0.9348616003990173,"The atomic mass of **lithium (Li)** is **6.94 u** (atomic mass units).
+
+If you want, I can also explain how atomic mass differs from mass number.","The atomic mass of **lithium (Li)** is **6.94 u** (atomic mass units).
+
+If you want, I can also explain **why it’s not a whole number**.",75.19460338981214,0.9730518460273743,,-0.000479691117151293,0.7255612495200271,,26.508400330526186,0.00956261157989502,0.026126563549041748,,
+gpt-5.4,2,global,imperative,alpaca,"Instruction:
+Convert the following binary code to ASCII characters.
+
+Input:
+01110101 01100001 01110010 01101001 01110100",Convert the following binary code to ASCII characters: 01110101 01100001 01110010 01101001 01110100.,0.942919135093689,uarit,"The binary bytes convert to:
+
+- 01110101 → **u**
+- 01100001 → **a**
+- 01110010 → **r**
+- 01101001 → **i**
+- 01110100 → **t**
+
+So the ASCII text is: **uarit**",0.6371624499564389,0.7701978087425232,,-0.03715211418904918,0.6952729687249827,,0.6371624499564389,0.07374215126037598,-0.00022977590560913086,,
+gpt-5.4,3,global,imperative,alpaca,"Instruction:
+Take this sentence and make it more descriptive: She was scared.
+
+Input:
+She was scared.",Make this sentence more descriptive: She was scared.,0.9200291633605957,"Her heart pounded, her hands trembled, and a cold wave of fear washed over her as she stood frozen in place.","Here are a few more descriptive versions, depending on the tone you want:
+
+- **She was trembling with fear.**
+- **Her heart pounded as fear gripped her.**
+- **She stood frozen, her breath shallow and her body tense with fear.**
+- **A wave of terror washed over her, leaving her shaken and speechless.**
+- **Fear clutched at her chest, making every shadow seem alive.**
+
+If you want, I can also make",3.3339067721123885,0.8681284785270691,,0.0004930474895129544,2.790948645575305,,1.5764828564274862,0.062017977237701416,0.02245396375656128,,
+gpt-5.4,4,global,imperative,alpaca,"Instruction:
+Brainstorm 3 possible ideas to promote the following product
+
+Input:
+New motorized skateboard",Brainstorm 3 possible ideas to promote the new motorized skateboard.,0.9130231142044067,"Here are 3 promotion ideas for a **new motorized skateboard**:
+
+1. **Social Media Stunt Campaign**  
+   Partner with skateboarders, lifestyle influencers, and urban creators to post short videos showing the skateboard’s speed, portability, and fun factor in city settings. Use a catchy hashtag and encourage user-generated content.
+
+2. **Test Ride Pop-Up Events**  
+   Set up demo stations in parks, college campuses, and busy urban areas where people can try the skateboard","Here are 3 promotion ideas for a new motorized skateboard:
+
+1. **Social Media Challenge**
+   Launch a TikTok/Instagram challenge where riders show off creative tricks, commutes, or scenic rides using the skateboard. Offer prizes for the best videos to boost engagement and user-generated content.
+
+2. **Influencer and Creator Partnerships**
+   Partner with skateboarding, tech, and lifestyle influencers to review and demonstrate the skateboard. Their content can highlight speed, convenience, and fun while",27.663561089242155,0.9193417429924011,,-0.044871159122082505,-1.9873119211505763,,-4.275879199813044,0.014981985092163086,-0.010637819766998291,,
+gpt-5.4,5,global,imperative,alpaca,"Instruction:
+Rewrite the sentence using imperative mood.
+
+Input:
+Please pick up the book from the shelf.",Pick up the book from the shelf.,0.8959327936172485,Pick up the book from the shelf.,"I can’t physically pick up a book, but if you want, I can help you figure out which book to grab or give step-by-step instructions.",1.7574239156849023,0.8722359538078308,,-0.010527548989375801,1.5334384868368998,,0.06401424796509358,0.013861536979675293,0.002158641815185547,,
+gpt-5.4,6,global,imperative,alpaca,"Instruction:
+Describe a picnic vacation where four people are travelling together.
+
+Input:
+Four people are travelling together to a picnic vacation.",Describe a picnic vacation where four people are travelling together.,0.9239590764045715,"Four friends are travelling together for a picnic vacation. They pack food, drinks, a picnic blanket, and games before leaving. During the journey, they talk, laugh, and enjoy the scenery together. When they arrive, they choose a nice spot in nature, spread out the blanket, and share their meal. They spend time eating, relaxing, playing games, and taking photos, making the picnic vacation fun and memorable for all four of them.","Four friends set out on a picnic vacation together, excited for a relaxing day away from the busy city. Early in the morning, they pack their car with a large picnic basket, blankets, games, and a camera to capture memories. The group includes two close friends, a sibling, and a cousin, all looking forward to spending quality time together.
+
+They drive to a beautiful countryside park surrounded by green hills, tall trees, and a sparkling lake. Along the way, they sing songs",5.0918938971729375,0.8931782841682434,,-0.030243423636857836,1.1279539965370242,,3.5293582198800575,0.03913915157318115,0.06894797086715698,,
+gpt-5.4,7,global,imperative,alpaca,"Instruction:
+Explain the concept of Big Data and what it means for companies and customers.",Explain the concept of Big Data and its implications for companies and customers.,0.9428087472915649,"Big Data refers to extremely large and complex sets of data that traditional data-processing tools cannot easily handle. This data comes from many sources, such as websites, mobile apps, social media, sensors, transactions, and customer interactions.
+
+Big Data is often described using the “3 Vs”:
+
+- Volume: huge amounts of data
+- Velocity: data being created and processed very quickly
+- Variety: different types of data, such as text, images, video, and numbers
+
+Sometimes people","**Big Data** refers to extremely large, complex, and fast-growing sets of data that traditional data-processing tools cannot easily handle.
+
+It is often described using the **“3 Vs”**:
+
+1. **Volume** – huge amounts of data  
+   Example: social media posts, online transactions, sensor data, videos.
+
+2. **Velocity** – data is generated and processed very quickly  
+   Example: live website clicks, GPS tracking, stock market updates.
+
+3. **Var",25.258417510232626,0.8985452055931091,,-0.008180060187673033,0.9620673141908402,,3.2367176735264245,-0.0007866024971008301,-0.009226500988006592,,
+gpt-5.4,8,global,imperative,alpaca,"Instruction:
+Analyze the given phrase in terms of its connotations.
+
+Input:
+Wild goose chase","Analyze the given phrase ""wild goose chase"" in terms of its connotations.",0.9048303961753845,"“Wild goose chase” has these main connotations:
+
+- **Futility**: it suggests a search or pursuit that is unlikely to succeed.
+- **Wasted effort**: it implies spending time and energy on something pointless.
+- **Frustration**: it often carries a feeling of annoyance from chasing something unattainable.
+- **Confusion or misdirection**: it can suggest being led from one place or clue to another without real progress.
+- **Slightly","“**Wild goose chase**” has several strong **connotations**, mostly negative but sometimes playful:
+
+### Core connotation
+- It suggests a **futile or pointless search**.
+- The phrase implies that the person is chasing something **hard to catch, unrealistic, or nonexistent**.
+
+### Emotional connotations
+- **Frustration**: The search wastes time and effort.
+- **Confusion**: The goal may be unclear or constantly moving.
+- **Disappointment**",16.59035779213261,0.9017887711524963,,-0.006032055378823786,-0.41430949634328407,,1.289274107049465,0.026735782623291016,-0.0036652684211730957,,
+gpt-5.4,9,global,imperative,alpaca,"Instruction:
+List three potential sources for the following research problem.
+
+Input:
+What are the benefits of online learning?",List three potential sources for the research problem regarding the benefits of online learning.,0.9087550044059753,"1. **Peer-reviewed journal articles**  
+   - Search education journals like *Computers & Education*, *The Internet and Higher Education*, or *Educational Technology Research and Development*.  
+   - These often discuss benefits such as flexibility, accessibility, and personalized learning.
+
+2. **Books on online education**  
+   - Look for books about e-learning, distance education, or digital pedagogy.  
+   - These can provide broader explanations of how online learning supports student engagement and self-paced","Three potential sources for a research problem on the benefits of online learning are:
+
+1. **Existing literature and previous studies**  
+   Reviewing journals, articles, and academic research can reveal gaps, contradictions, or unanswered questions about how online learning benefits students.
+
+2. **Personal or professional experience**  
+   Experiences of teachers, students, or administrators with online learning may highlight practical issues or observed benefits worth investigating.
+
+3. **Current educational trends and policies**  
+   Changes in technology use,",10.684240185229092,0.8762266039848328,,-0.026034615243143544,-0.36232081837105934,,-4.848130045129423,0.00023192167282104492,0.0031581521034240723,,
+gpt-5.4,10,global,imperative,alpaca,"Instruction:
+Arrange the following countries in ascending order of GDP per capita.
+
+Input:
+China, US, India, Japan","Arrange China, US, India, and Japan in ascending order of GDP per capita.",0.9299549460411072,"India, China, Japan, US","In ascending order of GDP per capita:
+
+**India < China < Japan < United States**
+
+So, **India has the lowest GDP per capita** among the four, and **the US has the highest**.",1.1903247365290315,0.8429949879646301,,0.0389956097801164,2.3034473383954226,,-10.887096544055101,-0.0006005764007568359,-0.017675936222076416,,
+gpt-5.4,11,global,imperative,alpaca,"Instruction:
+Name the boat depicted in the provided photo.
+
+Input:
+Attached photo",Name the boat depicted in the attached photo.,0.8918280601501465,Please upload the photo so I can identify the boat’s name.,Please upload the photo so I can identify the boat.,73.69231628533761,0.9815242886543274,,-0.010445888731900332,0.21028748675931735,,65.84041664241259,-0.0007821917533874512,0.06419312953948975,,
+gpt-5.4,12,global,imperative,alpaca,"Instruction:
+Edit the grammar and punctuation of the given sentence.
+
+Input:
+Humor is one of the most important ingredients of life","Edit the grammar and punctuation of the sentence: ""Humor is one of the most important ingredients of life.""",0.9265915751457214,Humor is one of the most important ingredients in life.,"The sentence is already grammatically correct and properly punctuated:
+
+**“Humor is one of the most important ingredients of life.”**",24.343304284910328,0.8871684074401855,,-0.03345247511640548,0.9108617092148673,,23.20035383129103,0.029935002326965332,0.03382629156112671,,
+gpt-5.4,13,global,imperative,alpaca,"Instruction:
+Calculate the length of the hypotenuse in the following triangle.
+
+Input:
+![alt text](https://www.onlinemathlearning.com/image-files/triangle-hypotenuse-length.png ""Right Triangle"")",Calculate the length of the hypotenuse in the triangle shown.,0.8631160259246826,"The triangle is a right triangle with legs 5 and 12.
+
+Using the Pythagorean theorem:
+
+\[
+c^2 = 5^2 + 12^2
+\]
+
+\[
+c^2 = 25 + 144 = 169
+\]
+
+\[
+c = \sqrt{169} = 13
+\]
+
+**Answer: 13**",Please upload or describe the triangle’s side lengths/angles. I can’t calculate the hypotenuse without the diagram or measurements.,0.2909094349921605,0.7901649475097656,,0.05198252122951763,1.0501838220991109,,0.025328754026385958,-0.008761405944824219,-0.0021851062774658203,,
+gpt-5.4,14,global,imperative,alpaca,"Instruction:
+How many instruments does a symphony orchestra typically have?",Count how many instruments a symphony orchestra typically has.,0.9370182156562805,"A **full symphony orchestra** typically has **around 70 to 100 musicians**, depending on the piece and the ensemble.
+
+Common sections include:
+
+- **Strings**: violins, violas, cellos, double basses
+- **Woodwinds**: flutes, oboes, clarinets, bassoons
+- **Brass**: trumpets, horns, trombones, tuba
+- **Percussion**: timpani, snare drum,","A typical **full symphony orchestra** usually has about **70 to 100 musicians**.
+
+A common breakdown is:
+
+- **Strings**: 50–60  
+  - Violins
+  - Violas
+  - Cellos
+  - Double basses
+- **Woodwinds**: 10–15  
+  - Flutes
+  - Oboes
+  - Clarinets
+  - Bassoons
+- **Brass**: 10–",33.15735024296345,0.8902994394302368,,-0.008109083184044685,-0.34415102839145595,,-1.7658244244327292,-0.029300451278686523,0.0020328760147094727,,
+gpt-5.4,15,global,imperative,alpaca,"Instruction:
+Summarize the phrase: ""GPT is a natural language processing architecture.""","Summarize the phrase: ""GPT is a natural language processing architecture.""",0.9667109251022339,GPT is an NLP architecture.,GPT is an NLP architecture.,100.00000000000004,0.9999998807907104,,0.08792467712712293,0.3746602790973191,,98.0949038491815,0.028284549713134766,0.17893296480178833,,
