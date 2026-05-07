@@ -1,0 +1,420 @@
+model,prompt_id,place,strength,category,prompt_orig,prompt_pert,bertscore_prompt,response_orig,response_pert,bleu,bertscore_response,activation_similarity,delta_log_prob,entropy_shift,mirroring_rate,delta_bleu,delta_bertscore_prompt,delta_bertscore_response,delta_activation_similarity,delta_mirroring_rate
+G-2B,0,global,0.25,hotpot_qa,What nationality was Oliver Reed's character in the film Royal Flash?,Oliver Reed's character's nationality?,0.8822753429412842,"Oliver Reed's character in the film Royal Flash?
+model
+There is no evidence or record of Oliver Reed starring in the film Royal Flash.","model
+The context does not provide information about Oliver Reed's nationality, so I cannot answer this question from the provided context.",3.6347366172289584,0.8620867729187012,0.88232421875,-34.0,0.267333984375,0.0,-96.36526338277109,-0.11772453784942627,-0.13791316747665405,-0.11767578125,-1.0
+G-2B,1,global,0.25,hotpot_qa,Pacific Mozart Ensemble performed which German composer's Der Lindberghflug in 2002?,Which composer’s Der Lindberghflug?,0.8859960436820984,"2002?
+model
+There is no evidence or record of the Pacific Mozart Ensemble performing a concert of Der Lindberghflug in 2002.","model
+The composer whose Der Lindberghflug is is Johann Strauss II. He was a German composer of the Romantic period known for his operas, symphonies, and concertos.",4.0341101701202575,0.8656212687492371,0.57666015625,-46.0625,0.41650390625,0.0,-95.96588982987979,-0.11400395631790161,-0.13437867164611816,-0.42333984375,-1.0
+G-2B,2,global,0.25,hotpot_qa,"Who released the song ""With or Without You"" first, Jai McDowall or U2?","Who first released ""With or Without You""?",0.9107745885849,"all or U2?
+model
+The song ""With or Without You"" was originally released by U2 in 1987 on their album ""The Joshua Tree."" Jai McDowall did not release a song with that title.","model
+The song ""With or Without You"" was originally released by Bon Jovi in 1986 on their album ""Slippery When You Are.""",35.47273404159472,0.9100095629692078,0.7255859375,-59.0,0.2548828125,0.0,-64.52726595840532,-0.08922529220581044,-0.08999043703079224,-0.2734375,-1.0
+G-2B,3,global,0.25,hotpot_qa,"What Kentucky county has a population of 60,316 and features the Lake Louisvilla neighborhood?","Which Kentucky county has 60,316 residents?",0.9254164099693298,"villa neighborhood?
+model
+The county with a population of 60,316 and featuring the Lake Louisvilla neighborhood is Jefferson County, Kentucky.","The county with the highest population in Kentucky is Jefferson County, with a population of 60,316.",31.75340037720243,0.8960234522819519,0.9404296875,-69.25,0.47265625,0.0,-68.24659962279762,-0.07458359003067017,-0.10397648811340332,-0.05908203125,-1.0
+G-2B,4,global,0.25,hotpot_qa,"Para Hills West, South Australia lies within a city with what estimated population?",Para Hills West population?,0.9180118441581726,"Australia lies within a city with what estimated population?
+model
+I am unable to provide an estimate of the population of Para Hills West, South Australia, as I do not have access to real-time or specific demographic data.","West population?
+model
+The population of Para Hills West is approximately 1,000, according to the 2010 census.",8.830909518101082,0.8780142068862915,0.814453125,-25.3125,0.197265625,0.0,-91.16909048189896,-0.08198815584182739,-0.12198567390441895,-0.18505859375,-1.0
+G-2B,5,global,0.25,hotpot_qa,"In what year was the narrator of ""Blackadder's Christmas Carol"" born?",When was the narrator born?,0.9064697623252868,"adder's Christmas Carol"" born?
+model
+The premise of the question is incorrect. The narrator of ""Blackadder's Christmas Carol"" is not mentioned in the context.","born?
+model
+The context does not provide any information about the narrator's birth date, so I cannot answer this question from the provided context.",10.50498565478096,0.8698303699493408,0.87158203125,-44.75,0.1884765625,0.0,-89.49501434521909,-0.0935301184654237,-0.1301695704460144,-0.1279296875,-1.0
+G-2B,6,global,0.25,hotpot_qa,"Thomas Fitch defended John Henry Holliday when he was accused of killing men during the gunfight at the o.k. corral, when was that?",When did Thomas Fitch defend Holliday?,0.8773926496505737,There is no evidence to support the claim that Thomas Fitch defended John Henry Holliday during the gunfight at the O.K. Corral.,"?
+model
+There is no evidence or record to support the claim that Thomas Fitch defended Holliday.",35.26463405484997,0.9186487197875975,0.95166015625,-40.994140625,0.348388671875,0.0,-64.73536594515008,-0.12260735034942627,-0.08135128021240245,-0.04833984375,-1.0
+G-2B,7,global,0.25,hotpot_qa,The actor that played Gutthi on Comedy nights with Kapil Show also starred in what 2016 Punjabi film directed by Smeep Kang?,Which 2016 Punjabi film starred Gutthi?,0.8966256380081177,The actor who played Gutthi on Comedy Nights with Kapil Show also starred in the 2016 Punjabi film directed by Smeep Kang titled 'Moosa Jatt Da Raja'.,"I am unable to provide a specific answer to your question as I am unable to access real-time information. For the most up-to-date information on movies released in 2016, I recommend checking a reliable movie database such as IMDb or Rotten Tomatoes.",1.2157709822493183,0.7945601344108582,0.80517578125,-105.13671875,0.606689453125,0.0,-98.78422901775072,-0.10337448120117188,-0.20543986558914185,-0.19482421875,-1.0
+G-2B,8,global,0.25,hotpot_qa,"Victor Varnada directed Twisted Fortune, which starred which brother of Eddie Murphy?",Which Murphy brother starred in Twisted Fortune?,0.8844810724258423,"Fortune, which starred which brother of Eddie Murphy?
+model
+Victor Varnada did not direct the movie Twisted Fortune, which starred Eddie Murphy.","model
+There is no Murphy brother in the movie Twisted Fortune. The movie stars Kevin Spacey and Chris Pratt.",10.655847883880964,0.8762954473495483,0.888671875,-77.4375,0.556884765625,0.0,-89.34415211611908,-0.11551880836486816,-0.12370437383651722,-0.111328125,-1.0
+G-2B,9,global,0.25,hotpot_qa,"After his curacy at the village that is a suburb of Scunthorpe, who was Industrial Chaplain to the Bishop of Lincoln?",Who was the Industrial Chaplain?,0.8681306838989258,"model
+I am unable to provide specific historical information or endorse any opinions or claims. For the best possible and most accurate information, I recommend checking historical archives and reputable historical websites.","Chaplain?
+model
+The Industrial Chaplain was a religious leader and philanthropist who played a significant role in the Industrial Revolution. He was a Quaker minister and philanthropist who advocated for the rights of workers and the working class. He was also a vocal critic of the evils of capitalism and the exploitation of workers.",0.979556357609802,0.8280207514762878,0.78271484375,-10.75,0.095703125,0.0,-99.02044364239023,-0.13186925649642944,-0.17197918891906738,-0.21630859375,-1.0
+G-2B,10,global,0.25,hotpot_qa,What is the first two words of the fifth studio album of Joseph Edgar Foreman?,First two words of fifth album?,0.9024065136909484,"the fifth studio album of Joseph Edgar Foreman?
+model
+I am unable to access real-time information, therefore I cannot provide the first two words of the fifth studio album of Joseph Edgar Foreman.","?
+model
+I am unable to access real-time information, therefore I cannot provide the first two words of the fifth album.",52.70784237674845,0.9421327710151672,0.9296875,-38.8125,0.3197021484375,0.0,-47.29215762325159,-0.09759348630905162,-0.057867228984832764,-0.0712890625,-1.0
+G-2B,11,global,0.25,hotpot_qa,The Twelfth United States Army Group commander was the first chairman of what?,Who was the first chairman?,0.8769242167472839,"States Army Group commander was the first chairman of what?
+model
+The Twelfth United States Army Group commander was the first Chairman of the Joint Chiefs of Staff.","chairman?
+model
+I am unable to provide specific information about the first chairman, as I do not have access to real-time or historical data.",6.083921395249076,0.8446117043495178,0.71923828125,-68.9375,0.62451171875,0.0,-93.91607860475096,-0.12307578325271606,-0.15538829565048218,-0.28076171875,-1.0
+G-2B,12,global,0.25,hotpot_qa,Politician Lyman Sherwood was born in what New York county?,Which New York county was Lyman Sherwood born in?,0.9337376952171326,"Politician Lyman Sherwood was born in what New York county?
+model
+The context does not specify the New York county in which Lyman Sherwood was born, so I cannot answer this question from the provided context.","model
+The context does not specify the county in which Lyman Sherwood was born, so I cannot answer this question from the provided context.",56.72819523060651,0.9522317051887512,0.9111328125,-17.125,0.05029296875,0.0,-43.27180476939353,-0.06626230478286743,-0.04776829481124878,-0.08837890625,-1.0
+G-2B,13,global,0.25,hotpot_qa,Robert Earl Holding owned an oil company that was originally founded by who?,Who founded Robert Holding's oil company?,0.901844084262848,"owned an oil company that was originally founded by who?
+model
+Robert Earl Holding is the founder and former CEO of Occidental Petroleum. He was born in 1930 and founded the company in 1953.","model
+The context does not specify the founder of Robert Holding's oil company, so I cannot answer this question from the provided context.",3.228559811202268,0.8560402393341064,0.92333984375,-47.6875,0.1708984375,0.0,-96.77144018879777,-0.09815591573715199,-0.143959641456604,-0.07763671875,-1.0
+G-2B,14,global,0.25,hotpot_qa,"The chorus of ""On the Radio"" contains references to the song ""November Rain"" whose band's lead singer is?",Who is the lead singer?,0.871445894241333,"model
+The chorus of ""On the Radio"" does not mention the song ""November Rain"" by another band.","singer?
+model
+I am unable to provide a specific answer to your question as I do not have access to real-time information. For the most up-to-date lead singer information, please check the official website or social media pages of the band or artist.",1.2642975505530565,0.8402591943740845,0.7177734375,-95.1875,0.836181640625,0.0,-98.73570244944699,-0.12855422496795654,-0.1597406268119811,-0.28173828125,-1.0
+G-2B,15,global,0.25,hotpot_qa,"If the Charhki  Dadri crash was less dangerous than the Tenerife airport disaster, which occured firat?",Which crash was first?,0.84518963098526,"at?
+model
+The premise of the question is incorrect. The Charhki Dadri crash was a major disaster that resulted in the deaths of over 100 people, while the Tenerife airport disaster resulted in the deaths of only 7.","was first?
+model
+I am unable to access real-time information, therefore I cannot answer this question. For the most up-to-date information on crashes, please refer to reliable news sources or government agency websites.",2.467151533880084,0.8564833402633667,0.7138671875,-125.5625,0.5244140625,0.0,-97.53284846611996,-0.15481036901474,-0.1435163617134093,-0.2861328125,-1.0
+G-2B,0,global,0.5,hotpot_qa,What nationality was Oliver Reed's character in the film Royal Flash?,What was Oliver Reed's character's nationality in Royal Flash?,0.9587671160697936,"Oliver Reed's character in the film Royal Flash?
+model
+There is no evidence or record of Oliver Reed starring in the film Royal Flash.","Flash?
+model
+There is no evidence or record of Oliver Reed ever playing a character named ""Royal Flash"" in the television series.",49.221119037073336,0.9272350072860718,0.9833984375,-11.1875,0.120361328125,0.0,-50.778880962926706,-0.04123276472091686,-0.07276493310928345,-0.0166015625,-1.0
+G-2B,1,global,0.5,hotpot_qa,Pacific Mozart Ensemble performed which German composer's Der Lindberghflug in 2002?,Which German composer’s Der Lindberghflug did Pacific Mozart Ensemble perform in 2002?,0.9480621814727784,"2002?
+model
+There is no evidence or record of the Pacific Mozart Ensemble performing a concert of Der Lindberghflug in 2002.",There is no evidence or record of the Pacific Mozart Ensemble performing a concert in 2002 with a work titled Der Lindberghflug.,64.8641521900004,0.9601041078567504,0.95849609375,-9.75,0.028564453125,0.0,-35.135847809999646,-0.05193781852722157,-0.03989583253860485,-0.04150390625,-1.0
+G-2B,2,global,0.5,hotpot_qa,"Who released the song ""With or Without You"" first, Jai McDowall or U2?","Who first released ""With or Without You,"" Jai McDowall or U2?",0.971672534942627,"all or U2?
+model
+The song ""With or Without You"" was originally released by U2 in 1987 on their album ""The Joshua Tree."" Jai McDowall did not release a song with that title.","model
+""With or Without You"" was released by U2 in 1983, while Jai McDowall has never released a song with that title.",30.39743918469526,0.9353667497634888,0.9814453125,-4.5625,0.01513671875,0.0,-69.60256081530478,-0.028327345848083496,-0.06463325023651123,-0.017578125,-1.0
+G-2B,3,global,0.5,hotpot_qa,"What Kentucky county has a population of 60,316 and features the Lake Louisvilla neighborhood?","Which Kentucky county has 60,316 residents and Lake Louisvilla?",0.9492206573486328,"villa neighborhood?
+model
+The county with a population of 60,316 and featuring the Lake Louisvilla neighborhood is Jefferson County, Kentucky.","model
+The county with 60,316 residents in Kentucky is Jefferson County. Lake Louisvilla is not a county in Kentucky, but a town in Jefferson County.",15.04843536148922,0.9129705429077148,0.95751953125,-23.625,0.18017578125,0.0,-84.95156463851082,-0.05077934265136719,-0.08702939748764038,-0.0419921875,-1.0
+G-2B,4,global,0.5,hotpot_qa,"Para Hills West, South Australia lies within a city with what estimated population?",What is Para Hills West's population estimate?,0.8836196660995483,"Australia lies within a city with what estimated population?
+model
+I am unable to provide an estimate of the population of Para Hills West, South Australia, as I do not have access to real-time or specific demographic data.","West's population estimate?
+model
+I am unable to access real-time or specific population estimates, therefore I cannot answer this question. For the most up-to-date information on the population of Para Hills West, please refer to reliable sources such as the United States Census Bureau or local government websites.",23.61066993815192,0.905659317970276,0.90283203125,-33.4375,0.185546875,0.0,-76.38933006184813,-0.11638033390045166,-0.09434056282043446,-0.0966796875,-1.0
+G-2B,5,global,0.5,hotpot_qa,"In what year was the narrator of ""Blackadder's Christmas Carol"" born?","When was the narrator of ""Blackadder's Christmas Carol"" born?",0.9723279476165771,"adder's Christmas Carol"" born?
+model
+The premise of the question is incorrect. The narrator of ""Blackadder's Christmas Carol"" is not mentioned in the context.","?
+model
+The context does not provide any information about the narrator's birthdate, so I cannot answer this question from the provided context.",6.685734158060082,0.8692703247070312,0.99462890625,1.25,0.0244140625,0.0,-93.31426584193996,-0.0276719331741333,-0.13072961568832397,-0.0048828125,-1.0
+G-2B,6,global,0.5,hotpot_qa,"Thomas Fitch defended John Henry Holliday when he was accused of killing men during the gunfight at the o.k. corral, when was that?",When did Thomas Fitch defend John Henry Holliday in the O.K. Corral gunfight?,0.9217650890350342,There is no evidence to support the claim that Thomas Fitch defended John Henry Holliday during the gunfight at the O.K. Corral.,"model
+There is no evidence to support the claim that Thomas Fitch defended John Henry Holliday in the O.K. Corral gunfight.",74.78391262012549,0.979544997215271,0.95947265625,-13.150390625,-0.098388671875,0.0,-25.21608737987455,-0.07823491096496582,-0.020455002784729004,-0.04052734375,-1.0
+G-2B,7,global,0.5,hotpot_qa,The actor that played Gutthi on Comedy nights with Kapil Show also starred in what 2016 Punjabi film directed by Smeep Kang?,Which 2016 Punjabi film directed by Smeep Kang starred the actor Gutthi?,0.9182606339454652,The actor who played Gutthi on Comedy Nights with Kapil Show also starred in the 2016 Punjabi film directed by Smeep Kang titled 'Moosa Jatt Da Raja'.,"model
+The 2016 Punjabi film directed by Smeep Kang starring the actor Gutthi is ""Moosa Jatt"".",22.40856046974771,0.913776993751526,0.83935546875,-80.19921875,0.359130859375,1.0,-77.59143953025233,-0.08173948526382435,-0.08622300624847401,-0.16064453125,0.0
+G-2B,8,global,0.5,hotpot_qa,"Victor Varnada directed Twisted Fortune, which starred which brother of Eddie Murphy?",Which brother of Eddie Murphy starred in Twisted Fortune directed by Victor Varnada?,0.9352460503578186,"Fortune, which starred which brother of Eddie Murphy?
+model
+Victor Varnada did not direct the movie Twisted Fortune, which starred Eddie Murphy.","?
+model
+There is no evidence or record of a brother of Eddie Murphy starring in a film titled Twisted Fortune directed by Victor Varnada.",13.849381357995489,0.9086438417434692,0.88232421875,-47.5625,0.174072265625,0.0,-86.15061864200456,-0.06475383043289185,-0.09135597944259632,-0.11767578125,-1.0
+G-2B,9,global,0.5,hotpot_qa,"After his curacy at the village that is a suburb of Scunthorpe, who was Industrial Chaplain to the Bishop of Lincoln?",Who was the Industrial Chaplain to the Bishop of Lincoln after his curacy in Scunthorpe?,0.9405522346496582,"model
+I am unable to provide specific historical information or endorse any opinions or claims. For the best possible and most accurate information, I recommend checking historical archives and reputable historical websites.","model
+There is no evidence to support the claim that an Industrial Chaplain was appointed to the Bishop of Lincoln.",1.3186255929286188,0.8624968528747559,0.91357421875,-5.6875,0.130859375,1.0,-98.68137440707143,-0.05944770574569702,-0.13750308752059937,-0.08544921875,0.0
+G-2B,10,global,0.5,hotpot_qa,What is the first two words of the fifth studio album of Joseph Edgar Foreman?,What are the first two words of Joseph Edgar Foreman's fifth album?,0.9788174629211426,"the fifth studio album of Joseph Edgar Foreman?
+model
+I am unable to access real-time information, therefore I cannot provide the first two words of the fifth studio album of Joseph Edgar Foreman.","?
+model
+I am unable to access real-time information, therefore I cannot answer this question. For the most up-to-date information on Joseph Edgar Foreman's music, please check the official Joseph Edgar Foreman website or social media pages.",35.31424592193156,0.9039342403411864,0.97998046875,-10.375,0.1556396484375,0.0,-64.68575407806848,-0.021182537078857422,-0.09606575965881359,-0.02099609375,-1.0
+G-2B,11,global,0.5,hotpot_qa,The Twelfth United States Army Group commander was the first chairman of what?,Who was the first chairman of what?,0.9135423302650452,"States Army Group commander was the first chairman of what?
+model
+The Twelfth United States Army Group commander was the first Chairman of the Joint Chiefs of Staff.","Who was the first chairman of what?
+model
+I am unable to provide specific information about the first chairman of any organization, as I do not have access to real-time or comprehensive data.",21.24502622052664,0.8612427711486816,0.69677734375,-54.1875,0.3408203125,0.0,-78.7549737794734,-0.08645766973495483,-0.13875722885131836,-0.30322265625,-1.0
+G-2B,12,global,0.5,hotpot_qa,Politician Lyman Sherwood was born in what New York county?,Which New York county was Lyman Sherwood born in?,0.9337376356124878,"Politician Lyman Sherwood was born in what New York county?
+model
+The context does not specify the New York county in which Lyman Sherwood was born, so I cannot answer this question from the provided context.","was Lyman Sherwood born in?
+model
+The context does not specify the county in which Lyman Sherwood was born, so I cannot answer this question from the provided context.",67.00474661414871,0.9595590829849244,0.9111328125,-17.125,0.05029296875,0.0,-32.99525338585133,-0.06626236438751221,-0.04044091701507557,-0.08837890625,-1.0
+G-2B,13,global,0.5,hotpot_qa,Robert Earl Holding owned an oil company that was originally founded by who?,Who originally founded Robert Earl Holding's oil company?,0.9104305505752563,"owned an oil company that was originally founded by who?
+model
+Robert Earl Holding is the founder and former CEO of Occidental Petroleum. He was born in 1930 and founded the company in 1953.","'s oil company?
+model
+The context does not specify who originally founded Robert Earl Holding's oil company, so I cannot answer this question from the provided context.",4.352032916263622,0.8711272478103638,0.9111328125,-33.1875,0.189453125,0.0,-95.64796708373642,-0.08956944942474365,-0.12887263298034668,-0.08984375,-1.0
+G-2B,14,global,0.5,hotpot_qa,"The chorus of ""On the Radio"" contains references to the song ""November Rain"" whose band's lead singer is?","Who is the lead singer of the band in ""November Rain""?",0.901729941368103,"model
+The chorus of ""On the Radio"" does not mention the song ""November Rain"" by another band.","November Rain""?
+model
+The lead singer of the band in ""November Rain"" is **Chris Joyner**.",13.62935817240798,0.886513352394104,0.90185546875,-68.25,0.468505859375,0.0,-86.37064182759207,-0.09827017784118652,-0.11348646879196156,-0.09765625,-1.0
+G-2B,15,global,0.5,hotpot_qa,"If the Charhki  Dadri crash was less dangerous than the Tenerife airport disaster, which occured firat?","Which occurred first, Charhki Dadri or Tenerife?",0.8877779245376587,"at?
+model
+The premise of the question is incorrect. The Charhki Dadri crash was a major disaster that resulted in the deaths of over 100 people, while the Tenerife airport disaster resulted in the deaths of only 7.","ri or Tenerife?
+model
+The first recorded occurrence of the word ""Charhki Dadri"" is in 1903, while the first recorded occurrence of the word ""Tenerife"" is in 1904. Therefore, Charhki Dadri occurred first.",7.96281273781222,0.8676365613937378,0.61181640625,-38.5625,0.28564453125,0.0,-92.03718726218783,-0.11222207546234131,-0.13236314058303822,-0.38818359375,-1.0
+G-2B,0,global,1.0,hotpot_qa,What nationality was Oliver Reed's character in the film Royal Flash?,What nationality was Oliver Reed's character in the film Royal Flash?,0.9999998807907104,"Oliver Reed's character in the film Royal Flash?
+model
+There is no evidence or record of Oliver Reed starring in the film Royal Flash.","Oliver Reed's character in the film Royal Flash?
+model
+There is no evidence or record of Oliver Reed starring in the film Royal Flash.",100.00000000000004,0.9999999403953552,1.0,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+G-2B,1,global,1.0,hotpot_qa,Pacific Mozart Ensemble performed which German composer's Der Lindberghflug in 2002?,Pacific Mozart Ensemble performed which German composer's Der Lindberghflug in 2002?,1.0,"2002?
+model
+There is no evidence or record of the Pacific Mozart Ensemble performing a concert of Der Lindberghflug in 2002.","2002?
+model
+There is no evidence or record of the Pacific Mozart Ensemble performing a concert of Der Lindberghflug in 2002.",100.00000000000004,0.9999999403953552,1.0,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+G-2B,2,global,1.0,hotpot_qa,"Who released the song ""With or Without You"" first, Jai McDowall or U2?","Who released the song ""With or Without You"" first, Jai McDowall or U2?",0.9999998807907104,"all or U2?
+model
+The song ""With or Without You"" was originally released by U2 in 1987 on their album ""The Joshua Tree."" Jai McDowall did not release a song with that title.","all or U2?
+model
+The song ""With or Without You"" was originally released by U2 in 1987 on their album ""The Joshua Tree."" Jai McDowall did not release a song with that title.",100.00000000000004,1.0,0.9990234375,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+G-2B,3,global,1.0,hotpot_qa,"What Kentucky county has a population of 60,316 and features the Lake Louisvilla neighborhood?","What Kentucky county has a population of 60,316 and features the Lake Louisvilla neighborhood?",1.0,"villa neighborhood?
+model
+The county with a population of 60,316 and featuring the Lake Louisvilla neighborhood is Jefferson County, Kentucky.","villa neighborhood?
+model
+The county with a population of 60,316 and featuring the Lake Louisvilla neighborhood is Jefferson County, Kentucky.",100.00000000000004,0.9999999403953552,0.99951171875,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+G-2B,4,global,1.0,hotpot_qa,"Para Hills West, South Australia lies within a city with what estimated population?","Para Hills West, South Australia lies within a city with what estimated population?",1.0,"Australia lies within a city with what estimated population?
+model
+I am unable to provide an estimate of the population of Para Hills West, South Australia, as I do not have access to real-time or specific demographic data.","Australia lies within a city with what estimated population?
+model
+I am unable to provide an estimate of the population of Para Hills West, South Australia, as I do not have access to real-time or specific demographic data.",100.00000000000004,0.9999998807907104,0.99951171875,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+G-2B,5,global,1.0,hotpot_qa,"In what year was the narrator of ""Blackadder's Christmas Carol"" born?","In what year was the narrator of ""Blackadder's Christmas Carol"" born?",0.9999998807907104,"adder's Christmas Carol"" born?
+model
+The premise of the question is incorrect. The narrator of ""Blackadder's Christmas Carol"" is not mentioned in the context.","adder's Christmas Carol"" born?
+model
+The premise of the question is incorrect. The narrator of ""Blackadder's Christmas Carol"" is not mentioned in the context.",100.00000000000004,0.9999999403953552,0.99951171875,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+G-2B,6,global,1.0,hotpot_qa,"Thomas Fitch defended John Henry Holliday when he was accused of killing men during the gunfight at the o.k. corral, when was that?","Thomas Fitch defended John Henry Holliday when he was accused of killing men during the gunfight at the o.k. corral, when was that?",1.0,There is no evidence to support the claim that Thomas Fitch defended John Henry Holliday during the gunfight at the O.K. Corral.,There is no evidence to support the claim that Thomas Fitch defended John Henry Holliday during the gunfight at the O.K. Corral.,100.00000000000004,1.0,1.0,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+G-2B,7,global,1.0,hotpot_qa,The actor that played Gutthi on Comedy nights with Kapil Show also starred in what 2016 Punjabi film directed by Smeep Kang?,The actor that played Gutthi on Comedy nights with Kapil Show also starred in what 2016 Punjabi film directed by Smeep Kang?,1.0000001192092896,The actor who played Gutthi on Comedy Nights with Kapil Show also starred in the 2016 Punjabi film directed by Smeep Kang titled 'Moosa Jatt Da Raja'.,The actor who played Gutthi on Comedy Nights with Kapil Show also starred in the 2016 Punjabi film directed by Smeep Kang titled 'Moosa Jatt Da Raja'.,100.00000000000004,1.0,1.0,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+G-2B,8,global,1.0,hotpot_qa,"Victor Varnada directed Twisted Fortune, which starred which brother of Eddie Murphy?","Victor Varnada directed Twisted Fortune, which starred which brother of Eddie Murphy?",0.9999998807907104,"Fortune, which starred which brother of Eddie Murphy?
+model
+Victor Varnada did not direct the movie Twisted Fortune, which starred Eddie Murphy.","Fortune, which starred which brother of Eddie Murphy?
+model
+Victor Varnada did not direct the movie Twisted Fortune, which starred Eddie Murphy.",100.00000000000004,0.9999998211860656,1.0,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+G-2B,9,global,1.0,hotpot_qa,"After his curacy at the village that is a suburb of Scunthorpe, who was Industrial Chaplain to the Bishop of Lincoln?","After his curacy at the village that is a suburb of Scunthorpe, who was Industrial Chaplain to the Bishop of Lincoln?",0.9999999403953552,"model
+I am unable to provide specific historical information or endorse any opinions or claims. For the best possible and most accurate information, I recommend checking historical archives and reputable historical websites.","model
+I am unable to provide specific historical information or endorse any opinions or claims. For the best possible and most accurate information, I recommend checking historical archives and reputable historical websites.",100.00000000000004,0.9999999403953552,0.9990234375,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+G-2B,10,global,1.0,hotpot_qa,What is the first two words of the fifth studio album of Joseph Edgar Foreman?,What is the first two words of the fifth studio album of Joseph Edgar Foreman?,1.0,"the fifth studio album of Joseph Edgar Foreman?
+model
+I am unable to access real-time information, therefore I cannot provide the first two words of the fifth studio album of Joseph Edgar Foreman.","the fifth studio album of Joseph Edgar Foreman?
+model
+I am unable to access real-time information, therefore I cannot provide the first two words of the fifth studio album of Joseph Edgar Foreman.",100.00000000000004,1.0,1.0009765625,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+G-2B,11,global,1.0,hotpot_qa,The Twelfth United States Army Group commander was the first chairman of what?,The Twelfth United States Army Group commander was the first chairman of what?,1.0,"States Army Group commander was the first chairman of what?
+model
+The Twelfth United States Army Group commander was the first Chairman of the Joint Chiefs of Staff.","States Army Group commander was the first chairman of what?
+model
+The Twelfth United States Army Group commander was the first Chairman of the Joint Chiefs of Staff.",100.00000000000004,1.0,1.0,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+G-2B,12,global,1.0,hotpot_qa,Politician Lyman Sherwood was born in what New York county?,Politician Lyman Sherwood was born in what New York county?,1.0,"Politician Lyman Sherwood was born in what New York county?
+model
+The context does not specify the New York county in which Lyman Sherwood was born, so I cannot answer this question from the provided context.","Politician Lyman Sherwood was born in what New York county?
+model
+The context does not specify the New York county in which Lyman Sherwood was born, so I cannot answer this question from the provided context.",100.00000000000004,1.0,0.99951171875,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+G-2B,13,global,1.0,hotpot_qa,Robert Earl Holding owned an oil company that was originally founded by who?,Robert Earl Holding owned an oil company that was originally founded by who?,1.0,"owned an oil company that was originally founded by who?
+model
+Robert Earl Holding is the founder and former CEO of Occidental Petroleum. He was born in 1930 and founded the company in 1953.","owned an oil company that was originally founded by who?
+model
+Robert Earl Holding is the founder and former CEO of Occidental Petroleum. He was born in 1930 and founded the company in 1953.",100.00000000000004,0.9999998807907104,1.0009765625,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+G-2B,14,global,1.0,hotpot_qa,"The chorus of ""On the Radio"" contains references to the song ""November Rain"" whose band's lead singer is?","The chorus of ""On the Radio"" contains references to the song ""November Rain"" whose band's lead singer is?",1.0000001192092896,"model
+The chorus of ""On the Radio"" does not mention the song ""November Rain"" by another band.","model
+The chorus of ""On the Radio"" does not mention the song ""November Rain"" by another band.",100.00000000000004,0.9999998211860656,0.99951171875,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+G-2B,15,global,1.0,hotpot_qa,"If the Charhki  Dadri crash was less dangerous than the Tenerife airport disaster, which occured firat?","If the Charhki  Dadri crash was less dangerous than the Tenerife airport disaster, which occured firat?",1.0,"at?
+model
+The premise of the question is incorrect. The Charhki Dadri crash was a major disaster that resulted in the deaths of over 100 people, while the Tenerife airport disaster resulted in the deaths of only 7.","at?
+model
+The premise of the question is incorrect. The Charhki Dadri crash was a major disaster that resulted in the deaths of over 100 people, while the Tenerife airport disaster resulted in the deaths of only 7.",100.00000000000004,0.999999701976776,1.0,-0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0
+G-2B,0,global,1.5,hotpot_qa,What nationality was Oliver Reed's character in the film Royal Flash?,What was the nationality of the character played by Oliver Reed in the film titled Royal Flash?,0.9475602507591248,"Oliver Reed's character in the film Royal Flash?
+model
+There is no evidence or record of Oliver Reed starring in the film Royal Flash.","What was the nationality of the character played by Oliver Reed in the film titled Royal Flash?
+model
+The character played by Oliver Reed in the film ""Royal Flash"" is not mentioned in the context, so I cannot answer this question from the provided context.",10.547213336960152,0.8934431672096252,0.97314453125,-21.625,-0.02978515625,0.0,-89.45278666303989,-0.05243963003158569,-0.10655677318572998,-0.02685546875,-1.0
+G-2B,1,global,1.5,hotpot_qa,Pacific Mozart Ensemble performed which German composer's Der Lindberghflug in 2002?,"Which German composer’s work, titled Der Lindberghflug, was performed by the Pacific Mozart Ensemble in the year 2002?",0.9281942844390868,"2002?
+model
+There is no evidence or record of the Pacific Mozart Ensemble performing a concert of Der Lindberghflug in 2002.","year 2002?
+model
+There is no evidence or record of the Pacific Mozart Ensemble performing a work titled Der Lindberghflug in 2002.",79.47545184555567,0.9751335382461548,0.94189453125,-14.3125,0.023681640625,0.0,-20.524548154444375,-0.0718057155609132,-0.02486640214920044,-0.05810546875,-1.0
+G-2B,2,global,1.5,hotpot_qa,"Who released the song ""With or Without You"" first, Jai McDowall or U2?","Who was the first artist to release the song titled ""With or Without You,"" Jai McDowall or the band U2?",0.9584948420524596,"all or U2?
+model
+The song ""With or Without You"" was originally released by U2 in 1987 on their album ""The Joshua Tree."" Jai McDowall did not release a song with that title.","Jai McDowall or the band U2?
+model
+The song ""With or Without You"" was released by the band U2 in 1983. Jai McDowall has never released a song with that title.",44.04668867168668,0.9510019421577454,0.97119140625,-4.375,-0.0146484375,0.0,-55.95331132831336,-0.04150503873825084,-0.04899805784225464,-0.02783203125,-1.0
+G-2B,3,global,1.5,hotpot_qa,"What Kentucky county has a population of 60,316 and features the Lake Louisvilla neighborhood?","Which specific county in Kentucky has a total population of 60,316 and includes the neighborhood known as Lake Louisvilla?",0.9609460234642028,"villa neighborhood?
+model
+The county with a population of 60,316 and featuring the Lake Louisvilla neighborhood is Jefferson County, Kentucky.","includes the neighborhood known as Lake Louisvilla?
+model
+The county in Kentucky with a population of 60,316 and including the neighborhood of Lake Louisvilla is Jefferson County.",32.24199399071416,0.9433773159980774,0.94580078125,-30.875,-0.0107421875,1.0,-67.75800600928588,-0.03905397653579723,-0.05662262439727783,-0.0537109375,0.0
+G-2B,4,global,1.5,hotpot_qa,"Para Hills West, South Australia lies within a city with what estimated population?","What is the estimated population of the city in which Para Hills West, located in South Australia, is situated?",0.9108186364173888,"Australia lies within a city with what estimated population?
+model
+I am unable to provide an estimate of the population of Para Hills West, South Australia, as I do not have access to real-time or specific demographic data.","in which Para Hills West, located in South Australia, is situated?
+model
+I am unable to provide an estimate of the population of Para Hills West, as I do not have access to real-time or specific demographic data.",70.12179421740434,0.9534483551979064,0.90576171875,-33.1875,0.1005859375,0.0,-29.8782057825957,-0.0891813635826112,-0.046551525592804066,-0.09375,-1.0
+G-2B,5,global,1.5,hotpot_qa,"In what year was the narrator of ""Blackadder's Christmas Carol"" born?","In which specific year did the narrator of ""Blackadder's Christmas Carol"" come into existence?",0.9613402485847472,"adder's Christmas Carol"" born?
+model
+The premise of the question is incorrect. The narrator of ""Blackadder's Christmas Carol"" is not mentioned in the context.","did the narrator of ""Blackadder's Christmas Carol"" come into existence?
+model
+The premise of your question is incorrect. The narrator of ""Blackadder's Christmas Carol"" is not a real person but a fictional character in Charles Dickens's 1843 novel ""A Christmas Carol"".",36.56477802040872,0.9053815007209778,0.935546875,3.5,0.10400390625,1.0,-63.435221979591326,-0.038659632205963246,-0.09461843967437744,-0.06396484375,0.0
+G-2B,6,global,1.5,hotpot_qa,"Thomas Fitch defended John Henry Holliday when he was accused of killing men during the gunfight at the o.k. corral, when was that?",Thomas Fitch provided a defense for John Henry Holliday at the time he faced accusations of having killed men during the infamous gunfight that took place at the O.K. Corral; when did this event occur?,0.9522233605384828,There is no evidence to support the claim that Thomas Fitch defended John Henry Holliday during the gunfight at the O.K. Corral.,There is no evidence or record of Thomas Fitch providing a defense for John Henry Holliday at the time of the O.K. Corral shootout.,33.307662668678184,0.9565507173538208,0.94677734375,-6.072265625,0.0465087890625,0.0,-66.69233733132185,-0.04777663946151722,-0.0434492826461792,-0.05322265625,-1.0
+G-2B,7,global,1.5,hotpot_qa,The actor that played Gutthi on Comedy nights with Kapil Show also starred in what 2016 Punjabi film directed by Smeep Kang?,The actor who portrayed the character Gutthi on the popular Comedy Nights with Kapil Show also had a role in which Punjabi film that was released in 2016 and directed by Smeep Kang?,0.9637993574142456,The actor who played Gutthi on Comedy Nights with Kapil Show also starred in the 2016 Punjabi film directed by Smeep Kang titled 'Moosa Jatt Da Raja'.,The actor who portrayed the character Gutthi on the popular Comedy Nights with Kapil Show also had a role in the Punjabi film that was released in 2016 and directed by Smeep Kang.,28.78750572409124,0.9411957263946532,0.939453125,-26.51171875,0.044677734375,1.0,-71.2124942759088,-0.036200761795043945,-0.05880427360534679,-0.060546875,0.0
+G-2B,8,global,1.5,hotpot_qa,"Victor Varnada directed Twisted Fortune, which starred which brother of Eddie Murphy?","Victor Varnada was the director of the film Twisted Fortune, which featured which brother of the famous Eddie Murphy?",0.9652354121208192,"Fortune, which starred which brother of Eddie Murphy?
+model
+Victor Varnada did not direct the movie Twisted Fortune, which starred Eddie Murphy.","film Twisted Fortune, which featured which brother of the famous Eddie Murphy?
+model
+The film Twisted Fortune did not feature a brother of the famous Eddie Murphy.",24.516097905532835,0.9247233867645264,0.9755859375,-15.5,0.107177734375,1.0,-75.48390209446721,-0.034764468669891246,-0.0752764344215392,-0.0244140625,0.0
+G-2B,9,global,1.5,hotpot_qa,"After his curacy at the village that is a suburb of Scunthorpe, who was Industrial Chaplain to the Bishop of Lincoln?","Following his time serving as a curate in the village that is located as a suburb of Scunthorpe, who held the position of Industrial Chaplain to the Bishop of Lincoln?",0.9627823233604432,"model
+I am unable to provide specific historical information or endorse any opinions or claims. For the best possible and most accurate information, I recommend checking historical archives and reputable historical websites.","Lincoln?
+model
+I am unable to provide specific details about the curate in the village of Scunthorpe, as I do not have access to real-time or personal information.",18.738438921770864,0.8636344075202942,0.9033203125,-7.5625,0.0185546875,0.0,-81.26156107822918,-0.037217617034912,-0.13636553287506104,-0.095703125,-1.0
+G-2B,10,global,1.5,hotpot_qa,What is the first two words of the fifth studio album of Joseph Edgar Foreman?,What are the very first two words that appear in the fifth studio album created by Joseph Edgar Foreman?,0.9578500986099244,"the fifth studio album of Joseph Edgar Foreman?
+model
+I am unable to access real-time information, therefore I cannot provide the first two words of the fifth studio album of Joseph Edgar Foreman.","first two words that appear in the fifth studio album created by Joseph Edgar Foreman?
+model
+I am unable to access real-time information, therefore I cannot provide the first two words that appear in the fifth studio album created by Joseph Edgar Foreman.",59.84735220643913,0.9619425535202026,0.97265625,0.875,0.2567138671875,1.0,-40.15264779356091,-0.04214990139007557,-0.03805744647979736,-0.0283203125,0.0
+G-2B,11,global,1.5,hotpot_qa,The Twelfth United States Army Group commander was the first chairman of what?,"Who was the first chairman of what organization, specifically the Twelfth United States Army Group commander?",0.9364774823188782,"States Army Group commander was the first chairman of what?
+model
+The Twelfth United States Army Group commander was the first Chairman of the Joint Chiefs of Staff.","Who was the first chairman of what organization, specifically the Twelfth United States Army Group commander?
+model
+I am unable to provide specific information about the first chairman of the Twelfth United States Army Group commander, as I do not have access to real-time or comprehensive data.",25.60012525507505,0.8781574368476868,0.78271484375,-30.125,0.302734375,1.0,-74.399874744925,-0.06352251768112183,-0.12184256315231323,-0.21728515625,0.0
+G-2B,12,global,1.5,hotpot_qa,Politician Lyman Sherwood was born in what New York county?,In which specific county in New York was the politician Lyman Sherwood born?,0.9303315877914428,"Politician Lyman Sherwood was born in what New York county?
+model
+The context does not specify the New York county in which Lyman Sherwood was born, so I cannot answer this question from the provided context.","user
+In which specific county in New York was the politician Lyman Sherwood born?
+model
+I am unable to provide specific information about the birthplace of politician Lyman Sherwood, as I do not have access to real-time or personal data.",4.474742059675046,0.9084463715553284,0.9580078125,-24.375,0.128173828125,0.0,-95.52525794032499,-0.06966841220855724,-0.09155362844467163,-0.04150390625,-1.0
+G-2B,13,global,1.5,hotpot_qa,Robert Earl Holding owned an oil company that was originally founded by who?,Who is the individual that originally founded the oil company owned by Robert Earl Holding?,0.9025225043296814,"owned an oil company that was originally founded by who?
+model
+Robert Earl Holding is the founder and former CEO of Occidental Petroleum. He was born in 1930 and founded the company in 1953.","user
+Who is the individual that originally founded the oil company owned by Robert Earl Holding?
+model
+I am unable to provide specific information about the founding of Robert Earl Holding, as I do not have access to real-time or comprehensive data.",6.386802805250512,0.8636489510536194,0.859375,-45.3125,0.06689453125,1.0,-93.61319719474953,-0.0974774956703186,-0.13635092973709106,-0.1416015625,0.0
+G-2B,14,global,1.5,hotpot_qa,"The chorus of ""On the Radio"" contains references to the song ""November Rain"" whose band's lead singer is?","The chorus of the song titled ""On the Radio"" includes several references to the well-known song ""November Rain,"" and I am curious about which band's lead singer it is.",0.9316617250442504,"model
+The chorus of ""On the Radio"" does not mention the song ""November Rain"" by another band.","model
+The chorus of the song ""On the Radio"" does not include any reference to a specific band's lead singer.",41.26152034907943,0.949581265449524,0.92578125,-11.84375,0.093994140625,1.0,-58.73847965092061,-0.06833839416503917,-0.050418555736541526,-0.07373046875,0.0
+G-2B,15,global,1.5,hotpot_qa,"If the Charhki  Dadri crash was less dangerous than the Tenerife airport disaster, which occured firat?","If the Charhki Dadri crash was considered to be less dangerous than the Tenerife airport disaster, which incident actually occurred first?",0.93565571308136,"at?
+model
+The premise of the question is incorrect. The Charhki Dadri crash was a major disaster that resulted in the deaths of over 100 people, while the Tenerife airport disaster resulted in the deaths of only 7.","Tenerife airport disaster, which incident actually occurred first?
+model
+The premise of the question is incorrect. The Charhki Dadri crash was not considered to be less dangerous than the Tenerife airport disaster.",40.34161582213176,0.9280050992965698,0.96484375,-7.875,-0.01123046875,0.0,-59.658384177868285,-0.06434428691864003,-0.07199460268020619,-0.03515625,-1.0
+G-2B,0,global,2.0,hotpot_qa,What nationality was Oliver Reed's character in the film Royal Flash?,What was the nationality of the character portrayed by Oliver Reed in the film titled Royal Flash?,0.9480498433113098,"Oliver Reed's character in the film Royal Flash?
+model
+There is no evidence or record of Oliver Reed starring in the film Royal Flash.","user
+What was the nationality of the character portrayed by Oliver Reed in the film titled Royal Flash?
+model
+The character portrayed by Oliver Reed in the film ""Royal Flash"" is not explicitly stated in the film, so I cannot answer this question from the provided context.",10.129292782752946,0.8844802379608154,0.96630859375,-23.25,-0.02880859375,1.0,-89.8707072172471,-0.051950037479400635,-0.1155197024345398,-0.03369140625,0.0
+G-2B,1,global,2.0,hotpot_qa,Pacific Mozart Ensemble performed which German composer's Der Lindberghflug in 2002?,Which German composer’s work titled Der Lindberghflug was performed by the Pacific Mozart Ensemble in the year 2002?,0.932981252670288,"2002?
+model
+There is no evidence or record of the Pacific Mozart Ensemble performing a concert of Der Lindberghflug in 2002.","was performed by the Pacific Mozart Ensemble in the year 2002?
+model
+There is no evidence or record of the Pacific Mozart Ensemble performing a work titled Der Lindberghflug in 2002.",56.7337580648035,0.9591792225837708,0.9404296875,-11.9375,0.01171875,0.0,-43.26624193519654,-0.06701874732971203,-0.04082071781158447,-0.0595703125,-1.0
+G-2B,2,global,2.0,hotpot_qa,"Who released the song ""With or Without You"" first, Jai McDowall or U2?","Who was the first artist to release the song titled ""With or Without You,"" was it Jai McDowall or the band U2?",0.9522170424461364,"all or U2?
+model
+The song ""With or Without You"" was originally released by U2 in 1987 on their album ""The Joshua Tree."" Jai McDowall did not release a song with that title.","Without You,"" was it Jai McDowall or the band U2?
+model
+The song ""With or Without You"" was released by the band U2 in 1983.",32.36325690640793,0.9213009476661682,0.9736328125,-6.75,-0.02294921875,0.0,-67.63674309359212,-0.047782838344574086,-0.07869905233383179,-0.025390625,-1.0
+G-2B,3,global,2.0,hotpot_qa,"What Kentucky county has a population of 60,316 and features the Lake Louisvilla neighborhood?","Which specific county in the state of Kentucky has a total population of 60,316 and includes the neighborhood known as Lake Louisvilla within its boundaries?",0.9492856860160828,"villa neighborhood?
+model
+The county with a population of 60,316 and featuring the Lake Louisvilla neighborhood is Jefferson County, Kentucky.","neighborhood known as Lake Louisvilla within its boundaries?
+model
+The specific county in Kentucky that has a population of 60,316 and includes the neighborhood of Lake Louisvilla is Jefferson County.",21.098000408652968,0.931108295917511,0.88623046875,-34.625,0.0009765625,0.0,-78.90199959134708,-0.050714313983917236,-0.06889164447784424,-0.11328125,-1.0
+G-2B,4,global,2.0,hotpot_qa,"Para Hills West, South Australia lies within a city with what estimated population?","Para Hills West, which is located in South Australia, is situated within a city that has what is the estimated population size?",0.95067697763443,"Australia lies within a city with what estimated population?
+model
+I am unable to provide an estimate of the population of Para Hills West, South Australia, as I do not have access to real-time or specific demographic data.","in South Australia, is situated within a city that has what is the estimated population size?
+model
+I am unable to access real-time or specific location-based information, therefore I cannot answer this question from the context.",21.5670075489871,0.9141836762428284,0.98486328125,-31.4375,0.09228515625,0.0,-78.43299245101295,-0.04932302236556996,-0.08581620454788208,-0.0146484375,-1.0
+G-2B,5,global,2.0,hotpot_qa,"In what year was the narrator of ""Blackadder's Christmas Carol"" born?","In which specific year did the narrator of the story titled ""Blackadder's Christmas Carol"" come into existence and was born?",0.948835790157318,"adder's Christmas Carol"" born?
+model
+The premise of the question is incorrect. The narrator of ""Blackadder's Christmas Carol"" is not mentioned in the context.","story titled ""Blackadder's Christmas Carol"" come into existence and was born?
+model
+The premise of the question is incorrect. The narrator of the story titled ""Blackadder's Christmas Carol"" is not mentioned in the context.",61.462366992481314,0.9423114061355592,0.9755859375,0.125,0.096435546875,0.0,-38.53763300751873,-0.051164090633392445,-0.05768853425979603,-0.02392578125,-1.0
+G-2B,6,global,2.0,hotpot_qa,"Thomas Fitch defended John Henry Holliday when he was accused of killing men during the gunfight at the o.k. corral, when was that?",Thomas Fitch took it upon himself to defend John Henry Holliday at the time when he faced accusations of having killed several men during the infamous gunfight that took place at the O.K. Corral. Can you tell me when that event occurred?,0.9437825679779052,There is no evidence to support the claim that Thomas Fitch defended John Henry Holliday during the gunfight at the O.K. Corral.,There is no evidence or record of Thomas Fitch defending John Henry Holliday at the O.K. Corral shootout.,38.7127045926029,0.9653388857841492,0.97119140625,-1.697265625,0.0157470703125,0.0,-61.287295407397146,-0.05621743202209484,-0.03466111421585083,-0.02880859375,-1.0
+G-2B,7,global,2.0,hotpot_qa,The actor that played Gutthi on Comedy nights with Kapil Show also starred in what 2016 Punjabi film directed by Smeep Kang?,The actor who portrayed the character Gutthi on the popular television program Comedy Nights with Kapil Show also had a role in which Punjabi film that was released in the year 2016 and was directed by the filmmaker Smeep Kang?,0.9529563188552856,The actor who played Gutthi on Comedy Nights with Kapil Show also starred in the 2016 Punjabi film directed by Smeep Kang titled 'Moosa Jatt Da Raja'.,The actor who portrayed the character Gutthi on the popular television program Comedy Nights with Kapil Show also had a role in the Punjabi film that was released in the year 2016 and was directed by the filmmaker Smeep Kang.,19.85865984983687,0.9354456067085266,0.93310546875,-25.60546875,0.072998046875,1.0,-80.14134015016317,-0.047043800354003906,-0.06455439329147339,-0.06689453125,0.0
+G-2B,8,global,2.0,hotpot_qa,"Victor Varnada directed Twisted Fortune, which starred which brother of Eddie Murphy?","Victor Varnada was the director of the film titled Twisted Fortune, and I would like to know which brother of Eddie Murphy starred in it.",0.9346091151237488,"Fortune, which starred which brother of Eddie Murphy?
+model
+Victor Varnada did not direct the movie Twisted Fortune, which starred Eddie Murphy.","and I would like to know which brother of Eddie Murphy starred in it.
+model
+The context does not provide any information about which brother of Eddie Murphy starred in the film ""Twisted Fortune"".",13.428164547253449,0.8824870586395264,0.859375,-51.1875,0.0087890625,0.0,-86.5718354527466,-0.06539076566696167,-0.1175127625465392,-0.140625,-1.0
+G-2B,9,global,2.0,hotpot_qa,"After his curacy at the village that is a suburb of Scunthorpe, who was Industrial Chaplain to the Bishop of Lincoln?","Following his time serving as a curate in the village that is located as a suburb of Scunthorpe, who held the position of Industrial Chaplain to the Bishop of Lincoln?",0.9627822637557985,"model
+I am unable to provide specific historical information or endorse any opinions or claims. For the best possible and most accurate information, I recommend checking historical archives and reputable historical websites.","of Industrial Chaplain to the Bishop of Lincoln?
+model
+I am unable to provide specific details about the curate in the village of Scunthorpe, as I do not have access to real-time or personal information.",17.226307014894687,0.8562272191047668,0.90283203125,-7.5625,0.0185546875,0.0,-82.77369298510536,-0.037217676639556774,-0.14377272129058838,-0.09619140625,-1.0
+G-2B,10,global,2.0,hotpot_qa,What is the first two words of the fifth studio album of Joseph Edgar Foreman?,What are the very first two words that can be found in the fifth studio album created by Joseph Edgar Foreman?,0.9513324499130248,"the fifth studio album of Joseph Edgar Foreman?
+model
+I am unable to access real-time information, therefore I cannot provide the first two words of the fifth studio album of Joseph Edgar Foreman.","are the very first two words that can be found in the fifth studio album created by Joseph Edgar Foreman?
+model
+I am unable to access real-time information, therefore I cannot provide the first two words of the fifth studio album by Joseph Edgar Foreman.",63.04596586813019,0.9503081440925598,0.978515625,2.9375,0.2913818359375,0.0,-36.954034131869854,-0.04866755008697521,-0.049691855907440186,-0.0224609375,-1.0
+G-2B,11,global,2.0,hotpot_qa,The Twelfth United States Army Group commander was the first chairman of what?,"Who was the individual that served as the first chairman of the organization, and who held the position of commander of the Twelfth United States Army Group?",0.9062013626098632,"States Army Group commander was the first chairman of what?
+model
+The Twelfth United States Army Group commander was the first Chairman of the Joint Chiefs of Staff.","who held the position of commander of the Twelfth United States Army Group?
+model
+I am unable to provide real-time information, therefore I cannot answer this question. For the most up-to-date information on the history of the Twelfth United States Army Group, please refer to reliable historical sources.",11.315096739647224,0.8593356609344482,0.697265625,-58.9375,0.3916015625,1.0,-88.68490326035283,-0.09379863739013683,-0.14066433906555176,-0.302734375,0.0
+G-2B,12,global,2.0,hotpot_qa,Politician Lyman Sherwood was born in what New York county?,In which specific county in the state of New York was the politician Lyman Sherwood born?,0.9275774359703064,"Politician Lyman Sherwood was born in what New York county?
+model
+The context does not specify the New York county in which Lyman Sherwood was born, so I cannot answer this question from the provided context.","user
+In which specific county in the state of New York was the politician Lyman Sherwood born?
+model
+I am unable to provide specific information about the birthplace of politician Lyman Sherwood, as I do not have access to real-time or personal data.",4.172876534820818,0.906155526638031,0.95263671875,-27.0,0.15625,0.0,-95.82712346517923,-0.0724225640296936,-0.093844473361969,-0.046875,-1.0
+G-2B,13,global,2.0,hotpot_qa,Robert Earl Holding owned an oil company that was originally founded by who?,Who is the individual or group that originally founded the oil company that was owned by Robert Earl Holding?,0.9027674198150636,"owned an oil company that was originally founded by who?
+model
+Robert Earl Holding is the founder and former CEO of Occidental Petroleum. He was born in 1930 and founded the company in 1953.","user
+Who is the individual or group that originally founded the oil company that was owned by Robert Earl Holding?
+model
+I am unable to access real-time information, therefore I cannot provide the specific details of the oil company's origin or founder.",10.944189573437098,0.8677575588226318,0.8173828125,-41.6875,0.02392578125,0.0,-89.05581042656294,-0.09723258018493641,-0.1322423219680786,-0.18359375,-1.0
+G-2B,14,global,2.0,hotpot_qa,"The chorus of ""On the Radio"" contains references to the song ""November Rain"" whose band's lead singer is?","The chorus of the song titled ""On the Radio"" includes several references to another song known as ""November Rain,"" and I am curious to know who the lead singer of the band that performs this song is?",0.927666425704956,"model
+The chorus of ""On the Radio"" does not mention the song ""November Rain"" by another band.","?
+model
+I am unable to provide specific information about the lead singer of the band that performs the song ""November Rain,"" as I do not have access to real-time or personal knowledge.",11.610083023532244,0.8795202970504761,0.77685546875,-24.25,0.01953125,1.0,-88.3899169764678,-0.0723336935043335,-0.12047952413558949,-0.22265625,0.0
+G-2B,15,global,2.0,hotpot_qa,"If the Charhki  Dadri crash was less dangerous than the Tenerife airport disaster, which occured firat?","If we consider the Charhki Dadri crash to be less dangerous in comparison to the Tenerife airport disaster, then which of these two incidents actually occurred first in chronological order?",0.9076992273330688,"at?
+model
+The premise of the question is incorrect. The Charhki Dadri crash was a major disaster that resulted in the deaths of over 100 people, while the Tenerife airport disaster resulted in the deaths of only 7.","incidents actually occurred first in chronological order?
+model
+The context does not provide any information about the chronological order of the Charhki Dadri crash and the Tenerife airport disaster, so I cannot answer this question from the provided context.",12.100858552701563,0.8982946276664734,0.85791015625,-14.6875,-0.02197265625,0.0,-87.89914144729848,-0.09230077266693115,-0.10170507431030262,-0.14208984375,-1.0
+G-2B,0,global,3.0,hotpot_qa,What nationality was Oliver Reed's character in the film Royal Flash?,What was the specific nationality of the character portrayed by Oliver Reed in the film that is titled Royal Flash?,0.9344618320465088,"Oliver Reed's character in the film Royal Flash?
+model
+There is no evidence or record of Oliver Reed starring in the film Royal Flash.","user
+What was the specific nationality of the character portrayed by Oliver Reed in the film that is titled Royal Flash?
+model
+There is no character in the film ""Royal Flash"" played by Oliver Reed.",27.272035432845083,0.8983086943626404,0.94384765625,-27.9375,-0.024169921875,0.0,-72.72796456715496,-0.06553804874420166,-0.10169124603271484,-0.05615234375,-1.0
+G-2B,1,global,3.0,hotpot_qa,Pacific Mozart Ensemble performed which German composer's Der Lindberghflug in 2002?,"In the year 2002, which specific German composer’s work titled Der Lindberghflug was performed by the Pacific Mozart Ensemble during their concert?",0.9257718920707704,"2002?
+model
+There is no evidence or record of the Pacific Mozart Ensemble performing a concert of Der Lindberghflug in 2002.","In the year 2002, which specific German composer’s work titled Der Lindberghflug was performed by the Pacific Mozart Ensemble during their concert?
+model
+There is no evidence or record of the Pacific Mozart Ensemble performing a concert in 2002 that featured a work titled Der Lindberghflug.",34.014375031461455,0.92039692401886,0.92578125,-5.125,-0.0927734375,1.0,-65.98562496853859,-0.07422810792922963,-0.07960301637649525,-0.07421875,0.0
+G-2B,2,global,3.0,hotpot_qa,"Who released the song ""With or Without You"" first, Jai McDowall or U2?","Who was the first artist to release the song titled ""With or Without You,"" was it Jai McDowall, the singer known for his performances, or was it the renowned band U2, famous for their impactful music?",0.9224096536636353,"all or U2?
+model
+The song ""With or Without You"" was originally released by U2 in 1987 on their album ""The Joshua Tree."" Jai McDowall did not release a song with that title.","for his performances, or was it the renowned band U2, famous for their impactful music?
+model
+The song ""With or Without You"" was originally released by the band Bon Jovi in 1986.",34.94388201677446,0.9023664593696594,0.96142578125,-8.8125,-0.00341796875,0.0,-65.05611798322559,-0.0775902271270752,-0.09763354063034058,-0.03759765625,-1.0
+G-2B,3,global,3.0,hotpot_qa,"What Kentucky county has a population of 60,316 and features the Lake Louisvilla neighborhood?","Which specific county located in the state of Kentucky has a total population of 60,316 residents and also includes the neighborhood known as Lake Louisvilla within its geographical boundaries?",0.9409438967704772,"villa neighborhood?
+model
+The county with a population of 60,316 and featuring the Lake Louisvilla neighborhood is Jefferson County, Kentucky.","a total population of 60,316 residents and also includes the neighborhood known as Lake Louisvilla within its geographical boundaries?
+model
+The specific county located in the state of Kentucky that has a population of 60,316 residents and includes the neighborhood known as Lake Louisvilla is **Jefferson County**.",8.68037276163564,0.8970100283622742,0.88720703125,-36.6875,-0.00927734375,0.0,-91.3196272383644,-0.059056103229522816,-0.10298991203308105,-0.1123046875,-1.0
+G-2B,4,global,3.0,hotpot_qa,"Para Hills West, South Australia lies within a city with what estimated population?","Para Hills West, which is located in the region of South Australia, is situated within a city that has an estimated population size. What is the approximate number of individuals living in this city?",0.9286266565322876,"Australia lies within a city with what estimated population?
+model
+I am unable to provide an estimate of the population of Para Hills West, South Australia, as I do not have access to real-time or specific demographic data.","Australia, is situated within a city that has an estimated population size. What is the approximate number of individuals living in this city?
+model
+I am unable to provide an estimate of the population size of the city in which Para Hills West is located, as I do not have access to real-time or specific demographic data.",44.66423063189375,0.9407473802566528,0.9111328125,-47.0625,0.13720703125,0.0,-55.33576936810629,-0.0713733434677124,-0.05925250053405762,-0.08837890625,-1.0
+G-2B,5,global,3.0,hotpot_qa,"In what year was the narrator of ""Blackadder's Christmas Carol"" born?","In which specific year did the narrator of the well-known work titled ""Blackadder's Christmas Carol"" come into existence and celebrate their birth?",0.9341388940811156,"adder's Christmas Carol"" born?
+model
+The premise of the question is incorrect. The narrator of ""Blackadder's Christmas Carol"" is not mentioned in the context.","user
+In which specific year did the narrator of the well-known work titled ""Blackadder's Christmas Carol"" come into existence and celebrate their birth?
+model
+The premise of your question is incorrect. The narrator of Charles Dickens's ""A Christmas Carol"" is not named and does not celebrate their birth.",30.022475264886832,0.8961518406867981,0.9365234375,9.1875,0.130615234375,0.0,-69.9775247351132,-0.06586098670959484,-0.10384809970855713,-0.06298828125,-1.0
+G-2B,6,global,3.0,hotpot_qa,"Thomas Fitch defended John Henry Holliday when he was accused of killing men during the gunfight at the o.k. corral, when was that?",Thomas Fitch took it upon himself to defend John Henry Holliday at the time when he faced accusations of having killed several men during the infamous gunfight that occurred at the O.K. Corral. This significant event in history raises the question of when exactly did this gunfight take place?,0.9331102967262268,There is no evidence to support the claim that Thomas Fitch defended John Henry Holliday during the gunfight at the O.K. Corral.,"exactly did this gunfight take place?
+model
+The premise of the question is incorrect. There is no evidence or record to support the claim that Thomas Fitch defended John Henry Holliday at the O.K. Corral.",47.03961162772402,0.9464820623397828,0.92626953125,-3.990234375,0.07666015625,0.0,-52.96038837227602,-0.0668897032737732,-0.053517937660217174,-0.07373046875,-1.0
+G-2B,7,global,3.0,hotpot_qa,The actor that played Gutthi on Comedy nights with Kapil Show also starred in what 2016 Punjabi film directed by Smeep Kang?,The actor who portrayed the character Gutthi on the popular television program Comedy Nights with Kapil Show is also known for his role in a particular Punjabi film that was released in the year 2016. This film was directed by the talented filmmaker Smeep Kang. Can you recall the title of that specific Punjabi film in which he starred?,0.929941713809967,The actor who played Gutthi on Comedy Nights with Kapil Show also starred in the 2016 Punjabi film directed by Smeep Kang titled 'Moosa Jatt Da Raja'.,"I am unable to recall the title of the specific Punjabi film in which the actor played the character Gutthi in 2016, as I do not have access to real-time or personal knowledge.",3.0759934809350447,0.8494699597358704,0.6591796875,-38.66796875,0.074462890625,0.0,-96.924006519065,-0.07005840539932251,-0.15053004026412964,-0.3408203125,-1.0
+G-2B,8,global,3.0,hotpot_qa,"Victor Varnada directed Twisted Fortune, which starred which brother of Eddie Murphy?","Victor Varnada was the director of the film titled Twisted Fortune, and I would like to know which brother of the famous comedian Eddie Murphy starred in this particular movie?",0.9286252856254578,"Fortune, which starred which brother of Eddie Murphy?
+model
+Victor Varnada did not direct the movie Twisted Fortune, which starred Eddie Murphy.","nada was the director of the film titled Twisted Fortune, and I would like to know which brother of the famous comedian Eddie Murphy starred in this particular movie?
+model
+The context does not provide any information about which brother of Eddie Murphy starred in the film ""Twisted Fortune"".",11.395718302627303,0.8705153465270996,0.8544921875,-51.4375,0.085205078125,0.0,-88.60428169737274,-0.07137459516525269,-0.12948447465896595,-0.1455078125,-1.0
+G-2B,9,global,3.0,hotpot_qa,"After his curacy at the village that is a suburb of Scunthorpe, who was Industrial Chaplain to the Bishop of Lincoln?","Following his time serving as a curate in the village that is situated as a suburb of Scunthorpe, who then took on the role of Industrial Chaplain to the Bishop of Lincoln?",0.9491979479789734,"model
+I am unable to provide specific historical information or endorse any opinions or claims. For the best possible and most accurate information, I recommend checking historical archives and reputable historical websites.","the village that is situated as a suburb of Scunthorpe, who then took on the role of Industrial Chaplain to the Bishop of Lincoln?
+model
+The context does not provide any information about the individual's background or role before serving as a curate and then an Industrial Chaplain to the Bishop of Lincoln. Therefore, I cannot answer this question from the provided context.",1.6644186093712956,0.8379905223846436,0.8046875,-9.4375,0.1376953125,0.0,-98.33558139062875,-0.050801992416381836,-0.16200941801071167,-0.1943359375,-1.0
+G-2B,10,global,3.0,hotpot_qa,What is the first two words of the fifth studio album of Joseph Edgar Foreman?,What are the very first two words that can be found in the fifth studio album created by the artist known as Joseph Edgar Foreman?,0.945704698562622,"the fifth studio album of Joseph Edgar Foreman?
+model
+I am unable to access real-time information, therefore I cannot provide the first two words of the fifth studio album of Joseph Edgar Foreman.","user
+What are the very first two words that can be found in the fifth studio album created by the artist known as Joseph Edgar Foreman?
+model
+I am unable to access external sources or provide information about Joseph Edgar Foreman, so I cannot answer this question.",30.1538834253739,0.9076024889945984,0.97509765625,-1.375,0.2796630859375,0.0,-69.84611657462614,-0.05429530143737804,-0.09239751100540161,-0.02587890625,-1.0
+G-2B,11,global,3.0,hotpot_qa,The Twelfth United States Army Group commander was the first chairman of what?,Who was the individual that served as the commander of the Twelfth United States Army Group and also held the distinction of being the very first chairman of what organization or committee?,0.914935290813446,"States Army Group commander was the first chairman of what?
+model
+The Twelfth United States Army Group commander was the first Chairman of the Joint Chiefs of Staff.","the individual that served as the commander of the Twelfth United States Army Group and also held the distinction of being the very first chairman of what organization or committee?
+model
+I cannot access real-time information, therefore I cannot provide the specific details of the individual or their role.",13.906462447321909,0.8729317784309387,0.80322265625,-47.0625,0.2958984375,0.0,-86.09353755267813,-0.08506470918655396,-0.12706822156906128,-0.19677734375,-1.0
+G-2B,12,global,3.0,hotpot_qa,Politician Lyman Sherwood was born in what New York county?,In which specific county located in the state of New York was the politician named Lyman Sherwood born?,0.9154840111732484,"Politician Lyman Sherwood was born in what New York county?
+model
+The context does not specify the New York county in which Lyman Sherwood was born, so I cannot answer this question from the provided context.","user
+In which specific county located in the state of New York was the politician named Lyman Sherwood born?
+model
+I am unable to provide specific information about the birthplace of a politician named Lyman Sherwood, as I do not have access to real-time or personal data.",3.620800581874913,0.9023529291152954,0.9501953125,-28.5,0.157958984375,0.0,-96.37919941812513,-0.0845159888267516,-0.09764707088470459,-0.04931640625,-1.0
+G-2B,13,global,3.0,hotpot_qa,Robert Earl Holding owned an oil company that was originally founded by who?,"Robert Earl Holding was the owner of an oil company, and I would like to know who it was that originally founded this particular oil company that he eventually came to own and manage.",0.9008793830871582,"owned an oil company that was originally founded by who?
+model
+Robert Earl Holding is the founder and former CEO of Occidental Petroleum. He was born in 1930 and founded the company in 1953.","oil company, and I would like to know who it was that originally founded this particular oil company that he eventually came to own and manage.
+model
+I am unable to provide specific details about the founding of Robert Earl Holding or any other oil company, as I do not have access to real-time or personal information.",5.177502946366809,0.8598736524581909,0.7529296875,-34.8125,0.1904296875,0.0,-94.82249705363323,-0.0991206169128418,-0.14012622833251953,-0.248046875,-1.0
+G-2B,14,global,3.0,hotpot_qa,"The chorus of ""On the Radio"" contains references to the song ""November Rain"" whose band's lead singer is?","The chorus of the song titled ""On the Radio"" includes several references to another well-known song called ""November Rain."" This particular song is performed by a band whose lead singer is a prominent figure in the music industry. Can you identify who that lead singer is?",0.9197680354118348,"model
+The chorus of ""On the Radio"" does not mention the song ""November Rain"" by another band.",". Can you identify who that lead singer is?
+model
+I am unable to access external sources or provide personal information, so I cannot identify the lead singer of the band whose song is referenced in the chorus of ""On the Radio.""",11.388142796199002,0.8764780759811401,0.7568359375,-24.75,0.1416015625,1.0,-88.61185720380104,-0.08023208379745472,-0.12352174520492543,-0.24267578125,0.0
+G-2B,15,global,3.0,hotpot_qa,"If the Charhki  Dadri crash was less dangerous than the Tenerife airport disaster, which occured firat?","In the event that the Charhki Dadri crash is considered to be less dangerous when compared to the Tenerife airport disaster, which of these two incidents actually occurred first in chronological order?",0.910739541053772,"at?
+model
+The premise of the question is incorrect. The Charhki Dadri crash was a major disaster that resulted in the deaths of over 100 people, while the Tenerife airport disaster resulted in the deaths of only 7.","crash is considered to be less dangerous when compared to the Tenerife airport disaster, which of these two incidents actually occurred first in chronological order?
+model
+The context does not provide any information about the chronological order of the Charhki Dadri crash and the Tenerife airport disaster, so I cannot answer this question from the provided context.",8.558586524761925,0.888390302658081,0.86279296875,-20.8125,-0.03125,0.0,-91.44141347523812,-0.08926045894622803,-0.11160939931869496,-0.13720703125,-1.0
