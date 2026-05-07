@@ -42,7 +42,7 @@ OUTPUT_COLS = [
     "bleu", "bertscore_response", "activation_similarity",
     "delta_log_prob", "entropy_shift", "mirroring_rate",
     "delta_bleu", "delta_bertscore_prompt", "delta_bertscore_response",
-    "delta_activation_similarity", "delta_mirroring_rate",
+    "delta_activation_similarity", "delta_mirroring_rate", "delta_entropy",
 ]
 
 SKIP_DIRS = {"trash", "empty_results", "closed_models"}

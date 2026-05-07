@@ -1,4 +1,4 @@
-model,prompt_id,place,strength,category,prompt_orig,prompt_pert,bertscore_prompt,response_orig,response_pert,bleu,bertscore_response,activation_similarity,delta_log_prob,entropy_shift,mirroring_rate,delta_bleu,delta_bertscore_prompt,delta_bertscore_response,delta_activation_similarity,delta_mirroring_rate
+model,prompt_id,place,strength,category,prompt_orig,prompt_pert,bertscore_prompt,response_orig,response_pert,bleu,bertscore_response,activation_similarity,delta_log_prob,entropy_shift,mirroring_rate,delta_bleu,delta_bertscore_prompt,delta_bertscore_response,delta_activation_similarity,delta_mirroring_rate,delta_entropy
 claude-sonnet-4-6,0,global,0,alpaca,"Instruction:
 What would be the best type of exercise for a person who has arthritis?","Instruction:
 What would be the best type of exercise for a person who has arthritis?",0.9999999403953552,"# Best Exercise Types for People with Arthritis
@@ -22,7 +22,7 @@ For people with arthritis, **low-impact exercises** are generally recommended, a
 - **Swimming** and water aerobics are often considered the **best option**
 - Water buoyancy reduces joint stress significantly
 - Provides resistance for muscle strengthening
--",75.77159706505417,0.97089022397995,,,,0.0,0.0,0.0,0.0,,0.0
+-",75.77159706505417,0.97089022397995,,,,0.0,0.0,0.0,0.0,,0.0,
 claude-sonnet-4-6,1,global,0,alpaca,"Instruction:
 Calculate the atomic mass for lithium.","Instruction:
 Calculate the atomic mass for lithium.",0.9999999403953552,"## Calculating the Atomic Mass of Lithium
@@ -39,7 +39,7 @@ Lithium has **two stable isotopes**:
 | Isotope | Mass (amu) | Natural Abundance |
 |---------|-----------|-------------------|
 | Lithium-6 (⁶Li) | 6.015 amu | 7.59% (0.0759) |
-| Lithium-7 (⁷Li) | 7.",100.00000000000004,1.0000001192092896,,,,0.0,0.0,0.0,0.0,,0.0
+| Lithium-7 (⁷Li) | 7.",100.00000000000004,1.0000001192092896,,,,0.0,0.0,0.0,0.0,,0.0,
 claude-sonnet-4-6,2,global,0,alpaca,"Instruction:
 Convert the following binary code to ASCII characters.
 
@@ -68,7 +68,7 @@ Here is the step-by-step conversion:
 | 01100001 | 97 | **a** |
 | 01110010 | 114 | **r** |
 | 01101001 | 105 | **i** |
-|",100.00000000000004,1.0,,,,0.0,0.0,0.0,0.0,,0.0
+|",100.00000000000004,1.0,,,,0.0,0.0,0.0,0.0,,0.0,
 claude-sonnet-4-6,3,global,0,alpaca,"Instruction:
 Take this sentence and make it more descriptive: She was scared.
 
@@ -87,7 +87,7 @@ This expanded version paints a much more vivid picture by:
 ""Her heart pounded frantically in her chest as a wave of cold, paralyzing fear washed over her, causing her hands to tremble and her breath to come in short, shallow gasps, while her wide eyes darted nervously around the room, searching desperately for any sign of safety or escape.""
 
 This expanded version paints a much more vivid picture by:
-- **Describing physical sensations",100.00000000000004,0.9999998807907104,,,,0.0,0.0,0.0,0.0,,0.0
+- **Describing physical sensations",100.00000000000004,0.9999998807907104,,,,0.0,0.0,0.0,0.0,,0.0,
 claude-sonnet-4-6,4,global,0,alpaca,"Instruction:
 Brainstorm 3 possible ideas to promote the following product
 
@@ -104,7 +104,7 @@ New motorized skateboard",1.0000001192092896,"Here are 3 possible ideas to promo
 
 1. **Social Media Influencer Campaign** - Partner with popular extreme sports and lifestyle influencers on platforms like Instagram, TikTok, and YouTube to showcase the skateboard in action. Have them create exciting content such as trick videos, commute vlogs, and product reviews to reach a wide and engaged audience of potential buyers.
 
-2. **Live Demo Events** - Organize pop-",85.32111215137957,0.9804955124855042,,,,0.0,0.0,0.0,0.0,,0.0
+2. **Live Demo Events** - Organize pop-",85.32111215137957,0.9804955124855042,,,,0.0,0.0,0.0,0.0,,0.0,
 claude-sonnet-4-6,5,global,0,alpaca,"Instruction:
 Rewrite the sentence using imperative mood.
 
@@ -121,7 +121,7 @@ The word ""Please"" has been removed, and the sentence now begins directly with 
 
 **Pick up the book from the shelf.**
 
-The word ""Please"" has been removed, and the sentence now begins directly with the verb ""Pick,"" which is the defining characteristic of the imperative mood. The imperative mood is used to give commands, instructions, or directions.",95.93569701465364,0.996503472328186,,,,0.0,0.0,0.0,0.0,,0.0
+The word ""Please"" has been removed, and the sentence now begins directly with the verb ""Pick,"" which is the defining characteristic of the imperative mood. The imperative mood is used to give commands, instructions, or directions.",95.93569701465364,0.996503472328186,,,,0.0,0.0,0.0,0.0,,0.0,
 claude-sonnet-4-6,6,global,0,alpaca,"Instruction:
 Describe a picnic vacation where four people are travelling together.
 
@@ -150,7 +150,7 @@ Four friends — **Sarah, James, Maya, and Tom** — had been planning their pic
 
 ## Finding the Perfect Spot
 
-After a scenic drive through winding country roads, they discovered a **breathtaking meadow** nestled beside",82.33369962360027,0.9799236059188843,,,,0.0,0.0,0.0,0.0,,0.0
+After a scenic drive through winding country roads, they discovered a **breathtaking meadow** nestled beside",82.33369962360027,0.9799236059188844,,,,0.0,0.0,0.0,0.0,,0.0,
 claude-sonnet-4-6,7,global,0,alpaca,"Instruction:
 Explain the concept of Big Data and what it means for companies and customers.","Instruction:
 Explain the concept of Big Data and what it means for companies and customers.",1.0,"# Big Data: A Comprehensive Overview
@@ -171,7 +171,7 @@ Big Data refers to **extremely large and complex datasets** that traditional dat
 | V | Definition | Example |
 |---|---|---|
 | **Volume** | Massive amounts of data | Billions of transactions daily |
-| **Velocity** | Speed at which data is generated | Real-time social",100.00000000000004,1.0,,,,0.0,0.0,0.0,0.0,,0.0
+| **Velocity** | Speed at which data is generated | Real-time social",100.00000000000004,1.0,,,,0.0,0.0,0.0,0.0,,0.0,
 claude-sonnet-4-6,8,global,0,alpaca,"Instruction:
 Analyze the given phrase in terms of its connotations.
 
@@ -205,7 +205,7 @@ A pursuit of a wild goose — an animal notoriously difficult to catch.
 | Connotation | Explanation |
 |-------------|-------------|
 | **Futility** | Suggests a hopeless or pointless endeavor with little chance of success |
-| **Frust",74.51050202368113,0.9599936008453369,,,,0.0,0.0,0.0,0.0,,0.0
+| **Frust",74.51050202368113,0.9599936008453368,,,,0.0,0.0,0.0,0.0,,0.0,
 claude-sonnet-4-6,9,global,0,alpaca,"Instruction:
 List three potential sources for the following research problem.
 
@@ -224,7 +224,7 @@ What are the benefits of online learning?",0.9999999403953552,"Here are three po
 A peer-reviewed academic journal that publishes research and scholarly articles specifically focused on online education, including studies on its effectiveness, accessibility, and student outcomes.
 
 2. **U.S. Department of Education Reports**
-The Department of Education has published various reports and meta-analyses, such as *""Evaluation of Evidence-Based Practices",31.908048459264474,0.9146955013275146,,,,0.0,0.0,0.0,0.0,,0.0
+The Department of Education has published various reports and meta-analyses, such as *""Evaluation of Evidence-Based Practices",31.908048459264474,0.9146955013275146,,,,0.0,0.0,0.0,0.0,,0.0,
 claude-sonnet-4-6,10,global,0,alpaca,"Instruction:
 Arrange the following countries in ascending order of GDP per capita.
 
@@ -243,7 +243,7 @@ China, US, India, Japan",1.0000001192092896,"Here are the countries arranged in 
 1. 🇮🇳 **India** (~$2,500)
 2. 🇨🇳 **China** (~$12,700)
 3. 🇯🇵 **Japan** (~$33,800)
-4. 🇺🇸 **US** (~$80,000)",100.00000000000004,0.9999999403953552,,,,0.0,0.0,0.0,0.0,,0.0
+4. 🇺🇸 **US** (~$80,000)",100.00000000000004,0.9999999403953552,,,,0.0,0.0,0.0,0.0,,0.0,
 claude-sonnet-4-6,11,global,0,alpaca,"Instruction:
 Name the boat depicted in the provided photo.
 
@@ -252,7 +252,7 @@ Attached photo","Instruction:
 Name the boat depicted in the provided photo.
 
 Input:
-Attached photo",0.9999999403953552,"I don't see any photo attached to your message. Could you please **upload the image** you'd like me to look at? Once you share it, I'll do my best to help identify the boat depicted!","I don't see any photo attached to your message. Could you please **upload the image** again? Once I can see it, I'll be happy to identify the boat depicted in it.",55.559347275855686,0.9520859122276306,,,,0.0,0.0,0.0,0.0,,0.0
+Attached photo",0.9999999403953552,"I don't see any photo attached to your message. Could you please **upload the image** you'd like me to look at? Once you share it, I'll do my best to help identify the boat depicted!","I don't see any photo attached to your message. Could you please **upload the image** again? Once I can see it, I'll be happy to identify the boat depicted in it.",55.559347275855686,0.9520859122276306,,,,0.0,0.0,0.0,0.0,,0.0,
 claude-sonnet-4-6,12,global,0,alpaca,"Instruction:
 Edit the grammar and punctuation of the given sentence.
 
@@ -269,7 +269,7 @@ The only change made was adding a **period (.)** at the end of the sentence to c
 
 **Humor is one of the most important ingredients of life.**
 
-The only change made was adding a **period (.)** at the end of the sentence to complete the punctuation.",100.00000000000004,0.9999999403953552,,,,0.0,0.0,0.0,0.0,,0.0
+The only change made was adding a **period (.)** at the end of the sentence to complete the punctuation.",100.00000000000004,0.9999999403953552,,,,0.0,0.0,0.0,0.0,,0.0,
 claude-sonnet-4-6,13,global,0,alpaca,"Instruction:
 Calculate the length of the hypotenuse in the following triangle.
 
@@ -306,7 +306,7 @@ $$3^2 + 4^2 = c^2$$
 
 $$9 + 16 = c^2$$
 
-$$25",80.84520698789915,0.9607341289520264,,,,0.0,0.0,0.0,0.0,,0.0
+$$25",80.84520698789915,0.9607341289520264,,,,0.0,0.0,0.0,0.0,,0.0,
 claude-sonnet-4-6,14,global,0,alpaca,"Instruction:
 How many instruments does a symphony orchestra typically have?","Instruction:
 How many instruments does a symphony orchestra typically have?",1.0000001192092896,"A symphony orchestra typically has around **80 to 100 musicians** playing a variety of instruments, which are grouped into four main sections:
@@ -319,10 +319,10 @@ How many instruments does a symphony orchestra typically have?",1.00000011920928
 1. **Strings** – violins, violas, cellos, double basses, and harp
 2. **Woodwinds** – flutes, oboes, clarinets, and bassoons
 3. **Brass** – trumpets, French horns, trombones, and tuba
-4",100.00000000000004,1.0,,,,0.0,0.0,0.0,0.0,,0.0
+4",100.00000000000004,1.0,,,,0.0,0.0,0.0,0.0,,0.0,
 claude-sonnet-4-6,15,global,0,alpaca,"Instruction:
 Summarize the phrase: ""GPT is a natural language processing architecture.""","Instruction:
-Summarize the phrase: ""GPT is a natural language processing architecture.""",1.0,**Summary:** GPT is an AI system designed to understand and generate human language.,**Summary:** GPT is an AI system designed to understand and generate human language.,100.00000000000004,0.9999999403953552,,,,0.0,0.0,0.0,0.0,,0.0
+Summarize the phrase: ""GPT is a natural language processing architecture.""",1.0,**Summary:** GPT is an AI system designed to understand and generate human language.,**Summary:** GPT is an AI system designed to understand and generate human language.,100.00000000000004,0.9999999403953552,,,,0.0,0.0,0.0,0.0,,0.0,
 claude-sonnet-4-6,0,global,10,alpaca,"Instruction:
 What would be the best type of exercise for a person who has arthritis?","InstructIoN:
 What would be the best type of ExercIse for A person who haS arthritis?",0.919614315032959,"# Best Exercise Types for Arthritis
@@ -345,7 +345,7 @@ For people with arthritis, **low-impact exercises** are generally recommended, a
 - **Cycling** - low joint impact
 
 ### 🧘 Flexibility & Range of Motion
-- **Yoga** - improves flexibility and reduces stiff",18.196736861671678,0.8881525993347168,,,,0.0,-57.574860203382485,-0.08038562536239624,-0.08273762464523315,,0.0
+- **Yoga** - improves flexibility and reduces stiff",18.19673686167168,0.8881525993347168,,,,0.0,-57.574860203382485,-0.08038562536239624,-0.08273762464523315,,0.0,
 claude-sonnet-4-6,1,global,10,alpaca,"Instruction:
 Calculate the atomic mass for lithium.","InstrucTion:
 CaLculate the Atomic mass For lithium.",0.8878710269927979,"## Calculating the Atomic Mass of Lithium
@@ -362,7 +362,7 @@ Lithium has **two stable isotopes**:
 | Isotope | Mass (amu) | Natural Abundance |
 |---------|-----------|-------------------|
 | ⁶Li | 6.015123 amu | 7.59% (0.0759) |
-| ⁷Li | 7.016003 amu | 92.41% (0.9241",50.79036249017848,0.9176348447799683,,,,0.0,-49.20963750982156,-0.11212891340255737,-0.08236527442932129,,0.0
+| ⁷Li | 7.016003 amu | 92.41% (0.9241",50.79036249017848,0.9176348447799684,,,,0.0,-49.20963750982156,-0.11212891340255737,-0.08236527442932118,,0.0,
 claude-sonnet-4-6,2,global,10,alpaca,"Instruction:
 Convert the following binary code to ASCII characters.
 
@@ -391,7 +391,7 @@ Here is the step-by-step conversion:
 | 01100001 | 97 | **a** |
 | 01110010 | 114 | **r** |
 | 01101001 | 105 | **i** |
-|",100.00000000000004,1.0,,,,0.0,0.0,-0.06306248903274536,0.0,,0.0
+|",100.00000000000004,1.0,,,,0.0,0.0,-0.06306248903274536,0.0,,0.0,
 claude-sonnet-4-6,3,global,10,alpaca,"Instruction:
 Take this sentence and make it more descriptive: She was scared.
 
@@ -412,7 +412,7 @@ This expanded version paints a much more vivid picture by:
 This expanded version:
 - **Shows** rather than tells the emotion
 - Includes **physical reactions** (trembling, pounding heart, sweaty palms)
-- Uses **vivid imagery** (",20.47031842767031,0.8944485187530518,,,,0.0,-79.52968157232974,-0.10065585374832153,-0.10555136203765869,,0.0
+- Uses **vivid imagery** (",20.47031842767031,0.8944485187530518,,,,0.0,-79.52968157232974,-0.10065585374832153,-0.10555136203765869,,0.0,
 claude-sonnet-4-6,4,global,10,alpaca,"Instruction:
 Brainstorm 3 possible ideas to promote the following product
 
@@ -434,7 +434,7 @@ Partner with extreme sports and lifestyle influencers on platforms like **Instag
 
 ---
 
-**2. 🏙️ Live Demo Events**",36.859183537975774,0.925368070602417,,,,0.0,-48.46192861340379,-0.14424127340316772,-0.05512744188308716,,0.0
+**2. 🏙️ Live Demo Events**",36.859183537975774,0.925368070602417,,,,0.0,-48.46192861340379,-0.14424127340316772,-0.05512744188308716,,0.0,
 claude-sonnet-4-6,5,global,10,alpaca,"Instruction:
 Rewrite the sentence using imperative mood.
 
@@ -451,7 +451,7 @@ The word ""Please"" has been removed, and the sentence now begins directly with 
 
 **Pick up the book from the shelf.**
 
-(The word ""Please"" has been removed, as the imperative mood gives a direct command or instruction without the use of polite requests.)",37.6879304234345,0.9433670043945312,,,,0.0,-58.24776659121914,-0.11302518844604492,-0.053136467933654785,,0.0
+(The word ""Please"" has been removed, as the imperative mood gives a direct command or instruction without the use of polite requests.)",37.6879304234345,0.9433670043945312,,,,0.0,-58.24776659121914,-0.11302518844604492,-0.053136467933654785,,0.0,
 claude-sonnet-4-6,6,global,10,alpaca,"Instruction:
 Describe a picnic vacation where four people are travelling together.
 
@@ -483,7 +483,7 @@ Four wonderful friends — **Sarah, Marcus, Elena, and Tom** — packed their ba
 🚗 **Hitting the Road**
 The four travelers piled into Marcus's spacious SUV, loading it with:
 - Colorful picnic blankets
-- Wicker baskets",18.61652947599475,0.8966737985610962,,,,0.0,-63.717170147605515,-0.1074783205986023,-0.08324980735778809,,0.0
+- Wicker baskets",18.61652947599475,0.8966737985610962,,,,0.0,-63.717170147605515,-0.1074783205986023,-0.0832498073577882,,0.0,
 claude-sonnet-4-6,7,global,10,alpaca,"Instruction:
 Explain the concept of Big Data and what it means for companies and customers.","Instruction:
 Explain tHe concept of Big DAta aNd wHat it means for companies and custOmeRs.",0.9018046259880066,"# Big Data: A Comprehensive Overview
@@ -504,7 +504,7 @@ Big Data refers to **extremely large and complex collections of data** that trad
 | V | Meaning | Example |
 |---|---------|---------|
 | **Volume** | Massive amounts of data | Billions of transactions daily |
-| **Velocity** | Speed at which data is generated",84.50731092038063,0.9790282845497131,,,,0.0,-15.49268907961941,-0.09819537401199341,-0.020971715450286865,,0.0
+| **Velocity** | Speed at which data is generated",84.50731092038063,0.9790282845497132,,,,0.0,-15.49268907961941,-0.09819537401199341,-0.020971715450286754,,0.0,
 claude-sonnet-4-6,8,global,10,alpaca,"Instruction:
 Analyze the given phrase in terms of its connotations.
 
@@ -536,7 +536,7 @@ This phrase is an idiomatic expression with rich connotative layers worth examin
 ### 🔴 Negative Connotations
 - **Futility** — suggests a pursuit that is **pointless** and ultimately **unwinnable**
 - **Wasted effort** — implies time and energy spent on something **fruitless**
--",36.269862423359776,0.9217144846916199,,,,0.0,-38.24063960032135,-0.11494845151901245,-0.03827911615371704,,0.0
+-",36.269862423359776,0.92171448469162,,,,0.0,-38.24063960032135,-0.11494845151901245,-0.03827911615371682,,0.0,
 claude-sonnet-4-6,9,global,10,alpaca,"Instruction:
 List three potential sources for the following research problem.
 
@@ -555,7 +555,7 @@ What are the benEfits of onliNe learning?",0.8859767913818359,"Here are **three 
 
 1. **Academic Journals** - Peer-reviewed publications such as the *Journal of Online Learning and Teaching* or the *Internet and Higher Education* journal, which contain research studies and findings on online education effectiveness.
 
-2. **Educational Organizations & Reports** - Reports from organizations such as the **U.S. Department of Education** or the **Online Learning Consortium (OLC)**, which",52.403384998915236,0.9418920874595642,,,,0.0,20.49533653965076,-0.11402314901351929,0.02719658613204956,,0.0
+2. **Educational Organizations & Reports** - Reports from organizations such as the **U.S. Department of Education** or the **Online Learning Consortium (OLC)**, which",52.40338499891524,0.9418920874595642,,,,0.0,20.49533653965077,-0.11402314901351929,0.02719658613204956,,0.0,
 claude-sonnet-4-6,10,global,10,alpaca,"Instruction:
 Arrange the following countries in ascending order of GDP per capita.
 
@@ -574,7 +574,7 @@ ChIna, US, India, Japan",0.8711661696434021,"Here are the countries arranged in 
 1. 🇮🇳 **India** (~$2,500)
 2. 🇨🇳 **China** (~$12,700)
 3. 🇯🇵 **Japan** (~$33,800)
-4. 🇺🇸 **US** (~$80,000)",100.00000000000004,0.9999999403953552,,,,0.0,0.0,-0.12883394956588745,0.0,,0.0
+4. 🇺🇸 **US** (~$80,000)",100.00000000000004,0.9999999403953552,,,,0.0,0.0,-0.12883394956588745,0.0,,0.0,
 claude-sonnet-4-6,11,global,10,alpaca,"Instruction:
 Name the boat depicted in the provided photo.
 
@@ -583,7 +583,7 @@ Attached photo","InsTruCtioN:
 Name The boat Depicted in the provided phOto.
 
 Input:
-Attached photo",0.9113929271697998,"I don't see any photo attached to your message. Could you please **upload the image** again? Once you share it, I'll do my best to identify the boat depicted in it.",I don't see any photo attached to your message. Could you please **upload the image** again? I'd be happy to help identify the boat once I can see it! 🚢,59.57004799543726,0.9485369324684143,,,,0.0,4.010700719581571,-0.08860701322555542,-0.0035489797592163086,,0.0
+Attached photo",0.9113929271697998,"I don't see any photo attached to your message. Could you please **upload the image** again? Once you share it, I'll do my best to identify the boat depicted in it.",I don't see any photo attached to your message. Could you please **upload the image** again? I'd be happy to help identify the boat once I can see it! 🚢,59.57004799543726,0.9485369324684144,,,,0.0,4.010700719581571,-0.08860701322555542,-0.0035489797592161976,,0.0,
 claude-sonnet-4-6,12,global,10,alpaca,"Instruction:
 Edit the grammar and punctuation of the given sentence.
 
@@ -602,7 +602,7 @@ The only change made was adding a **period (.)** at the end of the sentence to c
 
 The changes made were:
 - Corrected the random capitalization of letters within words (e.g., ""moSt"" → ""most"", ""ImportAnt"" → ""important"", ""ingredIeNts"" → ""ingredients"")
-- Added a period at the end of the sentence.",27.252282140884667,0.8932473659515381,,,,1.0,-72.74771785911537,-0.11148351430892944,-0.10675257444381714,,1.0
+- Added a period at the end of the sentence.",27.252282140884667,0.8932473659515381,,,,1.0,-72.74771785911537,-0.11148351430892944,-0.10675257444381714,,1.0,
 claude-sonnet-4-6,13,global,10,alpaca,"Instruction:
 Calculate the length of the hypotenuse in the following triangle.
 
@@ -611,7 +611,7 @@ Input:
 CAlculate The lengtH of The hypoteNuse in tHe following triangle.
 
 Input:
-![alt text](htTpS://www.onlineMathlearning.com/Image-files/tRiangle-hypotenuse-length.png ""RIght TriaNgle"")",0.9009013772010803,"# Finding the Hypotenuse
+![alt text](htTpS://www.onlineMathlearning.com/Image-files/tRiangle-hypotenuse-length.png ""RIght TriaNgle"")",0.9009013772010804,"# Finding the Hypotenuse
 
 ## Given Information
 From the right triangle, the two legs are:
@@ -638,7 +638,7 @@ $$c = \sqrt{a^2 + b^2}$$
 
 Where:
 - **a** and **b** are the two legs of the right triangle
--",17.346725526126296,0.8507071137428284,,,,0.0,-63.498481461772855,-0.0990985631942749,-0.110027015209198,,0.0
+-",17.346725526126296,0.8507071137428284,,,,0.0,-63.498481461772855,-0.09909856319427479,-0.110027015209198,,0.0,
 claude-sonnet-4-6,14,global,10,alpaca,"Instruction:
 How many instruments does a symphony orchestra typically have?","Instruction:
 HOw many instrumenTs dOes a symphony orchestra TypiCally hAve?",0.8577950596809387,"A symphony orchestra typically has around **80 to 100 musicians** playing a variety of instruments, which are grouped into four main sections:
@@ -652,12 +652,12 @@ HOw many instrumenTs dOes a symphony orchestra TypiCally hAve?",0.85779505968093
 - **Woodwinds** (~10-15)
 - **Brass** (~10-15)
 - **Percussion** (~4-6)
--",22.189466831926985,0.8782154321670532,,,,0.0,-77.81053316807305,-0.14220505952835083,-0.12178456783294678,,0.0
+-",22.189466831926985,0.8782154321670532,,,,0.0,-77.81053316807305,-0.14220505952835083,-0.12178456783294678,,0.0,
 claude-sonnet-4-6,15,global,10,alpaca,"Instruction:
 Summarize the phrase: ""GPT is a natural language processing architecture.""","Instruction:
 Summarize the phrase: ""GPT is a naturAL languAge proCessing architecTure.""",0.9002821445465088,**Summary:** GPT is an AI system designed to understand and generate human language.,"Here is a summary of the phrase:
 
-**GPT is an AI architecture designed to understand and process human language.**",39.8808919781778,0.9292576909065247,,,,0.0,-60.11910802182224,-0.09971785545349121,-0.07074224948883057,,0.0
+**GPT is an AI architecture designed to understand and process human language.**",39.8808919781778,0.9292576909065248,,,,0.0,-60.11910802182224,-0.09971785545349121,-0.07074224948883046,,0.0,
 claude-sonnet-4-6,0,global,25,alpaca,"Instruction:
 What would be the best type of exercise for a person who has arthritis?","InsTrUctioN:
 What Would bE the bEsT type of ExErcisE For a pERSon who Has ArthRitis?",0.8434804677963257,"# Best Exercise Types for Arthritis
@@ -683,7 +683,7 @@ Here are the **most recommended** exercise options for people with arthritis:
 - **Walking** - Low-impact and accessible
  - Start slow and use supportive footwear
 
--",17.614794166396802,0.9029163718223572,,,,0.0,-58.15680289865736,-0.15651947259902954,-0.06797385215759277,,0.0
+-",17.614794166396802,0.9029163718223572,,,,0.0,-58.15680289865736,-0.15651947259902954,-0.06797385215759277,,0.0,
 claude-sonnet-4-6,1,global,25,alpaca,"Instruction:
 Calculate the atomic mass for lithium.","InstructioN:
 CalcUlaTe The atOMic mAsS foR Lithium.",0.8327643275260925,"# Calculating the Atomic Mass of Lithium
@@ -700,7 +700,7 @@ CalcUlaTe The atOMic mAsS foR Lithium.",0.8327643275260925,"# Calculating the At
 | Isotope | Mass (amu) | Natural Abundance |
 |---------|-----------|-------------------|
 | ⁶Li | 6.015123 amu | 7.59% (0.0759) |
-| ⁷Li | 7.016003 amu | 92.41% (",65.1871398008222,0.9537690281867981,,,,0.0,-34.81286019917785,-0.1672356128692627,-0.046231091022491455,,0.0
+| ⁷Li | 7.016003 amu | 92.41% (",65.1871398008222,0.953769028186798,,,,0.0,-34.81286019917785,-0.1672356128692627,-0.046231091022491566,,0.0,
 claude-sonnet-4-6,2,global,25,alpaca,"Instruction:
 Convert the following binary code to ASCII characters.
 
@@ -729,7 +729,7 @@ Here is the step-by-step conversion:
 | 01100001 | 97 | **a** |
 | 01110010 | 114 | **r** |
 | 01101001 | 105 | **i** |
-|",100.00000000000004,1.0,,,,0.0,0.0,-0.1260974407196045,0.0,,0.0
+|",100.00000000000004,1.0,,,,0.0,0.0,-0.1260974407196045,0.0,,0.0,
 claude-sonnet-4-6,3,global,25,alpaca,"Instruction:
 Take this sentence and make it more descriptive: She was scared.
 
@@ -744,7 +744,7 @@ She was scared.",0.8290375471115112,"Here is a more descriptive version of the s
 
 This expanded version uses vivid sensory details and descriptive language to paint a more complete picture of her","Here is a more descriptive version of the sentence:
 
-""Her heart pounded frantically against her chest as a wave of icy, paralyzing fear washed over her entire body, causing her hands to tremble uncontrollably and her breath to come in short, ragged gasps, while her wide, darting eyes desperately scanned every shadowy corner of the room for any sign of the unknown danger that lurked just beyond her perception.""",48.76419556742805,0.9376141428947449,,,,0.0,-51.235804432571996,-0.17096245288848877,-0.062385737895965576,,0.0
+""Her heart pounded frantically against her chest as a wave of icy, paralyzing fear washed over her entire body, causing her hands to tremble uncontrollably and her breath to come in short, ragged gasps, while her wide, darting eyes desperately scanned every shadowy corner of the room for any sign of the unknown danger that lurked just beyond her perception.""",48.76419556742805,0.9376141428947448,,,,0.0,-51.235804432571996,-0.17096245288848877,-0.06238573789596569,,0.0,
 claude-sonnet-4-6,4,global,25,alpaca,"Instruction:
 Brainstorm 3 possible ideas to promote the following product
 
@@ -767,7 +767,7 @@ Partner with popular skateboarding and lifestyle influencers on platforms like *
 ---
 
 **2. 🏙️ Urban Demo Events**
-Host **",30.829042293767873,0.9197588562965393,,,,0.0,-54.492069857611696,-0.19779586791992188,-0.060736656188964844,,0.0
+Host **",30.829042293767877,0.9197588562965392,,,,0.0,-54.49206985761169,-0.19779586791992188,-0.060736656188964955,,0.0,
 claude-sonnet-4-6,5,global,25,alpaca,"Instruction:
 Rewrite the sentence using imperative mood.
 
@@ -782,7 +782,7 @@ PlEasE pick up tHe book FRoM the shelf.",0.8396273851394653,"Here is the sentenc
 
 The word ""Please"" has been removed, and the sentence now begins directly with the verb ""Pick,"" which is the defining characteristic of the imperative mood. The imperative mood is used to give commands, instructions, or requests directly.","**Pick up the book from the shelf.**
 
-The sentence has been rewritten in the **imperative mood** by removing the word ""Please"" and starting directly with the base verb **""Pick""**, which gives a direct command or instruction.",27.932895297029567,0.9252864718437195,,,,0.0,-68.00280171762407,-0.16037261486053467,-0.07121700048446655,,0.0
+The sentence has been rewritten in the **imperative mood** by removing the word ""Please"" and starting directly with the base verb **""Pick""**, which gives a direct command or instruction.",27.932895297029567,0.9252864718437196,,,,0.0,-68.00280171762407,-0.16037261486053467,-0.07121700048446644,,0.0,
 claude-sonnet-4-6,6,global,25,alpaca,"Instruction:
 Describe a picnic vacation where four people are travelling together.
 
@@ -811,7 +811,7 @@ Four wonderful friends — **Emma, James, Sofia, and Leo** — decided to escape
 
 ## The Journey Together
 
-- 🚗 They **drove through",18.504299834011075,0.897011399269104,,,,0.0,-63.82939978958919,-0.17273783683776855,-0.08291220664978027,,0.0
+- 🚗 They **drove through",18.504299834011075,0.897011399269104,,,,0.0,-63.82939978958919,-0.17273783683776855,-0.08291220664978038,,0.0,
 claude-sonnet-4-6,7,global,25,alpaca,"Instruction:
 Explain the concept of Big Data and what it means for companies and customers.","INstructIon:
 ExpLaIN The coNcEpt of Big DAta anD What iT meANs for coMpanIes and customeRS.",0.8098115921020508,"# Big Data: A Comprehensive Overview
@@ -832,7 +832,7 @@ Big Data refers to **extremely large and complex collections of information** th
 | V | Meaning | Example |
 |---|---------|---------|
 | **Volume** | Massive amounts of data | Billions of social media posts daily |
-| **Velocity** | Speed at",70.01195758805979,0.9606414437294006,,,,0.0,-29.988042411940256,-0.19018840789794922,-0.039358556270599365,,0.0
+| **Velocity** | Speed at",70.01195758805979,0.9606414437294006,,,,0.0,-29.988042411940256,-0.19018840789794922,-0.039358556270599365,,0.0,
 claude-sonnet-4-6,8,global,25,alpaca,"Instruction:
 Analyze the given phrase in terms of its connotations.
 
@@ -863,7 +863,7 @@ The phrase refers to the act of **chasing a wild goose** — a notoriously diffi
 ## Connotations
 
 ### 🔴 Negative Connotations
-- **Futility** — suggests a task that is **pointless and unlikely to succeed**",44.08925343383601,0.9379242658615112,,,,0.0,-30.42124858984512,-0.13206946849822998,-0.022069334983825684,,0.0
+- **Futility** — suggests a task that is **pointless and unlikely to succeed**",44.08925343383601,0.9379242658615112,,,,0.0,-30.42124858984512,-0.13206946849822998,-0.022069334983825573,,0.0,
 claude-sonnet-4-6,9,global,25,alpaca,"Instruction:
 List three potential sources for the following research problem.
 
@@ -880,7 +880,7 @@ WhAT are the beNEfItS oF oNline learnIng?",0.8298555612564087,"Here are three po
 
 1. **Academic Journals** - Such as the *Journal of Online Learning and Teaching* or *Computers & Education*, which publish peer-reviewed studies on the effectiveness and advantages of online education.
 
-2. **Educational Organizations** - Reports and publications from organizations like the **U.S. Department of Education** or **UNESCO**, which regularly analyze and document trends and benefits in digital/online learning environments",47.24391604151343,0.946613073348999,,,,0.0,15.335867582248955,-0.17014437913894653,0.031917572021484375,,0.0
+2. **Educational Organizations** - Reports and publications from organizations like the **U.S. Department of Education** or **UNESCO**, which regularly analyze and document trends and benefits in digital/online learning environments",47.24391604151343,0.946613073348999,,,,0.0,15.335867582248955,-0.17014437913894653,0.031917572021484375,,0.0,
 claude-sonnet-4-6,10,global,25,alpaca,"Instruction:
 Arrange the following countries in ascending order of GDP per capita.
 
@@ -901,7 +901,7 @@ CHina, US, India, JApAN",0.8329262733459473,"Here are the countries arranged in 
 3. 🇯🇵 **Japan**
 4. 🇺🇸 **US**
 
-*(Based on approximate current nominal GDP per capita figures)*",67.02306281251828,0.93525630235672,,,,0.0,-32.97693718748177,-0.16707384586334229,-0.06474363803863525,,0.0
+*(Based on approximate current nominal GDP per capita figures)*",67.02306281251828,0.93525630235672,,,,0.0,-32.97693718748177,-0.16707384586334229,-0.06474363803863525,,0.0,
 claude-sonnet-4-6,11,global,25,alpaca,"Instruction:
 Name the boat depicted in the provided photo.
 
@@ -916,7 +916,7 @@ Could you please:
 - **Re-upload** the photo, or
 - **Describe** the boat you're referring to?
 
-I'll be happy to help identify it once I can see or learn more about it! 🚢",18.07790561049717,0.9032176733016968,,,,0.0,-37.48144166535852,-0.19608378410339355,-0.04886823892593384,,0.0
+I'll be happy to help identify it once I can see or learn more about it! 🚢",18.07790561049717,0.9032176733016968,,,,0.0,-37.48144166535852,-0.19608378410339355,-0.04886823892593384,,0.0,
 claude-sonnet-4-6,12,global,25,alpaca,"Instruction:
 Edit the grammar and punctuation of the given sentence.
 
@@ -935,7 +935,7 @@ The only change made was adding a **period (.)** at the end of the sentence to c
 
 **Changes made:**
 - Fixed capitalization (only the first word ""Humor"" is capitalized)
-- Added a period at the end of the sentence",43.45357661453367,0.9226154088973999,,,,0.0,-56.546423385466376,-0.1965537667274475,-0.07738453149795532,,0.0
+- Added a period at the end of the sentence",43.45357661453367,0.9226154088974,,,,0.0,-56.546423385466376,-0.1965537667274475,-0.07738453149795521,,0.0,
 claude-sonnet-4-6,13,global,25,alpaca,"Instruction:
 Calculate the length of the hypotenuse in the following triangle.
 
@@ -971,7 +971,7 @@ If you provide the **two leg lengths**, I can apply the **Pythagorean Theorem**:
 
 $$a^2 + b^2 = c^2$$
 
-$$c = \",23.05653694144233,0.8726773262023926,,,,0.0,-57.788670046456815,-0.16999804973602295,-0.08805680274963379,,0.0
+$$c = \",23.05653694144233,0.8726773262023926,,,,0.0,-57.788670046456815,-0.16999804973602295,-0.08805680274963379,,0.0,
 claude-sonnet-4-6,14,global,25,alpaca,"Instruction:
 How many instruments does a symphony orchestra typically have?","InstRUction:
 HOw many iNstrumentS doEs a symphonY orCHEsTRa TypicalLY havE?",0.817650556564331,"A symphony orchestra typically has around **80 to 100 musicians** playing a variety of instruments, which are grouped into four main sections:
@@ -988,14 +988,14 @@ The instruments are generally grouped into four sections:
 - **Brass**
 - **Percussion**
 
-A **full/large symphony orchestra** commonly has around **80–100 musicians**.",22.24230762082918,0.8837735652923584,,,,0.0,-77.75769237917086,-0.1823495626449585,-0.1162264347076416,,0.0
+A **full/large symphony orchestra** commonly has around **80–100 musicians**.",22.24230762082918,0.8837735652923584,,,,0.0,-77.75769237917086,-0.1823495626449585,-0.1162264347076416,,0.0,
 claude-sonnet-4-6,15,global,25,alpaca,"Instruction:
 Summarize the phrase: ""GPT is a natural language processing architecture.""","InsTRuCtioN:
 SummarIzE tHe PhRAse: ""GPT iS a natural Language pROcessIng ArchitectuRE.""",0.840607225894928,**Summary:** GPT is an AI system designed to understand and generate human language.,"Here is a summary of the phrase:
 
 **GPT is an NLP architecture.**
 
-It processes and understands human language using a structured AI framework.",20.1857735807738,0.9068688154220581,,,,0.0,-79.81422641922624,-0.15939277410507202,-0.09313112497329712,,0.0
+It processes and understands human language using a structured AI framework.",20.1857735807738,0.906868815422058,,,,0.0,-79.81422641922624,-0.15939277410507202,-0.09313112497329723,,0.0,
 claude-sonnet-4-6,0,global,50,alpaca,"Instruction:
 What would be the best type of exercise for a person who has arthritis?","INstruCtiOn:
 WHaT Would BE The bESt TYpe OF ExErCIse fOR A PeRsOn wHo HaS ArTHRitis?",0.8147091865539551,"# Best Exercise Types for People with Arthritis
@@ -1022,7 +1022,7 @@ For people with arthritis, **low-impact exercises** are generally recommended, a
 - Improves overall fitness
 - Easy to control intensity
 
-### 🚴",17.034502527583637,0.9045140147209167,,,,0.0,-58.737094537470526,-0.18529075384140015,-0.0663762092590332,,0.0
+### 🚴",17.034502527583637,0.9045140147209167,,,,0.0,-58.737094537470526,-0.18529075384140015,-0.0663762092590332,,0.0,
 claude-sonnet-4-6,1,global,50,alpaca,"Instruction:
 Calculate the atomic mass for lithium.","INSTrucTioN:
 CalCuLaTE tHe atoMIc MASS fOr lITHIum.",0.8049782514572144,"# Calculating the Atomic Mass of Lithium
@@ -1041,7 +1041,7 @@ Lithium has **two stable isotopes**:
 | Isotope | Mass (amu) | Natural Abundance |
 |---------|-----------|-------------------|
 | ⁶Li | 6.01512 amu | 7.59% (0.0759) |
-| ⁷Li | 7.01601 amu |",62.61232973880875,0.9382104277610779,,,,0.0,-37.387670261191296,-0.19502168893814087,-0.06178969144821167,,0.0
+| ⁷Li | 7.01601 amu |",62.61232973880875,0.938210427761078,,,,0.0,-37.387670261191296,-0.19502168893814087,-0.06178969144821156,,0.0,
 claude-sonnet-4-6,2,global,50,alpaca,"Instruction:
 Convert the following binary code to ASCII characters.
 
@@ -1068,7 +1068,7 @@ Here is the step-by-step conversion:
 | 01100001 | 97 | a |
 | 01110010 | 114 | r |
 | 01101001 | 105 | i |
-| 01110100 | 116 | t |",50.19218144509376,0.9336950778961182,,,,0.0,-49.807818554906284,-0.11001032590866089,-0.06630492210388184,,0.0
+| 01110100 | 116 | t |",50.19218144509376,0.9336950778961182,,,,0.0,-49.807818554906284,-0.11001032590866089,-0.06630492210388184,,0.0,
 claude-sonnet-4-6,3,global,50,alpaca,"Instruction:
 Take this sentence and make it more descriptive: She was scared.
 
@@ -1087,7 +1087,7 @@ This expanded version uses vivid sensory details and descriptive language to pai
 
 This expanded version adds:
 - **Physical reactions** (pounding heart, trembling hands)
-- **Vivid imagery** (",33.48748176993292,0.9176977276802063,,,,0.0,-66.51251823006712,-0.1992337703704834,-0.08230215311050415,,0.0
+- **Vivid imagery** (",33.48748176993292,0.9176977276802064,,,,0.0,-66.51251823006712,-0.1992337703704834,-0.08230215311050404,,0.0,
 claude-sonnet-4-6,4,global,50,alpaca,"Instruction:
 Brainstorm 3 possible ideas to promote the following product
 
@@ -1110,7 +1110,7 @@ Launch a **viral challenge** on TikTok and Instagram where influencers and every
 ---
 
 ## Idea 2: Urban Commuter Campaign
-Target **city commuters",3.576911756463413,0.8778635263442993,,,,0.0,-81.74420039491615,-0.18540632724761963,-0.10263198614120483,,0.0
+Target **city commuters",3.576911756463413,0.8778635263442993,,,,0.0,-81.74420039491615,-0.18540632724761963,-0.10263198614120483,,0.0,
 claude-sonnet-4-6,5,global,50,alpaca,"Instruction:
 Rewrite the sentence using imperative mood.
 
@@ -1123,7 +1123,7 @@ PleASE picK Up the BOok fRoM THe SheLf.",0.804969072341919,"Here is the sentence
 
 **Pick up the book from the shelf.**
 
-The word ""Please"" has been removed, and the sentence now begins directly with the verb ""Pick,"" which is the defining characteristic of the imperative mood. The imperative mood is used to give commands, instructions, or requests directly.",**Pick up the book from the shelf.**,0.8651695203120637,0.8703423738479614,,,,0.0,-95.07052749434158,-0.19503092765808105,-0.1261610984802246,,0.0
+The word ""Please"" has been removed, and the sentence now begins directly with the verb ""Pick,"" which is the defining characteristic of the imperative mood. The imperative mood is used to give commands, instructions, or requests directly.",**Pick up the book from the shelf.**,0.8651695203120637,0.8703423738479614,,,,0.0,-95.07052749434158,-0.19503092765808105,-0.1261610984802246,,0.0,
 claude-sonnet-4-6,6,global,50,alpaca,"Instruction:
 Describe a picnic vacation where four people are travelling together.
 
@@ -1155,7 +1155,7 @@ Four friends packed their bags with **sandwiches, blankets, and laughter** as th
 They traveled to a **beautiful countryside meadow**, surrounded by:
 - 🌳 Tall, shady oak trees
 - 🌸 Colorful wildflowers
--",6.859467585114745,0.8818968534469604,,,,0.0,-75.47423203848552,-0.22088849544525146,-0.09802675247192383,,0.0
+-",6.859467585114745,0.8818968534469604,,,,0.0,-75.47423203848552,-0.22088849544525146,-0.09802675247192394,,0.0,
 claude-sonnet-4-6,7,global,50,alpaca,"Instruction:
 Explain the concept of Big Data and what it means for companies and customers.","InStRUcTIon:
 ExPLaiN The COnCEpT oF BIg DatA AnD WhAt It MEans For COmpANIES and custoMeRs.",0.8075761198997498,"# Big Data: A Comprehensive Overview
@@ -1176,7 +1176,7 @@ Big Data refers to **extremely large and complex collections of information** th
 | V | Meaning | Example |
 |---|---------|---------|
 | **Volume** | Massive amounts of data | Billions of social media posts daily |
-| **Velocity",61.16753804105278,0.9548048973083496,,,,0.0,-38.83246195894726,-0.19242388010025024,-0.04519510269165039,,0.0
+| **Velocity",61.16753804105278,0.9548048973083496,,,,0.0,-38.83246195894726,-0.19242388010025024,-0.04519510269165039,,0.0,
 claude-sonnet-4-6,8,global,50,alpaca,"Instruction:
 Analyze the given phrase in terms of its connotations.
 
@@ -1208,7 +1208,7 @@ The phrase refers to the **act of chasing a wild goose** — an inherently diffi
 ### 🔴 Negative Connotations
 | Connotation | Explanation |
 |-------------|-------------|
-| **Futility**",35.63203397694749,0.9145184755325317,,,,0.0,-38.87846804673364,-0.20487040281295776,-0.045475125312805176,,0.0
+| **Futility**",35.63203397694749,0.9145184755325316,,,,0.0,-38.87846804673364,-0.20487040281295776,-0.045475125312805176,,0.0,
 claude-sonnet-4-6,9,global,50,alpaca,"Instruction:
 List three potential sources for the following research problem.
 
@@ -1227,7 +1227,7 @@ WhAT ArE thE beNefITS OF ONliNe lEarNIng?",0.7965685129165649,"Here are **three 
 
 1. **Academic Journals** - Peer-reviewed publications such as the *Journal of Online Learning and Teaching* or the *Internet and Higher Education* journal, which contain research studies and data-driven findings on online education effectiveness.
 
-2. **Educational Organizations and Institutions** - Reports and publications from organizations such as the **National Education Association (NEA)** or the **Online Learning Consortium (O",32.21811992394207,0.9224706292152405,,,,0.0,0.31007146467759483,-0.20343142747879028,0.00777512788772583,,0.0
+2. **Educational Organizations and Institutions** - Reports and publications from organizations such as the **National Education Association (NEA)** or the **Online Learning Consortium (O",32.21811992394207,0.9224706292152404,,,,0.0,0.31007146467759483,-0.20343142747879028,0.007775127887725719,,0.0,
 claude-sonnet-4-6,10,global,50,alpaca,"Instruction:
 Arrange the following countries in ascending order of GDP per capita.
 
@@ -1246,7 +1246,7 @@ ChInA, US, INDiA, JApAN",0.7979855537414551,"Here are the countries arranged in 
 1. 🇮🇳 **India** (~$2,500)
 2. 🇨🇳 **China** (~$12,700)
 3. 🇯🇵 **Japan** (~$33,800)
-4. 🇺🇸 **US** (~$80,000)",100.00000000000004,0.9999999403953552,,,,0.0,0.0,-0.20201456546783447,0.0,,0.0
+4. 🇺🇸 **US** (~$80,000)",100.00000000000004,0.9999999403953552,,,,0.0,0.0,-0.20201456546783447,0.0,,0.0,
 claude-sonnet-4-6,11,global,50,alpaca,"Instruction:
 Name the boat depicted in the provided photo.
 
@@ -1257,7 +1257,7 @@ NAMe tHe Boat DEPIcTED iN THE PRoVided pHoTO.
 InpuT:
 ATTacHed pHoto",0.8062375783920288,"I don't see any photo attached to your message. Could you please **upload the image** you'd like me to look at? Once you share it, I'll do my best to help identify the boat depicted!","I don't see any photo attached to your message. Could you please **share the image** you'd like me to look at?
 
-Once you upload the photo, I'll do my best to help identify the boat depicted! 🚢",82.81759993039596,0.9715939164161682,,,,0.0,27.25825265454027,-0.19376236200332642,0.019508004188537598,,0.0
+Once you upload the photo, I'll do my best to help identify the boat depicted! 🚢",82.81759993039596,0.9715939164161682,,,,0.0,27.25825265454027,-0.19376236200332642,0.019508004188537598,,0.0,
 claude-sonnet-4-6,12,global,50,alpaca,"Instruction:
 Edit the grammar and punctuation of the given sentence.
 
@@ -1272,7 +1272,7 @@ HUmoR Is ONE OF tHe most iMporTaNT IngreDieNTs Of LIfe",0.7942379713058472,"Here
 
 The only change made was adding a **period (.)** at the end of the sentence to complete the punctuation.","Here is the corrected sentence:
 
-""Humor is one of the most important ingredients of life.""",18.126225612900573,0.9185351729393005,,,,0.0,-81.87377438709947,-0.20576202869415283,-0.08146476745605469,,0.0
+""Humor is one of the most important ingredients of life.""",18.126225612900573,0.9185351729393004,,,,0.0,-81.87377438709947,-0.20576202869415283,-0.0814647674560548,,0.0,
 claude-sonnet-4-6,13,global,50,alpaca,"Instruction:
 Calculate the length of the hypotenuse in the following triangle.
 
@@ -1308,7 +1308,7 @@ $$a^2 + b^2 = c^2$$
 
 Therefore:
 
-$$c = \sqrt{a^2 + b",18.724563285169186,0.8692914247512817,,,,0.0,-62.120643702729964,-0.21060431003570557,-0.09144270420074463,,0.0
+$$c = \sqrt{a^2 + b",18.724563285169182,0.8692914247512817,,,,0.0,-62.120643702729964,-0.21060431003570557,-0.09144270420074463,,0.0,
 claude-sonnet-4-6,14,global,50,alpaca,"Instruction:
 How many instruments does a symphony orchestra typically have?","INSTrucTION:
 HOW manY iNSTRumENTs doES A sYMphOny OrcHEstRA TypicaLly havE?",0.7986717820167542,"A symphony orchestra typically has around **80 to 100 musicians** playing a variety of instruments, which are grouped into four main sections:
@@ -1324,12 +1324,12 @@ A symphony orchestra typically has between **60 to 100+ musicians**, playing ins
 - Violins, Violas, Cellos, Double Basses, Harp
 
 ### 🎺 Brass (~10-12 players)
-- French Horns, Trumpets, Tr",9.220798031799855,0.8877761363983154,,,,0.0,-90.77920196820018,-0.2013283371925354,-0.11222386360168457,,0.0
+- French Horns, Trumpets, Tr",9.220798031799855,0.8877761363983154,,,,0.0,-90.77920196820018,-0.2013283371925354,-0.11222386360168457,,0.0,
 claude-sonnet-4-6,15,global,50,alpaca,"Instruction:
 Summarize the phrase: ""GPT is a natural language processing architecture.""","InStRucTioN:
 SumMaRIzE tHe PhRAse: ""GPT is A nAtUrAl LaNGuAGE pROcesSiNG aRcHItEcTUrE.""",0.7921169400215149,**Summary:** GPT is an AI system designed to understand and generate human language.,"Here is a summary of the phrase:
 
-**GPT is an AI system designed to understand and process human language.**",52.78099780153099,0.9357075691223145,,,,0.0,-47.219002198469056,-0.2078830599784851,-0.06429237127304077,,0.0
+**GPT is an AI system designed to understand and process human language.**",52.78099780153099,0.9357075691223145,,,,0.0,-47.219002198469056,-0.2078830599784851,-0.06429237127304077,,0.0,
 claude-sonnet-4-6,0,global,75,alpaca,"Instruction:
 What would be the best type of exercise for a person who has arthritis?","InStRUCTION:
 WHAT wOULd BE THE BeST TYpE OF EXerCIse For A PerSON WHO HaS ARtHrITIS?",0.8330816626548767,"# Best Exercise Types for Arthritis
@@ -1357,7 +1357,7 @@ People with arthritis generally benefit most from **low-impact exercises** that 
 - Improves overall fitness
 - Easy to control intensity
 
-### 🚴",20.648231624801767,0.909016489982605,,,,0.0,-55.1233654402524,-0.16691827774047852,-0.06187373399734497,,0.0
+### 🚴",20.648231624801767,0.909016489982605,,,,0.0,-55.1233654402524,-0.16691827774047852,-0.06187373399734497,,0.0,
 claude-sonnet-4-6,1,global,75,alpaca,"Instruction:
 Calculate the atomic mass for lithium.","INSTRUcTIOn:
 CALCULAte THE aTOMIc MAss fOR LITHiuM.",0.8058868646621704,"## Calculating the Atomic Mass of Lithium
@@ -1374,7 +1374,7 @@ Lithium has **two stable isotopes**:
 | Isotope | Mass (amu) | Natural Abundance |
 |---------|-----------|-------------------|
 | ⁶Li | 6.015123 amu | 7.59% (0.0759) |
-| ⁷Li | 7.016003 amu | 92.41% (0.9",55.01988342428851,0.9316083192825317,,,,0.0,-44.980116575711534,-0.19411307573318481,-0.06839179992675781,,0.0
+| ⁷Li | 7.016003 amu | 92.41% (0.9",55.01988342428851,0.9316083192825316,,,,0.0,-44.980116575711534,-0.19411307573318481,-0.06839179992675792,,0.0,
 claude-sonnet-4-6,2,global,75,alpaca,"Instruction:
 Convert the following binary code to ASCII characters.
 
@@ -1403,7 +1403,7 @@ Here is the step-by-step conversion:
 | 01100001 | 97 | **a** |
 | 01110010 | 114 | **r** |
 | 01101001 | 105 | **i** |
-|",100.00000000000004,1.0,,,,0.0,0.0,-0.10742473602294922,0.0,,0.0
+|",100.00000000000004,1.0,,,,0.0,0.0,-0.10742473602294922,0.0,,0.0,
 claude-sonnet-4-6,3,global,75,alpaca,"Instruction:
 Take this sentence and make it more descriptive: She was scared.
 
@@ -1421,7 +1421,7 @@ This expanded version uses vivid sensory details and descriptive language to pai
 **""Her heart pounded frantically against her chest as her wide, trembling eyes darted around the room, her pale face drained of all color, and her breath came in short, ragged gasps — every shadow and sound sending fresh waves of terror coursing through her shaking body.""**
 
 This expanded version adds:
-- **Physical reactions** (pounding heart, trembling eyes, shaking body)",24.500222792834183,0.9074069857597351,,,,0.0,-75.49977720716586,-0.16984325647354126,-0.09259289503097534,,0.0
+- **Physical reactions** (pounding heart, trembling eyes, shaking body)",24.500222792834183,0.9074069857597352,,,,0.0,-75.49977720716586,-0.16984325647354126,-0.09259289503097523,,0.0,
 claude-sonnet-4-6,4,global,75,alpaca,"Instruction:
 Brainstorm 3 possible ideas to promote the following product
 
@@ -1443,7 +1443,7 @@ Partner with popular skateboarding and lifestyle influencers to create a **viral
 
 ---
 
-**💡 IDEA 2: Urban Commuter",9.719100175539706,0.8961735367774963,,,,0.0,-75.60201197583986,-0.18979769945144653,-0.08432197570800781,,0.0
+**💡 IDEA 2: Urban Commuter",9.719100175539706,0.8961735367774963,,,,0.0,-75.60201197583986,-0.18979769945144653,-0.08432197570800781,,0.0,
 claude-sonnet-4-6,5,global,75,alpaca,"Instruction:
 Rewrite the sentence using imperative mood.
 
@@ -1460,7 +1460,7 @@ The word ""Please"" has been removed, and the sentence now begins directly with 
 
 **PICK UP THE BOOK FROM THE SHELF.**
 
-(The word ""please"" is optional in imperative mood, and the subject ""you"" is implied but not stated.)",17.046415839101265,0.9179537296295166,,,,0.0,-78.88928117555238,-0.19044214487075806,-0.07854974269866943,,0.0
+(The word ""please"" is optional in imperative mood, and the subject ""you"" is implied but not stated.)",17.046415839101265,0.9179537296295166,,,,0.0,-78.88928117555238,-0.19044214487075806,-0.07854974269866943,,0.0,
 claude-sonnet-4-6,6,global,75,alpaca,"Instruction:
 Describe a picnic vacation where four people are travelling together.
 
@@ -1483,7 +1483,7 @@ Four wonderful friends packed their bags with excitement and **hit the open road
 
 Upon arriving at a **gorgeous meadow**, the group worked together to:
 
-- 🧺 Spread out",5.371966778836722,0.8744493126869202,,,,0.0,-76.96173284476355,-0.19519203901290894,-0.10547429323196411,,0.0
+- 🧺 Spread out",5.371966778836722,0.8744493126869202,,,,0.0,-76.96173284476355,-0.19519203901290894,-0.10547429323196422,,0.0,
 claude-sonnet-4-6,7,global,75,alpaca,"Instruction:
 Explain the concept of Big Data and what it means for companies and customers.","InSTrUCTIOn:
 ExplAIN THE CONCEpt OF BIG DaTA AND WHAT IT MEaNs FOR CoMPAnIES AnD CustOMeRS.",0.8481068015098572,"# Big Data: A Comprehensive Overview
@@ -1504,7 +1504,7 @@ Big Data refers to **extremely large and complex collections of information** th
 | Characteristic | Meaning | Example |
 |---------------|---------|---------|
 | **Volume** | Massive amounts of data | Billions of social media posts daily |
-| **",56.24024647322301,0.9453079700469971,,,,0.0,-43.75975352677703,-0.15189319849014282,-0.05469202995300293,,0.0
+| **",56.24024647322301,0.9453079700469972,,,,0.0,-43.75975352677703,-0.15189319849014282,-0.05469202995300282,,0.0,
 claude-sonnet-4-6,8,global,75,alpaca,"Instruction:
 Analyze the given phrase in terms of its connotations.
 
@@ -1536,7 +1536,7 @@ The pursuit of a **wild goose**, which is notoriously difficult to catch.
 ### 🔴 Negative Connotations
 - **Futility** — suggests a task that is **pointless** and **unproductive**
 - **Frustration** — implies wasted **time and energy**
-- **",58.84724848899762,0.95253986120224,,,,0.0,-15.663253534683506,-0.1833815574645996,-0.007453739643096924,,0.0
+- **",58.84724848899762,0.95253986120224,,,,0.0,-15.663253534683506,-0.1833815574645996,-0.007453739643096813,,0.0,
 claude-sonnet-4-6,9,global,75,alpaca,"Instruction:
 List three potential sources for the following research problem.
 
@@ -1564,7 +1564,7 @@ Official reports and white papers","# Three Potential Sources for: ""What Are th
 ---
 
 ## 2. 🏛️ **Government & Educational Organizations**
-**Example:** The U.S. Department of Education",23.553128430119653,0.8917714953422546,,,,0.0,-8.354920029144822,-0.17238342761993408,-0.02292400598526001,,0.0
+**Example:** The U.S. Department of Education",23.553128430119653,0.8917714953422546,,,,0.0,-8.354920029144822,-0.17238342761993408,-0.02292400598526001,,0.0,
 claude-sonnet-4-6,10,global,75,alpaca,"Instruction:
 Arrange the following countries in ascending order of GDP per capita.
 
@@ -1583,7 +1583,7 @@ ChINA, US, INDIA, JAPaN",0.8340665102005005,"Here are the countries arranged in 
 1. 🇮🇳 **India** (~$2,500)
 2. 🇨🇳 **China** (~$12,700)
 3. 🇯🇵 **Japan** (~$33,800)
-4. 🇺🇸 **US** (~$80,000)",100.00000000000004,0.9999999403953552,,,,0.0,0.0,-0.16593360900878906,0.0,,0.0
+4. 🇺🇸 **US** (~$80,000)",100.00000000000004,0.9999999403953552,,,,0.0,0.0,-0.16593360900878906,0.0,,0.0,
 claude-sonnet-4-6,11,global,75,alpaca,"Instruction:
 Name the boat depicted in the provided photo.
 
@@ -1592,7 +1592,7 @@ Attached photo","INStRUCTIoN:
 NAmE The BOAT DePICTED In THe PRoViDeD PHOTO.
 
 INPUT:
-AttACheD pHOTo",0.8206703066825867,"I don't see any photo attached to your message. Could you please share the image you'd like me to look at? Once you upload the photo, I'll do my best to help identify the boat depicted in it.","I don't see any photo attached to your message. Could you please **share the image** you'd like me to look at? Once you upload it, I'll do my best to identify the boat depicted! 🚢",67.81076075191693,0.9671592116355896,,,,0.0,12.251413476061245,-0.17932963371276855,0.015073299407958984,,0.0
+AttACheD pHOTo",0.8206703066825867,"I don't see any photo attached to your message. Could you please share the image you'd like me to look at? Once you upload the photo, I'll do my best to help identify the boat depicted in it.","I don't see any photo attached to your message. Could you please **share the image** you'd like me to look at? Once you upload it, I'll do my best to identify the boat depicted! 🚢",67.81076075191693,0.9671592116355896,,,,0.0,12.251413476061245,-0.17932963371276855,0.015073299407958984,,0.0,
 claude-sonnet-4-6,12,global,75,alpaca,"Instruction:
 Edit the grammar and punctuation of the given sentence.
 
@@ -1607,7 +1607,7 @@ HUMoR IS ONE OF THE MOst ImPORtAnT ingredIENTs oF LIFE",0.8168135285377502,"Here
 
 The only change made was adding a **period** at the end of the sentence to complete the punctuation.","Here is the grammatically and punctually corrected sentence:
 
-**Humor is one of the most important ingredients of life.**",34.53988899236906,0.9344655871391296,,,,0.0,-65.46011100763099,-0.18318647146224976,-0.06553435325622559,,0.0
+**Humor is one of the most important ingredients of life.**",34.53988899236906,0.9344655871391296,,,,0.0,-65.46011100763099,-0.18318647146224976,-0.06553435325622559,,0.0,
 claude-sonnet-4-6,13,global,75,alpaca,"Instruction:
 Calculate the length of the hypotenuse in the following triangle.
 
@@ -1642,7 +1642,7 @@ Unfortunately, I **cannot access or view the image** from the URL provided. Howe
 
 ## Applying the Pythagorean Theorem
 
-$$a^2 + b^2 =",43.340961470248104,0.8904639482498169,,,,0.0,-37.50424551765104,-0.19667810201644897,-0.07027018070220947,,0.0
+$$a^2 + b^2 =",43.3409614702481,0.8904639482498169,,,,0.0,-37.50424551765105,-0.19667810201644897,-0.07027018070220947,,0.0,
 claude-sonnet-4-6,14,global,75,alpaca,"Instruction:
 How many instruments does a symphony orchestra typically have?","INSTRUCTIoN:
 HoW mANY INSTRUMeNtS DoES A syMpHOnY ORcHESTrA TYPICaLly HAVE?",0.7891852855682373,"A symphony orchestra typically has around **80 to 100 musicians** playing a variety of instruments, which are grouped into four main sections:
@@ -1658,12 +1658,12 @@ A symphony orchestra typically has around **70 to 100+ musicians**, playing inst
 - Violins, Violas, Cellos, Double Basses, Harp
 
 ### 🎺 Brass (~10-12 players)
-- French Horns, Trumpets, Tr",14.008509692735156,0.8878656029701233,,,,0.0,-85.99149030726488,-0.21081483364105225,-0.11213439702987671,,0.0
+- French Horns, Trumpets, Tr",14.008509692735156,0.8878656029701233,,,,0.0,-85.99149030726488,-0.21081483364105225,-0.11213439702987671,,0.0,
 claude-sonnet-4-6,15,global,75,alpaca,"Instruction:
 Summarize the phrase: ""GPT is a natural language processing architecture.""","InstRUCTION:
 SUMmARiZe THE PHrASE: ""GPT IS A nATURAL LaNGUagE PRoCESSING aRChITECtURe.""",0.823872983455658,**Summary:** GPT is an AI system designed to understand and generate human language.,"Here is a summary of the phrase:
 
-**""GPT processes and understands human language.""**",13.988521776260258,0.8941139578819275,,,,0.0,-86.01147822373979,-0.17612701654434204,-0.10588598251342773,,0.0
+**""GPT processes and understands human language.""**",13.988521776260258,0.8941139578819275,,,,0.0,-86.01147822373979,-0.17612701654434204,-0.10588598251342773,,0.0,
 claude-sonnet-4-6,0,global,100,alpaca,"Instruction:
 What would be the best type of exercise for a person who has arthritis?","INSTRUCTION:
 WHAT WOULD BE THE BEST TYPE OF EXERCISE FOR A PERSON WHO HAS ARTHRITIS?",0.9252023696899414,"# Best Exercise Types for Arthritis
@@ -1687,7 +1687,7 @@ For people with arthritis, **low-impact exercises** are generally recommended, a
 - **Walking** - gentle and accessible
 - **Cycling** (stationary or regular)
 
-### Flexibility & Range of",18.592152195940933,0.8952257633209229,,,,0.0,-57.17944486911323,-0.07479757070541382,-0.0756644606590271,,0.0
+### Flexibility & Range of",18.592152195940933,0.8952257633209229,,,,0.0,-57.17944486911323,-0.07479757070541382,-0.0756644606590271,,0.0,
 claude-sonnet-4-6,1,global,100,alpaca,"Instruction:
 Calculate the atomic mass for lithium.","INSTRUCTION:
 CALCULATE THE ATOMIC MASS FOR LITHIUM.",0.8709574937820435,"## Calculating the Atomic Mass of Lithium
@@ -1704,7 +1704,7 @@ Lithium has **two stable isotopes**:
 | Isotope | Atomic Mass (amu) | Natural Abundance |
 |---------|------------------|-------------------|
 | Lithium-6 (⁶Li) | 6.01512 amu | 7.59% (0.0759) |
-| Lithium-7 (⁷Li)",61.88950533878179,0.9587324261665344,,,,0.0,-38.110494661218254,-0.12904244661331177,-0.04126769304275513,,0.0
+| Lithium-7 (⁷Li)",61.88950533878179,0.9587324261665344,,,,0.0,-38.110494661218254,-0.12904244661331177,-0.04126769304275513,,0.0,
 claude-sonnet-4-6,2,global,100,alpaca,"Instruction:
 Convert the following binary code to ASCII characters.
 
@@ -1731,7 +1731,7 @@ Here is the step-by-step conversion:
 | 01100001 | 97 | **a** |
 | 01110010 | 114 | **r** |
 | 01101001 | 105 | **i** |
-| 01110100 | 116 | **",89.16211056218593,0.9613012075424194,,,,0.0,-10.837889437814113,-0.054320335388183594,-0.038698792457580566,,0.0
+| 01110100 | 116 | **",89.16211056218593,0.9613012075424194,,,,0.0,-10.837889437814113,-0.054320335388183594,-0.038698792457580566,,0.0,
 claude-sonnet-4-6,3,global,100,alpaca,"Instruction:
 Take this sentence and make it more descriptive: She was scared.
 
@@ -1740,14 +1740,14 @@ She was scared.","INSTRUCTION:
 TAKE THIS SENTENCE AND MAKE IT MORE DESCRIPTIVE: SHE WAS SCARED.
 
 INPUT:
-SHE WAS SCARED.",0.9151617884635925,"Here is a more descriptive version of the sentence:
+SHE WAS SCARED.",0.9151617884635924,"Here is a more descriptive version of the sentence:
 
 ""Her heart pounded frantically in her chest as a wave of cold, paralyzing fear washed over her, causing her hands to tremble and her breath to come in short, shallow gasps, while her wide eyes darted nervously around the room, searching desperately for any sign of safety or escape.""
 
 This expanded version paints a much more vivid picture by:
 - **Describing physical sensations","HERE IS THE SENTENCE MADE MORE DESCRIPTIVE:
 
-""HER HEART POUNDED FRANTICALLY IN HER CHEST AS A COLD, PARALYZING WAVE OF FEAR WASHED OVER HER, CAUSING HER HANDS TO TREMBLE AND HER BREATH TO COME IN SHORT, SHALLOW GASPS, WHILE HER WIDE EYES DARTED NERVOUSLY AROUND THE ROOM, SEARCHING",1.067213871979902,0.8552836775779724,,,,1.0,-98.93278612802014,-0.08483821153640747,-0.14471620321273804,,1.0
+""HER HEART POUNDED FRANTICALLY IN HER CHEST AS A COLD, PARALYZING WAVE OF FEAR WASHED OVER HER, CAUSING HER HANDS TO TREMBLE AND HER BREATH TO COME IN SHORT, SHALLOW GASPS, WHILE HER WIDE EYES DARTED NERVOUSLY AROUND THE ROOM, SEARCHING",1.067213871979902,0.8552836775779724,,,,1.0,-98.93278612802014,-0.08483821153640758,-0.14471620321273804,,1.0,
 claude-sonnet-4-6,4,global,100,alpaca,"Instruction:
 Brainstorm 3 possible ideas to promote the following product
 
@@ -1768,7 +1768,7 @@ NEW MOTORIZED SKATEBOARD",0.8843773007392883,"Here are 3 possible ideas to promo
 **""Ride The Future"" Challenge**
 - Launch a **TikTok/Instagram challenge** where users film their most creative rides
 - Partner with **influencers and pro skaters** to kickstart the trend
-- Offer **prizes and giveaways** for",4.287585525732025,0.8562113642692566,,,,0.0,-81.03352662564754,-0.11562281847000122,-0.12428414821624756,,0.0
+- Offer **prizes and giveaways** for",4.287585525732025,0.8562113642692566,,,,0.0,-81.03352662564754,-0.11562281847000122,-0.12428414821624756,,0.0,
 claude-sonnet-4-6,5,global,100,alpaca,"Instruction:
 Rewrite the sentence using imperative mood.
 
@@ -1785,7 +1785,7 @@ The word ""Please"" has been removed, and the sentence now begins directly with 
 
 **PICK UP THE BOOK FROM THE SHELF.**
 
-*(THE WORD ""PLEASE"" HAS BEEN REMOVED, AND THE SENTENCE IS WRITTEN AS A DIRECT COMMAND IN THE IMPERATIVE MOOD, WITH THE SUBJECT ""YOU"" BEING IMPLIED.)*",2.962340661008515,0.8768125176429749,,,,1.0,-92.97335635364513,-0.09893888235092163,-0.11969095468521118,,1.0
+*(THE WORD ""PLEASE"" HAS BEEN REMOVED, AND THE SENTENCE IS WRITTEN AS A DIRECT COMMAND IN THE IMPERATIVE MOOD, WITH THE SUBJECT ""YOU"" BEING IMPLIED.)*",2.962340661008515,0.8768125176429749,,,,1.0,-92.97335635364513,-0.09893888235092163,-0.11969095468521118,,1.0,
 claude-sonnet-4-6,6,global,100,alpaca,"Instruction:
 Describe a picnic vacation where four people are travelling together.
 
@@ -1808,10 +1808,10 @@ The drive was filled with laughter, road trip playlists, and friendly debates ab
 
 ## The Group Sets Off
 
-It was a bright and beautiful sunny morning when **four friends** — Sarah, James, Emily, and Tom — packed their bags and set off on their much-awaited **picnic vacation**. They had been planning this trip for weeks, and the excitement in the air was absolutely electric. The car was loaded with **picnic baskets, blankets, games, and laughter**",19.068781211426582,0.918452262878418,,,,0.0,-63.264918412173685,-0.11329901218414307,-0.06147134304046631,,0.0
+It was a bright and beautiful sunny morning when **four friends** — Sarah, James, Emily, and Tom — packed their bags and set off on their much-awaited **picnic vacation**. They had been planning this trip for weeks, and the excitement in the air was absolutely electric. The car was loaded with **picnic baskets, blankets, games, and laughter**",19.068781211426582,0.918452262878418,,,,0.0,-63.264918412173685,-0.11329901218414307,-0.06147134304046642,,0.0,
 claude-sonnet-4-6,7,global,100,alpaca,"Instruction:
 Explain the concept of Big Data and what it means for companies and customers.","INSTRUCTION:
-EXPLAIN THE CONCEPT OF BIG DATA AND WHAT IT MEANS FOR COMPANIES AND CUSTOMERS.",0.9112036824226379,"# Big Data: A Comprehensive Overview
+EXPLAIN THE CONCEPT OF BIG DATA AND WHAT IT MEANS FOR COMPANIES AND CUSTOMERS.",0.911203682422638,"# Big Data: A Comprehensive Overview
 
 ## What Is Big Data?
 
@@ -1831,7 +1831,7 @@ Big Data refers to **extremely large and complex datasets** that traditional dat
 ### The Classic ""5 V's"" Framework:
 
 | V | Definition | Example |
-|",26.31030614418728,0.896190881729126,,,,0.0,-73.68969385581276,-0.08879631757736206,-0.10380911827087402,,0.0
+|",26.31030614418728,0.896190881729126,,,,0.0,-73.68969385581276,-0.08879631757736195,-0.10380911827087402,,0.0,
 claude-sonnet-4-6,8,global,100,alpaca,"Instruction:
 Analyze the given phrase in terms of its connotations.
 
@@ -1864,7 +1864,7 @@ A pursuit of a **wild goose** — an animal known for being difficult to catch a
 ### 🔴 Negative Connotations
 | Connotation | Explanation |
 |-------------|-------------|
-| **Futility** | Suggests a hopeless or pointless endeavor |",41.070152062040314,0.9146211743354797,,,,0.0,-33.44034996164081,-0.12210094928741455,-0.04537242650985718,,0.0
+| **Futility** | Suggests a hopeless or pointless endeavor |",41.07015206204032,0.9146211743354796,,,,0.0,-33.440349961640806,-0.12210094928741455,-0.04537242650985718,,0.0,
 claude-sonnet-4-6,9,global,100,alpaca,"Instruction:
 List three potential sources for the following research problem.
 
@@ -1894,7 +1894,7 @@ Allen, I. E., & Seaman, J. (2017). *Digital Learning Compass: Distance Education
 
 ## SOURCE 2
 **Academic Journal:**
-Means, B., Toyama,",3.7273968684998002,0.8298705220222473,,,,0.0,-28.180651590764676,-0.0908779501914978,-0.08482497930526733,,0.0
+Means, B., Toyama,",3.7273968684998,0.8298705220222473,,,,0.0,-28.180651590764676,-0.0908779501914978,-0.08482497930526733,,0.0,
 claude-sonnet-4-6,10,global,100,alpaca,"Instruction:
 Arrange the following countries in ascending order of GDP per capita.
 
@@ -1915,7 +1915,7 @@ Here are the countries arranged from **lowest to highest** GDP per capita (appro
 | Rank | Country | GDP Per Capita (USD) |
 |------|---------|---------------------|
 | 1️⃣ | **INDIA** | ~$2,500 |
-| 2️⃣ | **CHINA** | ~$12,700 |",13.452524205826565,0.8447507619857788,,,,0.0,-86.54747579417348,-0.09764045476913452,-0.15524917840957642,,0.0
+| 2️⃣ | **CHINA** | ~$12,700 |",13.452524205826563,0.8447507619857788,,,,0.0,-86.54747579417348,-0.09764045476913452,-0.15524917840957642,,0.0,
 claude-sonnet-4-6,11,global,100,alpaca,"Instruction:
 Name the boat depicted in the provided photo.
 
@@ -1924,7 +1924,7 @@ Attached photo","INSTRUCTION:
 NAME THE BOAT DEPICTED IN THE PROVIDED PHOTO.
 
 INPUT:
-ATTACHED PHOTO",0.899017333984375,"I don't see any photo attached to your message. Could you please **upload the image** again? Once you share it, I'll do my best to help identify the boat depicted in it.","I don't see any photo attached to your message. Could you please **share the photo** you'd like me to look at? Once you upload the image, I'll do my best to help identify the boat depicted in it.",66.26488130640642,0.9730230569839478,,,,0.0,10.705534030550737,-0.10098260641098022,0.02093714475631714,,0.0
+ATTACHED PHOTO",0.899017333984375,"I don't see any photo attached to your message. Could you please **upload the image** again? Once you share it, I'll do my best to help identify the boat depicted in it.","I don't see any photo attached to your message. Could you please **share the photo** you'd like me to look at? Once you upload the image, I'll do my best to help identify the boat depicted in it.",66.26488130640642,0.9730230569839478,,,,0.0,10.705534030550737,-0.10098260641098022,0.02093714475631714,,0.0,
 claude-sonnet-4-6,12,global,100,alpaca,"Instruction:
 Edit the grammar and punctuation of the given sentence.
 
@@ -1941,7 +1941,7 @@ The only change made was adding a **period (.)** at the end of the sentence to c
 
 **Humor is one of the most important ingredients of life.**
 
-*Change made: Added a period at the end of the sentence and corrected the capitalization (only the first word is capitalized).*",45.449823859939414,0.93675297498703,,,,0.0,-54.55017614006063,-0.11857908964157104,-0.0632469654083252,,0.0
+*Change made: Added a period at the end of the sentence and corrected the capitalization (only the first word is capitalized).*",45.44982385993941,0.93675297498703,,,,0.0,-54.550176140060636,-0.11857908964157104,-0.0632469654083252,,0.0,
 claude-sonnet-4-6,13,global,100,alpaca,"Instruction:
 Calculate the length of the hypotenuse in the following triangle.
 
@@ -1978,7 +1978,7 @@ $$a^2 + b^2 = c^2$$
 
 $$3^2 + 4^2 = c^2$$
 
-$$9 + 16 = c^",82.77925027306922,0.9714860916137695,,,,0.0,1.9340432851700768,-0.09371739625930786,0.010751962661743164,,0.0
+$$9 + 16 = c^",82.77925027306922,0.9714860916137696,,,,0.0,1.9340432851700768,-0.09371739625930786,0.010751962661743275,,0.0,
 claude-sonnet-4-6,14,global,100,alpaca,"Instruction:
 How many instruments does a symphony orchestra typically have?","INSTRUCTION:
 HOW MANY INSTRUMENTS DOES A SYMPHONY ORCHESTRA TYPICALLY HAVE?",0.8840660452842712,"A symphony orchestra typically has around **80 to 100 musicians** playing a variety of instruments, which are grouped into four main sections:
@@ -1996,9 +1996,9 @@ A symphony orchestra typically has **60 to 100+ musicians**, with a **full-sized
 |---|---|
 | **Strings** | 40–60 players |
 | **Woodwinds** | 8–16 players |
-| **Brass** | 8",22.873525676355232,0.8440433740615845,,,,0.0,-77.12647432364481,-0.11593407392501831,-0.15595662593841553,,0.0
+| **Brass** | 8",22.873525676355232,0.8440433740615845,,,,0.0,-77.12647432364481,-0.11593407392501831,-0.15595662593841553,,0.0,
 claude-sonnet-4-6,15,global,100,alpaca,"Instruction:
 Summarize the phrase: ""GPT is a natural language processing architecture.""","INSTRUCTION:
 SUMMARIZE THE PHRASE: ""GPT IS A NATURAL LANGUAGE PROCESSING ARCHITECTURE.""",0.8821612000465393,**Summary:** GPT is an AI system designed to understand and generate human language.,"## Summary:
 
-**GPT is an AI system designed to understand and generate human language.**",82.89657839357884,0.9620721936225891,,,,0.0,-17.103421606421207,-0.1178387999534607,-0.03792774677276611,,0.0
+**GPT is an AI system designed to understand and generate human language.**",82.89657839357884,0.9620721936225892,,,,0.0,-17.103421606421207,-0.1178387999534607,-0.037927746772766,,0.0,

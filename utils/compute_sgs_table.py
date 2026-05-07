@@ -589,7 +589,8 @@ def main() -> None:
 
     AXES_ALL    = AXES                                                        # all 6
     AXES_CLOSED = [a for a in AXES if a != "delta_activation_similarity"]     # 5 (no Δ-Cos)
-    CLOSED_DATASETS_MAIN = ["TruthfulQA", "Alpaca", "SimpleQA Verified"]      # main-paper Table 1
+    # Closed coverage now spans all 6 datasets, so Table 1 shows the full set.
+    CLOSED_DATASETS_MAIN = DATASET_ORDER
 
     sig_per_ds_primary = _pivot_sig_per_dataset(res["sig_dataset"], sc.PRIMARY_EPSILON)
     sig_tot_primary    = _pivot_sig_total(res["sig_model"], sc.PRIMARY_EPSILON)
@@ -597,12 +598,12 @@ def main() -> None:
     # ── Table 1: closed models, per-dataset on 3 main-paper datasets ─────
     models_closed = [(m, CLOSED_MODEL_DISPLAY[m]) for m in closed_models_in_data]
     cap1 = (
-        rf"Per-dataset SGS for the three closed-source models on the three "
-        rf"datasets common to all closed providers, at $\varepsilon="
-        rf"{sc.PRIMARY_EPSILON:g}$. The activation axis ($\Delta$-Cos) is "
-        rf"omitted because it requires white-box access (unavailable for all "
-        rf"closed models). $\Delta$-Prob and $\Delta$-Ent are available only "
-        rf"for GPT-5.4. " + SIG_LEGEND
+        rf"Per-dataset SGS for the three closed-source models on all six "
+        rf"evaluation datasets, at $\varepsilon={sc.PRIMARY_EPSILON:g}$. "
+        rf"The activation axis ($\Delta$-Cos) is omitted because it requires "
+        rf"white-box access (unavailable for all closed models). "
+        rf"$\Delta$-Prob and $\Delta$-Ent are available only for GPT-5.4. "
+        + SIG_LEGEND
     )
     target1 = SGS_TABLES / "sgs_closed_per_dataset.tex"
     latex1 = build_per_dataset_table(
@@ -629,6 +630,32 @@ def main() -> None:
     )
     target2.write_text(latex2)
     print(f"[write]   {target2.relative_to(PROJECT_ROOT)}")
+
+    # ── Combined table: all 11 models, all 6 datasets, all 6 axes ──────
+    models_all = (
+        [(m, OPEN_MODEL_DISPLAY[m])   for m in open_all_in_data]
+        + [(m, CLOSED_MODEL_DISPLAY[m]) for m in closed_models_in_data]
+    )
+    section_headers_all = [
+        (0,                             "Open-source models"),
+        (len(open_all_in_data),         "Closed-source models"),
+    ]
+    cap_all = (
+        rf"Per-dataset SGS for all eleven evaluated models on the six "
+        rf"benchmark datasets, at $\varepsilon={sc.PRIMARY_EPSILON:g}$. "
+        rf"Closed-source models lack white-box-only axes ($\Delta$-Cos for "
+        rf"all three; $\Delta$-Prob and $\Delta$-Ent for Gemini and Claude). "
+        rf"The shaded ``Total SGS'' row for each model pools prompts across "
+        rf"all datasets. " + SIG_LEGEND
+    )
+    target_all = SGS_TABLES / "sgs_all_models_per_dataset.tex"
+    latex_all = build_per_dataset_table(
+        models_all, sgs_per_ds, sig_per_ds_primary, sgs_tot, sig_tot_primary,
+        DATASET_ORDER, cap_all, "tab:sgs_all_models_per_dataset",
+        axes=AXES_ALL, section_headers=section_headers_all,
+    )
+    target_all.write_text(latex_all)
+    print(f"[write]   {target_all.relative_to(PROJECT_ROOT)}")
 
     # ─── Step D: epsilon robustness table (Table 3, appendix) ─────────────
     eps_latex = build_epsilon_appendix_table(res["eps_summary"])

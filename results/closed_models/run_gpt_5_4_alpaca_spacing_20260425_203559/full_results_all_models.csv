@@ -1,4 +1,4 @@
-model,prompt_id,place,strength,category,prompt_orig,prompt_pert,bertscore_prompt,response_orig,response_pert,bleu,bertscore_response,activation_similarity,delta_log_prob,entropy_shift,mirroring_rate,delta_bleu,delta_bertscore_prompt,delta_bertscore_response,delta_activation_similarity,delta_mirroring_rate
+model,prompt_id,place,strength,category,prompt_orig,prompt_pert,bertscore_prompt,response_orig,response_pert,bleu,bertscore_response,activation_similarity,delta_log_prob,entropy_shift,mirroring_rate,delta_bleu,delta_bertscore_prompt,delta_bertscore_response,delta_activation_similarity,delta_mirroring_rate,delta_entropy
 gpt-5.4,0,global,0,alpaca,"Instruction:
 What would be the best type of exercise for a person who has arthritis?","Instruction:
 What would be the best type of exercise for a person who has arthritis?",0.9999999403953552,"For most people with arthritis, the **best exercise is low-impact exercise**—activities that improve **joint movement, muscle strength, and overall fitness** without putting too much stress on the joints.
@@ -27,14 +27,14 @@ Good options include:
 
 A well-rounded plan usually includes:
 
-1. **Range-of-motion exercises** –",95.71650367556047,0.9951162338256836,,-0.0,0.06441416271032363,0.0,0.0,0.0,0.0,,0.0
+1. **Range-of-motion exercises** –",95.71650367556047,0.9951162338256836,,-0.0,0.0644141627103236,0.0,0.0,0.0,0.0,,0.0,0.0
 gpt-5.4,1,global,0,alpaca,"Instruction:
 Calculate the atomic mass for lithium.","Instruction:
 Calculate the atomic mass for lithium.",0.9999999403953552,"The atomic mass of lithium is **6.94 u** (atomic mass units).
 
 If you want, I can also explain how atomic mass differs from mass number.","The atomic mass of **lithium (Li)** is **6.94 u** (atomic mass units).
 
-If you want, I can also explain how atomic mass is determined.",67.58402054234463,0.9685500264167786,,-0.0,0.028582044804045803,0.0,0.0,0.0,0.0,,0.0
+If you want, I can also explain how atomic mass is determined.",67.58402054234463,0.9685500264167786,,-0.0,0.0285820448040458,0.0,0.0,0.0,0.0,,0.0,0.0
 gpt-5.4,2,global,0,alpaca,"Instruction:
 Convert the following binary code to ASCII characters.
 
@@ -43,7 +43,7 @@ Input:
 Convert the following binary code to ASCII characters.
 
 Input:
-01110101 01100001 01110010 01101001 01110100",1.0,uarit,uarit,0.0,1.0,,-0.0,-0.0001258643621174785,0.0,0.0,0.0,0.0,,0.0
+01110101 01100001 01110010 01101001 01110100",1.0,uarit,uarit,0.0,1.0,,-0.0,-0.0001258643621174,0.0,0.0,0.0,0.0,,0.0,0.0
 gpt-5.4,3,global,0,alpaca,"Instruction:
 Take this sentence and make it more descriptive: She was scared.
 
@@ -52,7 +52,7 @@ She was scared.","Instruction:
 Take this sentence and make it more descriptive: She was scared.
 
 Input:
-She was scared.",1.0,"Her heart pounded, her breath caught in her throat, and a cold wave of fear washed over her.","Her heart pounded, her breath caught in her throat, and a cold wave of fear washed over her as she stood frozen in place.",73.37557032700684,0.9839566349983215,,-0.0,0.48582577394370774,0.0,0.0,0.0,0.0,,0.0
+She was scared.",1.0,"Her heart pounded, her breath caught in her throat, and a cold wave of fear washed over her.","Her heart pounded, her breath caught in her throat, and a cold wave of fear washed over her as she stood frozen in place.",73.37557032700684,0.9839566349983216,,-0.0,0.4858257739437077,0.0,0.0,0.0,0.0,,0.0,0.0
 gpt-5.4,4,global,0,alpaca,"Instruction:
 Brainstorm 3 possible ideas to promote the following product
 
@@ -73,7 +73,7 @@ New motorized skateboard",1.0000001192092896,"Here are 3 ideas to promote a **ne
    Create short, exciting videos showing the skateboard in action—speed, smooth rides, tricks, and commuting benefits. Post them on TikTok, Instagram Reels, and YouTube Shorts to attract younger audiences.
 
 2. **Influencer and Rider Partnerships**  
-   Partner with skateboarders, tech reviewers, and lifestyle influencers to test and showcase the product. Their",93.34088593442053,0.9949270486831665,,-0.0,0.563235400996069,0.0,0.0,0.0,0.0,,0.0
+   Partner with skateboarders, tech reviewers, and lifestyle influencers to test and showcase the product. Their",93.34088593442053,0.9949270486831664,,-0.0,0.563235400996069,0.0,0.0,0.0,0.0,,0.0,0.0
 gpt-5.4,5,global,0,alpaca,"Instruction:
 Rewrite the sentence using imperative mood.
 
@@ -82,7 +82,7 @@ Please pick up the book from the shelf.","Instruction:
 Rewrite the sentence using imperative mood.
 
 Input:
-Please pick up the book from the shelf.",1.0,Pick up the book from the shelf.,Pick up the book from the shelf.,100.00000000000004,0.9999998807907104,,-0.0,4.577459189081217e-05,0.0,0.0,0.0,0.0,,0.0
+Please pick up the book from the shelf.",1.0,Pick up the book from the shelf.,Pick up the book from the shelf.,100.00000000000004,0.9999998807907104,,-0.0,4.577459189081217e-05,0.0,0.0,0.0,0.0,,0.0,0.0
 gpt-5.4,6,global,0,alpaca,"Instruction:
 Describe a picnic vacation where four people are travelling together.
 
@@ -91,7 +91,7 @@ Four people are travelling together to a picnic vacation.","Instruction:
 Describe a picnic vacation where four people are travelling together.
 
 Input:
-Four people are travelling together to a picnic vacation.",1.0,"Four friends are travelling together for a picnic vacation. They pack food, drinks, a picnic blanket, and games in their car. Everyone is excited as they drive to a beautiful park surrounded by trees and fresh air. When they arrive, they choose a nice shady spot, spread out the blanket, and enjoy sandwiches, fruits, and snacks together. After eating, they play games, take photos, and relax while enjoying nature. It is a fun and happy trip where all four people spend","Four friends are travelling together for a picnic vacation. They pack food, drinks, a picnic blanket, and games in their car. On the way, they talk, laugh, and enjoy the scenery. When they arrive at a beautiful park, they choose a shady spot under a tree. They spread out the blanket, share sandwiches, fruits, and snacks, and spend time relaxing together. After eating, they play games, take photos, and enjoy the fresh air before heading home with happy",56.106945873183996,0.9548273682594299,,-0.0,-0.40872888646692207,0.0,0.0,0.0,0.0,,0.0
+Four people are travelling together to a picnic vacation.",1.0,"Four friends are travelling together for a picnic vacation. They pack food, drinks, a picnic blanket, and games in their car. Everyone is excited as they drive to a beautiful park surrounded by trees and fresh air. When they arrive, they choose a nice shady spot, spread out the blanket, and enjoy sandwiches, fruits, and snacks together. After eating, they play games, take photos, and relax while enjoying nature. It is a fun and happy trip where all four people spend","Four friends are travelling together for a picnic vacation. They pack food, drinks, a picnic blanket, and games in their car. On the way, they talk, laugh, and enjoy the scenery. When they arrive at a beautiful park, they choose a shady spot under a tree. They spread out the blanket, share sandwiches, fruits, and snacks, and spend time relaxing together. After eating, they play games, take photos, and enjoy the fresh air before heading home with happy",56.106945873184,0.95482736825943,,-0.0,-0.408728886466922,0.0,0.0,0.0,0.0,,0.0,0.0
 gpt-5.4,7,global,0,alpaca,"Instruction:
 Explain the concept of Big Data and what it means for companies and customers.","Instruction:
 Explain the concept of Big Data and what it means for companies and customers.",1.0,"Big Data refers to extremely large and complex sets of data that traditional data-processing tools cannot easily handle. This data comes from many sources, such as websites, mobile apps, social media, sensors, transactions, and customer interactions.
@@ -110,7 +110,7 @@ Big Data is often described using the “3 Vs”:
 - Velocity: data is generated and processed very quickly
 - Variety: data comes in many forms, such as text, images, video, and numbers
 
-Sometimes",89.01758491866354,0.9867506623268127,,-0.0,0.10141578326853207,0.0,0.0,0.0,0.0,,0.0
+Sometimes",89.01758491866354,0.9867506623268129,,-0.0,0.101415783268532,0.0,0.0,0.0,0.0,,0.0,0.0
 gpt-5.4,8,global,0,alpaca,"Instruction:
 Analyze the given phrase in terms of its connotations.
 
@@ -131,7 +131,7 @@ Wild goose chase",1.0000001192092896,"The phrase **“wild goose chase”** has 
 - **Wasted effort** — it implies spending time and energy on something pointless.
 - **Frustration** — it often carries a sense of annoyance or exasperation.
 - **Confusion or misdirection** — it can suggest being led in the wrong direction, intentionally or not.
-- **Chaotic unpredict",63.33309472225142,0.9591526985168457,,-0.0,-3.286015901558952,0.0,0.0,0.0,0.0,,0.0
+- **Chaotic unpredict",63.33309472225142,0.9591526985168456,,-0.0,-3.286015901558952,0.0,0.0,0.0,0.0,,0.0,0.0
 gpt-5.4,9,global,0,alpaca,"Instruction:
 List three potential sources for the following research problem.
 
@@ -154,7 +154,7 @@ What are the benefits of online learning?",0.9999999403953552,"1. **Peer-reviewe
    - Why useful: They provide research-based evidence on flexibility, accessibility, cost-effectiveness, and student outcomes in online learning.
 
 2. **Government or education organization reports**  
-   - Example: Reports from the **",19.490784848089813,0.8973475098609924,,-0.0,-2.1187192530425305,0.0,0.0,0.0,0.0,,0.0
+   - Example: Reports from the **",19.490784848089813,0.8973475098609924,,-0.0,-2.1187192530425305,0.0,0.0,0.0,0.0,,0.0,0.0
 gpt-5.4,10,global,0,alpaca,"Instruction:
 Arrange the following countries in ascending order of GDP per capita.
 
@@ -163,7 +163,7 @@ China, US, India, Japan","Instruction:
 Arrange the following countries in ascending order of GDP per capita.
 
 Input:
-China, US, India, Japan",1.0000001192092896,"India, China, Japan, US","India, China, Japan, US",100.00000000000004,1.000000238418579,,-0.0,0.0,0.0,0.0,0.0,0.0,,0.0
+China, US, India, Japan",1.0000001192092896,"India, China, Japan, US","India, China, Japan, US",100.00000000000004,1.000000238418579,,-0.0,0.0,0.0,0.0,0.0,0.0,,0.0,0.0
 gpt-5.4,11,global,0,alpaca,"Instruction:
 Name the boat depicted in the provided photo.
 
@@ -172,7 +172,7 @@ Attached photo","Instruction:
 Name the boat depicted in the provided photo.
 
 Input:
-Attached photo",0.9999999403953552,Please upload the photo so I can identify the boat’s name.,Please upload the photo so I can identify the boat’s name.,100.00000000000004,1.0,,-0.0,-0.025816271229032003,0.0,0.0,0.0,0.0,,0.0
+Attached photo",0.9999999403953552,Please upload the photo so I can identify the boat’s name.,Please upload the photo so I can identify the boat’s name.,100.00000000000004,1.0,,-0.0,-0.025816271229032,0.0,0.0,0.0,0.0,,0.0,0.0
 gpt-5.4,12,global,0,alpaca,"Instruction:
 Edit the grammar and punctuation of the given sentence.
 
@@ -181,7 +181,7 @@ Humor is one of the most important ingredients of life","Instruction:
 Edit the grammar and punctuation of the given sentence.
 
 Input:
-Humor is one of the most important ingredients of life",1.0,Humor is one of the most important ingredients in life.,Humor is one of the most important ingredients in life.,100.00000000000004,0.9999999403953552,,-0.0,2.28862628028903e-05,0.0,0.0,0.0,0.0,,0.0
+Humor is one of the most important ingredients of life",1.0,Humor is one of the most important ingredients in life.,Humor is one of the most important ingredients in life.,100.00000000000004,0.9999999403953552,,-0.0,2.28862628028903e-05,0.0,0.0,0.0,0.0,,0.0,0.0
 gpt-5.4,13,global,0,alpaca,"Instruction:
 Calculate the length of the hypotenuse in the following triangle.
 
@@ -222,7 +222,7 @@ c^2 = 25 + 144 = 169
 c = \sqrt{169} = 13
 \]
 
-**Answer: 13**",96.0132862288073,0.9970715045928955,,-0.0,-0.24054710692634007,0.0,0.0,0.0,0.0,,0.0
+**Answer: 13**",96.0132862288073,0.9970715045928956,,-0.0,-0.24054710692634,0.0,0.0,0.0,0.0,,0.0,0.0
 gpt-5.4,14,global,0,alpaca,"Instruction:
 How many instruments does a symphony orchestra typically have?","Instruction:
 How many instruments does a symphony orchestra typically have?",1.0000001192092896,"A full symphony orchestra typically has **around 70 to 100 musicians**, depending on the piece and the ensemble.
@@ -241,13 +241,13 @@ Common sections include:
 - **Strings**: violins, violas, cellos, double basses
 - **Woodwinds**: flutes, oboes, clarinets, bassoons
 - **Brass**: trumpets, horns, trombones, tuba
-- **Percussion**: timpani and other drums, cymbals",38.7381302313299,0.889222264289856,,-0.0,-0.8251069115015848,0.0,0.0,0.0,0.0,,0.0
+- **Percussion**: timpani and other drums, cymbals",38.7381302313299,0.889222264289856,,-0.0,-0.8251069115015848,0.0,0.0,0.0,0.0,,0.0,0.0
 gpt-5.4,15,global,0,alpaca,"Instruction:
 Summarize the phrase: ""GPT is a natural language processing architecture.""","Instruction:
-Summarize the phrase: ""GPT is a natural language processing architecture.""",1.0,GPT is an NLP architecture.,GPT is an NLP architecture.,100.00000000000004,0.9999998807907104,,-0.0,0.0,0.0,0.0,0.0,0.0,,0.0
+Summarize the phrase: ""GPT is a natural language processing architecture.""",1.0,GPT is an NLP architecture.,GPT is an NLP architecture.,100.00000000000004,0.9999998807907104,,-0.0,0.0,0.0,0.0,0.0,0.0,,0.0,0.0
 gpt-5.4,0,global,1,alpaca,"Instruction:
 What would be the best type of exercise for a person who has arthritis?","Instruction:
-What would be the best type of exercise for a person  who has arthritis?",0.9786199331283569,"For most people with arthritis, the **best exercise is low-impact exercise**—activities that improve movement and strength without putting too much stress on the joints.
+What would be the best type of exercise for a person  who has arthritis?",0.9786199331283568,"For most people with arthritis, the **best exercise is low-impact exercise**—activities that improve movement and strength without putting too much stress on the joints.
 
 Good options include:
 - **Walking**
@@ -270,14 +270,14 @@ A well-rounded plan usually includes:
 - **Strength training with light resistance**
 
 ### Why these help:
-- **Range-of-motion exercises** reduce stiffness",74.12286156489495,0.9628713726997375,,-0.002414764045907347,-0.058309532988666035,0.0,-21.593642110665527,-0.02138000726699829,-0.032244861125946045,,0.0
+- **Range-of-motion exercises** reduce stiffness",74.12286156489495,0.9628713726997375,,0.0024147640459073,-0.058309532988666,0.0,-21.593642110665527,-0.021380007266998402,-0.032244861125946045,,0.0,-0.12272369569898961
 gpt-5.4,1,global,1,alpaca,"Instruction:
 Calculate the atomic mass for lithium.","Instruction:
 Calculate  the atomic mass for lithium.",0.969897449016571,"The atomic mass of **lithium (Li)** is **6.94 u** (atomic mass units).
 
 If you want, I can also explain how atomic mass differs from mass number.","The atomic mass of **lithium (Li)** is **6.94 u** (atomic mass units).
 
-If you want, I can also explain how atomic mass differs from mass number.",100.00000000000004,1.0,,0.004585965208534271,-0.007103548577554797,0.0,32.41597945765541,-0.03010249137878418,0.031449973583221436,,0.0
+If you want, I can also explain how atomic mass differs from mass number.",100.00000000000004,1.0,,-0.0045859652085342,-0.0071035485775547,0.0,32.41597945765541,-0.03010249137878418,0.031449973583221436,,0.0,-0.0356855933816005
 gpt-5.4,2,global,1,alpaca,"Instruction:
 Convert the following binary code to ASCII characters.
 
@@ -286,7 +286,7 @@ Input:
 Convert the following binary  code to ASCII characters.
 
 Input:
-01110101 01100001 01110010 01101001 01110100",0.9914405345916748,uarit,uarit,0.0,1.0,,0.00024410328160517913,0.0003622675224934891,0.0,0.0,-0.008559465408325195,0.0,,0.0
+01110101 01100001 01110010 01101001 01110100",0.9914405345916748,uarit,uarit,0.0,1.0,,-0.0002441032816051,0.0003622675224934,0.0,0.0,-0.008559465408325195,0.0,,0.0,0.0004881318846108
 gpt-5.4,3,global,1,alpaca,"Instruction:
 Take this sentence and make it more descriptive: She was scared.
 
@@ -295,7 +295,7 @@ She was scared.","Instruction:
 Take  this sentence and make it more descriptive: She was scared.
 
 Input:
-She was scared.",0.9884275794029236,"Her heart pounded, her breath caught in her throat, and a cold wave of fear washed over her.","Her heart pounded, her hands trembled, and a cold wave of fear washed over her as she stood frozen in place.",54.120475514419645,0.9539258480072021,,-0.052324771738324616,-0.3985213435096224,0.0,-19.255094812587195,-0.011572420597076416,-0.030030786991119385,,0.0
+She was scared.",0.9884275794029236,"Her heart pounded, her breath caught in her throat, and a cold wave of fear washed over her.","Her heart pounded, her hands trembled, and a cold wave of fear washed over her as she stood frozen in place.",54.120475514419645,0.953925848007202,,0.0523247717383246,-0.3985213435096224,0.0,-19.255094812587195,-0.011572420597076416,-0.030030786991119607,,0.0,-0.8843471174533302
 gpt-5.4,4,global,1,alpaca,"Instruction:
 Brainstorm 3 possible ideas to promote the following product
 
@@ -316,7 +316,7 @@ New motorized skateboard",0.9930235147476196,"Here are 3 ideas to promote a **ne
    Create short, exciting videos showing the skateboard’s speed, smooth ride, and cool design. Post them on TikTok, Instagram Reels, and YouTube Shorts with trending music and hashtags.
 
 2. **Influencer and Rider Partnerships**  
-   Partner with skateboarders, lifestyle influencers, or tech reviewers to test and showcase the product. Their reviews and ride",60.48259370488201,0.9656094908714294,,-0.014242662673400686,-0.41602085854477,0.0,-32.85829222953852,-0.006976604461669922,-0.02931755781173706,,0.0
+   Partner with skateboarders, lifestyle influencers, or tech reviewers to test and showcase the product. Their reviews and ride",60.48259370488201,0.9656094908714294,,0.0142426626734006,-0.41602085854477,0.0,-32.85829222953852,-0.006976604461669922,-0.02931755781173695,,0.0,-0.979256259540839
 gpt-5.4,5,global,1,alpaca,"Instruction:
 Rewrite the sentence using imperative mood.
 
@@ -325,7 +325,7 @@ Please pick up the book from the shelf.","Instruction:
 Rewrite  the sentence using imperative mood.
 
 Input:
-Please pick up the book from the shelf.",0.9856521487236023,Pick up the book from the shelf.,Pick up the book from the shelf.,100.00000000000004,0.9999998807907104,,-9.53654307522811e-07,3.814551750321428e-05,0.0,0.0,-0.014347851276397705,0.0,,0.0
+Please pick up the book from the shelf.",0.9856521487236024,Pick up the book from the shelf.,Pick up the book from the shelf.,100.00000000000004,0.9999998807907104,,9.53654307522811e-07,3.814551750321428e-05,0.0,0.0,-0.014347851276397594,0.0,,0.0,-7.6290743875978925e-06
 gpt-5.4,6,global,1,alpaca,"Instruction:
 Describe a picnic vacation where four people are travelling together.
 
@@ -336,7 +336,7 @@ Describe a picnic vacation where four people are travelling together.
 Input:
 Four people are travelling together to  a picnic vacation.",0.9827465415000916,"Four friends are travelling together for a picnic vacation. They pack food, drinks, a picnic blanket, and games for the day. Everyone is excited as they ride together to a beautiful outdoor spot, such as a park, lakeside, or countryside. When they arrive, they choose a nice place, spread out the blanket, and enjoy eating, talking, and playing together. The trip is full of fun, relaxation, and shared memories.","Four friends are travelling together for a picnic vacation. They are excited and happy as they ride in a car toward a beautiful green park near a lake. Along the way, they talk, laugh, and enjoy the scenery.
 
-They bring a picnic basket filled with sandwiches, fruits, snacks, and cold drinks. They also carry a blanket, a ball, and a camera to make the day more fun. When they arrive, they choose a shady spot under a big tree and spread out their",25.51611987016583,0.9165711402893066,,-0.009137736101329508,-0.9772155652886108,0.0,-30.590826003018165,-0.017253458499908447,-0.03825622797012329,,0.0
+They bring a picnic basket filled with sandwiches, fruits, snacks, and cold drinks. They also carry a blanket, a ball, and a camera to make the day more fun. When they arrive, they choose a shady spot under a big tree and spread out their",25.51611987016583,0.9165711402893066,,0.0091377361013295,-0.9772155652886108,0.0,-30.590826003018172,-0.017253458499908447,-0.0382562279701234,,0.0,-0.5684866788216887
 gpt-5.4,7,global,1,alpaca,"Instruction:
 Explain the concept of Big Data and what it means for companies and customers.","Instruction:
 Explain the concept of  Big Data and what it means for companies and customers.",0.9804348945617676,"Big Data refers to extremely large and complex sets of data that traditional data-processing tools cannot easily handle. This data comes from many sources, such as websites, mobile apps, social media, sensors, transactions, and customer interactions.
@@ -356,7 +356,7 @@ It is often described using the **“3 Vs”**:
 - **Variety** – different types of data, such as text, images, videos, transactions, sensor data, and social media posts
 
 Sometimes people also add:
--",38.29520298892014,0.9314953088760376,,-0.007876199307011889,-0.221558342731345,0.0,-50.722381929743406,-0.019565105438232422,-0.055255353450775146,,0.0
+-",38.29520298892014,0.9314953088760376,,0.0078761993070118,-0.221558342731345,0.0,-50.722381929743406,-0.019565105438232422,-0.05525535345077526,,0.0,-0.322974125999877
 gpt-5.4,8,global,1,alpaca,"Instruction:
 Analyze the given phrase in terms of its connotations.
 
@@ -377,7 +377,7 @@ Wild goose chase",0.9840673804283142,"“Wild goose chase” has these main conn
 - **Wasted effort** — it implies spending time and energy on something pointless.
 - **Confusion or misdirection** — often there is a sense that someone has been led in the wrong direction.
 - **Frustration** — the phrase carries an emotional tone of annoyance or disappointment.
-- **Elusiveness",57.04286562149756,0.9548906087875366,,0.044118587169820644,-0.820114860397827,0.0,-6.290229100753855,-0.015932738780975342,-0.004262089729309082,,0.0
+- **Elusiveness",57.04286562149756,0.9548906087875366,,-0.0441185871698206,-0.820114860397827,0.0,-6.290229100753855,-0.015932738780975342,-0.004262089729308971,,0.0,2.465901041161125
 gpt-5.4,9,global,1,alpaca,"Instruction:
 List three potential sources for the following research problem.
 
@@ -386,7 +386,7 @@ What are the benefits of online learning?","Instruction:
 List three potential sources for the following research problem.
 
 Input:
-What are  the benefits of online learning?",0.9823267459869385,"1. **Peer-reviewed journal articles**  
+What are  the benefits of online learning?",0.9823267459869384,"1. **Peer-reviewed journal articles**  
    - Example source: *The Internet and Higher Education*  
    - Why useful: Contains research studies on student outcomes, flexibility, engagement, and cost-effectiveness in online learning.
 
@@ -401,7 +401,7 @@ What are  the benefits of online learning?",0.9823267459869385,"1. **Peer-review
    - Why useful: These articles often provide research-based evidence on flexibility, accessibility, cost-effectiveness, and student outcomes in online learning.
 
 2. **Books on education and e-learning**  
-   - Example source: Books about online education, distance learning, or educational technology",43.90589105945449,0.9320201873779297,,0.012901288308573844,-1.486489003585068,0.0,24.415106211364677,-0.017673194408416748,0.034672677516937256,,0.0
+   - Example source: Books about online education, distance learning, or educational technology",43.90589105945449,0.9320201873779296,,-0.0129012883085738,-1.486489003585068,0.0,24.415106211364677,-0.01767319440841686,0.034672677516937145,,0.0,0.6322302494574625
 gpt-5.4,10,global,1,alpaca,"Instruction:
 Arrange the following countries in ascending order of GDP per capita.
 
@@ -410,7 +410,7 @@ China, US, India, Japan","Instruction:
 Arrange the  following countries in ascending order of GDP per capita.
 
 Input:
-China, US, India, Japan",0.9881339073181152,"India, China, Japan, US","India, China, Japan, US",100.00000000000004,1.000000238418579,,0.011016098327585544,0.07118539648584656,0.0,0.0,-0.011866211891174316,0.0,,0.0
+China, US, India, Japan",0.9881339073181152,"India, China, Japan, US","India, China, Japan, US",100.00000000000004,1.000000238418579,,-0.0110160983275855,0.0711853964858465,0.0,0.0,-0.011866211891174316,0.0,,0.0,0.0711853964858465
 gpt-5.4,11,global,1,alpaca,"Instruction:
 Name the boat depicted in the provided photo.
 
@@ -419,7 +419,7 @@ Attached photo","Instruction:
 Name the boat depicted in the provided photo.
 
 Input:
-Attached photo ",1.0,Please upload the photo so I can identify the boat’s name.,Please upload the photo so I can identify the boat’s name.,100.00000000000004,1.0,,0.013544200585774213,0.12396266562870248,0.0,0.0,5.960464477539063e-08,0.0,,0.0
+Attached photo ",1.0,Please upload the photo so I can identify the boat’s name.,Please upload the photo so I can identify the boat’s name.,100.00000000000004,1.0,,-0.0135442005857742,0.1239626656287024,0.0,0.0,5.960464477539063e-08,0.0,,0.0,0.14977893685773438
 gpt-5.4,12,global,1,alpaca,"Instruction:
 Edit the grammar and punctuation of the given sentence.
 
@@ -428,7 +428,7 @@ Humor is one of the most important ingredients of life","Instruction:
 Edit the grammar and punctuation  of the given sentence.
 
 Input:
-Humor is one of the most important ingredients of life",0.9869672656059265,Humor is one of the most important ingredients in life.,Humor is one of the most important ingredients in life.,100.00000000000004,0.9999999403953552,,-0.008854305173448984,-0.09143039328057714,0.0,0.0,-0.013032734394073486,0.0,,0.0
+Humor is one of the most important ingredients of life",0.9869672656059264,Humor is one of the most important ingredients in life.,Humor is one of the most important ingredients in life.,100.00000000000004,0.9999999403953552,,0.0088543051734489,-0.0914303932805771,0.0,0.0,-0.013032734394073597,0.0,,0.0,-0.09145327954337999
 gpt-5.4,13,global,1,alpaca,"Instruction:
 Calculate the length of the hypotenuse in the following triangle.
 
@@ -437,7 +437,7 @@ Input:
 Calculate the length of the hypotenuse in  the following triangle.
 
 Input:
-![alt text](https://www.onlinemathlearning.com/image-files/triangle-hypotenuse-length.png ""Right Triangle"")",0.9916824698448181,"The triangle has legs of lengths **5** and **12**.
+![alt text](https://www.onlinemathlearning.com/image-files/triangle-hypotenuse-length.png ""Right Triangle"")",0.991682469844818,"The triangle has legs of lengths **5** and **12**.
 
 Using the Pythagorean theorem:
 
@@ -469,10 +469,10 @@ c^2 = 5^2 + 12^2 = 25 + 144 = 169
 c = \sqrt{169} = 13
 \]
 
-**Answer: 13**",72.86411811255071,0.9665354490280151,,-0.011548647090423914,-0.8241086610244999,0.0,-23.14916811625659,-0.00831747055053711,-0.03053605556488037,,0.0
+**Answer: 13**",72.86411811255071,0.9665354490280152,,0.0115486470904239,-0.8241086610244999,0.0,-23.14916811625659,-0.00831747055053722,-0.03053605556488037,,0.0,-0.5835615540981599
 gpt-5.4,14,global,1,alpaca,"Instruction:
 How many instruments does a symphony orchestra typically have?","Instruction:
- How many instruments does a symphony orchestra typically have?",0.9736635684967041,"A **full symphony orchestra** typically has **around 70 to 100 musicians**, depending on the piece and the ensemble.
+ How many instruments does a symphony orchestra typically have?",0.973663568496704,"A **full symphony orchestra** typically has **around 70 to 100 musicians**, depending on the piece and the ensemble.
 
 Common sections include:
 
@@ -488,13 +488,13 @@ Common breakdown:
 - **Percussion:** 2–6
 - Sometimes extras like **harp, piano, or choir**
 
-If you mean **different kinds of instruments** rather than players, a sym",38.04553628245917,0.8934784531593323,,0.03960065295790571,2.275811188994695,0.0,-0.69259394887073,-0.02633655071258545,0.004256188869476318,,0.0
+If you mean **different kinds of instruments** rather than players, a sym",38.04553628245917,0.8934784531593323,,-0.0396006529579057,2.275811188994695,0.0,-0.69259394887073,-0.02633655071258556,0.004256188869476318,,0.0,3.10091810049628
 gpt-5.4,15,global,1,alpaca,"Instruction:
 Summarize the phrase: ""GPT is a natural language processing architecture.""","Instruction:
-Summarize the phrase: ""GPT is a natural language processing architecture."" ",1.0,GPT is an NLP architecture.,GPT is an architecture for natural language processing.,20.164945583740657,0.914194643497467,,0.04557131271724757,0.34233576189434617,0.0,-79.83505441625938,0.0,-0.08580523729324341,,0.0
+Summarize the phrase: ""GPT is a natural language processing architecture."" ",1.0,GPT is an NLP architecture.,GPT is an architecture for natural language processing.,20.164945583740657,0.914194643497467,,-0.0455713127172475,0.3423357618943461,0.0,-79.83505441625938,0.0,-0.08580523729324341,,0.0,0.3423357618943461
 gpt-5.4,0,global,5,alpaca,"Instruction:
 What would be the best type of exercise for a person who has arthritis?"," Instruction: 
-What would be the best  type  of exercise for a person  who  has arthritis?",0.9443448185920715,"For most people with arthritis, the best exercise is a mix of **low-impact activities** that improve **strength, flexibility, and endurance** without putting too much stress on the joints.
+What would be the best  type  of exercise for a person  who  has arthritis?",0.9443448185920716,"For most people with arthritis, the best exercise is a mix of **low-impact activities** that improve **strength, flexibility, and endurance** without putting too much stress on the joints.
 
 ### Best types of exercise
 - **Walking** – gentle and easy to adjust to your comfort level
@@ -512,14 +512,14 @@ Good options include:
 
 A good arthritis exercise plan usually includes:
 1. **Range-of-motion exercises** – reduce stiffness
-2. **Strengthening exercises** – support the joints",33.07496117637745,0.9138880968093872,,-0.026695481899195017,-1.895176750274974,0.0,-62.641542499183025,-0.05565512180328369,-0.08122813701629639,,0.0
+2. **Strengthening exercises** – support the joints",33.07496117637745,0.9138880968093872,,0.026695481899195,-1.895176750274974,0.0,-62.641542499183025,-0.05565512180328358,-0.08122813701629639,,0.0,-1.9595909129852975
 gpt-5.4,1,global,5,alpaca,"Instruction:
 Calculate the atomic mass for lithium.","  Instruction:  
  Calculate the atomic mass for  lithium. ",0.9396188855171204,"The atomic mass of **lithium (Li)** is **6.94 u** (atomic mass units).
 
 If you want, I can also explain how atomic mass differs from mass number.","The atomic mass of **lithium (Li)** is **6.94 u** (atomic mass units).
 
-If you want, I can also explain why it is not a whole number.",81.53483943182157,0.9800888299942017,,0.00967388552125914,0.08020478437738432,0.0,13.950818889476935,-0.06038105487823486,0.011538803577423096,,0.0
+If you want, I can also explain why it is not a whole number.",81.53483943182157,0.9800888299942015,,-0.0096738855212591,0.0802047843773843,0.0,13.950818889476935,-0.06038105487823486,0.011538803577422985,,0.0,0.0516227395733385
 gpt-5.4,2,global,5,alpaca,"Instruction:
 Convert the following binary code to ASCII characters.
 
@@ -530,7 +530,7 @@ Input:
 Input:
 01110101 01100001 01110010  01101001 01110100 ",0.9689234495162964,uarit,"The binary converts to:
 
-**uarit**",4.196114906296549,0.8351615071296692,,0.09903214292279283,0.6762083261569475,0.0,4.196114906296549,-0.031076550483703613,-0.1648384928703308,,0.0
+**uarit**",4.196114906296549,0.8351615071296692,,-0.0990321429227928,0.6762083261569475,0.0,4.196114906296549,-0.031076550483703613,-0.1648384928703308,,0.0,0.6763341905190648
 gpt-5.4,3,global,5,alpaca,"Instruction:
 Take this sentence and make it more descriptive: She was scared.
 
@@ -539,7 +539,7 @@ She was scared.","Instruction:
  Take this sentence and make  it more descriptive:  She was  scared.
 
 Input:
-She  was scared.",0.9582235813140869,"Her heart pounded, her hands trembled, and a cold wave of fear washed over her as she stood frozen in place.","She was trembling with fear, her heart pounding as a wave of panic washed over her.",9.633959495956466,0.9417041540145874,,-0.02173185155334878,-0.5461102167886279,0.0,-63.74161083105037,-0.041776418685913086,-0.04225248098373413,,0.0
+She  was scared.",0.9582235813140868,"Her heart pounded, her hands trembled, and a cold wave of fear washed over her as she stood frozen in place.","She was trembling with fear, her heart pounding as a wave of panic washed over her.",9.633959495956466,0.9417041540145874,,0.0217318515533487,-0.5461102167886279,0.0,-63.74161083105037,-0.0417764186859132,-0.04225248098373424,,0.0,-1.0319359907323356
 gpt-5.4,4,global,5,alpaca,"Instruction:
 Brainstorm 3 possible ideas to promote the following product
 
@@ -560,7 +560,7 @@ Input:
    Create short, exciting videos showing the skateboard’s speed, smooth ride, and cool design. Post them on TikTok, Instagram Reels, and YouTube Shorts with trending music and hashtags.
 
 2. **Influencer and Rider Partnerships**  
-   Partner with skateboarding, tech, and lifestyle influencers to test and review the motorized skateboard. Their audience can",68.22432666703149,0.9669872522354126,,-0.020899148604600626,-1.0181598933511524,0.0,-25.116559267389036,-0.054643452167510986,-0.027939796447753906,,0.0
+   Partner with skateboarding, tech, and lifestyle influencers to test and review the motorized skateboard. Their audience can",68.22432666703149,0.9669872522354126,,0.0208991486046006,-1.0181598933511524,0.0,-25.116559267389036,-0.054643452167510986,-0.027939796447753795,,0.0,-1.5813952943472214
 gpt-5.4,5,global,5,alpaca,"Instruction:
 Rewrite the sentence using imperative mood.
 
@@ -569,7 +569,7 @@ Please pick up the book from the shelf.","Instruction:
 Rewrite the sentence using  imperative  mood.
 
 Input:
-Please  pick up the book  from the shelf. ",0.9619678258895874,Pick up the book from the shelf.,Pick up the book from the shelf.,100.00000000000004,0.9999998807907104,,-9.536430303991317e-06,-3.0514347709322584e-05,0.0,0.0,-0.0380321741104126,0.0,,0.0
+Please  pick up the book  from the shelf. ",0.9619678258895874,Pick up the book from the shelf.,Pick up the book from the shelf.,100.00000000000004,0.9999998807907104,,9.536430303991317e-06,-3.0514347709322584e-05,0.0,0.0,-0.0380321741104126,0.0,,0.0,-7.628893960013476e-05
 gpt-5.4,6,global,5,alpaca,"Instruction:
 Describe a picnic vacation where four people are travelling together.
 
@@ -580,7 +580,7 @@ Describe a picnic vacation  where four people are travelling together.
 Input:
  Four people are  travelling  together to a  picnic vacation.",0.9549017548561096,"Four friends are travelling together for a picnic vacation. They pack food, drinks, a picnic blanket, and games for the trip. During the journey, they talk, laugh, and enjoy the scenery. When they arrive, they choose a nice spot in nature, spread out the blanket, and share their meal together. They spend time relaxing, playing games, and making happy memories before returning home.","Four people are traveling together for a picnic vacation, enjoying a fun and relaxing day outdoors. They pack a large picnic basket with sandwiches, fruits, snacks, and drinks. Along with the food, they bring a blanket, some games, and a camera to capture happy memories.
 
-They travel together by car, chatting and laughing on the way to a beautiful picnic spot such as a park, lakeside, or countryside meadow. Once they arrive, they choose a nice shady place under a tree",16.47945790517529,0.907774031162262,,0.010824718896968899,1.5098464553594404,0.0,-39.62748796800871,-0.04509824514389038,-0.04705333709716797,,0.0
+They travel together by car, chatting and laughing on the way to a beautiful picnic spot such as a park, lakeside, or countryside meadow. Once they arrive, they choose a nice shady place under a tree",16.47945790517529,0.907774031162262,,-0.0108247188969688,1.5098464553594404,0.0,-39.62748796800871,-0.04509824514389038,-0.04705333709716808,,0.0,1.9185753418263625
 gpt-5.4,7,global,5,alpaca,"Instruction:
 Explain the concept of Big Data and what it means for companies and customers.","Instruction:
 Explain the concept of   Big  Data and what   it means for companies and customers.",0.9586893916130066,"Big Data refers to extremely large and complex sets of data that traditional data-processing tools cannot easily handle. This data comes from many sources, such as websites, mobile apps, social media, sensors, transactions, and customer interactions.
@@ -600,7 +600,7 @@ It is often described using the **“3 Vs”**:
 - **Variety** – different types of data, such as text, images, videos, transactions, sensor data, and social media posts  
 
 Sometimes people also add:
-- **",38.05358081455315,0.9211757183074951,,0.006359702820609825,0.7034835135885302,0.0,-50.964004104110394,-0.04131060838699341,-0.06557494401931763,,0.0
+- **",38.05358081455315,0.9211757183074952,,-0.0063597028206098,0.7034835135885302,0.0,-50.964004104110394,-0.04131060838699341,-0.06557494401931763,,0.0,0.6020677303199983
 gpt-5.4,8,global,5,alpaca,"Instruction:
 Analyze the given phrase in terms of its connotations.
 
@@ -609,7 +609,7 @@ Wild goose chase","Instruction:
   Analyze the given phrase  in terms of its connotations.
 
  Input:
-Wild goose chase ",0.9469136595726013,"“Wild goose chase” has these main connotations:
+Wild goose chase ",0.9469136595726012,"“Wild goose chase” has these main connotations:
 
 - **Futility**: it suggests a search or pursuit that is pointless and unlikely to succeed.
 - **Frustration**: it carries a sense of wasted effort, confusion, and annoyance.
@@ -620,7 +620,7 @@ Wild goose chase ",0.9469136595726013,"“Wild goose chase” has these main con
 - **Futility**: it suggests a search or pursuit that is pointless and unlikely to succeed.
 - **Frustration**: it carries a sense of wasted effort, time, and energy.
 - **Confusion or misdirection**: often implies someone has been led in the wrong direction or is chasing something hard to pin down.
-- **Absurdity/light humor**: the phrase can sound slightly playful or ironic rather",62.791973769364844,0.9577066898345947,,0.04126851286593547,-0.7987748850698413,0.0,-0.5411209528865726,-0.05308645963668823,-0.0014460086822509766,,0.0
+- **Absurdity/light humor**: the phrase can sound slightly playful or ironic rather",62.79197376936485,0.9577066898345948,,-0.0412685128659354,-0.7987748850698413,0.0,-0.5411209528865655,-0.05308645963668834,-0.0014460086822507545,,0.0,2.4872410164891106
 gpt-5.4,9,global,5,alpaca,"Instruction:
 List three potential sources for the following research problem.
 
@@ -629,7 +629,7 @@ What are the benefits of online learning?","Instruction:
 List three potential sources for  the   following research problem.
 
 Input:
-What are the  benefits of  online learning?",0.9576085209846497,"Here are three potential sources for the research problem **“What are the benefits of online learning?”**:
+What are the  benefits of  online learning?",0.9576085209846495,"Here are three potential sources for the research problem **“What are the benefits of online learning?”**:
 
 1. **Peer-reviewed journal articles**  
    - Example: Articles from journals like *Computers & Education* or *The Internet and Higher Education*  
@@ -643,7 +643,7 @@ What are the  benefits of  online learning?",0.9576085209846497,"Here are three 
    - Books often discuss the advantages of online learning in depth, including convenience, cost-effectiveness, and personalized learning.
 
 3. **Government or educational organization reports**  
-   - Reports from sources like the U.S. Department of Education, UNESCO, or OECD may provide data",29.42627955169218,0.9093900322914124,,0.08444333051003239,3.686750677942235,0.0,9.935494703602366,-0.042391419410705566,0.012042522430419922,,0.0
+   - Reports from sources like the U.S. Department of Education, UNESCO, or OECD may provide data",29.42627955169218,0.9093900322914124,,-0.0844433305100323,3.686750677942235,0.0,9.935494703602366,-0.04239141941070568,0.012042522430419922,,0.0,5.805469930984765
 gpt-5.4,10,global,5,alpaca,"Instruction:
 Arrange the following countries in ascending order of GDP per capita.
 
@@ -652,7 +652,7 @@ China, US, India, Japan"," Instruction:
 Arrange the following countries in  ascending order of GDP  per capita.
 
 Input:
-China, US,  India, Japan ",0.9598594307899475,"India, China, Japan, US","India, China, Japan, US",100.00000000000004,1.000000238418579,,0.04821288928021228,0.2575327094056636,0.0,0.0,-0.04014068841934204,0.0,,0.0
+China, US,  India, Japan ",0.9598594307899476,"India, China, Japan, US","India, China, Japan, US",100.00000000000004,1.000000238418579,,-0.0482128892802122,0.2575327094056636,0.0,0.0,-0.04014068841934193,0.0,,0.0,0.2575327094056636
 gpt-5.4,11,global,5,alpaca,"Instruction:
 Name the boat depicted in the provided photo.
 
@@ -661,7 +661,7 @@ Attached photo","Instruction:
  Name the boat  depicted  in  the provided photo.
 
 Input:
-Attached  photo",0.9386347532272339,Please upload the photo so I can identify the boat’s name.,Please upload the photo so I can identify the boat shown in it.,61.153805769010226,0.968402087688446,,0.056811979561507964,0.5276917534203708,0.0,-38.846194230989816,-0.06136518716812134,-0.031597912311553955,,0.0
+Attached  photo",0.938634753227234,Please upload the photo so I can identify the boat’s name.,Please upload the photo so I can identify the boat shown in it.,61.15380576901023,0.968402087688446,,-0.0568119795615079,0.5276917534203708,0.0,-38.84619423098981,-0.06136518716812123,-0.031597912311553955,,0.0,0.5535080246494027
 gpt-5.4,12,global,5,alpaca,"Instruction:
 Edit the grammar and punctuation of the given sentence.
 
@@ -670,7 +670,7 @@ Humor is one of the most important ingredients of life","Instruction:
 Edit the grammar and punctuation  of the  given sentence.
 
 Input:
-Humor  is one of the most important  ingredients  of life",0.9576967358589172,Humor is one of the most important ingredients in life.,Humor is one of the most important ingredients of life.,74.19446627365011,0.9950110912322998,,-0.018545778919941136,-0.19565803789119063,0.0,-25.805533726349935,-0.042303264141082764,-0.00498884916305542,,0.0
+Humor  is one of the most important  ingredients  of life",0.9576967358589172,Humor is one of the most important ingredients in life.,Humor is one of the most important ingredients of life.,74.19446627365011,0.9950110912322998,,0.0185457789199411,-0.1956580378911906,0.0,-25.805533726349935,-0.042303264141082764,-0.00498884916305542,,0.0,-0.1956809241539935
 gpt-5.4,13,global,5,alpaca,"Instruction:
 Calculate the length of the hypotenuse in the following triangle.
 
@@ -679,7 +679,7 @@ Input:
  Calculate the length of  the hypotenuse in the following triangle.
 
 Input:
- ![alt text](https://www.onlinemathlearning.com/image-files/triangle-hypotenuse-length.png ""Right  Triangle"")",0.9736058712005615,"The triangle is a right triangle with legs 5 and 12.
+ ![alt text](https://www.onlinemathlearning.com/image-files/triangle-hypotenuse-length.png ""Right  Triangle"")",0.9736058712005616,"The triangle is a right triangle with legs 5 and 12.
 
 Using the Pythagorean theorem:
 
@@ -711,10 +711,10 @@ c^2 = 5^2 + 12^2 = 25 + 144 = 169
 c = \sqrt{169} = 13
 \]
 
-**Answer: 13**",72.47592903420536,0.973709225654602,,0.014470784586068541,0.6144279764794804,0.0,-23.537357194601938,-0.0263940691947937,-0.023362278938293457,,0.0
+**Answer: 13**",72.47592903420536,0.973709225654602,,-0.0144707845860685,0.6144279764794804,0.0,-23.537357194601938,-0.02639406919479359,-0.023362278938293568,,0.0,0.8549750834058204
 gpt-5.4,14,global,5,alpaca,"Instruction:
 How many instruments does a symphony orchestra typically have?","Instruction:
-How  many instruments does  a  symphony orchestra typically   have?",0.9360440373420715,"A full symphony orchestra typically has **about 70 to 100 musicians**, depending on the piece and the ensemble.
+How  many instruments does  a  symphony orchestra typically   have?",0.9360440373420716,"A full symphony orchestra typically has **about 70 to 100 musicians**, depending on the piece and the ensemble.
 
 Common breakdown:
 - **Strings:** 40–60
@@ -730,10 +730,10 @@ These are usually divided into sections:
 - **Strings**: violins, violas, cellos, double basses
 - **Woodwinds**: flutes, oboes, clarinets, bassoons
 - **Brass**: trumpets, horns, trombones, tuba
-- **Percussion**: timpani, drums",31.741639349743156,0.8887254595756531,,-0.006872119535032972,-1.3513250387690445,0.0,-6.996490881586741,-0.06395608186721802,-0.0004968047142028809,,0.0
+- **Percussion**: timpani, drums",31.74163934974316,0.8887254595756531,,0.0068721195350329,-1.3513250387690443,0.0,-6.9964908815867375,-0.0639560818672179,-0.0004968047142028809,,0.0,-0.5262181272674595
 gpt-5.4,15,global,5,alpaca,"Instruction:
 Summarize the phrase: ""GPT is a natural language processing architecture.""","Instruction:
-Summarize the phrase:  ""GPT  is  a natural language  processing  architecture.""",0.936414361000061,GPT is an NLP architecture.,GPT is an NLP architecture.,100.00000000000004,0.9999998807907104,,0.024939736969761817,0.13362519714797738,0.0,0.0,-0.06358563899993896,0.0,,0.0
+Summarize the phrase:  ""GPT  is  a natural language  processing  architecture.""",0.936414361000061,GPT is an NLP architecture.,GPT is an NLP architecture.,100.00000000000004,0.9999998807907104,,-0.0249397369697618,0.1336251971479773,0.0,0.0,-0.06358563899993896,0.0,,0.0,0.1336251971479773
 gpt-5.4,0,global,20,alpaca,"Instruction:
 What would be the best type of exercise for a person who has arthritis?"," Instruction: 
   What   would  be the best   type  of  exercise for  a  person who    has   arthritis?   ",0.8764775395393372,"For most people with arthritis, the **best exercise is low-impact exercise**—activities that improve **joint movement, muscle strength, and overall fitness** without putting too much stress on the joints.
@@ -761,14 +761,14 @@ Good options include:
 
 A good exercise plan usually includes:
 1. **Range-of-motion exercises** – help reduce stiffness  
-2.",78.96218565799361,0.9687106013298035,,-0.014560174579712037,-1.1227337234613772,0.0,-16.75431801756686,-0.12352240085601807,-0.026405632495880127,,0.0
+2.",78.96218565799361,0.9687106013298036,,0.014560174579712,-1.1227337234613772,0.0,-16.75431801756686,-0.12352240085601807,-0.026405632495880016,,0.0,-1.1871478861717009
 gpt-5.4,1,global,20,alpaca,"Instruction:
 Calculate the atomic mass for lithium.","   Instruction:   
   Calculate   the  atomic     mass    for    lithium.  ",0.8295276761054993,"The atomic mass of **lithium (Li)** is **6.94 u** (atomic mass units).
 
 If you want, I can also explain how atomic mass differs from mass number.","The atomic mass of **lithium (Li)** is **6.94 u** (atomic mass units).
 
-If you want, I can also explain the difference between **atomic mass**, **mass number**, and **average atomic weight**.",57.590472748835126,0.9733273386955261,,0.012364435854530065,0.45370410842973885,0.0,-9.993547793509507,-0.17047226428985596,0.004777312278747559,,0.0
+If you want, I can also explain the difference between **atomic mass**, **mass number**, and **average atomic weight**.",57.590472748835126,0.973327338695526,,-0.01236443585453,0.4537041084297388,0.0,-9.993547793509507,-0.17047226428985596,0.004777312278747448,,0.0,0.425122063625693
 gpt-5.4,2,global,20,alpaca,"Instruction:
 Convert the following binary code to ASCII characters.
 
@@ -777,7 +777,7 @@ Input:
  Convert     the  following binary    code to  ASCII characters.
 
 Input:
-   01110101    01100001  01110010   01101001 01110100",0.899409830570221,uarit,uarit,0.0,1.0,,0.0013195303771392775,0.0025086767050168175,0.0,0.0,-0.10059016942977905,0.0,,0.0
+   01110101    01100001  01110010   01101001 01110100",0.899409830570221,uarit,uarit,0.0,1.0,,-0.0013195303771392,0.0025086767050168,0.0,0.0,-0.10059016942977905,0.0,,0.0,0.0026345410671342003
 gpt-5.4,3,global,20,alpaca,"Instruction:
 Take this sentence and make it more descriptive: She was scared.
 
@@ -786,7 +786,7 @@ She was scared.","Instruction:
  Take  this  sentence    and   make it  more    descriptive:  She was scared.
 
 Input:
-  She  was  scared.   ",0.8876597881317139,"Her heart pounded, her breath caught in her throat, and a cold wave of fear washed over her.","Her heart pounded, her hands trembled, and a cold wave of fear washed over her.",65.8402900448198,0.9648054242134094,,-0.02356938998108038,-0.2678446785169828,0.0,-7.5352802821870455,-0.11234021186828613,-0.01915121078491211,,0.0
+  She  was  scared.   ",0.8876597881317139,"Her heart pounded, her breath caught in her throat, and a cold wave of fear washed over her.","Her heart pounded, her hands trembled, and a cold wave of fear washed over her.",65.8402900448198,0.9648054242134094,,0.0235693899810803,-0.2678446785169828,0.0,-7.5352802821870455,-0.11234021186828613,-0.01915121078491222,,0.0,-0.7536704524606905
 gpt-5.4,4,global,20,alpaca,"Instruction:
 Brainstorm 3 possible ideas to promote the following product
 
@@ -807,7 +807,7 @@ New motorized skateboard","   Instruction:
    Create short, exciting videos showing the skateboard’s speed, smooth ride, and cool design. Post them on TikTok, Instagram, and YouTube with tricks, city rides, and influencer collaborations.
 
 2. **Free Test Ride Events**  
-   Host demo days at parks, campuses, or skate spots where people can try the motorized skateboard themselves. Hands",50.264543470008334,0.9459078311920166,,0.014632303397836832,1.7666062690718878,0.0,-43.07634246441219,-0.1278456449508667,-0.0490192174911499,,0.0
+   Host demo days at parks, campuses, or skate spots where people can try the motorized skateboard themselves. Hands",50.264543470008334,0.9459078311920166,,-0.0146323033978368,1.7666062690718878,0.0,-43.07634246441219,-0.1278456449508667,-0.04901921749114979,,0.0,1.2033708680758188
 gpt-5.4,5,global,20,alpaca,"Instruction:
 Rewrite the sentence using imperative mood.
 
@@ -816,7 +816,7 @@ Please pick up the book from the shelf.","  Instruction:
  Rewrite   the   sentence using   imperative   mood.
 
   Input:
- Please  pick up the book   from  the shelf.  ",0.8962128758430481,Pick up the book from the shelf.,Pick up the book from the shelf.,100.00000000000004,0.9999998807907104,,1.9071085327615478e-06,6.102953940574792e-05,0.0,0.0,-0.1037871241569519,0.0,,0.0
+ Please  pick up the book   from  the shelf.  ",0.8962128758430481,Pick up the book from the shelf.,Pick up the book from the shelf.,100.00000000000004,0.9999998807907104,,-1.907108532761548e-06,6.102953940574792e-05,0.0,0.0,-0.1037871241569519,0.0,,0.0,1.5254947514935747e-05
 gpt-5.4,6,global,20,alpaca,"Instruction:
 Describe a picnic vacation where four people are travelling together.
 
@@ -825,7 +825,7 @@ Four people are travelling together to a picnic vacation.","Instruction:
  Describe a picnic   vacation   where four   people are travelling together.
 
 Input:
-Four   people   are  travelling together  to  a   picnic   vacation.  ",0.8998985886573792,"Four friends are travelling together for a picnic vacation. They pack food, drinks, a picnic blanket, and games in their car. Everyone is excited as they drive to a beautiful park surrounded by trees and fresh air. When they arrive, they choose a nice spot near a lake, spread out the blanket, and enjoy sandwiches, fruits, and snacks. After eating, they play games, take photos, and relax while talking and laughing together. It is a fun and peaceful trip that helps","Four people are travelling together for a picnic vacation. They are excited and happy as they go on their trip. They carry food, drinks, a picnic basket, and a blanket. They travel to a beautiful place such as a park, lakeside, or countryside. During the vacation, they sit together, eat delicious food, play games, talk, laugh, and enjoy nature. It is a fun and relaxing picnic vacation for all four of them.",24.861924845265094,0.9268025159835815,,-0.018195238012862824,-2.302336832397468,0.0,-31.245021027918902,-0.10010141134262085,-0.02802485227584839,,0.0
+Four   people   are  travelling together  to  a   picnic   vacation.  ",0.8998985886573792,"Four friends are travelling together for a picnic vacation. They pack food, drinks, a picnic blanket, and games in their car. Everyone is excited as they drive to a beautiful park surrounded by trees and fresh air. When they arrive, they choose a nice spot near a lake, spread out the blanket, and enjoy sandwiches, fruits, and snacks. After eating, they play games, take photos, and relax while talking and laughing together. It is a fun and peaceful trip that helps","Four people are travelling together for a picnic vacation. They are excited and happy as they go on their trip. They carry food, drinks, a picnic basket, and a blanket. They travel to a beautiful place such as a park, lakeside, or countryside. During the vacation, they sit together, eat delicious food, play games, talk, laugh, and enjoy nature. It is a fun and relaxing picnic vacation for all four of them.",24.861924845265094,0.9268025159835817,,0.0181952380128628,-2.302336832397468,0.0,-31.24502102791891,-0.10010141134262085,-0.02802485227584839,,0.0,-1.8936079459305457
 gpt-5.4,7,global,20,alpaca,"Instruction:
 Explain the concept of Big Data and what it means for companies and customers.","   Instruction:   
   Explain   the    concept  of  Big Data  and  what  it  means for   companies and customers.  ",0.8746949434280396,"Big Data refers to extremely large and complex sets of data that traditional data-processing tools cannot easily handle. This data comes from many sources, such as websites, mobile apps, social media, sensors, transactions, and customer interactions.
@@ -841,7 +841,7 @@ Sometimes","**Big Data** refers to extremely large and complex sets of data that
 Big Data is commonly described using the **“3 Vs”**:
 
 1. **Volume** – huge amounts of data  
-2. **Velocity** – data is created and processed very quickly",36.646946850888895,0.9274941086769104,,0.006793765217850578,0.6714285190831708,0.0,-52.37063806777465,-0.12530505657196045,-0.059256553649902344,,0.0
+2. **Velocity** – data is created and processed very quickly",36.646946850888895,0.9274941086769104,,-0.0067937652178505,0.6714285190831708,0.0,-52.37063806777465,-0.12530505657196045,-0.059256553649902455,,0.0,0.5700127358146388
 gpt-5.4,8,global,20,alpaca,"Instruction:
 Analyze the given phrase in terms of its connotations.
 
@@ -861,7 +861,7 @@ Input:
 - **Futility** — it suggests a search or pursuit that is pointless and unlikely to succeed.
 - **Wasted effort** — it implies spending time, energy, or resources on something with no useful result.
 - **Frustration** — the phrase often carries a feeling of annoyance because the person is being led on without achieving anything.
-- **Confusion or misdirection** — it can",66.2310330093578,0.9631862640380859,,0.0792708868190839,1.8148152642955147,0.0,2.897938287106385,-0.13776540756225586,0.004033565521240234,,0.0
+- **Confusion or misdirection** — it can",66.2310330093578,0.963186264038086,,-0.0792708868190839,1.8148152642955149,0.0,2.897938287106385,-0.13776540756225586,0.004033565521240456,,0.0,5.1008311658544665
 gpt-5.4,9,global,20,alpaca,"Instruction:
 List three potential sources for the following research problem.
 
@@ -884,7 +884,7 @@ What are the benefits of online learning?","Instruction:
    - Use: Provide research-based evidence on flexibility, accessibility, cost-effectiveness, and student outcomes.
 
 2. **Books on online education or e-learning**  
-   - Example: Books about digital learning, distance education,",70.27635107388241,0.9687598943710327,,0.0298453414687897,-0.22278313735972333,0.0,50.78556622579259,-0.11699628829956055,0.07141238451004028,,0.0
+   - Example: Books about digital learning, distance education,",70.27635107388241,0.9687598943710328,,-0.0298453414687897,-0.2227831373597233,0.0,50.78556622579259,-0.11699628829956055,0.0714123845100404,,0.0,1.8959361156828072
 gpt-5.4,10,global,20,alpaca,"Instruction:
 Arrange the following countries in ascending order of GDP per capita.
 
@@ -895,7 +895,7 @@ China, US, India, Japan"," Instruction:
   Input:
 China,    US,   India,   Japan ",0.890577495098114,"India, China, Japan, US","Ascending order of GDP per capita:
 
-**India, China, Japan, US**",32.70292922455489,0.8834165930747986,,0.029870162837752345,0.39551283378186947,0.0,-67.29707077544515,-0.10942262411117554,-0.11658364534378052,,0.0
+**India, China, Japan, US**",32.70292922455489,0.8834165930747986,,-0.0298701628377523,0.3955128337818694,0.0,-67.29707077544515,-0.10942262411117554,-0.11658364534378052,,0.0,0.3955128337818694
 gpt-5.4,11,global,20,alpaca,"Instruction:
 Name the boat depicted in the provided photo.
 
@@ -904,7 +904,7 @@ Attached photo"," Instruction:
   Name  the    boat depicted  in  the   provided   photo.
 
  Input:
-  Attached   photo  ",0.8579965233802795,Please upload the photo so I can identify the boat’s name.,Please upload the photo so I can identify the boat’s name.,100.00000000000004,1.0,,0.005847733795159349,0.12560979819082962,0.0,0.0,-0.14200341701507568,0.0,,0.0
+  Attached   photo  ",0.8579965233802795,Please upload the photo so I can identify the boat’s name.,Please upload the photo so I can identify the boat’s name.,100.00000000000004,1.0,,-0.0058477337951593,0.1256097981908296,0.0,0.0,-0.14200341701507568,0.0,,0.0,0.1514260694198616
 gpt-5.4,12,global,20,alpaca,"Instruction:
 Edit the grammar and punctuation of the given sentence.
 
@@ -913,7 +913,7 @@ Humor is one of the most important ingredients of life","Instruction:
 Edit the grammar    and  punctuation   of  the given   sentence.
 
   Input:
-Humor  is  one of the   most important ingredients    of life  ",0.8956682085990906,Humor is one of the most important ingredients in life.,Humor is one of the most important ingredients of life.,74.19446627365011,0.9950110912322998,,-0.0314578203578636,-0.2950244129836833,0.0,-25.805533726349935,-0.10433179140090942,-0.00498884916305542,,0.0
+Humor  is  one of the   most important ingredients    of life  ",0.8956682085990906,Humor is one of the most important ingredients in life.,Humor is one of the most important ingredients of life.,74.19446627365011,0.9950110912322998,,0.0314578203578636,-0.2950244129836833,0.0,-25.805533726349935,-0.10433179140090942,-0.00498884916305542,,0.0,-0.2950472992464862
 gpt-5.4,13,global,20,alpaca,"Instruction:
 Calculate the length of the hypotenuse in the following triangle.
 
@@ -958,7 +958,7 @@ c^2 = 25 + 144 = 169
 c = \sqrt{169} = 13
 \]
 
-**Answer:",60.814299481224126,0.9596707224845886,,0.0033154556585154316,0.1921606005715597,0.0,-35.19898674758318,-0.075236976146698,-0.037400782108306885,,0.0
+**Answer:",60.814299481224126,0.9596707224845886,,-0.0033154556585154,0.1921606005715597,0.0,-35.19898674758318,-0.075236976146698,-0.037400782108306996,,0.0,0.43270770749789966
 gpt-5.4,14,global,20,alpaca,"Instruction:
 How many instruments does a symphony orchestra typically have?","  Instruction:  
 How    many  instruments    does    a  symphony    orchestra  typically  have?  ",0.8369954824447632,"A full symphony orchestra typically has **about 70 to 100 musicians**, depending on the piece and the ensemble.
@@ -976,10 +976,10 @@ It is generally divided into these sections:
 - **Strings**: violins, violas, cellos, double basses
 - **Woodwinds**: flutes, oboes, clarinets, bassoons
 - **Brass**: trumpets, horns, trombones, tuba
-- **Percussion**: timpani, drums, cymbals,",69.46067143145146,0.9659589529037476,,0.013895702840733049,0.20090322224202772,0.0,30.72254120012156,-0.16300463676452637,0.0767366886138916,,0.0
+- **Percussion**: timpani, drums, cymbals,",69.46067143145146,0.9659589529037476,,-0.013895702840733,0.2009032222420277,0.0,30.72254120012156,-0.16300463676452637,0.0767366886138916,,0.0,1.0260101337436125
 gpt-5.4,15,global,20,alpaca,"Instruction:
 Summarize the phrase: ""GPT is a natural language processing architecture.""","  Instruction:  
-   Summarize   the   phrase:   ""GPT   is   a natural  language processing  architecture.""   ",0.8646383881568909,GPT is an NLP architecture.,GPT is an NLP architecture.,100.00000000000004,0.9999998807907104,,-0.05021916436958129,-0.2590861571842466,0.0,0.0,-0.13536161184310913,0.0,,0.0
+   Summarize   the   phrase:   ""GPT   is   a natural  language processing  architecture.""   ",0.8646383881568909,GPT is an NLP architecture.,GPT is an NLP architecture.,100.00000000000004,0.9999998807907104,,0.0502191643695812,-0.2590861571842466,0.0,0.0,-0.13536161184310913,0.0,,0.0,-0.2590861571842466
 gpt-5.4,0,global,50,alpaca,"Instruction:
 What would be the best type of exercise for a person who has arthritis?","    Instruction:    
       What   would  be   the      best    type     of      exercise    for     a person    who    has  arthritis?    ",0.7954915761947632,"For most people with arthritis, the **best exercise is low-impact exercise**—activities that improve movement and strength without putting too much stress on the joints.
@@ -1006,14 +1006,14 @@ Good options include:
 
 These help improve joint movement, reduce stiffness, and strengthen muscles without putting too much stress on the joints.
 
-It’s best to start slowly and choose activities that do not worsen pain. A doctor or physical therapist can help choose the safest exercises.",20.668658634738087,0.9026960730552673,,-0.020504186755061826,-1.9114217807269784,0.0,-75.04784504082238,-0.20450836420059204,-0.09242016077041626,,0.0
+It’s best to start slowly and choose activities that do not worsen pain. A doctor or physical therapist can help choose the safest exercises.",20.668658634738087,0.9026960730552672,,0.0205041867550618,-1.9114217807269784,0.0,-75.04784504082238,-0.20450836420059204,-0.09242016077041637,,0.0,-1.975835943437302
 gpt-5.4,1,global,50,alpaca,"Instruction:
 Calculate the atomic mass for lithium.","       Instruction:       
        Calculate      the    atomic         mass         for         lithium.    ",0.7508366703987122,"The atomic mass of **lithium (Li)** is **6.94 u** (atomic mass units).
 
 If you want, I can also explain how atomic mass is determined.","The atomic mass of **lithium (Li)** is **6.94 u** (atomic mass units).
 
-It is often also written as **6.94 g/mol** when referring to molar mass.",56.02014196299525,0.9414435029029846,,0.012545594993010445,0.3489115707999836,0.0,-11.563878579349385,-0.24916326999664307,-0.027106523513793945,,0.0
+It is often also written as **6.94 g/mol** when referring to molar mass.",56.02014196299525,0.9414435029029846,,-0.0125455949930104,0.3489115707999836,0.0,-11.563878579349385,-0.24916326999664307,-0.027106523513793945,,0.0,0.3203295259959378
 gpt-5.4,2,global,50,alpaca,"Instruction:
 Convert the following binary code to ASCII characters.
 
@@ -1022,7 +1022,7 @@ Input:
      Convert  the   following    binary   code    to   ASCII    characters.
 
   Input:
-      01110101     01100001   01110010    01101001      01110100     ",0.8440702557563782,uarit,uarit,0.0,1.0,,0.0006481739075482329,0.0011698344381116349,0.0,0.0,-0.15592974424362183,0.0,,0.0
+      01110101     01100001   01110010    01101001      01110100     ",0.8440702557563782,uarit,uarit,0.0,1.0,,-0.0006481739075482,0.0011698344381116,0.0,0.0,-0.15592974424362183,0.0,,0.0,0.001295698800229
 gpt-5.4,3,global,50,alpaca,"Instruction:
 Take this sentence and make it more descriptive: She was scared.
 
@@ -1031,7 +1031,7 @@ She was scared.","    Instruction:
    Take  this  sentence   and  make    it    more     descriptive:        She was      scared.
 
   Input:
-She     was     scared.      ",0.8170703649520874,"Her heart pounded, her hands trembled, and a cold wave of fear washed over her as she stood frozen in place.","She was trembling with fear, her heart pounding as a wave of panic washed over her.",9.633959495956466,0.9417041540145874,,-0.013903190209806682,-0.34049478438176606,0.0,-63.74161083105037,-0.1829296350479126,-0.04225248098373413,,0.0
+She     was     scared.      ",0.8170703649520874,"Her heart pounded, her hands trembled, and a cold wave of fear washed over her as she stood frozen in place.","She was trembling with fear, her heart pounding as a wave of panic washed over her.",9.633959495956466,0.9417041540145874,,0.0139031902098066,-0.340494784381766,0.0,-63.74161083105037,-0.1829296350479126,-0.04225248098373424,,0.0,-0.8263205583254737
 gpt-5.4,4,global,50,alpaca,"Instruction:
 Brainstorm 3 possible ideas to promote the following product
 
@@ -1052,7 +1052,7 @@ New     motorized       skateboard   ",0.7910727858543396,"Here are 3 ideas to p
 2. **Influencer and rider partnerships**  
    Partner with skateboarders, tech reviewers, and lifestyle influencers to test and promote the product. Their reviews and demos can build trust and generate buzz.
 
-3. **Public demo events and test",56.05272972815875,0.9484905004501343,,0.0003188754765334201,0.5479711619611178,0.0,-37.288156206261775,-0.20892733335494995,-0.04643654823303223,,0.0
+3. **Public demo events and test",56.05272972815875,0.9484905004501344,,-0.0003188754765334,0.5479711619611178,0.0,-37.288156206261775,-0.20892733335494995,-0.046436548233032005,,0.0,-0.01526423903495111
 gpt-5.4,5,global,50,alpaca,"Instruction:
 Rewrite the sentence using imperative mood.
 
@@ -1061,7 +1061,7 @@ Please pick up the book from the shelf.","    Instruction:
      Rewrite      the    sentence    using     imperative   mood.
 
     Input:
-     Please  pick    up      the    book from  the   shelf.",0.8075643181800842,Pick up the book from the shelf.,Pick up the book from the shelf.,100.00000000000004,0.9999998807907104,,9.095058040031745e-12,4.577473741462708e-05,0.0,0.0,-0.19243568181991577,0.0,,0.0
+     Please  pick    up      the    book from  the   shelf.",0.8075643181800842,Pick up the book from the shelf.,Pick up the book from the shelf.,100.00000000000004,0.9999998807907104,,-9.095058040031743e-12,4.577473741462708e-05,0.0,0.0,-0.19243568181991577,0.0,,0.0,1.4552381490866382e-10
 gpt-5.4,6,global,50,alpaca,"Instruction:
 Describe a picnic vacation where four people are travelling together.
 
@@ -1072,7 +1072,7 @@ Four people are travelling together to a picnic vacation.","  Instruction:
  Input:
   Four    people  are    travelling   together to    a      picnic    vacation.   ",0.8174311518669128,"Four friends are travelling together for a picnic vacation. They pack food, drinks, a picnic blanket, and games for everyone to enjoy. During the journey, they talk, laugh, and enjoy the scenery along the way. When they arrive, they choose a nice spot, share their meal, and spend time relaxing and having fun together.","Four people are travelling together on a picnic vacation. They pack food, drinks, and a blanket, then head to a beautiful outdoor place such as a park, lakeside, or countryside. Along the way, they talk, laugh, and enjoy the journey together.
 
-When they arrive, they choose a nice spot under a tree or near the water. They spread out the blanket and arrange their picnic meal, which may include sandwiches, fruits, snacks, and juice. The four friends or",32.508346316398345,0.9196020364761353,,0.005550472390324912,1.3696109878617087,0.0,-23.59859955678565,-0.18256884813308716,-0.03522533178329468,,0.0
+When they arrive, they choose a nice spot under a tree or near the water. They spread out the blanket and arrange their picnic meal, which may include sandwiches, fruits, snacks, and juice. The four friends or",32.508346316398345,0.9196020364761353,,-0.0055504723903249,1.3696109878617089,0.0,-23.598599556785658,-0.18256884813308716,-0.03522533178329479,,0.0,1.778339874328631
 gpt-5.4,7,global,50,alpaca,"Instruction:
 Explain the concept of Big Data and what it means for companies and customers."," Instruction: 
    Explain   the concept       of  Big     Data   and   what    it       means   for    companies     and         customers.   ",0.7957189679145813,"Big Data refers to extremely large and complex sets of data that traditional data-processing tools cannot easily handle. This data comes from many sources, such as websites, mobile apps, social media, sensors, transactions, and customer interactions.
@@ -1089,7 +1089,7 @@ Big Data is usually described by the **“3 Vs”**:
 
 1. **Volume** – huge amounts of data  
 2. **Velocity** – data being created and processed very quickly  
-3",39.95199572689818,0.9251551032066345,,0.008132444427405905,0.7026682284355039,0.0,-49.06558919176536,-0.2042810320854187,-0.06159555912017822,,0.0
+3",39.95199572689818,0.9251551032066344,,-0.0081324444274059,0.7026682284355039,0.0,-49.06558919176536,-0.2042810320854187,-0.061595559120178445,,0.0,0.601252445166972
 gpt-5.4,8,global,50,alpaca,"Instruction:
 Analyze the given phrase in terms of its connotations.
 
@@ -1110,7 +1110,7 @@ Overall, the phrase","The phrase **“wild goose chase”** has the following **
 - **Futility** — it suggests a search or pursuit that is unlikely to succeed.
 - **Wasted effort** — it implies spending time and energy on something pointless.
 - **Frustration** — the phrase often carries a sense of annoyance or exasperation.
-- **Confusion or misdirection** — it can suggest being led in the wrong direction or chasing something hard to catch.",38.114140299946214,0.9467171430587769,,0.014434963723922944,-2.568791220735722,0.0,-25.218954422305202,-0.212582528591156,-0.012435555458068848,,0.0
+- **Confusion or misdirection** — it can suggest being led in the wrong direction or chasing something hard to catch.",38.11414029994621,0.9467171430587769,,-0.0144349637239229,-2.568791220735722,0.0,-25.21895442230521,-0.212582528591156,-0.012435555458068737,,0.0,0.7172246808232297
 gpt-5.4,9,global,50,alpaca,"Instruction:
 List three potential sources for the following research problem.
 
@@ -1136,7 +1136,7 @@ Input:
    - Example: Textbooks or reference books discussing digital learning methods and outcomes.
 
 3. **Government or educational organization reports**  
-   - Example: Reports from UNESCO, the U.S. Department of Education,",34.79041483522792,0.9140502214431763,,0.003763846045932162,-2.3967596487508507,0.0,15.299629987138108,-0.18984591960906982,0.016702711582183838,,0.0
+   - Example: Reports from UNESCO, the U.S. Department of Education,",34.79041483522792,0.9140502214431764,,-0.0037638460459321,-2.3967596487508507,0.0,15.299629987138108,-0.18984591960906982,0.01670271158218395,,0.0,-0.2780403957083202
 gpt-5.4,10,global,50,alpaca,"Instruction:
 Arrange the following countries in ascending order of GDP per capita.
 
@@ -1147,7 +1147,7 @@ China, US, India, Japan","  Instruction:
  Input:
     China,  US,   India,      Japan  ",0.8201064467430115,"India, China, Japan, US","Ascending order of GDP per capita:
 
-**India, China, Japan, US**",32.70292922455489,0.8834165930747986,,0.008081989801339784,0.1398645035991585,0.0,-67.29707077544515,-0.17989367246627808,-0.11658364534378052,,0.0
+**India, China, Japan, US**",32.70292922455489,0.8834165930747986,,-0.0080819898013397,0.1398645035991585,0.0,-67.29707077544515,-0.17989367246627808,-0.11658364534378052,,0.0,0.1398645035991585
 gpt-5.4,11,global,50,alpaca,"Instruction:
 Name the boat depicted in the provided photo.
 
@@ -1156,7 +1156,7 @@ Attached photo","    Instruction:
     Name    the    boat        depicted    in     the    provided         photo.
 
   Input:
-      Attached  photo  ",0.7844563126564026,Please upload the photo so I can identify the boat’s name.,Please upload the photo so I can identify the boat’s name.,100.00000000000004,1.0,,0.0013895533743105704,-0.008219465621483096,0.0,0.0,-0.21554362773895264,0.0,,0.0
+      Attached  photo  ",0.7844563126564026,Please upload the photo so I can identify the boat’s name.,Please upload the photo so I can identify the boat’s name.,100.00000000000004,1.0,,-0.0013895533743105,-0.008219465621483,0.0,0.0,-0.21554362773895264,0.0,,0.0,0.017596805607549
 gpt-5.4,12,global,50,alpaca,"Instruction:
 Edit the grammar and punctuation of the given sentence.
 
@@ -1165,7 +1165,7 @@ Humor is one of the most important ingredients of life","  Instruction:
     Edit   the    grammar   and  punctuation  of    the    given  sentence.
 
   Input:
-  Humor    is  one   of     the       most   important  ingredients    of   life",0.805025041103363,Humor is one of the most important ingredients of life.,Humor is one of the most important ingredients of life.,100.00000000000004,1.0000001192092896,,-0.003969282065773738,-0.04646477212756052,0.0,0.0,-0.19497495889663696,1.7881393432617188e-07,,0.0
+  Humor    is  one   of     the       most   important  ingredients    of   life",0.805025041103363,Humor is one of the most important ingredients of life.,Humor is one of the most important ingredients of life.,100.00000000000004,1.0000001192092896,,0.0039692820657737,-0.0464647721275605,0.0,0.0,-0.19497495889663696,1.7881393432617188e-07,,0.0,-0.04648765839036339
 gpt-5.4,13,global,50,alpaca,"Instruction:
 Calculate the length of the hypotenuse in the following triangle.
 
@@ -1206,7 +1206,7 @@ c^2 = 5^2 + 12^2 = 25 + 144 = 169
 c = \sqrt{169} = 13
 \]
 
-**Answer: 13**",67.50484681375163,0.9701743721961975,,0.01489401048550587,0.6698042753907336,0.0,-28.508439415055676,-0.14196109771728516,-0.026897132396697998,,0.0
+**Answer: 13**",67.50484681375163,0.9701743721961976,,-0.0148940104855058,0.6698042753907336,0.0,-28.508439415055676,-0.14196109771728516,-0.026897132396697998,,0.0,0.9103513823170736
 gpt-5.4,14,global,50,alpaca,"Instruction:
 How many instruments does a symphony orchestra typically have?","    Instruction:    
    How        many    instruments  does    a         symphony    orchestra       typically      have?       ",0.7662410140037537,"A full symphony orchestra typically has **about 70 to 100 musicians**, depending on the piece and the ensemble.
@@ -1225,10 +1225,10 @@ This usually includes instruments from these sections:
 - **Woodwinds**: flutes, oboes, clarinets, bassoons
 - **Brass**: trumpets, horns, trombones, tuba
 - **Percussion**: timpani and other percussion instruments
-- Sometimes **",79.74068200763888,0.9730642437934875,,0.010522884296814139,-0.08509885816029561,0.0,41.002551776308984,-0.2337591052055359,0.08384197950363159,,0.0
+- Sometimes **",79.74068200763888,0.9730642437934875,,-0.0105228842968141,-0.0850988581602956,0.0,41.002551776308984,-0.2337591052055359,0.08384197950363159,,0.0,0.7400080533412892
 gpt-5.4,15,global,50,alpaca,"Instruction:
 Summarize the phrase: ""GPT is a natural language processing architecture.""","    Instruction:    
-  Summarize      the      phrase:       ""GPT       is    a    natural   language  processing        architecture.""      ",0.7793486714363098,GPT is an NLP architecture.,GPT is an NLP architecture.,100.00000000000004,0.9999998807907104,,-0.007241261674850286,-0.04267688672164452,0.0,0.0,-0.22065132856369019,0.0,,0.0
+  Summarize      the      phrase:       ""GPT       is    a    natural   language  processing        architecture.""      ",0.7793486714363098,GPT is an NLP architecture.,GPT is an NLP architecture.,100.00000000000004,0.9999998807907104,,0.0072412616748502,-0.0426768867216445,0.0,0.0,-0.22065132856369019,0.0,,0.0,-0.0426768867216445
 gpt-5.4,0,global,100,alpaca,"Instruction:
 What would be the best type of exercise for a person who has arthritis?","       Instruction:       
       What      would      be      the         best          type        of       exercise     for      a            person      who      has        arthritis?     ",0.729894757270813,"For most people with arthritis, the **best exercise is low-impact exercise**—activities that improve **joint movement, muscle strength, and overall fitness** without putting too much stress on the joints.
@@ -1262,14 +1262,14 @@ In general:
 - Avoid high-impact activities if they cause pain
 - Stop if pain becomes sharp or severe
 
-It’s",19.123759095790398,0.8901223540306091,,-0.02703173910509804,-2.0929486306243867,0.0,-76.59274457977008,-0.27010518312454224,-0.10499387979507446,,0.0
+It’s",19.1237590957904,0.8901223540306091,,0.027031739105098,-2.0929486306243867,0.0,-76.59274457977007,-0.27010518312454224,-0.10499387979507446,,0.0,-2.1573627933347104
 gpt-5.4,1,global,100,alpaca,"Instruction:
 Calculate the atomic mass for lithium.","         Instruction:         
                   Calculate              the            atomic            mass                  for            lithium.          ",0.7050821185112,"The atomic mass of **lithium (Li)** is **6.94 u** (atomic mass units).
 
 If you want, I can also explain how atomic mass differs from mass number.","The atomic mass of **lithium (Li)** is **6.94 u** (atomic mass units).
 
-If you want, I can also explain how atomic mass differs from mass number.",100.00000000000004,1.0,,0.045357561359697485,1.1575303326780384,0.0,32.41597945765541,-0.2949178218841553,0.031449973583221436,,0.0
+If you want, I can also explain how atomic mass differs from mass number.",100.00000000000004,1.0,,-0.0453575613596974,1.1575303326780384,0.0,32.41597945765541,-0.2949178218841553,0.031449973583221436,,0.0,1.1289482878739927
 gpt-5.4,2,global,100,alpaca,"Instruction:
 Convert the following binary code to ASCII characters.
 
@@ -1278,7 +1278,7 @@ Input:
     Convert        the         following         binary           code           to         ASCII            characters.
 
   Input:
-  01110101     01100001   01110010          01101001     01110100    ",0.8005425333976746,uarit,uarit,0.0,1.0,,0.038422117248441356,0.07369570015051458,0.0,0.0,-0.19945746660232544,0.0,,0.0
+  01110101     01100001   01110010          01101001     01110100    ",0.8005425333976746,uarit,uarit,0.0,1.0,,-0.0384221172484413,0.0736957001505145,0.0,0.0,-0.19945746660232544,0.0,,0.0,0.0738215645126319
 gpt-5.4,3,global,100,alpaca,"Instruction:
 Take this sentence and make it more descriptive: She was scared.
 
@@ -1287,7 +1287,7 @@ She was scared.","   Instruction:
     Take               this      sentence     and       make     it   more        descriptive:        She     was     scared.
 
       Input:
-   She          was        scared.           ",0.747138500213623,"Her heart pounded, her breath caught in her throat, and a cold wave of fear washed over her.","She was trembling with fear, her heart pounding as a wave of panic washed over her.",16.65262071675369,0.9342870712280273,,-0.08587272394096657,-1.2519830914498207,0.0,-56.72294961025315,-0.25286149978637695,-0.04966956377029419,,0.0
+   She          was        scared.           ",0.747138500213623,"Her heart pounded, her breath caught in her throat, and a cold wave of fear washed over her.","She was trembling with fear, her heart pounding as a wave of panic washed over her.",16.65262071675369,0.9342870712280272,,0.0858727239409665,-1.251983091449821,0.0,-56.72294961025315,-0.25286149978637695,-0.04966956377029441,,0.0,-1.7378088653935286
 gpt-5.4,4,global,100,alpaca,"Instruction:
 Brainstorm 3 possible ideas to promote the following product
 
@@ -1310,7 +1310,7 @@ New motorized skateboard","        Instruction:
 2. **Influencer and Rider Partnerships**  
    Partner with skateboarders, tech reviewers, and lifestyle influencers to test and showcase the product to their audiences.
 
-3. **Public Demo Events**",50.36577285531081,0.9512357115745544,,-0.03177111145698985,-1.5731951341782033,0.0,-42.97511307910972,-0.2691326141357422,-0.04369133710861206,,0.0
+3. **Public Demo Events**",50.36577285531081,0.9512357115745544,,0.0317711114569898,-1.5731951341782031,0.0,-42.97511307910972,-0.2691326141357422,-0.04369133710861195,,0.0,-2.136430535174272
 gpt-5.4,5,global,100,alpaca,"Instruction:
 Rewrite the sentence using imperative mood.
 
@@ -1319,7 +1319,7 @@ Please pick up the book from the shelf.","   Instruction:
        Rewrite          the           sentence      using    imperative    mood.
 
         Input:
-  Please        pick      up     the     book    from            the      shelf.           ",0.7432582378387451,Pick up the book from the shelf.,Pick up the book from the shelf.,100.00000000000004,0.9999998807907104,,-1.5258496209202832e-05,-7.629103498489091e-05,0.0,0.0,-0.2567417621612549,0.0,,0.0
+  Please        pick      up     the     book    from            the      shelf.           ",0.7432582378387451,Pick up the book from the shelf.,Pick up the book from the shelf.,100.00000000000004,0.9999998807907104,,1.5258496209202832e-05,-7.629103498489091e-05,0.0,0.0,-0.2567417621612549,0.0,,0.0,-0.00012206562687570308
 gpt-5.4,6,global,100,alpaca,"Instruction:
 Describe a picnic vacation where four people are travelling together.
 
@@ -1330,7 +1330,7 @@ Four people are travelling together to a picnic vacation.","   Instruction:
  Input:
       Four    people        are      travelling     together    to     a       picnic      vacation.     ",0.7639428377151489,"Four friends are travelling together for a picnic vacation. They pack food, drinks, a picnic blanket, and games in their car. During the journey, they talk, laugh, and enjoy the scenery along the way. When they arrive at the picnic spot, they choose a nice place under a tree near a lake. They spread out the blanket, share sandwiches, fruits, and snacks, and spend time relaxing together. After eating, they play games, take photos, and enjoy the fresh","Four people are travelling together for a picnic vacation. They set out early in the morning, excited to spend the day outdoors. The group includes close friends or family members who enjoy each other’s company and are happy to share the trip.
 
-They travel to a peaceful picnic spot, such as a park, lakeside, or countryside area. Along the way, they talk, laugh, and enjoy the scenery. Each person helps carry something for the picnic, such as food, drinks, blankets",25.05603648965075,0.8927624225616455,,0.017429631570014203,0.8158001517315663,0.0,-31.050909383533245,-0.23605716228485107,-0.062064945697784424,,0.0
+They travel to a peaceful picnic spot, such as a park, lakeside, or countryside area. Along the way, they talk, laugh, and enjoy the scenery. Each person helps carry something for the picnic, such as food, drinks, blankets",25.05603648965075,0.8927624225616455,,-0.0174296315700142,0.8158001517315663,0.0,-31.050909383533252,-0.23605716228485107,-0.062064945697784535,,0.0,1.2245290381984884
 gpt-5.4,7,global,100,alpaca,"Instruction:
 Explain the concept of Big Data and what it means for companies and customers.","       Instruction:       
       Explain      the     concept          of        Big     Data     and       what             it          means           for        companies       and   customers.  ",0.706361711025238,"Big Data refers to extremely large and complex sets of data that traditional data-processing tools cannot easily handle. This data comes from many sources, such as websites, mobile apps, social media, sensors, transactions, and customer interactions.
@@ -1347,7 +1347,7 @@ Big Data is usually described by the “3 Vs”:
 
 - Volume: huge amounts of data
 - Velocity: data being created and processed very quickly
-- Variety: different types of data, such",59.81573194091429,0.9560787677764893,,-0.0026199030198211792,-0.08166923327714937,0.0,-29.201852977749255,-0.29363828897476196,-0.030671894550323486,,0.0
+- Variety: different types of data, such",59.81573194091429,0.9560787677764891,,0.0026199030198211,-0.0816692332771493,0.0,-29.201852977749255,-0.29363828897476196,-0.03067189455032371,,0.0,-0.1830850165456813
 gpt-5.4,8,global,100,alpaca,"Instruction:
 Analyze the given phrase in terms of its connotations.
 
@@ -1368,7 +1368,7 @@ Wild goose chase","     Instruction:
 - **Wasted effort**: it implies spending time, energy, or resources on something pointless.
 - **Frustration**: the phrase often carries a sense of annoyance or exasperation.
 - **Confusion or misdirection**: it can suggest being led in the wrong direction, intentionally or unintentionally.
-- **Elus",77.94520978832783,0.969045102596283,,0.03406462533992738,-1.2385151462436834,0.0,14.612115066076413,-0.2701490521430969,0.009892404079437256,,0.0
+- **Elus",77.94520978832783,0.969045102596283,,-0.0340646253399273,-1.2385151462436834,0.0,14.612115066076413,-0.2701490521430969,0.009892404079437367,,0.0,2.0475007553152684
 gpt-5.4,9,global,100,alpaca,"Instruction:
 List three potential sources for the following research problem.
 
@@ -1392,7 +1392,7 @@ What are the benefits of online learning?","       Instruction:
    - Educational technology or online teaching books discussing advantages of online learning.
 
 3. **Government or educational organization reports**  
-   - Reports from ministries of education, UNESCO, or universities on the impact and benefits of online learning.",22.250959646659958,0.907604992389679,,0.0018752239855542863,-2.133174033708256,0.0,2.7601747985701444,-0.24837088584899902,0.010257482528686523,,0.0
+   - Reports from ministries of education, UNESCO, or universities on the impact and benefits of online learning.",22.25095964665996,0.907604992389679,,-0.0018752239855542,-2.133174033708256,0.0,2.760174798570148,-0.24837088584899902,0.010257482528686523,,0.0,-0.014454780665725586
 gpt-5.4,10,global,100,alpaca,"Instruction:
 Arrange the following countries in ascending order of GDP per capita.
 
@@ -1403,7 +1403,7 @@ China, US, India, Japan","     Instruction:
          Input:
     China,    US,     India,      Japan      ",0.7686681747436523,"India, China, Japan, US","Ascending order of GDP per capita:
 
-**India, China, Japan, US**",32.70292922455489,0.8834165930747986,,0.0041448535039438905,0.16393683373697696,0.0,-67.29707077544515,-0.2313319444656372,-0.11658364534378052,,0.0
+**India, China, Japan, US**",32.70292922455489,0.8834165930747986,,-0.0041448535039438,0.1639368337369769,0.0,-67.29707077544515,-0.2313319444656372,-0.11658364534378052,,0.0,0.1639368337369769
 gpt-5.4,11,global,100,alpaca,"Instruction:
 Name the boat depicted in the provided photo.
 
@@ -1412,7 +1412,7 @@ Attached photo","             Instruction:
        Name       the         boat         depicted            in         the            provided       photo.
 
      Input:
-       Attached       photo    ",0.7366912961006165,Please upload the photo so I can identify the boat’s name.,I can do that if you upload the photo. Please attach the image of the boat.,11.306082351602983,0.9011433720588684,,0.0829879945931743,1.0046131422974571,0.0,-88.69391764839706,-0.26330864429473877,-0.09885662794113159,,0.0
+       Attached       photo    ",0.7366912961006165,Please upload the photo so I can identify the boat’s name.,I can do that if you upload the photo. Please attach the image of the boat.,11.306082351602983,0.9011433720588684,,-0.0829879945931743,1.0046131422974571,0.0,-88.69391764839706,-0.26330864429473877,-0.09885662794113159,,0.0,1.030429413526489
 gpt-5.4,12,global,100,alpaca,"Instruction:
 Edit the grammar and punctuation of the given sentence.
 
@@ -1421,7 +1421,7 @@ Humor is one of the most important ingredients of life","Instruction:
        Edit    the grammar  and         punctuation      of       the       given        sentence.
 
      Input:
-   Humor          is     one    of     the     most           important     ingredients     of      life  ",0.7404733300209045,Humor is one of the most important ingredients in life.,Humor is one of the most important ingredients of life.,74.19446627365011,0.9950110912322998,,-0.00993349668297705,-0.1117745602370475,0.0,-25.805533726349935,-0.25952666997909546,-0.00498884916305542,,0.0
+   Humor          is     one    of     the     most           important     ingredients     of      life  ",0.7404733300209045,Humor is one of the most important ingredients in life.,Humor is one of the most important ingredients of life.,74.19446627365011,0.9950110912322998,,0.009933496682977,-0.1117745602370475,0.0,-25.805533726349935,-0.25952666997909546,-0.00498884916305542,,0.0,-0.11179744649985039
 gpt-5.4,13,global,100,alpaca,"Instruction:
 Calculate the length of the hypotenuse in the following triangle.
 
@@ -1462,7 +1462,7 @@ c^2 = 5^2 + 12^2 = 25 + 144 = 169
 c = \sqrt{169} = 13
 \]
 
-**Answer: 13**",65.01572702592884,0.9527113437652588,,0.0010470659706967034,-0.2331246709084842,0.0,-30.997559202878463,-0.1924220323562622,-0.04436016082763672,,0.0
+**Answer: 13**",65.01572702592884,0.9527113437652588,,-0.0010470659706967,-0.2331246709084842,0.0,-30.997559202878463,-0.1924220323562622,-0.04436016082763683,,0.0,0.007422436017855777
 gpt-5.4,14,global,100,alpaca,"Instruction:
 How many instruments does a symphony orchestra typically have?","          Instruction:          
      How            many        instruments           does           a        symphony        orchestra       typically               have?             ",0.7078609466552734,"A **full symphony orchestra** typically has **around 70 to 100 musicians**, depending on the piece and the ensemble.
@@ -1479,7 +1479,7 @@ Common sections include:
 - **Strings**: violins, violas, cellos, double basses
 - **Woodwinds**: flutes, oboes, clarinets, bassoons
 - **Brass**: trumpets, horns, trombones, tuba
-- **Percussion**: timpani and other percussion instruments",94.09135888334684,0.9961865544319153,,0.0054241149966391955,-0.2582858141567088,0.0,55.353228652016945,-0.2921391725540161,0.10696429014205933,,0.0
+- **Percussion**: timpani and other percussion instruments",94.09135888334684,0.9961865544319152,,-0.0054241149966391,-0.2582858141567088,0.0,55.353228652016945,-0.2921391725540161,0.10696429014205922,,0.0,0.566821097344876
 gpt-5.4,15,global,100,alpaca,"Instruction:
 Summarize the phrase: ""GPT is a natural language processing architecture.""","          Instruction:          
-         Summarize            the          phrase:      ""GPT          is        a       natural            language         processing       architecture.""         ",0.7157185077667236,GPT is an NLP architecture.,GPT is an NLP architecture.,100.00000000000004,0.9999998807907104,,0.025792636853818163,0.1373926000041724,0.0,0.0,-0.28428149223327637,0.0,,0.0
+         Summarize            the          phrase:      ""GPT          is        a       natural            language         processing       architecture.""         ",0.7157185077667236,GPT is an NLP architecture.,GPT is an NLP architecture.,100.00000000000004,0.9999998807907104,,-0.0257926368538181,0.1373926000041724,0.0,0.0,-0.28428149223327637,0.0,,0.0,0.1373926000041724
