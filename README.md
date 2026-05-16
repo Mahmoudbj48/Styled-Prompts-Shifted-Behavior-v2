@@ -5,7 +5,7 @@
 
 We formalize **stylistic generalization** as the ability of an instruction-tuned LLM to maintain consistent per-instance behavior under semantic-preserving variation in prompt formulation, and introduce the **Stability-Aware Generalization Objective (SAGO)** framework for evaluating it. SAGO has three components: (1) a benchmark of controlled input variations applied to each prompt, (2) the **Stability Generalization Score (SGS)** that quantifies how much a chosen behavioral property changes across variations, computed per axis, and (3) a set of axes — concrete model properties along which generalization may fail — over which the score is evaluated.
 
-We evaluate eight open-source and three closed-source instruction-tuned LLMs across six benchmark datasets and three families of semantic-preserving variations along four behavioral axes: activation geometry, generation consistency, confidence and uncertainty, and response mirroring. **No model achieves uniform stylistic generalization** (p < 0.001 for all SGS values). Generation consistency is consistently the most sensitive axis; confidence remains largely stable. Content stability and response mirroring are independent failure modes — the model with the lowest generation sensitivity records the highest mirroring instability, a dissociation that a single aggregate robustness score would conflate.
+We evaluate eight open-source and three closed-source instruction-tuned LLMs across six benchmark datasets and three families of semantic-preserving variations along four behavioral axes: activation geometry, generation consistency, confidence and uncertainty, and response mirroring. 
 
 ---
 
@@ -19,7 +19,7 @@ Three families of semantic-preserving prompt variations, each applied with contr
 | **Surface Noise** | Spacing, punctuation, letter case | spacing s ∈ {0,1,5,20,50,100}; punctuation s ∈ {0,1,3,5,10,20}; casing s ∈ {0,10,25,50,75,100}; positions: prefix, suffix, global |
 | **Structural Rewriting** | Length variation, sentence form (LLM-rewritten) | length s ∈ {0.25, 0.5, 1.0, 1.5, 2.0, 3.0}; sentence form s ∈ {interrogative, imperative}; global only |
 
-All variants are validated with BERTScore > 0.85 against the baseline prompt to enforce semantic preservation.
+Surface-noise variants (spacing, punctuation, letter case) preserve semantics by construction, so no filtering is applied. For the social-register and structural-rewriting families — where content can drift — we compute BERTScore between each variant and its baseline and retain only prompts whose variants all exceed a similarity of 0.85.
 
 ---
 
@@ -82,23 +82,16 @@ experiments/
 ├── compute_mirroring.py             # Mirroring detector for surface noise variants
 └── run_closed_models.py             # Closed-source model experiments
 
-plots/
-├── plots.py                         # Core plotting utilities
-├── run_plots.py                     # CLI runner for all plot types
-├── plot_individual_figures.py
-├── run_bertscore_check_paper.py     # BERTScore semantic-preservation check
-└── sensitivity_analysis.py
-
 utils/
 ├── data.py                          # Dataset loading
 ├── models.py                        # Model loading and generation
-├── styles.py                        # Variation transformation functions
+├── variations.py                    # Variation transformation functions
 ├── metrics.py                       # Metric computation (activations, BERTScore, …)
 ├── llm_client.py                    # API client for closed-source models and LLM-rewriter
-├── llm_style_cache.py               # Cache for LLM-rewritten variants
+├── llm_variation_cache.py           # Cache for LLM-rewritten variants
 ├── compute_delta_metrics.py         # Per-instance Δ_X(i,v) computation
-├── compute_sgs_table.py             # SGS table generation (open-source models)
-├── compute_sgs_closed_table.py      # SGS table generation (closed-source models)
+├── compute_nli_consistency.py       # NLI-based response-consistency metric
+├── sgs_core.py                      # SGS aggregation primitives
 ├── closed_model_metrics.py          # Metrics specific to closed-source model outputs
 ├── surface_mirroring_detector.py    # Rule-based mirroring detector for surface noise
 └── significance_test.py             # One-sided t-test (H₀: 𝔼[s_X(i)] = 0)
@@ -187,31 +180,3 @@ python experiments/compute_mirroring.py \
     --style spacing
 ```
 
----
-
-## Generating Plots
-
-All plotting is driven by `plots/run_plots.py`.
-
-```bash
-# Aggregate plots for a single variation family
-python plots/run_plots.py \
-    --runs results/politeness/run_<timestamp>/summary.csv \
-    --out_dir results/combined_plots/politeness \
-    --style_name politeness \
-    --dataset_name alpaca \
-    --save_pdf
-
-# Multi-family radar plots (SGS visualization)
-python plots/run_plots.py \
-    --multi_style_radar \
-    --out_dir results/combined_plots/radar \
-    --style_data \
-        politeness:results/politeness/run_a/summary.csv \
-        spacing:results/spacing/run_x/summary.csv \
-        letter_case:results/letter_case/run_y/summary.csv \
-    --save_pdf
-
-# BERTScore semantic-preservation check
-python plots/run_bertscore_check_paper.py
-```
