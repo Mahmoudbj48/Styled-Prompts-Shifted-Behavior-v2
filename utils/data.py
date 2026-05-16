@@ -118,6 +118,7 @@ def load_alpaca_hf(
         seed: int = 42,
         *,
         repo_id: str = "tatsu-lab/alpaca",
+        config_name: str = "default",
         split: Optional[str] = None,
 ) -> List[Dict[str, Any]]:
     """
@@ -137,6 +138,7 @@ def load_alpaca_hf(
     """
 
     def _pick_split(ds_dict) -> str:
+        """Return the requested split, defaulting to 'train' or the first available split."""
         if split is not None:
             return split
         keys = list(ds_dict.keys())
@@ -147,6 +149,7 @@ def load_alpaca_hf(
         return keys[0]
 
     def _format_alpaca_prompt(ex: Dict[str, Any]) -> str:
+        """Format an Alpaca example dict into a prompt string with optional input field."""
         instr = (ex.get("instruction") or "").strip()
         inp = (ex.get("input") or "").strip()
 
@@ -246,6 +249,139 @@ def load_gsm8k(
 
 
 # -----------------------------------------------------------------------------
+# SimpleQA Verified (Hugging Face: "google/simpleqa-verified")
+# -----------------------------------------------------------------------------
+def load_simpleqa_verified(
+        sample_size: int = 128,
+        seed: int = 42,
+        *,
+        repo_id: str = "google/simpleqa-verified",
+        config_name: str = "default",
+        split: str = "test",
+) -> List[Dict[str, Any]]:
+    """
+    Load SimpleQA Verified dataset.
+
+    Returns:
+        list[dict] with keys:
+            - question: str
+            - best_answer: str
+            - category: str ("simpleqa_verified")
+            - meta: dict
+    """
+    print(f"Loading SimpleQA Verified ({split})...")
+    dataset = load_dataset(repo_id, split=split)
+
+    shuffled = dataset.shuffle(seed=seed)
+    count = min(sample_size, len(shuffled))
+    subset = shuffled.select(range(count))
+
+    prompts = []
+    for item in subset:
+        ex = dict(item)
+        q = ex.get("problem") or ex.get("question") or ex.get("query") or ""
+        a = ex.get("answer") or None
+
+        prompts.append({
+            "question": str(q).strip(),
+            "best_answer": str(a).strip() if a is not None else None,
+            "category": "simpleqa_verified",
+            "meta": {"raw": ex},
+        })
+
+    print(f"Loaded {len(prompts)} SimpleQA Verified prompts.")
+    return prompts
+
+
+# -----------------------------------------------------------------------------
+# TriviaQA (Hugging Face: "mandarjoshi/trivia_qa")
+# -----------------------------------------------------------------------------
+def load_trivia_qa(
+        sample_size: int = 128,
+        seed: int = 42,
+        *,
+        repo_id: str = "mandarjoshi/trivia_qa",
+        config_name: str = "rc",
+        split: str = "validation",
+) -> List[Dict[str, Any]]:
+    """
+    Load TriviaQA dataset.
+
+    Returns:
+        list[dict] with keys:
+            - question: str
+            - best_answer: str
+            - category: str ("trivia_qa")
+            - meta: dict
+    """
+    print(f"Loading TriviaQA ({config_name}, {split})...")
+    dataset = load_dataset(repo_id, config_name, split=split)
+
+    shuffled = dataset.shuffle(seed=seed)
+    count = min(sample_size, len(shuffled))
+    subset = shuffled.select(range(count))
+
+    prompts = []
+    for item in subset:
+        ex = dict(item)
+        q = ex.get("question", "")
+        answer = ex.get("answer", {})
+        a = answer.get("value") if isinstance(answer, dict) else str(answer)
+
+        prompts.append({
+            "question": str(q).strip(),
+            "best_answer": str(a).strip() if a else None,
+            "category": "trivia_qa",
+            "meta": {"raw": ex},
+        })
+
+    print(f"Loaded {len(prompts)} TriviaQA prompts.")
+    return prompts
+
+
+# -----------------------------------------------------------------------------
+# HotpotQA (Hugging Face: "hotpotqa/hotpot_qa")
+# -----------------------------------------------------------------------------
+def load_hotpot_qa(
+        sample_size: int = 128,
+        seed: int = 42,
+        *,
+        repo_id: str = "hotpotqa/hotpot_qa",
+        config_name: str = "distractor",
+        split: str = "validation",
+) -> List[Dict[str, Any]]:
+    """
+    Load HotpotQA dataset.
+
+    Returns:
+        list[dict] with keys:
+            - question: str
+            - best_answer: str
+            - category: str ("hotpot_qa")
+            - meta: dict
+    """
+    print(f"Loading HotpotQA ({config_name}, {split})...")
+    dataset = load_dataset(repo_id, config_name, split=split)
+
+    shuffled = dataset.shuffle(seed=seed)
+    count = min(sample_size, len(shuffled))
+    subset = shuffled.select(range(count))
+
+    prompts = []
+    for item in subset:
+        ex = dict(item)
+        prompts.append({
+            "question": str(ex.get("question", "")).strip(),
+            "best_answer": str(ex.get("answer", "")).strip() or None,
+            "category": "hotpot_qa",
+            "meta": {"raw": ex},
+        })
+
+    print(f"Loaded {len(prompts)} HotpotQA prompts.")
+    return prompts
+
+
+# -----------------------------------------------------------------------------
 # Dataset factory
 # -----------------------------------------------------------------------------
 def load_dataset_by_name(dataset_name, **kwargs):
@@ -267,10 +403,12 @@ def load_dataset_by_name(dataset_name, **kwargs):
         "truthful_qa": load_truthfulqa,
         "mmlu": load_mmlu,
         "alpaca": load_alpaca_hf,
-        "bbq": load_bbq_hf,
         "harmbench": load_harmbench_hf,
         "gsm8k": load_gsm8k,
         "natural_questions": load_natural_questions,
+        "simpleqa_verified": load_simpleqa_verified,
+        "trivia_qa": load_trivia_qa,
+        "hotpot_qa": load_hotpot_qa,
     }
 
     if dataset_name not in loaders:
@@ -313,6 +451,7 @@ def load_harmbench_hf(
     """
 
     def _pick_split(ds_dict) -> str:
+        """Return the requested split, defaulting to 'train' or the first available split."""
         if split is not None:
             return split
         keys = list(ds_dict.keys())

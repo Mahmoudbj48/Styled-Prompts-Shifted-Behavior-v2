@@ -1,7 +1,7 @@
 """
-utils/llm_style_cache.py
+utils/llm_variation_cache.py
 
-Shared helpers for caching LLM-rewritten (structured-style) prompts.
+Shared helpers for caching LLM-rewritten (structured-variation) prompts.
 
 All experiment files that generate or consume LLM-varied prompts
 (length_variation, inter_vs_imper, etc.) should use these functions
@@ -11,10 +11,10 @@ so that:
   - JSONL I/O logic lives in exactly one place
 
 Cache layout:
-  {data_dir}/llm_style_cache/{dataset}/{style}__{param}.jsonl
+  {data_dir}/llm_variation_cache/{dataset}/{variation}__{param}.jsonl
 
 Each JSONL row:
-  {"prompt_orig": "...", "prompt_styled": "...", "style": "...", "param": "..."}
+  {"prompt_orig": "...", "prompt_varied": "...", "variation": "...", "param": "..."}
 """
 
 import json
@@ -59,18 +59,18 @@ def read_jsonl(path: str) -> List[dict]:
 # Cache path
 # ------------------------------------------------------------------ #
 
-def style_cache_path(data_dir: str, dataset: str, style_name: str, param: str) -> str:
+def variation_cache_path(data_dir: str, dataset: str, variation_name: str, param: str) -> str:
     """
-    Canonical cache file for one (dataset, style, param) combination.
+    Canonical cache file for one (dataset, variation, param) combination.
 
     Example:
-        style_cache_path("data", "harmbench", "length_variation", "2.0")
-        → "data/llm_style_cache/harmbench/length_variation__2.0.jsonl"
+        variation_cache_path("data", "harmbench", "length_variation", "2.0")
+        → "data/llm_variation_cache/harmbench/length_variation__2.0.jsonl"
     """
     return os.path.join(
-        data_dir, "llm_style_cache",
+        data_dir, "llm_variation_cache",
         safe_name(dataset),
-        f"{safe_name(style_name)}__{safe_name(param)}.jsonl",
+        f"{safe_name(variation_name)}__{safe_name(param)}.jsonl",
     )
 
 
@@ -80,26 +80,26 @@ def batch_cache_path(data_dir: str, dataset: str, multipliers: List[float]) -> s
 
     Example:
         batch_cache_path("data", "truthful_qa", [0.5, 1.5, 2.0])
-        → "data/llm_style_cache/truthful_qa/length_variation_batch__0.5_1.5_2.0.jsonl"
+        → "data/llm_variation_cache/truthful_qa/length_variation_batch__0.5_1.5_2.0.jsonl"
     """
     mults_key = "_".join(str(m) for m in sorted(multipliers))
     return os.path.join(
-        data_dir, "llm_style_cache",
+        data_dir, "llm_variation_cache",
         safe_name(dataset),
         f"length_variation_batch__{safe_name(mults_key)}.jsonl",
     )
 
 
 # ------------------------------------------------------------------ #
-# Load-or-generate  (single style + param)
+# Load-or-generate  (single variation + param)
 # ------------------------------------------------------------------ #
 
-def load_or_generate_styled_prompts(
+def load_or_generate_varied_prompts(
         *,
         data_dir: str,
         dataset: str,
         prompts: List[str],
-        style_name: str,
+        variation_name: str,
         param: Any,
         rewrite_provider: str,
         rewrite_model: str,
@@ -107,40 +107,40 @@ def load_or_generate_styled_prompts(
         overwrite: bool = False,
 ) -> List[str]:
     """
-    Return a list of styled prompts (same length as *prompts*).
+    Return a list of varied prompts (same length as *prompts*).
 
     If a matching cache file exists and has the right row count, it is
     loaded directly.  Otherwise the rewrites are generated via the LLM
     and then cached for future runs.
 
-    Works for any structured style whose ``apply_*`` function is in
-    ``utils.styles`` (currently ``length_variation`` and ``inter_vs_imper``).
+    Works for any structured variation whose ``apply_*`` function is in
+    ``utils.variations`` (currently ``length_variation`` and ``inter_vs_imper``).
     """
-    from utils.styles import apply_length_variation, apply_interrogative
+    from utils.variations import apply_length_variation, apply_interrogative
 
-    cpath = style_cache_path(data_dir, dataset, style_name, str(param))
+    cpath = variation_cache_path(data_dir, dataset, variation_name, str(param))
 
     if not overwrite and os.path.exists(cpath):
         rows = read_jsonl(cpath)
         if len(rows) == len(prompts):
-            print(f"  ✓ Loaded styled prompts from cache ({len(rows)} rows): {cpath}")
-            return [r["prompt_styled"] for r in rows]
+            print(f"  ✓ Loaded varied prompts from cache ({len(rows)} rows): {cpath}")
+            return [r["prompt_varied"] for r in rows]
 
-    print(f"  Generating styled prompts ({style_name}, param={param}) "
+    print(f"  Generating varied prompts ({variation_name}, param={param}) "
           f"via {rewrite_provider}/{rewrite_model} ...")
 
-    styled: List[str] = []
+    varied: List[str] = []
     rows_to_cache: List[dict] = []
 
-    for p in tqdm(prompts, desc=f"  {style_name}({param})", unit="prompt"):
-        if style_name == "length_variation":
+    for p in tqdm(prompts, desc=f"  {variation_name}({param})", unit="prompt"):
+        if variation_name == "length_variation":
             s = apply_length_variation(
                 p, multiplier=float(param),
                 provider=rewrite_provider,
                 model=rewrite_model,
                 api_key_env=rewrite_api_key_env,
             )
-        elif style_name == "inter_vs_imper":
+        elif variation_name == "inter_vs_imper":
             s = apply_interrogative(
                 p, mode=str(param),
                 provider=rewrite_provider,
@@ -148,19 +148,19 @@ def load_or_generate_styled_prompts(
                 api_key_env=rewrite_api_key_env,
             )
         else:
-            raise ValueError(f"Unknown structured style: {style_name}")
+            raise ValueError(f"Unknown structured variation: {variation_name}")
 
-        styled.append(s)
+        varied.append(s)
         rows_to_cache.append({
             "prompt_orig": p,
-            "prompt_styled": s,
-            "style": style_name,
+            "prompt_varied": s,
+            "variation": variation_name,
             "param": str(param),
         })
 
     write_jsonl(cpath, rows_to_cache)
-    print(f"  ✓ Cached {len(rows_to_cache)} styled prompts → {cpath}")
-    return styled
+    print(f"  ✓ Cached {len(rows_to_cache)} varied prompts → {cpath}")
+    return varied
 
 
 # ------------------------------------------------------------------ #
@@ -183,10 +183,10 @@ def load_or_generate_batch_variations(
     via ``apply_length_variation_batch``.
 
     Returns list of dicts:
-        {prompt_orig, prompt_styled, style, param}
+        {prompt_orig, prompt_varied, variation, param}
     (one row per prompt × multiplier).
     """
-    from utils.styles import apply_length_variation_batch
+    from utils.variations import apply_length_variation_batch
 
     cpath = batch_cache_path(data_dir, dataset, multipliers)
     expected_rows = len(prompts) * len(multipliers)
@@ -212,8 +212,8 @@ def load_or_generate_batch_variations(
         for m in multipliers:
             rows.append({
                 "prompt_orig": p,
-                "prompt_styled": results.get(m, p),
-                "style": "length_variation_batch",
+                "prompt_varied": results.get(m, p),
+                "variation": "length_variation_batch",
                 "param": str(m),
             })
 

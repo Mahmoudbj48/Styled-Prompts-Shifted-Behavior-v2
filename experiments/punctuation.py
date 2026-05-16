@@ -6,7 +6,7 @@ then measures the effect on model behaviour across multiple axes.
 
 Inputs:
     - Dataset prompts via utils.data.load_dataset_by_name
-    - config.yaml for model paths, default strengths, and style positions
+    - config.yaml for model paths, default strengths, and variation positions
 
 Outputs (saved to results/punctuation/run_YYYYMMDD_HHMMSS/):
     - {model}_results.csv: per-example metrics for each model
@@ -48,6 +48,7 @@ import torch.nn.functional as F
 # Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from utils.compute_delta_metrics import add_delta_columns
 from utils.data import load_dataset_by_name
 from utils.models import load_model, generate_response
 from utils.metrics import (
@@ -58,7 +59,7 @@ from utils.metrics import (
     clean_chatty_generation,
     judge_with_retries,
 )
-from utils.styles import apply_punctuation
+from utils.variations import apply_punctuation
 
 
 VALID_EXPERIMENTS = {"prompt", "response", "activation", "confidence"} # , "mirroring"
@@ -106,8 +107,8 @@ def _normalize_models(models: List[str], config: dict) -> List[str]:
 
 
 def _get_places(config: dict) -> List[str]:
-    """Read punctuation style positions from config, excluding 'middle'."""
-    places = [p for p in config.get("style_positions", {}).get("punctuation", []) if p != "middle"]
+    """Read punctuation variation positions from config, excluding 'middle'."""
+    places = [p for p in config.get("variation_positions", {}).get("punctuation", []) if p != "middle"]
     if not places:
         places = ["prefix", "suffix", "global"]
     places = [p for p in places if p in {"prefix", "suffix", "global"}]
@@ -288,11 +289,11 @@ def _outputs_cache_path(
         seed: int,
         sample_size: int,
         model_name: str,
-        style: str,
+        variation: str,
         place: str,
         strength: int,
 ) -> str:
-    """Return the gzip-compressed JSONL cache path for a (model, style, place, strength) bucket."""
+    """Return the gzip-compressed JSONL cache path for a (model, variation, place, strength) bucket."""
     return os.path.join(
         data_dir,
         "outputs_cache",
@@ -302,7 +303,7 @@ def _outputs_cache_path(
         f"seed_{seed}",
         f"n_{sample_size}",
         _safe_name(model_name),
-        _safe_name(style),
+        _safe_name(variation),
         _safe_name(place),
         f"strength_{int(strength)}.jsonl.gz",
     )
@@ -335,14 +336,14 @@ def _load_or_generate_outputs_for_bucket(
         model,
         tokenizer,
         prompt_orig_list: List[str],
-        prompt_styled_list: List[str],
+        prompt_varied_list: List[str],
         max_new_tokens: int,
         batch_size: int,
 ) -> Dict[str, List[str]]:
     """
     Returns dict with:
       - output_orig_raw, output_orig_clean
-      - output_styled_raw, output_styled_clean
+      - output_varied_raw, output_varied_clean
     Loads from cache if exists and not overwritten.
     """
     n = len(prompt_orig_list)
@@ -353,8 +354,8 @@ def _load_or_generate_outputs_for_bucket(
             return {
                 "output_orig_raw": [r["output_orig_raw"] for r in rows],
                 "output_orig_clean": [r["output_orig_clean"] for r in rows],
-                "output_styled_raw": [r["output_styled_raw"] for r in rows],
-                "output_styled_clean": [r["output_styled_clean"] for r in rows],
+                "output_varied_raw": [r["output_varied_raw"] for r in rows],
+                "output_varied_clean": [r["output_varied_clean"] for r in rows],
             }
 
     out_orig_raw = generate_response(
@@ -363,17 +364,17 @@ def _load_or_generate_outputs_for_bucket(
         max_new_tokens=max_new_tokens,
         batch_size=batch_size,
     )
-    out_styled_raw = generate_response(
+    out_varied_raw = generate_response(
         model, tokenizer,
-        prompts=prompt_styled_list,
+        prompts=prompt_varied_list,
         max_new_tokens=max_new_tokens,
         batch_size=batch_size,
     )
-    if len(out_orig_raw) != n or len(out_styled_raw) != n:
+    if len(out_orig_raw) != n or len(out_varied_raw) != n:
         raise RuntimeError("generate_response returned wrong number of outputs when caching outputs.")
 
     out_orig_clean = [clean_chatty_generation(o) for o in out_orig_raw]
-    out_styled_clean = [clean_chatty_generation(o) for o in out_styled_raw]
+    out_varied_clean = [clean_chatty_generation(o) for o in out_varied_raw]
 
     rows = []
     for i in range(n):
@@ -382,17 +383,17 @@ def _load_or_generate_outputs_for_bucket(
             "prompt_orig": prompt_orig_list[i],
             "output_orig_raw": out_orig_raw[i],
             "output_orig_clean": out_orig_clean[i],
-            "prompt_styled": prompt_styled_list[i],
-            "output_styled_raw": out_styled_raw[i],
-            "output_styled_clean": out_styled_clean[i],
+            "prompt_varied": prompt_varied_list[i],
+            "output_varied_raw": out_varied_raw[i],
+            "output_varied_clean": out_varied_clean[i],
         })
     _write_jsonl_gz(cache_path, rows)
 
     return {
         "output_orig_raw": out_orig_raw,
         "output_orig_clean": out_orig_clean,
-        "output_styled_raw": out_styled_raw,
-        "output_styled_clean": out_styled_clean,
+        "output_varied_raw": out_varied_raw,
+        "output_varied_clean": out_varied_clean,
     }
 
 
@@ -426,10 +427,10 @@ def run_for_one_model(
         dataset_split: str,
         dataset_seed: int,
         dataset_sample_size: int,
-        style_name: str,
+        variation_name: str,
         overwrite_output_cache: bool,
 ) -> pd.DataFrame:
-
+    """Run the punctuation experiment for one model across all (place, strength) buckets."""
     llm_experiments = {"response", "activation", "confidence", "mirroring"}
     run_llm_phase = len(experiments.intersection(llm_experiments)) > 0
 
@@ -493,7 +494,7 @@ def run_for_one_model(
                         candidates=batch_pert_prompts,
                     )
 
-                # Responses (baseline + styled) with caching
+                # Responses (baseline + varied) with caching
                 batch_response_orig = None
                 batch_response_pert = None
                 batch_response_orig_clean = None
@@ -508,7 +509,7 @@ def run_for_one_model(
                         seed=dataset_seed,
                         sample_size=dataset_sample_size,
                         model_name=model_name,
-                        style=style_name,
+                        variation=variation_name,
                         place=place,
                         strength=int(strength),
                     )
@@ -518,14 +519,14 @@ def run_for_one_model(
                         model=model,
                         tokenizer=tokenizer,
                         prompt_orig_list=batch_orig_prompts,
-                        prompt_styled_list=batch_pert_prompts,
+                        prompt_varied_list=batch_pert_prompts,
                         max_new_tokens=max_new_tokens,
                         batch_size=batch_size,
                     )
                     batch_response_orig = out["output_orig_raw"]
-                    batch_response_pert = out["output_styled_raw"]
+                    batch_response_pert = out["output_varied_raw"]
                     batch_response_orig_clean = out["output_orig_clean"]
-                    batch_response_pert_clean = out["output_styled_clean"]
+                    batch_response_pert_clean = out["output_varied_clean"]
 
                 # Response BERTScore in batch
                 batch_resp_bs = None
@@ -536,7 +537,7 @@ def run_for_one_model(
                         device=str(model.device) if model else None,
                     )
 
-                # Styled activations
+                # Varied activations
                 batch_act_pert = None
                 if run_llm_phase and ("activation" in experiments):
                     batch_act_pert = get_layer_activations_batch(
@@ -545,7 +546,7 @@ def run_for_one_model(
                         layer_idx=-1,
                     )
                     if batch_act_pert.shape[0] != len(batch_pert_prompts):
-                        raise RuntimeError("get_layer_activations_batch returned wrong batch size (styled).")
+                        raise RuntimeError("get_layer_activations_batch returned wrong batch size (varied).")
 
                 # # Mirroring
                 # mir_yes = 0
@@ -562,9 +563,9 @@ def run_for_one_model(
                 #             judge_provider=judge_provider,
                 #             original_prompt=batch_orig_prompts[j],
                 #             original_output=batch_response_orig_clean[j],
-                #             styled_prompt=batch_pert_prompts[j],
-                #             styled_output=batch_response_pert_clean[j],
-                #             style_name="punctuation",
+                #             varied_prompt=batch_pert_prompts[j],
+                #             varied_output=batch_response_pert_clean[j],
+                #             variation_name="punctuation",
                 #             strength=int(strength),
                 #             place=place,
                 #             judge_model=judge_model,
@@ -645,6 +646,7 @@ def run_for_one_model(
         row_pbar.close()
 
     df = pd.DataFrame(rows)
+    df = add_delta_columns(df, variation="punctuation")
 
     out_csv = os.path.join(run_dir, f"{model_name}_results.csv")
     df.to_csv(out_csv, index=False)
@@ -679,6 +681,7 @@ def run_experiment(
         overwrite_output_cache: bool,
         places_override: Optional[List[str]],
 ) -> str:
+    """Run the punctuation experiment for all models, save CSVs, and generate plots."""
     config = load_config()
     experiments_set = _normalize_experiments(experiments)
 
@@ -692,7 +695,7 @@ def run_experiment(
     places = places_override if (places_override and len(places_override) > 0) else _get_places(config)
 
     strength_levels = _select_strengths(
-        config_strengths=config["style_levels"]["punctuation"],
+        config_strengths=config["variation_levels"]["punctuation"],
         explicit_strengths=strengths_explicit,
         strength_range=strength_range,
         strength_step=strength_step,
@@ -703,8 +706,8 @@ def run_experiment(
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     base_results_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "results")
-    style_dir = os.path.join(base_results_dir, "punctuation")
-    run_dir = os.path.join(style_dir, f"run_multi_{dataset_name}_{timestamp}")
+    variation_dir = os.path.join(base_results_dir, "punctuation")
+    run_dir = os.path.join(variation_dir, f"run_multi_{dataset_name}_{timestamp}")
     os.makedirs(run_dir, exist_ok=True)
 
     print(f"\n{'='*80}")
@@ -763,7 +766,7 @@ def run_experiment(
             dataset_split=dataset_config.get("split", "validation"),
             dataset_seed=int(config["defaults"]["random_seed"]),
             dataset_sample_size=int(sample_size),
-            style_name="punctuation",
+            variation_name="punctuation",
             overwrite_output_cache=bool(overwrite_output_cache),
         )
         if df_model is not None and not df_model.empty:
@@ -774,6 +777,7 @@ def run_experiment(
         return run_dir
 
     df_all = pd.concat(all_rows, ignore_index=True)
+    df_all = add_delta_columns(df_all, variation="punctuation")
 
     full_path = os.path.join(run_dir, "full_results_all_models.csv")
     df_all.to_csv(full_path, index=False)
@@ -793,7 +797,7 @@ def run_experiment(
             places_filter=places,
             models_filter=models,
             dataset_name=dataset_name,
-            style_name="punctuation",
+            variation_name="punctuation",
             save_pdf=False,
             include_title=False,
             legend_outside=True,
@@ -808,7 +812,8 @@ def run_experiment(
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Run punctuation style experiment (multi-model, batched)")
+    """Parse CLI arguments and launch the punctuation experiment."""
+    parser = argparse.ArgumentParser(description="Run punctuation variation experiment (multi-model, batched)")
     parser.add_argument("--models", nargs="+", default=["L3.2-1B"], help="Model keys from config or 'all'")
     parser.add_argument("--dataset", type=str, default="truthful_qa")
     parser.add_argument("--sample_size", type=int, default=None)

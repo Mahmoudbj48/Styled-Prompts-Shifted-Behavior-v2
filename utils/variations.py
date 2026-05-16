@@ -1,5 +1,5 @@
 """
-Style perturbation utilities.
+Variation perturbation utilities.
 
 Functions:
     - apply_spacing: Add random spaces
@@ -290,6 +290,7 @@ def apply_politeness(
     """
 
     def clamp(v: int) -> int:
+        """Clamp an integer strength value to the range [-10, 10]."""
         return int(max(-10, min(10, int(v))))
 
     # -------------------------
@@ -389,6 +390,7 @@ def apply_politeness(
     }
 
     def prefix_block(s: int) -> str:
+        """Return the politeness or negativity prefix string for strength s."""
         if s > 0:
             return POLITE_PREFIX[s]
         if s < 0:
@@ -396,6 +398,7 @@ def apply_politeness(
         return ""
 
     def suffix_block(s: int) -> str:
+        """Return the politeness or negativity suffix string for strength s."""
         if s > 0:
             return POLITE_SUFFIX[s]
         if s < 0:
@@ -468,7 +471,7 @@ def _call_openai(
 ) -> str:
     """
     Lightweight OpenAI wrapper following the same pattern used in
-    utils/metrics.py (judge_style_mirroring_openai).
+    utils/metrics.py (judge_variation_mirroring_openai).
     """
     api_key = os.environ.get(api_key_env)
     if not api_key:
@@ -504,7 +507,7 @@ def _call_gemini(
 ) -> str:
     """
     Lightweight Gemini wrapper following the same pattern used in
-    utils/metrics.py (judge_style_mirroring_gemini).
+    utils/metrics.py (judge_variation_mirroring_gemini).
     """
     api_key = os.environ.get(api_key_env)
     if not api_key:

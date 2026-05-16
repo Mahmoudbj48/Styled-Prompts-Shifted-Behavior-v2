@@ -1,9 +1,9 @@
 # utils/surface_mirroring_detector.py
 """
-Style Mirroring Detection
+Variation Mirroring Detection
 =========================
 
-Detects if LLM responses mirror style perturbations from prompts.
+Detects if LLM responses mirror variation perturbations from prompts.
 Uses deterministic, rule-based methods (no LLM required).
 
 Usage:
@@ -11,8 +11,8 @@ Usage:
     
     is_mirroring = detect_mirroring(
         original_response="The capital is Paris.",
-        styled_response="The   capital   is   Paris.",
-        style="spacing",
+        varied_response="The   capital   is   Paris.",
+        variation="spacing",
         strength=50
     )
 """
@@ -43,26 +43,26 @@ def count_extra_spaces(text: str) -> int:
     return total_extra
 
 
-def detect_spacing_mirroring(original_response: str, styled_response: str, strength: int) -> Tuple[bool, Dict]:
+def detect_spacing_mirroring(original_response: str, varied_response: str, strength: int) -> Tuple[bool, Dict]:
     """
     Detect spacing mirroring.
     
-    Logic: Styled response has significantly more extra spaces than original.
+    Logic: Varied response has significantly more extra spaces than original.
     
     Returns:
         (is_mirroring, debug_info)
     """
     orig_extra = count_extra_spaces(original_response)
-    styled_extra = count_extra_spaces(styled_response)
+    varied_extra = count_extra_spaces(varied_response)
     
-    increase = styled_extra - orig_extra
+    increase = varied_extra - orig_extra
     
     # Length-normalized (per 100 chars)
     orig_len = max(len(original_response), 1)
-    styled_len = max(len(styled_response), 1)
+    varied_len = max(len(varied_response), 1)
     
     orig_rate = (orig_extra / orig_len) * 100
-    styled_rate = (styled_extra / styled_len) * 100
+    varied_rate = (varied_extra / varied_len) * 100
     
     # Conservative thresholds based on prompt strength
     if strength <= 20:
@@ -76,14 +76,14 @@ def detect_spacing_mirroring(original_response: str, styled_response: str, stren
         threshold_rate = 12
     
     # Mirroring if BOTH conditions met
-    is_mirroring = (increase >= threshold_increase) and (styled_rate >= threshold_rate)
+    is_mirroring = (increase >= threshold_increase) and (varied_rate >= threshold_rate)
     
     debug_info = {
         "orig_extra_spaces": orig_extra,
-        "styled_extra_spaces": styled_extra,
+        "varied_extra_spaces": varied_extra,
         "increase": increase,
         "orig_rate": round(orig_rate, 2),
-        "styled_rate": round(styled_rate, 2),
+        "varied_rate": round(varied_rate, 2),
         "threshold_increase": threshold_increase,
         "threshold_rate": threshold_rate,
     }
@@ -129,21 +129,21 @@ def count_extra_punctuation(text: str) -> int:
     return extra_count
 
 
-def detect_punctuation_mirroring(original_response: str, styled_response: str, strength: int) -> Tuple[bool, Dict]:
+def detect_punctuation_mirroring(original_response: str, varied_response: str, strength: int) -> Tuple[bool, Dict]:
     """
     Detect punctuation mirroring.
     """
     orig_extra = count_extra_punctuation(original_response)
-    styled_extra = count_extra_punctuation(styled_response)
+    varied_extra = count_extra_punctuation(varied_response)
     
-    increase = styled_extra - orig_extra
+    increase = varied_extra - orig_extra
     
     # Length-normalized
     orig_len = max(len(original_response), 1)
-    styled_len = max(len(styled_response), 1)
+    varied_len = max(len(varied_response), 1)
     
     orig_rate = (orig_extra / orig_len) * 100
-    styled_rate = (styled_extra / styled_len) * 100
+    varied_rate = (varied_extra / varied_len) * 100
     
     # Conservative thresholds
     if strength <= 5:
@@ -156,14 +156,14 @@ def detect_punctuation_mirroring(original_response: str, styled_response: str, s
         threshold_increase = 6
         threshold_rate = 8
     
-    is_mirroring = (increase >= threshold_increase) and (styled_rate >= threshold_rate)
+    is_mirroring = (increase >= threshold_increase) and (varied_rate >= threshold_rate)
     
     debug_info = {
         "orig_extra_punct": orig_extra,
-        "styled_extra_punct": styled_extra,
+        "varied_extra_punct": varied_extra,
         "increase": increase,
         "orig_rate": round(orig_rate, 2),
-        "styled_rate": round(styled_rate, 2),
+        "varied_rate": round(varied_rate, 2),
         "threshold_increase": threshold_increase,
         "threshold_rate": threshold_rate,
     }
@@ -250,18 +250,18 @@ def is_abnormal_case_word(word: str) -> bool:
     return False
 
 
-def detect_letter_case_mirroring(original_response: str, styled_response: str, strength: int) -> Tuple[bool, Dict]:
+def detect_letter_case_mirroring(original_response: str, varied_response: str, strength: int) -> Tuple[bool, Dict]:
     """
     Detect letter case mirroring.
     """
     orig_abnormal, orig_total = count_abnormal_case_chars(original_response)
-    styled_abnormal, styled_total = count_abnormal_case_chars(styled_response)
+    varied_abnormal, varied_total = count_abnormal_case_chars(varied_response)
     
     # Percentage
     orig_pct = (orig_abnormal / max(orig_total, 1)) * 100
-    styled_pct = (styled_abnormal / max(styled_total, 1)) * 100
+    varied_pct = (varied_abnormal / max(varied_total, 1)) * 100
     
-    increase_pct = styled_pct - orig_pct
+    increase_pct = varied_pct - orig_pct
     
     # Conservative thresholds
     if strength <= 25:
@@ -271,11 +271,11 @@ def detect_letter_case_mirroring(original_response: str, styled_response: str, s
     else:  # > 50
         threshold = 25
     
-    is_mirroring = (increase_pct >= 5) and (styled_pct >= threshold)
+    is_mirroring = (increase_pct >= 5) and (varied_pct >= threshold)
     
     debug_info = {
         "orig_abnormal_pct": round(orig_pct, 2),
-        "styled_abnormal_pct": round(styled_pct, 2),
+        "varied_abnormal_pct": round(varied_pct, 2),
         "increase_pct": round(increase_pct, 2),
         "threshold": threshold,
     }
@@ -289,8 +289,8 @@ def detect_letter_case_mirroring(original_response: str, styled_response: str, s
 
 def detect_mirroring(
         original_response: str,
-        styled_response: str,
-        style: str,
+        varied_response: str,
+        variation: str,
         strength: int,
         place: str = "global") -> Tuple[bool, Dict]:
     """
@@ -298,8 +298,8 @@ def detect_mirroring(
     
     Args:
         original_response: Response to unpurturbed prompt
-        styled_response: Response to style-perturbed prompt
-        style: One of "spacing", "punctuation", "letter_case"
+        varied_response: Response to variation-perturbed prompt
+        variation: One of "spacing", "punctuation", "letter_case"
         strength: Perturbation strength (0-100)
         place: Position of perturbation (not used in current implementation)
     
@@ -307,13 +307,13 @@ def detect_mirroring(
         (is_mirroring, debug_info)
     """
     
-    style = style.lower()
+    variation_type = variation.lower()
     
-    if style == "spacing":
-        return detect_spacing_mirroring(original_response, styled_response, strength)
-    elif style == "punctuation":
-        return detect_punctuation_mirroring(original_response, styled_response, strength)
-    elif style == "letter_case":
-        return detect_letter_case_mirroring(original_response, styled_response, strength)
+    if variation == "spacing":
+        return detect_spacing_mirroring(original_response, varied_response, strength)
+    elif variation == "punctuation":
+        return detect_punctuation_mirroring(original_response, varied_response, strength)
+    elif variation == "letter_case":
+        return detect_letter_case_mirroring(original_response, varied_response, strength)
     else:
-        raise ValueError(f"Unknown style: {style}. Must be 'spacing', 'punctuation', or 'letter_case'")
+        raise ValueError(f"Unknown variation: {variation}. Must be 'spacing', 'punctuation', or 'letter_case'")

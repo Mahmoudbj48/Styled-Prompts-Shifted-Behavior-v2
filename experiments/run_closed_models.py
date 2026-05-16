@@ -1,0 +1,503 @@
+"""
+experiments/run_closed_models.py
+=================================
+Run experiments on closed API models (GPT, Gemini, Claude) across all variations.
+
+Usage:
+    python experiments/run_closed_models.py \\
+        --models gpt-5.4 gemini-2.5-flash claude-sonnet-4-6 \\
+        --datasets truthful_qa alpaca simpleqa_verified \\
+        --sample_size 16
+
+Features:
+    - Supports all 6 variations (spacing, punctuation, letter_case, politeness, length_variation, inter_vs_imper)
+    - Computes BLEU, BERTScore, Confidence (when available), Mirroring
+    - Uses cached prompts from existing experiments
+    - Saves per-experiment results in separate folders
+"""
+
+import argparse
+import os
+import sys
+import json
+import yaml
+from datetime import datetime
+from typing import List, Dict, Any, Optional
+import pandas as pd
+import numpy as np
+
+# Add parent directory to path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from utils.llm_client import get_llm_client
+from utils.closed_model_metrics import compute_all_metrics
+from utils.data import load_dataset_by_name
+from utils.compute_delta_metrics import add_delta_columns
+from utils.variations import (
+    apply_spacing,
+    apply_punctuation,
+    apply_letter_case,
+    apply_politeness,
+    apply_length_variation,
+    apply_interrogative,
+)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# STYLE CONFIGURATIONS
+# ══════════════════════════════════════════════════════════════════════════════
+
+VARIATION_CONFIGS = {
+    "spacing": {
+        "strengths": [0, 1, 5, 20, 50, 100],
+        "place": "global",
+        "has_mirroring": True,
+        "apply_fn": lambda text, strength, place: apply_spacing(text, strength, place),
+    },
+    "punctuation": {
+        "strengths": [0, 1, 3, 5, 10, 20],
+        "place": "global",
+        "has_mirroring": True,
+        "apply_fn": lambda text, strength, place: apply_punctuation(text, strength, place),
+    },
+    "letter_case": {
+        "strengths": [0, 10, 25, 50, 75, 100],
+        "place": "global",
+        "has_mirroring": True,
+        "apply_fn": lambda text, strength, place: apply_letter_case(text, strength, place),
+    },
+    "politeness": {
+        "strengths": [-10, -6, -2, 0, 2, 6, 10],
+        "place": "global",
+        "has_mirroring": True,
+        "apply_fn": lambda text, strength, place: apply_politeness(text, strength, place),
+    },
+    "length_variation": {
+        "strengths": [0.25, 0.5, 1.0, 1.5, 2.0, 3.0],
+        "place": "global",
+        "has_mirroring": True,
+        "apply_fn": lambda text, strength, place: apply_length_variation(text, strength),
+    },
+    "inter_vs_imper": {
+        "strengths": ["interrogative", "imperative"],
+        "place": "global",
+        "has_mirroring": False,
+        "apply_fn": lambda text, strength, place: apply_interrogative(text, mode=strength),
+    },
+}
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# HELPER FUNCTIONS
+# ══════════════════════════════════════════════════════════════════════════════
+
+def load_config() -> Dict[str, Any]:
+    """Load project config.yaml"""
+    config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.yaml")
+    with open(config_path, "r") as f:
+        return yaml.safe_load(f)
+
+
+def get_prompt_text(item: Dict[str, Any]) -> str:
+    """Extract prompt text from dataset item"""
+    if "question" in item and item["question"]:
+        return str(item["question"])
+    if "prompt" in item and item["prompt"]:
+        return str(item["prompt"])
+    return str(item)
+
+
+def load_dataset_prompts(
+    dataset_name: str,
+    config: Dict[str, Any],
+    sample_size: int,
+) -> List[Dict[str, Any]]:
+    """Load dataset prompts (uses same cache as local experiments)"""
+    
+    if dataset_name not in config["datasets"]:
+        raise ValueError(f"Dataset '{dataset_name}' not found in config.yaml")
+    
+    dataset_config = config["datasets"][dataset_name]
+    
+    items = load_dataset_by_name(
+        dataset_name,
+        sample_size=sample_size,
+        seed=int(config["defaults"].get("random_seed", 42)),
+        config_name=dataset_config.get("config_name"),
+        split=dataset_config.get("split", "validation"),
+    )
+    
+    return items
+
+
+def create_output_dir(model: str, dataset: str, variation: str) -> str:
+    """Create output directory for this experiment"""
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    
+    base_dir = os.path.join(
+        os.path.dirname(os.path.dirname(__file__)),
+        "results",
+        "closed_models",
+    )
+    
+    # Sanitize model name for directory
+    model_safe = model.replace(".", "_").replace("-", "_")
+    
+    run_dir = os.path.join(
+        base_dir,
+        f"run_{model_safe}_{dataset}_{variation}_{timestamp}",
+    )
+    
+    os.makedirs(run_dir, exist_ok=True)
+    
+    return run_dir
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# CORE EXPERIMENT RUNNER
+# ══════════════════════════════════════════════════════════════════════════════
+
+def run_variation_experiment(
+    model_name: str,
+    dataset_name: str,
+    variation_name: str,
+    items: List[Dict[str, Any]],
+    *,
+    max_tokens: int = 100,  # Match open-source experiments
+    temperature: float = 0.0,
+    judge_provider: str = "openai",
+    judge_model: str = "gpt-4o-mini",
+    device: str = "cpu",
+) -> pd.DataFrame:
+    """
+    Run one variation experiment for one model on one dataset.
+    
+    Returns DataFrame with all results.
+    """
+    
+    print(f"\n{'='*80}")
+    print(f"Running: {model_name} | {dataset_name} | {variation_name}")
+    print(f"{'='*80}\n")
+    
+    # Get variation config
+    if variation_name not in VARIATION_CONFIGS:
+        raise ValueError(f"Unknown variation: {variation_name}")
+    
+    variation_config = VARIATION_CONFIGS[variation_name]
+    strengths = variation_config["strengths"]
+    place = variation_config["place"]
+    apply_fn = variation_config["apply_fn"]
+    has_mirroring = variation_config["has_mirroring"]
+    
+    # Initialize LLM client
+    client = get_llm_client(model_name)
+    
+    print(f"Model: {model_name}")
+    print(f"Supports logprobs: {client.supports_logprobs}")
+    print(f"Dataset: {dataset_name} ({len(items)} prompts)")
+    print(f"Style: {variation_name}")
+    print(f"Strengths: {strengths}")
+    print(f"Place: {place}")
+    print(f"Has mirroring: {has_mirroring}\n")
+    
+    # Extract prompts
+    prompts = [get_prompt_text(item) for item in items]
+    categories = [item.get("category", "Unknown") for item in items]
+    
+    rows = []
+    
+    # Progress tracking
+    total = len(prompts) * len(strengths)
+    completed = 0
+    
+    for strength in strengths:
+        # Apply variation to all prompts
+        varied_prompts = [apply_fn(p, strength, place) for p in prompts]
+        
+        for i, (prompt_orig, prompt_varied) in enumerate(zip(prompts, varied_prompts)):
+            
+            completed += 1
+            print(f"  [{completed}/{total}] Strength={strength}, Prompt {i+1}/{len(prompts)}", flush=True)
+            
+            # Generate baseline response
+            baseline_resp = client.complete(
+                prompt_orig,
+                max_tokens=max_tokens,
+                temperature=temperature,
+                return_logprobs=client.supports_logprobs,
+            )
+            
+            # Generate varied response
+            varied_resp = client.complete(
+                prompt_varied,
+                max_tokens=max_tokens,
+                temperature=temperature,
+                return_logprobs=client.supports_logprobs,
+            )
+            
+            # Compute metrics
+            metrics = compute_all_metrics(
+                baseline_prompt=prompt_orig,
+                varied_prompt=prompt_varied,
+                baseline_response=baseline_resp["text"],
+                varied_response=varied_resp["text"],
+                baseline_logprobs=baseline_resp["logprobs"],
+                varied_logprobs=varied_resp["logprobs"],
+                variation=variation_name,
+                strength=strength,
+                place=place,
+                compute_confidence=client.supports_logprobs,
+                compute_similarity=True,
+                compute_mirroring_metric=has_mirroring,
+                judge_provider=judge_provider,
+                judge_model=judge_model,
+                device=device,
+            )
+            
+            # Build row with exact column structure matching local experiments
+            row = {
+                # Core identifiers
+                "model": model_name,
+                "prompt_id": i,
+                "place": place,
+                "strength": strength,
+                "category": categories[i],
+                
+                # Prompts
+                "prompt_orig": prompt_orig,
+                "prompt_pert": prompt_varied,  # Note: "pert" not "varied"
+                
+                # Prompt similarity (only BERTScore, BLEU not applicable to prompts)
+                "bertscore_prompt": metrics.get("bertscore_prompt", np.nan),
+                
+                # Responses
+                "response_orig": baseline_resp["text"],
+                "response_pert": varied_resp["text"],  # Note: "pert" not "varied"
+                
+                # Response similarity
+                "bleu": metrics.get("bleu", np.nan),
+                "bertscore_response": metrics.get("bertscore_response", np.nan),
+                
+                # Activation similarity (N/A for closed models - leave empty)
+                "activation_similarity": np.nan,
+                
+                # Confidence metrics (from logprobs when available)
+                "delta_log_prob": metrics.get("delta_mean_confidence", np.nan),  # Map to expected name
+                "entropy_shift": metrics.get("delta_entropy", np.nan),  # Map to expected name
+                
+                # Mirroring
+                "mirroring_rate": metrics.get("mirroring_rate", np.nan),
+                
+                # Delta columns (will be computed by add_delta_columns)
+                "delta_bleu": np.nan,
+                "delta_bertscore_prompt": np.nan,
+                "delta_bertscore_response": np.nan,
+                "delta_activation_similarity": np.nan,
+                "delta_mirroring_rate": np.nan,
+            }
+            
+            rows.append(row)
+    
+    # Create DataFrame
+    df = pd.DataFrame(rows)
+    
+    # Apply delta column computations (relative to baseline strength)
+    df = add_delta_columns(df, variation=variation_name)
+    
+    # Ensure exact column order to match local experiments
+    column_order = [
+        "model",
+        "prompt_id",
+        "place",
+        "strength",
+        "category",
+        "prompt_orig",
+        "prompt_pert",
+        "bertscore_prompt",
+        "response_orig",
+        "response_pert",
+        "bleu",
+        "bertscore_response",
+        "activation_similarity",
+        "delta_log_prob",
+        "entropy_shift",
+        "mirroring_rate",
+        "delta_bleu",
+        "delta_bertscore_prompt",
+        "delta_bertscore_response",
+        "delta_activation_similarity",
+        "delta_mirroring_rate",
+    ]
+    
+    # Reorder columns (fill missing with NaN)
+    for col in column_order:
+        if col not in df.columns:
+            df[col] = np.nan
+    
+    df = df[column_order]
+    
+    return df
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# MAIN ORCHESTRATOR
+# ══════════════════════════════════════════════════════════════════════════════
+
+def main():
+    """Parse CLI arguments and orchestrate closed-model experiments across all variations."""
+    parser = argparse.ArgumentParser(
+        description="Run closed-model experiments across all variations"
+    )
+    
+    parser.add_argument(
+        "--models",
+        nargs="+",
+        required=True,
+        help="Model names (e.g., gpt-5.4 gemini-2.5-flash claude-sonnet-4-6)",
+    )
+    
+    parser.add_argument(
+        "--datasets",
+        nargs="+",
+        required=True,
+        help="Dataset names (e.g., truthful_qa alpaca simpleqa_verified)",
+    )
+    
+    parser.add_argument(
+        "--sample_size",
+        type=int,
+        default=16,
+        help="Number of prompts per dataset (default: 16)",
+    )
+    
+    parser.add_argument(
+        "--variations",
+        nargs="+",
+        default=None,
+        help="Specific variations to run (default: all)",
+    )
+    
+    parser.add_argument(
+        "--max_tokens",
+        type=int,
+        default=100,
+        help="Max tokens for LLM responses (default: 100, matching open-source experiments)",
+    )
+    
+    parser.add_argument(
+        "--temperature",
+        type=float,
+        default=0.0,
+        help="Sampling temperature (default: 0.0)",
+    )
+    
+    parser.add_argument(
+        "--judge_provider",
+        type=str,
+        default="openai",
+        choices=["openai", "gemini"],
+        help="LLM provider for mirroring judge (default: openai)",
+    )
+    
+    parser.add_argument(
+        "--judge_model",
+        type=str,
+        default="gpt-4o-mini",
+        help="Model for mirroring judge (default: gpt-4o-mini)",
+    )
+    
+    parser.add_argument(
+        "--device",
+        type=str,
+        default="cpu",
+        help="Device for BERTScore computation (default: cpu)",
+    )
+    
+    args = parser.parse_args()
+    
+    # Load config
+    config = load_config()
+    
+    # Determine which variations to run
+    variations_to_run = args.variations if args.variations else list(VARIATION_CONFIGS.keys())
+    
+    print(f"\n{'='*80}")
+    print("CLOSED MODEL EXPERIMENTS")
+    print(f"{'='*80}")
+    print(f"Models: {args.models}")
+    print(f"Datasets: {args.datasets}")
+    print(f"Variations: {variations_to_run}")
+    print(f"Sample size: {args.sample_size}")
+    print(f"Max tokens: {args.max_tokens}")
+    print(f"Temperature: {args.temperature}")
+    print(f"Mirroring judge: {args.judge_provider}/{args.judge_model}")
+    print(f"{'='*80}\n")
+    
+    # Run experiments
+    for model_name in args.models:
+        print(f"\n{'#'*80}")
+        print(f"# MODEL: {model_name}")
+        print(f"{'#'*80}\n")
+        
+        for dataset_name in args.datasets:
+            print(f"\n{'='*80}")
+            print(f"DATASET: {dataset_name}")
+            print(f"{'='*80}\n")
+            
+            # Load dataset prompts
+            items = load_dataset_prompts(dataset_name, config, args.sample_size)
+            
+            for variation_name in variations_to_run:
+                # Create output directory
+                output_dir = create_output_dir(model_name, dataset_name, variation_name)
+                
+                # Run experiment
+                df = run_variation_experiment(
+                    model_name=model_name,
+                    dataset_name=dataset_name,
+                    variation_name=variation_name,
+                    items=items,
+                    max_tokens=args.max_tokens,
+                    temperature=args.temperature,
+                    judge_provider=args.judge_provider,
+                    judge_model=args.judge_model,
+                    device=args.device,
+                )
+                
+                # Save results
+                output_csv = os.path.join(output_dir, "full_results_all_models.csv")
+                df.to_csv(output_csv, index=False)
+                
+                print(f"\n✓ Saved: {output_csv}")
+                print(f"  Rows: {len(df)}")
+                print(f"  Columns: {len(df.columns)}\n")
+                
+                # Save metadata
+                metadata = {
+                    "model": model_name,
+                    "dataset": dataset_name,
+                    "variation": variation_name,
+                    "sample_size": args.sample_size,
+                    "num_prompts": len(items),
+                    "num_strengths": len(VARIATION_CONFIGS[variation_name]["strengths"]),
+                    "total_rows": len(df),
+                    "timestamp": datetime.now().isoformat(),
+                    "config": {
+                        "max_tokens": args.max_tokens,
+                        "temperature": args.temperature,
+                        "judge_provider": args.judge_provider,
+                        "judge_model": args.judge_model,
+                    },
+                }
+                
+                metadata_path = os.path.join(output_dir, "metadata.json")
+                with open(metadata_path, "w") as f:
+                    json.dump(metadata, f, indent=2)
+    
+    print(f"\n{'='*80}")
+    print("ALL EXPERIMENTS COMPLETE")
+    print(f"{'='*80}\n")
+
+
+if __name__ == "__main__":
+    main()

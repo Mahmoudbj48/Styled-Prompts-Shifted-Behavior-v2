@@ -5,10 +5,13 @@ models:
 
 
   G-2B: "google/gemma-2b-it"
+  G4-E4B: "google/gemma-4-E4B-it"
   G-7B: "google/gemma-7b-it"
 
   Q2.5-1.5B: "Qwen/Qwen2.5-1.5B-Instruct"
   Q2.5-7B: "Qwen/Qwen2.5-7B-Instruct"
+  Q3.5-9B: "Qwen/Qwen3.5-9B"
+
 
 datasets:
   truthful_qa:
@@ -24,7 +27,35 @@ datasets:
   natural_questions:
     config_name: "default"
     split: "validation"
-    sample_size: 256
+    sample_size: 128
+
+  alpaca:
+    repo_id: "tatsu-lab/alpaca"
+    split: "train"
+    sample_size: 128
+
+  simpleqa_verified:
+    repo_id: "google/simpleqa-verified"
+    split: "eval"
+    sample_size: 128
+
+  trivia_qa:
+    repo_id: "mandarjoshi/trivia_qa"
+    config_name: "rc"
+    split: "validation"
+    sample_size: 128
+
+  hotpot_qa:
+    repo_id: "hotpotqa/hotpot_qa"
+    config_name: "distractor"
+    split: "validation"
+    sample_size: 128
+
+  harmbench:
+    repo_id: "walledai/HarmBench"
+    config_name: "standard"
+    split: null  # Will auto-select
+    sample_size: 128
 
 defaults:
   max_new_tokens: 100
@@ -33,7 +64,7 @@ defaults:
   dtype: "float16"
   random_seed: 42
 
-style_levels:
+variation_levels:
   spacing: [0, 1, 5, 20, 50, 100]
   punctuation: [0, 1, 3, 5, 10, 20]
   letter_case : [0,10, 25, 50, 75, 100]
@@ -46,14 +77,14 @@ safety_models:
 
 
 
-style_positions:
+variation_positions:
   spacing: ["prefix","suffix", "global"]
   punctuation: ["prefix", "suffix", "global"]
   letter_case: ["prefix", "suffix", "global"]
   politeness: ["prefix", "suffix", "global"]
   length_variation: ["global"]
   inter_vs_imper: ["global"]
-style_defaults:
+variation_defaults:
   politeness:
     strength_range: [-10, 10]
     strength_step: 2

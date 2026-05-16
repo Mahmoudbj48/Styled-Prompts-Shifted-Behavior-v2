@@ -26,10 +26,12 @@ except Exception:
 
 
 def _get_hf_token() -> Optional[str]:
+    """Return the HuggingFace token from environment variables, or None if not set."""
     return os.environ.get("HF_TOKEN") or os.environ.get("HUGGINGFACE_HUB_TOKEN")
 
 
 def _has_accelerate() -> bool:
+    """Return True if the accelerate package is importable."""
     return importlib.util.find_spec("accelerate") is not None
 
 
@@ -95,7 +97,8 @@ def load_model(model_name: str, device_map: str = "auto", dtype: str = "float32"
     # Ensure pad token exists
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
-        model.config.pad_token_id = model.config.eos_token_id
+        eos = model.config.eos_token_id
+        model.config.pad_token_id = eos[0] if isinstance(eos, list) else eos
 
     model.eval()
     print(f"Model loaded successfully on {model.device}")
